@@ -1,0 +1,11 @@
+version: "3.7"
+
+services:
+  health-api:
+    container_name: healthtrackerservice
+    image: davewalker5/healthtrackerapisqlite:latest
+    restart: always
+    ports:
+      - "8099:80"
+    volumes:
+      - C:\Dropbox\Databases\HealthTracker:/var/opt/healthtracker.api/

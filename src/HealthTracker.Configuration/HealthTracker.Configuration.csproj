@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <PackageId>HealthTracker.Configuration</PackageId>
+    <PackageVersion>1.23.0.0</PackageVersion>
+    <Authors>Dave Walker</Authors>
+    <Copyright>Copyright (c) 2024, 2025 Dave Walker</Copyright>
+    <Owners>Dave Walker</Owners>
+    <Summary>Health Tracker Configuration</Summary>
+    <PackageTags>Health Tracker configuration settings</PackageTags>
+    <Title>Health Tracker Configuration</Title>
+    <Description>Health Tracker Configuration</Description>
+    <PackOnBuild>true</PackOnBuild>
+    <PackageProjectUrl>https://github.com/davewalker5/HealthTracker</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <ReleaseVersion>1.23.0.0</ReleaseVersion>
+    <NoWarn>$(NoWarn);NU1900;NU1902;NU1904</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HealthTracker.Entities\HealthTracker.Entities.csproj" />
+  </ItemGroup>
+</Project>

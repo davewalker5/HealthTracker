@@ -1,0 +1,154 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using HealthTracker.Api.Entities;
+using HealthTracker.Api.Interfaces;
+
+namespace HealthTracker.Api.Controllers
+{
+    [Authorize]
+    [ApiController]
+    [ApiConventionType(typeof(DefaultApiConventions))]
+    [Route("[controller]")]
+    public class ExportController : Controller
+    {
+        private readonly IBackgroundQueue<PersonExportWorkItem> _personQueue;
+        private readonly IBackgroundQueue<WeightMeasurementExportWorkItem> _weightMeasurementQueue;
+        private readonly IBackgroundQueue<BloodPressureMeasurementExportWorkItem> _bloodPressureMeasurementQueue;
+        private readonly IBackgroundQueue<BloodGlucoseMeasurementExportWorkItem> _bloodGlucoseMeasurementQueue;
+        private readonly IBackgroundQueue<DailyAverageBloodPressureExportWorkItem> _dailyAverageBloodPressureQueue;
+        private readonly IBackgroundQueue<CholesterolMeasurementExportWorkItem> _cholesterolMeasurementQueue;
+        private readonly IBackgroundQueue<ExerciseMeasurementExportWorkItem> _exerciseMeasurementQueue;
+        private readonly IBackgroundQueue<BloodOxygenSaturationMeasurementExportWorkItem> _spo2MeasurementQueue;
+        private readonly IBackgroundQueue<DailyAverageBloodOxygenSaturationExportWorkItem> _dailyAverageSPO2Queue;
+
+        public ExportController(
+            IBackgroundQueue<PersonExportWorkItem> personQueue,
+            IBackgroundQueue<WeightMeasurementExportWorkItem> weightMeasurementQueue,
+            IBackgroundQueue<BloodPressureMeasurementExportWorkItem> bloodPressureMeasurementQueue,
+            IBackgroundQueue<DailyAverageBloodPressureExportWorkItem> dailyAverageBloodPressureQueue,
+            IBackgroundQueue<CholesterolMeasurementExportWorkItem> cholesterolMeasurementQueue,
+            IBackgroundQueue<ExerciseMeasurementExportWorkItem> exerciseMeasurementQueue,
+            IBackgroundQueue<BloodOxygenSaturationMeasurementExportWorkItem> spo2MeasurementQueue,
+            IBackgroundQueue<DailyAverageBloodOxygenSaturationExportWorkItem> dailyAverageSPO2Queue,
+            IBackgroundQueue<BloodGlucoseMeasurementExportWorkItem> bloodGlucoseMeasurementQueue)
+        {
+            _personQueue = personQueue;
+            _weightMeasurementQueue = weightMeasurementQueue;
+            _bloodPressureMeasurementQueue = bloodPressureMeasurementQueue;
+            _dailyAverageBloodPressureQueue = dailyAverageBloodPressureQueue;
+            _cholesterolMeasurementQueue = cholesterolMeasurementQueue;
+            _exerciseMeasurementQueue = exerciseMeasurementQueue;
+            _spo2MeasurementQueue = spo2MeasurementQueue;
+            _dailyAverageSPO2Queue = dailyAverageSPO2Queue;
+            _bloodGlucoseMeasurementQueue = bloodGlucoseMeasurementQueue;
+        }
+
+        [HttpPost]
+        [Route("person")]
+        public IActionResult ExportPeople([FromBody] PersonExportWorkItem item)
+        {
+            // Set the job name used in the job status record
+            item.JobName = "Person Export";
+
+            // Queue the work item
+            _personQueue.Enqueue(item);
+            return Accepted();
+        }
+
+        [HttpPost]
+        [Route("weightmeasurement")]
+        public IActionResult ExportWeightMeasurements([FromBody] WeightMeasurementExportWorkItem item)
+        {
+            // Set the job name used in the job status record
+            item.JobName = "Weight Measurement Export";
+
+            // Queue the work item
+            _weightMeasurementQueue.Enqueue(item);
+            return Accepted();
+        }
+
+        [HttpPost]
+        [Route("bloodpressuremeasurement")]
+        public IActionResult ExportBloodPressureMeasurements([FromBody] BloodPressureMeasurementExportWorkItem item)
+        {
+            // Set the job name used in the job status record
+            item.JobName = "Blood Pressure Measurement Export";
+
+            // Queue the work item
+            _bloodPressureMeasurementQueue.Enqueue(item);
+            return Accepted();
+        }
+
+        [HttpPost]
+        [Route("dailyaveragebloodpressure")]
+        public IActionResult ExportDailyAverageBloodPressure([FromBody] DailyAverageBloodPressureExportWorkItem item)
+        {
+            // Set the job name used in the job status record
+            item.JobName = "Daily Average Blood Pressure Measurement Export";
+
+            // Queue the work item
+            _dailyAverageBloodPressureQueue.Enqueue(item);
+            return Accepted();
+        }
+
+        [HttpPost]
+        [Route("cholesterolmeasurement")]
+        public IActionResult ExportCholesterolMeasurements([FromBody] CholesterolMeasurementExportWorkItem item)
+        {
+            // Set the job name used in the job status record
+            item.JobName = "Cholesterol Measurement Export";
+
+            // Queue the work item
+            _cholesterolMeasurementQueue.Enqueue(item);
+            return Accepted();
+        }
+
+        [HttpPost]
+        [Route("exercisemeasurement")]
+        public IActionResult ExportExerciseMeasurements([FromBody] ExerciseMeasurementExportWorkItem item)
+        {
+            // Set the job name used in the job status record
+            item.JobName = "Exercise Measurement Export";
+
+            // Queue the work item
+            _exerciseMeasurementQueue.Enqueue(item);
+            return Accepted();
+        }
+
+        [HttpPost]
+        [Route("bloodoxygensaturationmeasurement")]
+        public IActionResult ExportBloodOxygenSaturationMeasurements([FromBody] BloodOxygenSaturationMeasurementExportWorkItem item)
+        {
+            // Set the job name used in the job status record
+            item.JobName = "Blood Oxygen Saturation Measurement Export";
+
+            // Queue the work item
+            _spo2MeasurementQueue.Enqueue(item);
+            return Accepted();
+        }
+
+        [HttpPost]
+        [Route("dailyaveragebloodoxygensaturation")]
+        public IActionResult ExportDailyAverageBloodOxygenSaturation([FromBody] DailyAverageBloodOxygenSaturationExportWorkItem item)
+        {
+            // Set the job name used in the job status record
+            item.JobName = "Daily Average Blood Oxygen Saturation Measurement Export";
+
+            // Queue the work item
+            _dailyAverageSPO2Queue.Enqueue(item);
+            return Accepted();
+        }
+
+        [HttpPost]
+        [Route("bloodglucosemeasurement")]
+        public IActionResult ExportBloodGlucoseMeasurements([FromBody] BloodGlucoseMeasurementExportWorkItem item)
+        {
+            // Set the job name used in the job status record
+            item.JobName = "Blood Glucose Measurement Export";
+
+            // Queue the work item
+            _bloodGlucoseMeasurementQueue.Enqueue(item);
+            return Accepted();
+        }
+    }
+}
