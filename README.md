@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/davewalker5/HealthTracker/workflows/Python%20CI%20Build/badge.svg)](https://github.com/davewalker5/HealthTracker/actions)
+[![Build Status](https://github.com/davewalker5/HealthTracker/workflows/.NET%20Core%20CI%20Build/badge.svg)](https://github.com/davewalker5/HealthTracker/actions)
 [![Coverage](https://codecov.io/gh/davewalker5/HealthTracker/branch/main/graph/badge.svg?token=U86UFDVD5S)](https://codecov.io/gh/davewalker5/HealthTracker)
 [![GitHub issues](https://img.shields.io/github/issues/davewalker5/HealthTracker)](https://github.com/davewalker5/HealthTracker/issues)
 [![Releases](https://img.shields.io/github/v/release/davewalker5/HealthTracker.svg?include_prereleases)](https://github.com/davewalker5/HealthTracker/releases)
