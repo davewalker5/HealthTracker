@@ -14,6 +14,7 @@ The following reports are currently available:
 | glucose_agp.ipynb | Ambulatory Glucose Profile charts |
 | glucose_heatmap.ipynb | Glucose level heatmap by time of day |
 | glucose_histogram.ipynb | Glucose level distribution histograms and KDE charts |
+| glucose_metrics.ipynb | All time and daily glucose metrics |
 | glucose_overlay.ipynb | Daily glucose overlay or "spaghetti" charts |
 | systolic_diastolic_correlation.ipynb | Systolic/diastolic correlation chart |
 | weight_calendar_heatmap.ipynb | Heatmap of weight and weight trends over time |
