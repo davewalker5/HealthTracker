@@ -1,0 +1,225 @@
+using System.Web;
+using HealthTracker.Client.Interfaces;
+using HealthTracker.Configuration.Interfaces;
+using HealthTracker.Entities.Measurements;
+
+namespace HealthTracker.Client.ApiClient
+{
+    public class BloodPressureMeasurementClient : HealthTrackerClientBase, IBloodPressureMeasurementClient
+    {
+        private const string RouteKey = "BloodPressureMeasurement";
+        private const string ExportRouteKey = "ExportBloodPressureMeasurement";
+        private const string ImportRouteKey = "ImportBloodPressureMeasurement";
+        private const string ImportOmronRouteKey = "ImportOmronBloodPressureMeasurement";
+        private const string ExportDailyAverageRouteKey = "ExportDailyAverageBloodPressureRouteKey";
+
+        public BloodPressureMeasurementClient(IHealthTrackerHttpClient client, IHealthTrackerApplicationSettings settings, IAuthenticationTokenProvider tokenProvider)
+            : base(client, settings, tokenProvider)
+        {
+        }
+
+        /// <summary>
+        /// Add a new blood pressure measurement to the database
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="date"></param>
+        /// <param name="systolic"></param>
+        /// <param name="diastolic"></param>
+        /// <returns></returns>
+        public async Task<BloodPressureMeasurement> AddBloodPressureMeasurementAsync(int personId, DateTime? date, int systolic, int diastolic)
+        {
+            var measurementDate = date ?? DateTime.Now;
+            dynamic template = new
+            {
+                PersonId = personId,
+                Date = new DateTime(measurementDate.Year, measurementDate.Month, measurementDate.Day, 0, 0, 0),
+                Systolic = systolic,
+                Diastolic = diastolic
+            };
+
+            var data = Serialize(template);
+            string json = await SendIndirectAsync(RouteKey, data, HttpMethod.Post);
+            var measurement = Deserialize<BloodPressureMeasurement>(json);
+
+            return measurement;
+        }
+
+        /// <summary>
+        /// Update an existing blood pressure measurement
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="personId"></param>
+        /// <param name="date"></param>
+        /// <param name="systolic"></param>
+        /// <param name="diastolic"></param>
+        /// <returns></returns>
+        public async Task<BloodPressureMeasurement> UpdateBloodPressureMeasurementAsync(int id, int personId, DateTime? date, int systolic, int diastolic)
+        {
+            var measurementDate = date ?? DateTime.Now;
+            dynamic template = new
+            {
+                Id = id,
+                PersonId = personId,
+                Date = new DateTime(measurementDate.Year, measurementDate.Month, measurementDate.Day, 0, 0, 0),
+                Systolic = systolic,
+                Diastolic = diastolic
+            };
+
+            var data = Serialize(template);
+            string json = await SendIndirectAsync(RouteKey, data, HttpMethod.Put);
+            var measurement = Deserialize<BloodPressureMeasurement>(json);
+
+            return measurement;
+        }
+
+        /// <summary>
+        /// Request an import of blood pressure measurements from the content of a file
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public async Task ImportBloodPressureMeasurementsAsync(string filePath)
+        {
+            dynamic data = new{ Content = File.ReadAllText(filePath) };
+            var json = Serialize(data);
+            await SendIndirectAsync(ImportRouteKey, json, HttpMethod.Post);
+        }
+
+        /// <summary>
+        /// Request an import of blood pressure measurements from the content of an OMRON-format XLSX file
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="personId"></param>
+        /// <returns></returns>
+        public async Task ImportOmronBloodPressureMeasurementsAsync(string filePath, int personId)
+        {
+            dynamic data = new
+            {
+                PersonId = personId,
+                Content = Convert.ToBase64String(File.ReadAllBytes(filePath))
+            };
+            var json = Serialize(data);
+            await SendIndirectAsync(ImportOmronRouteKey, json, HttpMethod.Post);
+        }
+
+        /// <summary>
+        /// Request an export of blood pressure measurements to a named file in the API export folder
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public async Task ExportBloodPressureMeasurementsAsync(int personId, DateTime? from, DateTime? to, string fileName)
+        {
+            dynamic data = new { PersonId = personId, From = from, To = to, FileName = fileName };
+            var json = Serialize(data);
+            await SendIndirectAsync(ExportRouteKey, json, HttpMethod.Post);
+        }
+
+        /// <summary>
+        /// Delete a blood pressure measurement from the database
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task DeleteBloodPressureMeasurementAsync(int id)
+        {
+            var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
+            var route = $"{baseRoute}/{id}";
+            _ = await SendDirectAsync(route, null, HttpMethod.Delete);
+        }
+
+        /// <summary>
+        /// Return a list of blood pressure measurements
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
+        public async Task<List<BloodPressureMeasurement>> ListBloodPressureMeasurementsAsync(int personId, DateTime? from, DateTime? to)
+        {
+            // Determine the encoded date range
+            (var encodedFromDate, var encodedToDate) = CalculateEncodedDateRange(from, to);
+
+            // Request a list of blood pressure measurements
+            string baseRoute = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
+            string route = $"{baseRoute}/{personId}/{encodedFromDate}/{encodedToDate}";
+            string json = await SendDirectAsync(route, null, HttpMethod.Get);
+
+            // The returned JSON will be empty if there are no people in the database
+            List<BloodPressureMeasurement> measurements = !string.IsNullOrEmpty(json) ? Deserialize<List<BloodPressureMeasurement>>(json) : null;
+            return measurements;
+        }
+
+        /// <summary>
+        /// Calculate an average blood pressure measurement for a person and date range
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
+        public async Task<BloodPressureMeasurement> CalculateAverageBloodPressureAsync(int personId, DateTime from, DateTime to)
+        {
+            var encodedFromDate = HttpUtility.UrlEncode(from.ToString(DateTimeFormat));
+            var encodedToDate = HttpUtility.UrlEncode(to.ToString(DateTimeFormat));
+
+            var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
+            var route = $"{baseRoute}/average/{personId}/{encodedFromDate}/{encodedToDate}";
+            string json = await SendDirectAsync(route, null, HttpMethod.Get);
+            var measurement = Deserialize<BloodPressureMeasurement>(json);
+
+            return measurement;
+        }
+
+        /// <summary>
+        /// Calculate an average blood pressure measurement for a person for the last "n" days
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="days"></param>
+        /// <returns></returns>
+        public async Task<BloodPressureMeasurement> CalculateAverageBloodPressureAsync(int personId, int days)
+        {
+            // Calculate an inclusive date range that ensures the whole of the start and end days are covered
+            var now = DateTime.Now;
+            var from = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0).AddDays(-days + 1);
+            var to = new DateTime(now.Year, now.Month, now.Day, 23, 59, 59);
+
+            return await CalculateAverageBloodPressureAsync(personId, from, to);
+        }
+
+        /// <summary>
+        /// Calculate a daily average blood pressure reading for each date in a date range for a person
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
+        public async Task<List<BloodPressureMeasurement>> CalculateDailyAverageBloodPressureAsync(int personId, DateTime from, DateTime to)
+        {
+            var encodedFromDate = HttpUtility.UrlEncode(from.ToString(DateTimeFormat));
+            var encodedToDate = HttpUtility.UrlEncode(to.ToString(DateTimeFormat));
+
+            var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
+            var route = $"{baseRoute}/dailyaverage/{personId}/{encodedFromDate}/{encodedToDate}";
+            string json = await SendDirectAsync(route, null, HttpMethod.Get);
+            var measurement = Deserialize<List<BloodPressureMeasurement>>(json);
+
+            return measurement;
+        }
+
+        /// <summary>
+        /// Export the daily average blood pressure reading for each date in a date range for a person
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public async Task ExportDailyAverageBloodPressureAsync(int personId, DateTime from, DateTime to, string fileName)
+        {
+            dynamic data = new { PersonId = personId, From = from, To = to, FileName = fileName };
+            var json = Serialize(data);
+            Console.WriteLine(json);
+            await SendIndirectAsync(ExportDailyAverageRouteKey, json, HttpMethod.Post);
+        }
+    }
+}

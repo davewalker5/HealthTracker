@@ -91,16 +91,28 @@ namespace HealthTracker.Tests.Mocks
         /// Generate a random date in the specified year
         /// </summary>
         /// <param name="year"></param>
+        /// <param name="includeTime"></param>
         /// <returns></returns>
-        public static DateTime RandomDateInYear(int year)
+        public static DateTime RandomDateInYear(int year, bool includeTime = false)
         {
             // Pick a random month and find the number of days in that month in the specified year
             var month = RandomInt(1, 12);
             var daysInMonth = DateTime.DaysInMonth(year, month);
 
+            // If required, generate a random time
+            var hours = 0;
+            var minutes= 0;
+            var seconds = 0;
+            if (includeTime)
+            {
+                hours = RandomInt(0, 23);
+                minutes = RandomInt(0, 59);
+                seconds = RandomInt(0, 59);
+            }
+
             // Pick a random day in the month and construct the date with time set to 00:00:00
             var day = RandomInt(1, daysInMonth);
-            var date = new DateTime(year, month, day, 0, 0, 0);
+            var date = new DateTime(year, month, day, hours, minutes, seconds);
             return date;
         }
 
