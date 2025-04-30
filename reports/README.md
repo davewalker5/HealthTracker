@@ -12,6 +12,8 @@ The following reports are currently available:
 | blood_pressure_over_time.ipynb | Chart systolic and diastolic blood pressure readings over time |
 | blood_pressure_trends.ipynb | Chart changes in minimum, maximum and mean blood pressure over time |
 | glucose_agp.ipynb | Ambulatory Glucose Profile charts |
+| glucose_histogram.ipynb | Glucose level distribution histograms and KDE charts |
+| glucose_overlay.ipynb | Daily glucose overlay or "spaghetti" charts |
 | systolic_diastolic_correlation.ipynb | Systolic/diastolic correlation chart |
 | weight_calendar_heatmap.ipynb | Heatmap of weight and weight trends over time |
 | weight_over_time.ipynb | Charts weight and BMI measurements over time |
