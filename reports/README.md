@@ -7,6 +7,7 @@ The following reports are currently available:
 | Notebook | Report Type |
 | --- | --- |
 | api.ipynb | Define methods for accessing the API |
+| config.ipynb | Reporting session parameters, used by all the reports |
 | blood_pressure_assessment_over_time.ipynb | Stacked histogram of changing blood pressure assessment over time |
 | blood_pressure_kde_plot.ipynb | KDE plots of systolic and diastolic blood pressure readings |
 | blood_pressure_over_time.ipynb | Chart systolic and diastolic blood pressure readings over time |
