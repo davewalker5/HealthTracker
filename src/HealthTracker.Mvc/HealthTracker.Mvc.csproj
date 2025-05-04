@@ -26,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\HealthTracker.Client\HealthTracker.Client.csproj" />
     <ProjectReference Include="..\HealthTracker.Configuration\HealthTracker.Configuration.csproj" />
+    <ProjectReference Include="..\HealthTracker.Enumerations\HealthTracker.Enumerations.csproj" />
   </ItemGroup>
 
   <ItemGroup>

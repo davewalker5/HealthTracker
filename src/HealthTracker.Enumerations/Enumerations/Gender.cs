@@ -1,4 +1,4 @@
-namespace HealthTracker.Entities.Identity
+namespace HealthTracker.Enumerations.Enumerations
 {
     public enum Gender
     {

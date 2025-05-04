@@ -1,6 +1,5 @@
-using System.Collections.Generic;
 using HealthTracker.Entities.Identity;
-using HealthTracker.Entities.Measurements;
+using HealthTracker.Enumerations.Enumerations;
 using HealthTracker.DataExchange.Entities;
 
 namespace HealthTracker.DataExchange.Extensions

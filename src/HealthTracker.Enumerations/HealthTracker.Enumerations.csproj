@@ -3,15 +3,15 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <PackageId>HealthTracker.Client</PackageId>
+    <PackageId>HealthTracker.Enumerations</PackageId>
     <PackageVersion>1.23.0.0</PackageVersion>
     <Authors>Dave Walker</Authors>
     <Copyright>Copyright (c) 2024, 2025 Dave Walker</Copyright>
     <Owners>Dave Walker</Owners>
-    <Summary>Health Tracker API Client</Summary>
-    <PackageTags>Health Tracker api client</PackageTags>
-    <Title>Health Tracker API Client</Title>
-    <Description>Health Tracker API Client</Description>
+    <Summary>Health Tracker Enumerations</Summary>
+    <PackageTags>Health Tracker enumerations</PackageTags>
+    <Title>Health Tracker Enumerations</Title>
+    <Description>Health Tracker Enumerations</Description>
     <PackOnBuild>true</PackOnBuild>
     <PackageProjectUrl>https://github.com/davewalker5/HealthTracker</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -21,9 +21,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HealthTracker.Enumerations\HealthTracker.Enumerations.csproj" />
-    <ProjectReference Include="..\HealthTracker.Entities\HealthTracker.Entities.csproj" />
-    <ProjectReference Include="..\HealthTracker.Configuration\HealthTracker.Configuration.csproj" />
+    <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" />
   </ItemGroup>
-
 </Project>

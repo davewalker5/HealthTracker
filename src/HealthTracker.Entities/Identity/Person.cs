@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
-using HealthTracker.Entities.Measurements;
+using HealthTracker.Enumerations.Enumerations;
 
 namespace HealthTracker.Entities.Identity
 {

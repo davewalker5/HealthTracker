@@ -34,6 +34,7 @@
     <ProjectReference Include="..\HealthTracker.Configuration\HealthTracker.Configuration.csproj" />
     <ProjectReference Include="..\HealthTracker.Data\HealthTracker.Data.csproj" />
     <ProjectReference Include="..\HealthTracker.Entities\HealthTracker.Entities.csproj" />
+    <ProjectReference Include="..\HealthTracker.Enumerations\HealthTracker.Enumerations.csproj" />
   </ItemGroup>
 
 </Project>

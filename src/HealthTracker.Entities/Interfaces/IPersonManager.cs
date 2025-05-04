@@ -1,4 +1,5 @@
 using HealthTracker.Entities.Identity;
+using HealthTracker.Enumerations.Enumerations;
 using System.Linq.Expressions;
 
 namespace HealthTracker.Entities.Interfaces

@@ -1,7 +1,5 @@
-using HealthTracker.Entities.Measurements;
-using System.Diagnostics.CodeAnalysis;
+using HealthTracker.Enumerations.Enumerations;
 
-[ExcludeFromCodeCoverage]
 public static class UnitExtensions
 {
     /// <summary>

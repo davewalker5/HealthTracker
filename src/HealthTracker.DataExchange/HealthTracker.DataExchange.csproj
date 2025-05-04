@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HealthTracker.Logic\HealthTracker.Logic.csproj" />
+    <ProjectReference Include="..\HealthTracker.Enumerations\HealthTracker.Enumerations.csproj" />
     <ProjectReference Include="..\HealthTracker.Entities\HealthTracker.Entities.csproj" />
   </ItemGroup>
 

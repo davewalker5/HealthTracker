@@ -1,10 +1,10 @@
 using HealthTracker.Data;
 using HealthTracker.Entities.Exceptions;
-using HealthTracker.Entities.Identity;
 using HealthTracker.Entities.Interfaces;
 using HealthTracker.Entities.Measurements;
 using HealthTracker.Logic.Factory;
 using HealthTracker.Tests.Mocks;
+using HealthTracker.Enumerations.Enumerations;
 using Moq;
 
 namespace HealthTracker.Tests.People

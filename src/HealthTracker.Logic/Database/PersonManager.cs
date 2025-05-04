@@ -7,6 +7,7 @@ using HealthTracker.Data;
 using HealthTracker.Logic.Extensions;
 using System.Linq.Expressions;
 using HealthTracker.Entities.Logging;
+using HealthTracker.Enumerations.Enumerations;
 
 namespace HealthTracker.Logic.Database
 {

@@ -1,6 +1,7 @@
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
 using HealthTracker.Entities.Identity;
+using HealthTracker.Enumerations.Enumerations;
 
 namespace HealthTracker.Client.ApiClient
 {

@@ -1,6 +1,6 @@
 ﻿using HealthTracker.Data;
 using HealthTracker.Entities.Exceptions;
-using HealthTracker.Entities.Identity;
+using HealthTracker.Enumerations.Enumerations;
 using HealthTracker.Entities.Interfaces;
 using HealthTracker.Logic.Extensions;
 using HealthTracker.Logic.Factory;

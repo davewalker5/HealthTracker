@@ -48,6 +48,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HealthTracker.Logic\HealthTracker.Logic.csproj" />
+    <ProjectReference Include="..\HealthTracker.Enumerations\HealthTracker.Enumerations.csproj" />
     <ProjectReference Include="..\HealthTracker.Entities\HealthTracker.Entities.csproj" />
     <ProjectReference Include="..\HealthTracker.Configuration\HealthTracker.Configuration.csproj" />
     <ProjectReference Include="..\HealthTracker.DataExchange\HealthTracker.DataExchange.csproj" />

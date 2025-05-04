@@ -1,4 +1,4 @@
-namespace HealthTracker.Entities.Measurements
+namespace HealthTracker.Enumerations.Enumerations
 {
     public enum BloodPressureUnit
     {

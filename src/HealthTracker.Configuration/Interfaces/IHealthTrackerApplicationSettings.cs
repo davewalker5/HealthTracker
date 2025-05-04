@@ -1,6 +1,5 @@
 using HealthTracker.Entities.Logging;
 using HealthTracker.Configuration.Entities;
-using System.Diagnostics.CodeAnalysis;
 
 namespace HealthTracker.Configuration.Interfaces
 {

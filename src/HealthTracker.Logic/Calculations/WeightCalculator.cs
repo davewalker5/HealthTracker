@@ -1,6 +1,7 @@
 using HealthTracker.Entities.Identity;
 using HealthTracker.Entities.Interfaces;
 using HealthTracker.Entities.Measurements;
+using HealthTracker.Enumerations.Enumerations;
 
 namespace HealthTracker.Logic.Calculations
 {

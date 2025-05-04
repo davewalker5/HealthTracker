@@ -3,6 +3,7 @@ using System.Text;
 using HealthTracker.Entities.Identity;
 using HealthTracker.Entities.Measurements;
 using HealthTracker.Entities.Medications;
+using HealthTracker.Enumerations.Enumerations;
 
 namespace HealthTracker.Tests.Mocks
 {
