@@ -1,6 +1,17 @@
 version: "3.7"
 
 services:
+  health-ui:
+    container_name: healthtrackermvc
+    image: davewalker5/healthtrackermvc:latest
+    restart: always
+    ports:
+      - "8084:80"
+    networks:
+      - healthtracker-network
+    depends_on:
+      - health-api
+
   health-api:
     container_name: healthtrackerservice
     image: davewalker5/healthtrackerapisqlite:latest
@@ -9,3 +20,7 @@ services:
       - "8099:80"
     volumes:
       - C:\Dropbox\Databases\HealthTracker:/var/opt/healthtracker.api/
+
+networks:
+  healthtracker-network:
+    driver: bridge
