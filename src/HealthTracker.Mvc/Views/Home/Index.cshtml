@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+
+    string message = "You are not logged in";
+    if (User?.Identity?.IsAuthenticated == true)
+    {
+        message = $"Welcome, {User.Identity.Name}";
+    }
+}
+
+<div class="text-center">
+    <p>@Html.Raw(message)</p>
+</div>

@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthTracker.DataExchange"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthTracker.Client", "HealthTracker.Client\HealthTracker.Client.csproj", "{2BA881FE-22AE-4444-A66D-46B9AB212F82}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthTracker.Mvc", "HealthTracker.Mvc\HealthTracker.Mvc.csproj", "{B33BFA71-5848-4A1F-9ACF-F5F4DE09573C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{2BA881FE-22AE-4444-A66D-46B9AB212F82}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BA881FE-22AE-4444-A66D-46B9AB212F82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2BA881FE-22AE-4444-A66D-46B9AB212F82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B33BFA71-5848-4A1F-9ACF-F5F4DE09573C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B33BFA71-5848-4A1F-9ACF-F5F4DE09573C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B33BFA71-5848-4A1F-9ACF-F5F4DE09573C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B33BFA71-5848-4A1F-9ACF-F5F4DE09573C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
