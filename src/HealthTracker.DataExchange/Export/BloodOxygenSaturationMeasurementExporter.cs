@@ -52,7 +52,7 @@ namespace HealthTracker.DataExchange.Export
         public async Task ExportAsync(IEnumerable<BloodOxygenSaturationMeasurement> measurements, string file)
         {
             // Convert the collection to "exportable" equivalents with all properties at the same level
-            var people = await _factory.People.ListAsync(x => true);
+            var people = await _factory.People.ListAsync(x => true, 1, int.MaxValue);
             var exportable = measurements.ToExportable(people);
 
             // Configure an exporter to export them

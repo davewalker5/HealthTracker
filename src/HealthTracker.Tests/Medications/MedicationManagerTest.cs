@@ -71,7 +71,7 @@ namespace HealthTracker.Tests.Medications
         public async Task DeleteTest()
         {
             await _factory.Medications.DeleteAsync(_medicationId);
-            var medications = await _factory.People.ListAsync(a => true);
+            var medications = await _factory.People.ListAsync(a => true, 1, int.MaxValue);
             Assert.AreEqual(0, medications.Count);
         }
 

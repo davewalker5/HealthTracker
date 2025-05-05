@@ -19,7 +19,7 @@ namespace HealthTracker.DataExchange.Import
         /// </summary>
         /// <returns></returns>
         protected override async Task Prepare()
-            => _people = await _factory.People.ListAsync(x => true);
+            => _people = await _factory.People.ListAsync(x => true, 1, int.MaxValue);
 
         /// <summary>
         /// Validate an inflated record

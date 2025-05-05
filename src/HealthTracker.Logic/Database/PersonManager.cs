@@ -24,7 +24,7 @@ namespace HealthTracker.Logic.Database
         /// <returns></returns>
         public async Task<Person> GetAsync(Expression<Func<Person, bool>> predicate)
         {
-            var people = await ListAsync(predicate);
+            var people = await ListAsync(predicate, 1, int.MaxValue);
             return people.FirstOrDefault();
         }
 
@@ -32,11 +32,15 @@ namespace HealthTracker.Logic.Database
         /// Return all people matching the specified criteria
         /// </summary>
         /// <param name="predicate"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<List<Person>> ListAsync(Expression<Func<Person, bool>> predicate)
+        public async Task<List<Person>> ListAsync(Expression<Func<Person, bool>> predicate, int pageNumber, int pageSize)
             => await Context.People
                             .Where(predicate)
                             .OrderBy(x => x.Surname)
+                            .Skip((pageNumber - 1) * pageSize)
+                            .Take(pageSize)
                             .ToListAsync();
 
         /// <summary>

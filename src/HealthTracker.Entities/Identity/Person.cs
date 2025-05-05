@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
@@ -10,10 +11,24 @@ namespace HealthTracker.Entities.Identity
     {
         [Key]
         public int Id { get ; set; }
+
+        [DisplayName("First Names")]
+        [Required(ErrorMessage = "You must provide first names")]
         public string FirstNames { get ; set; }
+
+        [DisplayName("Surname")]
+        [Required(ErrorMessage = "You must provide a surname")]
         public string Surname { get ; set; }
+
+        [DisplayName("Date of Birth")]
+        [Required(ErrorMessage = "You must provide a date of birth")]
         public DateTime DateOfBirth { get ; set; }
+
+        [DisplayName("Height")]
+        [Required(ErrorMessage = "You must provide a height")]
         public decimal Height { get; set; }
+
+        [DisplayName("Gender")]
         public Gender Gender { get; set; } = Gender.Unspecified;
 
         [NotMapped]

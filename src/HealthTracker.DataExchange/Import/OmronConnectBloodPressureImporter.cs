@@ -45,7 +45,7 @@ namespace HealthTracker.DataExchange.Import
         public async Task ImportAsync(byte[] content, int personId)
         {
             // Retrieve the details of the person
-            var people = await _factory.People.ListAsync(x => x.Id == personId);
+            var people = await _factory.People.ListAsync(x => x.Id == personId, 1, int.MaxValue);
             var person = people.First();
 
             // Generate CSV format content and import the data

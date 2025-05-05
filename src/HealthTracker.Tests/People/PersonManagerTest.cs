@@ -59,7 +59,7 @@ namespace HealthTracker.Tests.People
         [TestMethod]
         public async Task ListAllTest()
         {
-            var people = await _factory.People.ListAsync(x => true);
+            var people = await _factory.People.ListAsync(x => true, 1, int.MaxValue);
             Assert.AreEqual(1, people.Count);
             Assert.AreEqual(FirstNames, people.First().FirstNames);
             Assert.AreEqual(Surname, people.First().Surname);
@@ -71,7 +71,7 @@ namespace HealthTracker.Tests.People
         [TestMethod]
         public async Task ListMissingTest()
         {
-            var people = await _factory.People.ListAsync(e => e.Surname == "Missing");
+            var people = await _factory.People.ListAsync(e => e.Surname == "Missing", 1, int.MaxValue);
             Assert.AreEqual(0, people.Count);
         }
 
@@ -93,7 +93,7 @@ namespace HealthTracker.Tests.People
         public async Task DeleteTest()
         {
             await _factory.People.DeleteAsync(_personId);
-            var people = await _factory.People.ListAsync(a => true);
+            var people = await _factory.People.ListAsync(a => true, 1, int.MaxValue);
             Assert.AreEqual(0, people.Count);
         }
 

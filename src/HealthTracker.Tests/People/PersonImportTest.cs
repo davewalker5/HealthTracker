@@ -75,7 +75,7 @@ namespace HealthTracker.Tests.People
             Assert.AreEqual(info.FullName, _filePath);
             Assert.IsTrue(info.Length > 0);
 
-            var people = await _factory.People.ListAsync(x => true);
+            var people = await _factory.People.ListAsync(x => true, 1, int.MaxValue);
             Assert.AreEqual(1, people.Count);
             Assert.AreEqual(_person.FirstNames, people.First().FirstNames);
             Assert.AreEqual(_person.Surname, people.First().Surname);

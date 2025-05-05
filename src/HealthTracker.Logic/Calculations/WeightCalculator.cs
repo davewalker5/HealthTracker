@@ -45,7 +45,7 @@ namespace HealthTracker.Logic.Calculations
         public async Task CalculateRelatedProperties(IEnumerable<WeightMeasurement> measurements)
         {
             // Load the list of people to provide height measurements
-            var people = await _factory.People.ListAsync(x => true);
+            var people = await _factory.People.ListAsync(x => true, 1, int.MaxValue);
 
             // Load the BMI bandings. . They are returned in "assessment" order and are expected
             // to be defined in lowest-to-highest BMI order
