@@ -30,6 +30,7 @@ namespace HealthTracker.Tests
             Assert.AreEqual(125, settings.SmallGlassSize);
             Assert.AreEqual(175, settings.MediumGlassSize);
             Assert.AreEqual(250, settings.LargeGlassSize);
+            Assert.AreEqual(10, settings.ResultsPageSize);
 
             Assert.AreEqual(1, settings.ApiRoutes.Count);
             Assert.AreEqual("A Route", settings.ApiRoutes.First().Name);

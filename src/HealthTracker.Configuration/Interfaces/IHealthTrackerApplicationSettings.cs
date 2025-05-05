@@ -25,5 +25,6 @@ namespace HealthTracker.Configuration.Interfaces
         decimal SmallGlassSize { get; set; }
         decimal MediumGlassSize { get; set; }
         decimal LargeGlassSize { get; set; }
+        int ResultsPageSize { get; set; }
     }
 }
