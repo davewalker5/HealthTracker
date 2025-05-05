@@ -110,7 +110,7 @@ namespace HealthTracker.Tests.People
             _httpClient.AddResponse(json);
 
 
-            var people = await _client.ListPeopleAsync();
+            var people = await _client.ListPeopleAsync(1, int.MaxValue);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());

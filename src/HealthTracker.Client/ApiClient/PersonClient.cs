@@ -111,11 +111,14 @@ namespace HealthTracker.Client.ApiClient
         /// <summary>
         /// Return a list of people
         /// </summary>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<List<Person>> ListPeopleAsync()
+        public async Task<List<Person>> ListPeopleAsync(int pageNumber, int pageSize)
         {
             // Request a list of people
-            string route = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
+            string baseRoute = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
+            var route = $"{baseRoute}/{pageNumber}/{pageSize}";
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no people in the database

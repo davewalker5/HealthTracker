@@ -1,13 +1,10 @@
-using HealthTracker.Mvc.Configuration;
 using HealthTracker.Mvc.Controllers;
 using HealthTracker.Mvc.Api;
 using HealthTracker.Client.ApiClient;
 using HealthTracker.Configuration.Logic;
 using HealthTracker.Configuration.Interfaces;
-using HealthTracker.Configuration.Entities;
 using HealthTracker.Client.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -26,9 +23,6 @@ namespace HealthTracker.Mvc
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-
-            // Configure automapper
-            services.AddAutoMapper(typeof(Startup));
 
             // Configure strongly typed application settings
             var settings = new HealthTrackerConfigReader().Read("appsettings.json");

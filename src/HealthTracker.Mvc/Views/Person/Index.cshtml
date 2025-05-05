@@ -1,0 +1,57 @@
+﻿@using HealthTracker.Mvc.Entities
+@model HealthTracker.Mvc.Models.PersonListViewModel
+
+@{
+    ViewData["Title"] = "People";
+    string previousDisabled = (Model.PreviousEnabled) ? "" : "disabled";
+    string nextDisabled = (Model.NextEnabled) ? "" : "disabled";
+}
+
+<p class="text-center font-weight-bold">
+    <span style="font-size: 1.2rem">
+        Countries
+    </span>
+    <br />
+    <small class="text-muted">
+        <em>
+            Manage the people for whom health metrics can be recorded
+        </em>
+    </small>
+</p>
+
+<div class="container-fluid">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.PageNumber)
+
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <th>Date of Birth</th>
+                <th>Height</th>
+                <th>Gender</th>
+            </tr>
+            @foreach (var person in Model.People)
+            {
+                <tr>
+                    <td valign="center">@person.Name()</td>
+                    <td valign="center">@person.DateOfBirth.ToString("dd-MMM-yyyy")</td>
+                    <td valign="center">@person.Height</td>
+                    <td valign="center">@person.Gender.ToString()</td>
+                    <td valign="center">
+                        <a class="btn btn-lg" asp-area="" asp-controller="Airports" asp-action="Edit" asp-route-id="@person.Id">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </table>
+        <hr />
+        <p class="text-right">
+            <button type="submit" name="Action" value="@ControllerActions.ActionPreviousPage" class="btn btn-secondary" @previousDisabled>Previous</button>
+            <button type="submit" name="Action" value="@ControllerActions.ActionNextPage" class="btn btn-secondary" @nextDisabled>Next</button>
+            <a class="btn btn-primary" href="/Person/Add" role="button">Add</a>
+        </p>
+    }
+</div>

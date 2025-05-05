@@ -9,7 +9,7 @@ namespace HealthTracker.Client.Interfaces
         Task DeletePersonAsync(int id);
         Task ExportPeopleAsync(string fileName);
         Task ImportPeopleAsync(string filePath);
-        Task<List<Person>> ListPeopleAsync();
+        Task<List<Person>> ListPeopleAsync(int pageNumber, int pageSize);
         Task<Person> UpdatePersonAsync(int id, string firstnames, string surname, DateTime dateOfBirth, decimal height, Gender gender);
     }
 }
