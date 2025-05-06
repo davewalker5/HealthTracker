@@ -1,9 +1,8 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using HealthTracker.Mvc.Models;
 using HealthTracker.Client.Interfaces;
+using System.Security.Authentication;
 
 namespace HealthTracker.Mvc.Controllers
 {
@@ -13,11 +12,13 @@ namespace HealthTracker.Mvc.Controllers
 
         private readonly IAuthenticationClient _client;
         private readonly IAuthenticationTokenProvider _tokenProvider;
+        private readonly ILogger<LoginController> _logger;
 
-        public LoginController(IAuthenticationClient client, IAuthenticationTokenProvider provider)
+        public LoginController(IAuthenticationClient client, IAuthenticationTokenProvider provider, ILogger<LoginController> logger)
         {
             _client = client;
             _tokenProvider = provider;
+            _logger = logger;
         }
 
         /// <summary>
@@ -44,15 +45,28 @@ namespace HealthTracker.Mvc.Controllers
             if (ModelState.IsValid)
             {
                 // Authenticate with the sevice
-                string token = await _client.AuthenticateAsync(model.UserName, model.Password);
+                string token = "";
+                try
+                {
+                    token = await _client.AuthenticateAsync(model.UserName, model.Password);
+                }
+                catch (AuthenticationException)
+                {
+                    // Authentication failures raise an AuthenticationException from the client
+                }
+
+                // Validate the token
                 if (!string.IsNullOrEmpty(token))
                 {
+                    _logger.LogDebug($"Successfully authenticated as user {model.UserName}");
+
                     // Successful, so store the token in session, and redirect to the home page
                     _tokenProvider.SetToken(token);
                     result = RedirectToAction("Index", "Home");
                 }
                 else
                 {
+                    _logger.LogDebug($"Failed to authenticate as user {model.UserName}");
                     model.Message = "Incorrect username or password";
                     result = View(model);
                 }

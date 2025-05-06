@@ -25,7 +25,7 @@ namespace HealthTracker.Entities.Identity
         public DateTime DateOfBirth { get ; set; }
 
         [DisplayName("Height")]
-        [Required(ErrorMessage = "You must provide a height")]
+        [Range(1.0, double.MaxValue, ErrorMessage = "{0} must be greater than {1}")]
         public decimal Height { get; set; }
 
         [DisplayName("Gender")]

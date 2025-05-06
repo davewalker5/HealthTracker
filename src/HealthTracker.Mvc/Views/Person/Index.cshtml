@@ -9,7 +9,7 @@
 
 <p class="text-center font-weight-bold">
     <span style="font-size: 1.2rem">
-        Countries
+        People
     </span>
     <br />
     <small class="text-muted">
@@ -29,6 +29,7 @@
             <tr>
                 <th>Name</th>
                 <th>Date of Birth</th>
+                <th>Age</th>
                 <th>Height</th>
                 <th>Gender</th>
             </tr>
@@ -37,6 +38,7 @@
                 <tr>
                     <td valign="center">@person.Name()</td>
                     <td valign="center">@person.DateOfBirth.ToString("dd-MMM-yyyy")</td>
+                    <td valign="center">@person.AgeInYears()</td>
                     <td valign="center">@person.Height</td>
                     <td valign="center">@person.Gender.ToString()</td>
                     <td valign="center">

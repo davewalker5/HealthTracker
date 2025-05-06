@@ -1,0 +1,65 @@
+@model HealthTracker.Mvc.Models.PersonViewModelBase
+
+@{
+    var dob = Model.Person?.DateOfBirth.ToString("MM/dd/yyyy");
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Person.FirstNames)</strong>
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Person.FirstNames, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Person.FirstNames, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Person.Surname)</strong>
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Person.Surname, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Person.Surname, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Person.DateOfBirth)</strong>
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Person.DateOfBirth, null, new { @class = "form-control" })
+                <script type="text/javascript">
+                    new GijgoDatePicker(document.getElementById("Person_DateOfBirth"), {
+                        calendarWeeks: false,
+                        uiLibrary: "bootstrap4",
+                        format: "mm/dd/yyyy",
+                        value: "@dob"
+                    });
+                </script>
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Person.DateOfBirth, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Person.Height)</strong>
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Person.Height, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Person.Height, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row"></div>
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Person.Gender)</strong>
+            <div class="input-group">
+                @Html.DropDownListFor(m => m.Person.Gender, Model.Genders, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Person.Gender, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+</div>
