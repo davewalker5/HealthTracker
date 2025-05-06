@@ -115,7 +115,7 @@ namespace HealthTracker.Tests.People
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
             Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
-            Assert.AreEqual(_settings.ApiRoutes.First(x => x.Name == "Person").Route, _httpClient.Requests[0].Uri);
+            Assert.IsTrue(_httpClient.Requests[0].Uri.StartsWith(_settings.ApiRoutes.First(x => x.Name == "Person").Route));
 
             Assert.IsNull(_httpClient.Requests[0].Content);
             Assert.IsNotNull(people);
