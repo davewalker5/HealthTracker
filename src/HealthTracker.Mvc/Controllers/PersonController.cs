@@ -24,14 +24,25 @@ namespace HealthTracker.Mvc.Controllers
         /// <summary>
         /// Serve the current list of people
         /// </summary>
+        /// <param name="personId"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int personId = 0)
         {
+            // Get the list of current people
             var people = await _client.ListPeopleAsync(1, _settings.ResultsPageSize);
             var personText = people.Count == 1 ? "person" : "people";
             _logger.LogDebug($"{people.Count} {personText} loaded via the service");
 
+            // If the peson ID is specified, filter out only that individual
+            if (personId > 0)
+            {
+                _logger.LogDebug($"Filtering results for person with ID {personId}");
+                var person = people.First(x => x.Id == personId);
+                people = [person];
+            }
+
+            // Construct the view model and serve the page
             var model = new PersonListViewModel();
             model.SetEntities(people, 1, _settings.ResultsPageSize);
             return View(model);
@@ -107,6 +118,61 @@ namespace HealthTracker.Mvc.Controllers
             }
 
             return View(model);
+        }
+        
+        /// <summary>
+        /// Serve the page to edit an existing person
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var people = await _client.ListPeopleAsync(1, int.MaxValue);
+            var personText = people.Count == 1 ? "person" : "people";
+            _logger.LogDebug($"{people.Count} {personText} loaded via the service");
+
+            var person = people.First(x => x.Id == id);
+            _logger.LogDebug($"Person with ID {id} identified for editing");
+
+            var model = new EditPersonViewModel();
+            model.Person = person;
+            return View(model);
+        }
+
+        /// <summary>
+        /// Handle POST events to update an existing person
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(EditPersonViewModel model)
+        {
+            IActionResult result;
+
+            if (ModelState.IsValid)
+            {
+                _logger.LogDebug(
+                    $"Updating person: Id = {model.Person.Id}, First Names = {model.Person.FirstNames}, Surname = {model.Person.Surname}, " +
+                    $"DoB = {model.Person.DateOfBirth:dd-MMM-yyyy}, Height = {model.Person.Height}, Gender = {model.Person.Gender}");
+
+                await _client.UpdatePersonAsync(
+                    model.Person.Id,
+                    model.Person.FirstNames,
+                    model.Person.Surname,
+                    model.Person.DateOfBirth,
+                    model.Person.Height,
+                    model.Person.Gender);
+
+                result = RedirectToAction("Index", new { personId = model.Person.Id });
+            }
+            else
+            {
+                result = View(model);
+            }
+
+            return result;
         }
     }
 }

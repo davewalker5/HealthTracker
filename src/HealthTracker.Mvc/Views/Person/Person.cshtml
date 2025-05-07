@@ -1,8 +1,6 @@
 @model HealthTracker.Mvc.Models.PersonViewModelBase
 
-@{
-    var dob = Model.Person?.DateOfBirth.ToString("MM/dd/yyyy");
-}
+@Html.HiddenFor(m => m.Person.Id)
 
 <div class="container-fluid">
     <div class="row">
@@ -34,8 +32,8 @@
                     new GijgoDatePicker(document.getElementById("Person_DateOfBirth"), {
                         calendarWeeks: false,
                         uiLibrary: "bootstrap4",
-                        format: "mm/dd/yyyy",
-                        value: "@dob"
+                        format: "dd/mm/yyyy",
+                        value: "@Model.Person.DateOfBirth.ToString("dd/MM/yyyy")"
                     });
                 </script>
             </div>
@@ -63,3 +61,4 @@
         </div>
     </div>
 </div>
+
