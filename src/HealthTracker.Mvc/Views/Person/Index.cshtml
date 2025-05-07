@@ -3,8 +3,8 @@
 
 @{
     ViewData["Title"] = "People";
-    string previousDisabled = (Model.PreviousEnabled) ? "" : "disabled";
-    string nextDisabled = (Model.NextEnabled) ? "" : "disabled";
+    var previousDisabled = (Model.PreviousEnabled) ? "" : "disabled";
+    var nextDisabled = (Model.NextEnabled) ? "" : "disabled";
 }
 
 <p class="text-center font-weight-bold">

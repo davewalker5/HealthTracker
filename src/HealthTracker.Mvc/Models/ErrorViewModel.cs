@@ -1,5 +1,3 @@
-using System;
-
 namespace HealthTracker.Mvc.Models
 {
     public class ErrorViewModel

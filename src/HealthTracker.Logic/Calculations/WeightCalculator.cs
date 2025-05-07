@@ -22,7 +22,7 @@ namespace HealthTracker.Logic.Calculations
         public async Task<WeightMeasurement> AverageAsync(int personId, DateTime from, DateTime to)
         {
             WeightMeasurement average = null;
-            var measurements = await _factory.WeightMeasurements.ListAsync(x => (x.PersonId == personId) && (x.Date >= from) && (x.Date <= to));
+            var measurements = await _factory.WeightMeasurements.ListAsync(x => (x.PersonId == personId) && (x.Date >= from) && (x.Date <= to), 1, int.MaxValue);
 
             if (measurements.Any())
             {
@@ -71,7 +71,6 @@ namespace HealthTracker.Logic.Calculations
 
             // Weight is assumed to be in kg and height in metres
             measurement.BMI = measurement.Weight / (person.Height * person.Height);
-            Console.WriteLine($"Person height = {person.Height}, weight = {measurement.Weight}, bmi = {measurement.BMI}");
 
             // Determine which band the BMI belongs to
             BMIBand matched = null;

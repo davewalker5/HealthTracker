@@ -1,0 +1,81 @@
+@using HealthTracker.Mvc.Entities
+@using Microsoft.AspNetCore.Mvc.ModelBinding
+@model HealthTracker.Mvc.Models.WeightListViewModel
+
+@{
+    ViewData["Title"] = "Weight Measurements";
+    var previousDisabled = (Model.PreviousEnabled) ? "" : "disabled";
+    var nextDisabled = (Model.NextEnabled) ? "" : "disabled";
+
+    var filtersViewData = new ViewDataDictionary<FiltersViewModel>(
+        metadataProvider: new EmptyModelMetadataProvider(),
+        modelState: new ModelStateDictionary())
+    {
+        Model = Model.Filters
+    };
+
+    filtersViewData.TemplateInfo.HtmlFieldPrefix = "Filters";
+}
+
+<p class="text-center font-weight-bold">
+    <span style="font-size: 1.2rem">
+        Weight Measurements
+    </span>
+    <br />
+    <small class="text-muted">
+        <em>
+            View and manage weight measurements
+        </em>
+    </small>
+</p>
+
+
+<div class="container-fluid">
+    @using (Html.BeginForm())
+    {
+        @await Html.PartialAsync("Filters", Model.Filters, filtersViewData)
+    
+        @Html.HiddenFor(m => m.PageNumber)
+
+        @if ((Model.Measurements != null) && (Model.Measurements.Count() > 0))
+        {
+            <table class="table">
+                <tr>
+                    <th>Person</th>
+                    <th>Date</th>
+                    <th>Weight</th>
+                    <th />
+                </tr>
+                @foreach (var measurement in Model.Measurements)
+                {
+                    <tr>
+                        <td valign="center">@Model.Filters.SelectedPerson.Name()</td>
+                        <td valign="center">@measurement.Date.ToString("dd-MMM-yyyy")</td>
+                        <td valign="center">@measurement.Weight</td>
+                        <td valign="center">
+                            <a class="btn btn-lg" asp-area="" asp-controller="" asp-action="" asp-route-id="@measurement.Id">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>
+                        <td valign="center">
+                            <a class="btn btn-lg" asp-area="" asp-controller="" asp-action="" asp-route-id="@measurement.Id">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </table>
+            <hr />
+            <p class="text-right">
+                <button type="submit" name="Action" value="@ControllerActions.ActionPreviousPage" class="btn btn-secondary" @previousDisabled>Previous</button>
+                <button type="submit" name="Action" value="@ControllerActions.ActionNextPage" class="btn btn-primary" @nextDisabled>Next</button>
+            </p>
+        }
+        else if (Model.HasNoMatchingResults)
+        {
+            <hr />
+            @Html.Raw("No matching measurements")
+        }
+    }
+
+</div>

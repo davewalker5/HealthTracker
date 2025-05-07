@@ -7,6 +7,8 @@ using HealthTracker.Client.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using HealthTracker.Mvc.Interfaces;
+using HealthTracker.Mvc.Helpers;
 
 namespace HealthTracker.Mvc
 {
@@ -36,6 +38,10 @@ namespace HealthTracker.Mvc
             services.AddSingleton<IHealthTrackerHttpClient>(provider => HealthTrackerHttpClient.Instance);
             services.AddSingleton<IAuthenticationClient, AuthenticationClient>();
             services.AddSingleton<IPersonClient, PersonClient>();
+            services.AddSingleton<IWeightMeasurementClient, WeightMeasurementClient>();
+
+            // Configure the helper used to build the filtering view model used on the measurements pages
+            services.AddSingleton<IFilterGenerator, FilterGenerator>();
 
             // Configure session state for token storage
             services.AddSession(options =>

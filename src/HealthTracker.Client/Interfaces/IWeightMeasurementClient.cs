@@ -10,7 +10,7 @@ namespace HealthTracker.Client.Interfaces
         Task DeleteWeightMeasurementAsync(int id);
         Task ExportWeightMeasurementsAsync(int personId, DateTime? from, DateTime? to, string fileName);
         Task ImportWeightMeasurementsAsync(string filePath);
-        Task<List<WeightMeasurement>> ListWeightMeasurementsAsync(int personId, DateTime? from, DateTime? to);
+        Task<List<WeightMeasurement>> ListWeightMeasurementsAsync(int personId, DateTime? from, DateTime? to, int pageNumber, int pageSize);
         Task<WeightMeasurement> UpdateWeightMeasurementAsync(int id, int personId, DateTime? date, decimal weight);
     }
 }

@@ -7,7 +7,7 @@ namespace HealthTracker.Mvc.Models
     public class PersonViewModelBase
     {
         public Person Person { get; set; } = new();
-        public IList<SelectListItem> Genders = [];
+        public IList<SelectListItem> Genders { get; set; }= [];
 
         public PersonViewModelBase()
         {

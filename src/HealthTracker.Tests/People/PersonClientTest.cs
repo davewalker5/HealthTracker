@@ -109,13 +109,13 @@ namespace HealthTracker.Tests.People
             var json = JsonSerializer.Serialize(new List<dynamic> { person });
             _httpClient.AddResponse(json);
 
-
             var people = await _client.ListPeopleAsync(1, int.MaxValue);
+            var expectedRoute = $"{_settings.ApiRoutes.First(x => x.Name == "Person").Route}/1/{int.MaxValue}";
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
             Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
-            Assert.IsTrue(_httpClient.Requests[0].Uri.StartsWith(_settings.ApiRoutes.First(x => x.Name == "Person").Route));
+            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
 
             Assert.IsNull(_httpClient.Requests[0].Content);
             Assert.IsNotNull(people);
