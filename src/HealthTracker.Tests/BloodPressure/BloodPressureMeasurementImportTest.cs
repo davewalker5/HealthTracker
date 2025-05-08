@@ -70,7 +70,7 @@ namespace HealthTracker.Tests.BloodPressure
         [TestMethod]
         public async Task ImportMeasurementsTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name()}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Systolic}"",""{_measurement.Diastolic}"",""Optimal""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Systolic}"",""{_measurement.Diastolic}"",""Optimal""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 
@@ -100,7 +100,7 @@ namespace HealthTracker.Tests.BloodPressure
         [ExpectedException(typeof(InvalidFieldValueException))]
         public async Task InvalidSystolicTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name()}"",""{_measurement.Date:dd/MM/yyyy}"",""{0}"",""{_measurement.Diastolic}"",""Optimal""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd/MM/yyyy}"",""{0}"",""{_measurement.Diastolic}"",""Optimal""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
             await _importer.ImportAsync(_filePath);
@@ -110,7 +110,7 @@ namespace HealthTracker.Tests.BloodPressure
         [ExpectedException(typeof(InvalidFieldValueException))]
         public async Task InvalidDiastolicTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name()}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Systolic}"",""{0}"",""Optimal""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Systolic}"",""{0}"",""Optimal""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
             await _importer.ImportAsync(_filePath);

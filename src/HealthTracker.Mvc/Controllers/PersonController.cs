@@ -8,15 +8,16 @@ using Microsoft.AspNetCore.Mvc;
 namespace HealthTracker.Mvc.Controllers
 {
     [Authorize]
-    public class PersonController : Controller
+    public class PersonController : HealthTrackerControllerBase
     {
-        private readonly IPersonClient _client;
         private readonly IHealthTrackerApplicationSettings _settings;
         private readonly ILogger<PersonController> _logger;
 
-        public PersonController(IPersonClient client, IHealthTrackerApplicationSettings settings, ILogger<PersonController> logger)
+        public PersonController(
+            IPersonClient client,
+            IHealthTrackerApplicationSettings settings,
+            ILogger<PersonController> logger) : base(client)
         {
-            _client = client;
             _settings = settings;
             _logger = logger;
         }
@@ -30,7 +31,7 @@ namespace HealthTracker.Mvc.Controllers
         public async Task<IActionResult> Index(int personId = 0)
         {
             // Get the list of current people
-            var people = await _client.ListPeopleAsync(1, _settings.ResultsPageSize);
+            var people = await _personClient.ListPeopleAsync(1, _settings.ResultsPageSize);
             var personText = people.Count == 1 ? "person" : "people";
             _logger.LogDebug($"{people.Count} {personText} loaded via the service");
 
@@ -77,9 +78,13 @@ namespace HealthTracker.Mvc.Controllers
                 // and amend the page number, above, then apply it, below
                 ModelState.Clear();
 
-                // Retrieve the matching airport records
-                var people = await _client.ListPeopleAsync(page, _settings.ResultsPageSize);
+                // Retrieve the matching person records
+                var people = await _personClient.ListPeopleAsync(page, _settings.ResultsPageSize);
                 model.SetEntities(people, page, _settings.ResultsPageSize);
+            }
+            else
+            {
+                LogModelStateErrors(_logger);
             }
 
             return View(model);
@@ -107,11 +112,11 @@ namespace HealthTracker.Mvc.Controllers
         {
             if (ModelState.IsValid)
             {
-                var name = model.Person.Name();
+                var name = model.Person.Name;
                 _logger.LogDebug(
                     $"Adding person: First Names = {model.Person.FirstNames}, Surname = {model.Person.Surname}, " +
                     $"DoB = {model.Person.DateOfBirth:dd-MMM-yyyy}, Height = {model.Person.Height}, Gender = {model.Person.Gender}");
-                await _client.AddPersonAsync(model.Person.FirstNames, model.Person.Surname, model.Person.DateOfBirth, model.Person.Height, model.Person.Gender);
+                await _personClient.AddPersonAsync(model.Person.FirstNames, model.Person.Surname, model.Person.DateOfBirth, model.Person.Height, model.Person.Gender);
                 ModelState.Clear();
                 model.Clear();
                 model.Message = $"'{name}' added successfully";
@@ -128,7 +133,7 @@ namespace HealthTracker.Mvc.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var people = await _client.ListPeopleAsync(1, int.MaxValue);
+            var people = await _personClient.ListPeopleAsync(1, int.MaxValue);
             var personText = people.Count == 1 ? "person" : "people";
             _logger.LogDebug($"{people.Count} {personText} loaded via the service");
 
@@ -157,7 +162,7 @@ namespace HealthTracker.Mvc.Controllers
                     $"Updating person: Id = {model.Person.Id}, First Names = {model.Person.FirstNames}, Surname = {model.Person.Surname}, " +
                     $"DoB = {model.Person.DateOfBirth:dd-MMM-yyyy}, Height = {model.Person.Height}, Gender = {model.Person.Gender}");
 
-                await _client.UpdatePersonAsync(
+                await _personClient.UpdatePersonAsync(
                     model.Person.Id,
                     model.Person.FirstNames,
                     model.Person.Surname,

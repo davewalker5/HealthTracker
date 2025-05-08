@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace HealthTracker.Mvc.Models
 {
-    public class PersonViewModelBase
+    public class PersonViewModel
     {
         public Person Person { get; set; } = new();
         public IList<SelectListItem> Genders { get; set; }= [];
 
-        public PersonViewModelBase()
+        public PersonViewModel()
         {
             // Build the gender selection list from the members of the Gender enumeration
             foreach (var gender in Enum.GetValues<Gender>())

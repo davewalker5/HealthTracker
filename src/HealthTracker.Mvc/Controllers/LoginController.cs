@@ -6,7 +6,7 @@ using System.Security.Authentication;
 
 namespace HealthTracker.Mvc.Controllers
 {
-    public class LoginController : Controller
+    public class LoginController : HealthTrackerControllerBase
     {
         public const string LoginPath = "/login";
 

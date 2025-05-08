@@ -3,7 +3,7 @@ using HealthTracker.Enumerations.Enumerations;
 
 namespace HealthTracker.Mvc.Models
 {
-    public class AddPersonViewModel : PersonViewModelBase
+    public class AddPersonViewModel : PersonViewModel
     {
         public string Message { get; set; }
 

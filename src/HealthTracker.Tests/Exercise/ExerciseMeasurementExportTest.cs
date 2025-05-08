@@ -40,7 +40,7 @@ namespace HealthTracker.Tests.Exercise
         {
             var exportable = _measurement.ToExportable([_person], [_activityType]);
             Assert.AreEqual(_person.Id, exportable.PersonId);
-            Assert.AreEqual(_person.Name(), exportable.Name);
+            Assert.AreEqual(_person.Name, exportable.Name);
             Assert.AreEqual(_activityType.Description, exportable.ActivityType);
             Assert.AreEqual(_measurement.Date, exportable.Date);
             Assert.AreEqual(_measurement.Duration.ToFormattedDuration(), exportable.Duration);
@@ -56,7 +56,7 @@ namespace HealthTracker.Tests.Exercise
             List<ExerciseMeasurement> measurements = [_measurement];
             var exportable = measurements.ToExportable([_person], [_activityType]);
             Assert.AreEqual(_person.Id, exportable.First().PersonId);
-            Assert.AreEqual(_person.Name(), exportable.First().Name);
+            Assert.AreEqual(_person.Name, exportable.First().Name);
             Assert.AreEqual(_activityType.Description, exportable.First().ActivityType);
             Assert.AreEqual(_measurement.Date, exportable.First().Date);
             Assert.AreEqual(_measurement.Duration.ToFormattedDuration(), exportable.First().Duration);
@@ -69,10 +69,10 @@ namespace HealthTracker.Tests.Exercise
         [TestMethod]
         public void FromCsvRecordTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name()}"",""{_measurement.Date:dd/MM/yyyy}"",""{_activityType.Description}"",""{_measurement.Duration.ToFormattedDuration()}"",""{_measurement.Distance}"",""{_measurement.Calories}"",""{_measurement.MinimumHeartRate}"",""{_measurement.MaximumHeartRate}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd/MM/yyyy}"",""{_activityType.Description}"",""{_measurement.Duration.ToFormattedDuration()}"",""{_measurement.Distance}"",""{_measurement.Calories}"",""{_measurement.MinimumHeartRate}"",""{_measurement.MaximumHeartRate}""";
             var exportable = ExportableExerciseMeasurement.FromCsv(record);
             Assert.AreEqual(_person.Id, exportable.PersonId);
-            Assert.AreEqual($"{_person.Name()}", exportable.Name);
+            Assert.AreEqual($"{_person.Name}", exportable.Name);
             Assert.AreEqual(_measurement.Date, exportable.Date);
             Assert.AreEqual(_activityType.Description, exportable.ActivityType);
             Assert.AreEqual(_measurement.Duration.ToFormattedDuration(), exportable.Duration);
@@ -108,7 +108,7 @@ namespace HealthTracker.Tests.Exercise
 
             var exportable = ExportableExerciseMeasurement.FromCsv(records[1]);
             Assert.AreEqual(_person.Id, exportable.PersonId);
-            Assert.AreEqual($"{_person.Name()}", exportable.Name);
+            Assert.AreEqual($"{_person.Name}", exportable.Name);
             Assert.AreEqual(_measurement.Date, exportable.Date);
             Assert.AreEqual(_activityType.Description, exportable.ActivityType);
             Assert.AreEqual(_measurement.Duration.ToFormattedDuration(), exportable.Duration);
@@ -143,7 +143,7 @@ namespace HealthTracker.Tests.Exercise
 
             var exportable = ExportableExerciseMeasurement.FromCsv(records[1]);
             Assert.AreEqual(_person.Id, exportable.PersonId);
-            Assert.AreEqual($"{_person.Name()}", exportable.Name);
+            Assert.AreEqual($"{_person.Name}", exportable.Name);
             Assert.AreEqual(_measurement.Date, exportable.Date);
             Assert.AreEqual(_activityType.Description, exportable.ActivityType);
             Assert.AreEqual(_measurement.Duration.ToFormattedDuration(), exportable.Duration);

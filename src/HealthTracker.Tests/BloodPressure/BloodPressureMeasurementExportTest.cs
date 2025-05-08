@@ -39,7 +39,7 @@ namespace HealthTracker.Tests.BloodPressure
         {
             var exportable = _measurement.ToExportable([_person]);
             Assert.AreEqual(_person.Id, exportable.PersonId);
-            Assert.AreEqual(_person.Name(), exportable.Name);
+            Assert.AreEqual(_person.Name, exportable.Name);
             Assert.AreEqual(_measurement.Date, exportable.Date);
             Assert.AreEqual(_measurement.Systolic, exportable.Systolic);
             Assert.AreEqual(_measurement.Diastolic, exportable.Diastolic);
@@ -51,7 +51,7 @@ namespace HealthTracker.Tests.BloodPressure
             List<BloodPressureMeasurement> measurements = [_measurement];
             var exportable = measurements.ToExportable([_person]);
             Assert.AreEqual(_person.Id, exportable.First().PersonId);
-            Assert.AreEqual(_person.Name(), exportable.First().Name);
+            Assert.AreEqual(_person.Name, exportable.First().Name);
             Assert.AreEqual(_measurement.Date, exportable.First().Date);
             Assert.AreEqual(_measurement.Systolic, exportable.First().Systolic);
             Assert.AreEqual(_measurement.Diastolic, exportable.First().Diastolic);
@@ -60,10 +60,10 @@ namespace HealthTracker.Tests.BloodPressure
         [TestMethod]
         public void FromCsvRecordTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name()}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Systolic}"",""{_measurement.Diastolic}"",""Optimal""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Systolic}"",""{_measurement.Diastolic}"",""Optimal""";
             var exportable = ExportableBloodPressureMeasurement.FromCsv(record);
             Assert.AreEqual(_person.Id, exportable.PersonId);
-            Assert.AreEqual(_person.Name(), exportable.Name);
+            Assert.AreEqual(_person.Name, exportable.Name);
             Assert.AreEqual(_measurement.Date, exportable.Date);
             Assert.AreEqual(_measurement.Systolic, exportable.Systolic);
             Assert.AreEqual(_measurement.Diastolic, exportable.Diastolic);
@@ -94,7 +94,7 @@ namespace HealthTracker.Tests.BloodPressure
 
             var exportable = ExportableBloodPressureMeasurement.FromCsv(records[1]);
             Assert.AreEqual(_person.Id, exportable.PersonId);
-            Assert.AreEqual(_person.Name(), exportable.Name);
+            Assert.AreEqual(_person.Name, exportable.Name);
             Assert.AreEqual(_measurement.Date, exportable.Date);
             Assert.AreEqual(_measurement.Systolic, exportable.Systolic);
             Assert.AreEqual(_measurement.Diastolic, exportable.Diastolic);
@@ -124,7 +124,7 @@ namespace HealthTracker.Tests.BloodPressure
 
             var exportable = ExportableBloodPressureMeasurement.FromCsv(records[1]);
             Assert.AreEqual(_person.Id, exportable.PersonId);
-            Assert.AreEqual(_person.Name(), exportable.Name);
+            Assert.AreEqual(_person.Name, exportable.Name);
             Assert.AreEqual(_measurement.Date, exportable.Date);
             Assert.AreEqual(_measurement.Systolic, exportable.Systolic);
             Assert.AreEqual(_measurement.Diastolic, exportable.Diastolic);

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HealthTracker.Mvc.Controllers
 {
     [Authorize]
-    public class HomeController : Controller
+    public class HomeController : HealthTrackerControllerBase
     {
         public IActionResult Index()
         {

@@ -36,7 +36,7 @@
             @foreach (var person in Model.People)
             {
                 <tr>
-                    <td valign="center">@person.Name()</td>
+                    <td valign="center">@person.Name</td>
                     <td valign="center">@person.DateOfBirth.ToString("dd-MMM-yyyy")</td>
                     <td valign="center">@person.AgeInYears()</td>
                     <td valign="center">@person.Height</td>

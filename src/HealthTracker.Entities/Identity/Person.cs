@@ -49,8 +49,7 @@ namespace HealthTracker.Entities.Identity
         [NotMapped]
         public CholesterolUnit CholesterolUnits { get; private set; } = CholesterolUnit.MillimolesPerLitre;
 
-        public string Name()
-            => $"{FirstNames} {Surname}";
+        public string Name { get { return $"{FirstNames} {Surname}"; } }
 
         /// <summary>
         /// Return the persons age in years

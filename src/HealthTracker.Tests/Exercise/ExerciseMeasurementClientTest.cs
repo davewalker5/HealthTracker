@@ -304,7 +304,7 @@ namespace HealthTracker.Tests.Exercise
             var person = DataGenerator.RandomPerson(16, 90);
             var activityType = DataGenerator.RandomActivityType();
             var measurement = DataGenerator.RandomExerciseMeasurement(person.Id, activityType.Id, DataGenerator.RandomDateInYear(2024));
-            var record = $"""{measurement.PersonId}"",""{person.Name()}"",""{measurement.Date:dd/MM/yyyy}"",""{activityType.Description}"",""{measurement.Duration.ToFormattedDuration()}"",""{measurement.Distance}"",""{measurement.Calories}"",""{measurement.MinimumHeartRate}"",""{measurement.MaximumHeartRate}""";
+            var record = $"""{measurement.PersonId}"",""{person.Name}"",""{measurement.Date:dd/MM/yyyy}"",""{activityType.Description}"",""{measurement.Duration.ToFormattedDuration()}"",""{measurement.Distance}"",""{measurement.Calories}"",""{measurement.MinimumHeartRate}"",""{measurement.MaximumHeartRate}""";
 
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);

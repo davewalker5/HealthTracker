@@ -9,20 +9,22 @@ using Microsoft.AspNetCore.Mvc;
 namespace HealthTracker.Mvc.Controllers
 {
     [Authorize]
-    public class WeightController : Controller
+    public class WeightController : HealthTrackerControllerBase
     {
-        private readonly IWeightMeasurementClient _client;
+
+        private readonly IWeightMeasurementClient _measurementClient;
         private readonly IHealthTrackerApplicationSettings _settings;
         private readonly IFilterGenerator _filterGenerator;
         private readonly ILogger<WeightController> _logger;
 
         public WeightController(
-            IWeightMeasurementClient client,
+            IPersonClient personClient,
+            IWeightMeasurementClient measurementClient,
             IHealthTrackerApplicationSettings settings,
             IFilterGenerator filterGenerator,
-            ILogger<WeightController> logger)
+            ILogger<WeightController> logger) : base(personClient)
         {
-            _client = client;
+            _measurementClient = measurementClient;
             _settings = settings;
             _filterGenerator = filterGenerator;
             _logger = logger;
@@ -63,6 +65,8 @@ namespace HealthTracker.Mvc.Controllers
                     case ControllerActions.ActionNextPage:
                         page += 1;
                         break;
+                    case ControllerActions.ActionAdd:
+                        return RedirectToAction("Add", new { personId = model.Filters.PersonId });
                     default:
                         break;
                 }
@@ -77,16 +81,67 @@ namespace HealthTracker.Mvc.Controllers
                     $"Retrieving page {page} of weight measurements for person with ID {model.Filters.PersonId}" +
                     $" in the date range {model.Filters.From:dd-MMM-yyyy} to {model.Filters.To:dd-MMM-yyyy}");
 
-                var measurements = await _client.ListWeightMeasurementsAsync(
+                var measurements = await _measurementClient.ListWeightMeasurementsAsync(
                     model.Filters.PersonId, model.Filters.From, model.Filters.To, page, _settings.ResultsPageSize);
                 model.SetEntities(measurements, page, _settings.ResultsPageSize);
 
                 _logger.LogDebug($"{measurements.Count} matching weight measurements retrieved");
+            }
+            else
+            {
+                LogModelStateErrors(_logger);
             }
 
             // Populate the list of people and render the view
             await _filterGenerator.PopulatePersonList(model.Filters);
             return View(model);
         }
+
+        /// <summary>
+        /// Serve the page to add a new measurement
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> Add(int personId)
+        {
+            var model = new AddWeightViewModel();
+            model.Measurement.PersonId = personId;
+            await SetPersonDetails(model, personId);
+            return View(model);
+        }
+
+        /// <summary>
+        /// Handle POST events to save new measurements
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Add(AddWeightViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Capture person details
+                var personId = model.Measurement.PersonId;
+                var personName = model.PersonName;
+
+                // Add the measurement
+                _logger.LogDebug($"Adding measurement: Person = {personName}, Weight = {model.Measurement.Weight}");
+                await _measurementClient.AddWeightMeasurementAsync(personId, DateTime.Now, model.Measurement.Weight);
+                model.Message = $"Weight measurement of {model.Measurement.Weight:.##} for {personName} added successfully";
+
+                // Clear model state and configure the model
+                ModelState.Clear();
+                model.Clear();
+            }
+            else
+            {
+                LogModelStateErrors(_logger);
+            }
+
+            return View(model);
+        }
+
     }
 }

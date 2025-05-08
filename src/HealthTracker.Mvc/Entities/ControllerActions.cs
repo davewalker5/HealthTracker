@@ -5,6 +5,6 @@ namespace HealthTracker.Mvc.Entities
         public const string ActionPreviousPage = "Previous";
         public const string ActionNextPage = "Next";
         public const string ActionSearch = "Search";
-        public const string ActionExport = "Export";
+        public const string ActionAdd = "Add";
     }
 }

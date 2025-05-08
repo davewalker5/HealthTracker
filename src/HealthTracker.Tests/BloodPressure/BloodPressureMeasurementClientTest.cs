@@ -237,7 +237,7 @@ namespace HealthTracker.Tests.BloodPressure
 
             var person = DataGenerator.RandomPerson(16, 90);
             var measurement = DataGenerator.RandomBloodPressureMeasurement(person.Id, 2024, 0, 119, 0, 79);
-            var record = $"""{person.Id}"",""{person.Name()}"",""{measurement.Date.ToString("dd/MM/yyyy")}"",""{measurement.Systolic}"",""{measurement.Diastolic}"",""Optimal""";
+            var record = $"""{person.Id}"",""{person.Name}"",""{measurement.Date.ToString("dd/MM/yyyy")}"",""{measurement.Systolic}"",""{measurement.Diastolic}"",""Optimal""";
 
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
