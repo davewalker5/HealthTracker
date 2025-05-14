@@ -4,23 +4,24 @@ This folder contains Jupyter notebooks and supporting files for reporting on hea
 
 The following reports are currently available:
 
-| Notebook | Report Type |
-| --- | --- |
-| api.ipynb | Define methods for accessing the API |
-| config.ipynb | Reporting session parameters, used by all the reports |
-| blood_pressure_assessment_over_time.ipynb | Stacked histogram of changing blood pressure assessment over time |
-| blood_pressure_kde_plot.ipynb | KDE plots of systolic and diastolic blood pressure readings |
-| blood_pressure_over_time.ipynb | Chart systolic and diastolic blood pressure readings over time |
-| blood_pressure_trends.ipynb | Chart changes in minimum, maximum and mean blood pressure over time |
-| glucose_agp.ipynb | Ambulatory Glucose Profile charts |
-| glucose_daily_mean.ipynb | Daily mean glucose levels with variability and in-range indicators |
-| glucose_heatmap.ipynb | Glucose level heatmap by time of day |
-| glucose_histogram.ipynb | Glucose level distribution histograms and KDE charts |
-| glucose_metrics.ipynb | All time and daily glucose metrics |
-| glucose_overlay.ipynb | Daily glucose overlay or "spaghetti" charts |
-| systolic_diastolic_correlation.ipynb | Systolic/diastolic correlation chart |
-| weight_calendar_heatmap.ipynb | Heatmap of weight and weight trends over time |
-| weight_over_time.ipynb | Charts weight and BMI measurements over time |
+| Folder | Notebook | Report Type |
+| --- | --- | --- |
+| - | api.ipynb | Define methods for accessing the API |
+| - | config.ipynb | Reporting session parameters, used by all the reports |
+| - | export.ipynb | Define methods for exporting the data |
+| blood_pressure | blood_pressure_assessment_over_time.ipynb | Stacked histogram of changing blood pressure assessment over time |
+| blood_pressure | blood_pressure_kde_plot.ipynb | KDE plots of systolic and diastolic blood pressure readings |
+| blood_pressure | blood_pressure_over_time.ipynb | Chart systolic and diastolic blood pressure readings over time |
+| blood_pressure | blood_pressure_trends.ipynb | Chart changes in minimum, maximum and mean blood pressure over time |
+| blood_pressure | systolic_diastolic_correlation.ipynb | Systolic/diastolic correlation chart |
+| glucose | glucose_agp.ipynb | Ambulatory Glucose Profile charts |
+| glucose | glucose_daily_mean.ipynb | Daily mean glucose levels with variability and in-range indicators |
+| glucose | glucose_heatmap.ipynb | Glucose level heatmap by time of day |
+| glucose | glucose_histogram.ipynb | Glucose level distribution histograms and KDE charts |
+| glucose | glucose_metrics.ipynb | All time and daily glucose metrics |
+| glucose | glucose_overlay.ipynb | Daily glucose overlay or "spaghetti" charts |
+| weight | weight_calendar_heatmap.ipynb | Heatmap of weight and weight trends over time |
+| weight | weight_over_time.ipynb | Charts weight and BMI measurements over time |
 
 ## Setting Up the Reporting Environment
 
