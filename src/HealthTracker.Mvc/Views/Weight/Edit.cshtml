@@ -1,0 +1,29 @@
+@model HealthTracker.Mvc.Models.EditWeightViewModel
+
+@{
+    ViewData["Title"] = "Edit Weight Measurement";
+}
+
+<div class="container-fluid">
+    @using (Html.BeginForm())
+    {
+        <div class="row">
+            <div class="col-md">
+                <span style="font-size: 1.2rem"><strong>Edit Weight Measurement</strong></span>
+            </div>
+        </div>
+        <hr />
+
+        @await Html.PartialAsync("Weight", Model)
+
+        <br />
+
+        <div class="row">
+            <div class="col-md">
+                <div class="input-group">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>

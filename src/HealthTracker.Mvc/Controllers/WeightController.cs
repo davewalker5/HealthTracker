@@ -42,6 +42,7 @@ namespace HealthTracker.Mvc.Controllers
                 PageNumber = 1,
                 Filters = await _filterGenerator.Create()
             };
+
             return View(model);
         }
 
@@ -127,7 +128,7 @@ namespace HealthTracker.Mvc.Controllers
                 var personName = model.PersonName;
 
                 // Add the measurement
-                _logger.LogDebug($"Adding measurement: Person = {personName}, Weight = {model.Measurement.Weight}");
+                _logger.LogDebug($"Adding weight measurement: Person = {personName}, Weight = {model.Measurement.Weight}");
                 await _measurementClient.AddWeightMeasurementAsync(personId, DateTime.Now, model.Measurement.Weight);
                 model.Message = $"Weight measurement of {model.Measurement.Weight:.##} for {personName} added successfully";
 
@@ -142,6 +143,70 @@ namespace HealthTracker.Mvc.Controllers
 
             return View(model);
         }
+        
+        /// <summary>
+        /// Serve the page to edit an existing measurement
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            // Load the measurement to edit
+            var measurement = await _measurementClient.GetMeasurement(id);
 
+            // Construct the view model
+            var model = new EditWeightViewModel();
+            model.Measurement = measurement;
+            await SetPersonDetails(model, measurement.PersonId);
+            return View(model);
+        }
+
+        /// <summary>
+        /// Handle POST events to save updated measurements
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(EditWeightViewModel model)
+        {
+            IActionResult result;
+
+            if (ModelState.IsValid)
+            {
+                // Update the measurement
+                _logger.LogDebug($"Updating weight measurement: ID = {model.Measurement.Id}, Person ID = {model.Measurement.PersonId}, Weight = {model.Measurement.Weight}");
+                await _measurementClient.UpdateWeightMeasurementAsync(
+                    model.Measurement.Id,
+                    model.Measurement.PersonId,
+                    model.Measurement.Date,
+                    model.Measurement.Weight);
+
+                // Serve the "list" view with the single measurement as the list of measurements.
+                // First, create the model
+                var listModel = new WeightListViewModel()
+                {
+                    PageNumber = 1,
+                    Filters = await _filterGenerator.Create()
+                };
+
+                // Populate the list of people and select the person associated with this measurement
+                listModel.Filters.PersonId = model.Measurement.PersonId;
+                await _filterGenerator.PopulatePersonList(listModel.Filters);
+
+                // Set the list of measurements
+                var measurement = await _measurementClient.GetMeasurement(model.Measurement.Id);
+                listModel.SetEntities([measurement], 1, _settings.ResultsPageSize);
+                return View("Index", listModel);
+            }
+            else
+            {
+                LogModelStateErrors(_logger);
+                result = View(model);
+            }
+
+            return result;
+        }
     }
 }

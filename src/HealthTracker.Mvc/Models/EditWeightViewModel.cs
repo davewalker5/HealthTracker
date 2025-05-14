@@ -1,6 +1,6 @@
 namespace HealthTracker.Mvc.Models
 {
-    public class EditPersonViewModel : PersonViewModel
+    public class EditWeightViewModel : WeightViewModel
     {        
     }
 }

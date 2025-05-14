@@ -104,6 +104,23 @@ namespace HealthTracker.Client.ApiClient
             var json = Serialize(data);
             await SendIndirectAsync(ExportRouteKey, json, HttpMethod.Post);
         }
+        
+        /// <summary>
+        /// Receive a single measurement given its ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<WeightMeasurement> GetMeasurement(int id)
+        {
+            // Request the measurement with the specified ID
+            string baseRoute = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
+            string route = $"{baseRoute}/{id}";
+            string json = await SendDirectAsync(route, null, HttpMethod.Get);
+
+            // Extract the measurement from the response
+            var measurement = Deserialize<WeightMeasurement>(json);
+            return measurement;
+        }
 
         /// <summary>
         /// Return a list of weight measurements
@@ -124,7 +141,7 @@ namespace HealthTracker.Client.ApiClient
             string route = $"{baseRoute}/{personId}/{encodedFromDate}/{encodedToDate}/{pageNumber}/{pageSize}";
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
-            // The returned JSON will be empty if there are no people in the database
+            // The returned JSON will be empty if there are no measurements in the database
             List<WeightMeasurement> measurements = !string.IsNullOrEmpty(json) ? Deserialize<List<WeightMeasurement>>(json) : null;
             return measurements;
         }

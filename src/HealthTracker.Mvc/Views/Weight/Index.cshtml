@@ -50,12 +50,12 @@
                         <td valign="center">@measurement.BMIAssessment</td>
                         <td valign="center">@measurement.BMR.ToString(".##")</td>
                         <td valign="center">
-                            <a class="btn btn-lg" asp-area="" asp-controller="" asp-action="" asp-route-id="@measurement.Id">
+                            <a class="btn btn-lg" asp-area="" asp-controller="Weight" asp-action="Edit" asp-route-id="@measurement.Id">
                                 <i class="fas fa-edit"></i>
                             </a>
                         </td>
                         <td valign="center">
-                            <a class="btn btn-lg" asp-area="" asp-controller="" asp-action="" asp-route-id="@measurement.Id">
+                            <a class="btn btn-lg" asp-area="" asp-controller="Weight" asp-action="" asp-route-id="@measurement.Id">
                                 <i class="fas fa-trash"></i>
                             </a>
                         </td>

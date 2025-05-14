@@ -121,6 +121,10 @@ namespace HealthTracker.Mvc.Controllers
                 model.Clear();
                 model.Message = $"'{name}' added successfully";
             }
+            else
+            {
+                LogModelStateErrors(_logger);
+            }
 
             return View(model);
         }
@@ -174,6 +178,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
+                LogModelStateErrors(_logger);
                 result = View(model);
             }
 

@@ -19,6 +19,15 @@ namespace HealthTracker.Api.Controllers
         public WeightMeasurementController(IHealthTrackerFactory factory)
             => _factory = factory;
 
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<ActionResult<WeightMeasurement>> GetMeasurement(int id)
+        {
+            var measurements = await _factory.WeightMeasurements.ListAsync(x => x.Id == id, 1, int.MaxValue);
+            await _factory.WeightCalculator.CalculateRelatedProperties(measurements);
+            return measurements.First();
+        }
+
         /// <summary>
         /// Return a list of all weight measurements for a person
         /// </summary>
