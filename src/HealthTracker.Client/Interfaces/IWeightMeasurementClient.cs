@@ -2,7 +2,7 @@ using HealthTracker.Entities.Measurements;
 
 namespace HealthTracker.Client.Interfaces
 {
-    public interface IWeightMeasurementClient
+    public interface IWeightMeasurementClient : IMeasurementRetriever<WeightMeasurement>
     {
         Task<WeightMeasurement> AddWeightMeasurementAsync(int personId, DateTime? date, decimal weight);
         Task<WeightMeasurement> CalculateAverageWeightAsync(int personId, DateTime from, DateTime to);
@@ -10,7 +10,6 @@ namespace HealthTracker.Client.Interfaces
         Task DeleteWeightMeasurementAsync(int id);
         Task ExportWeightMeasurementsAsync(int personId, DateTime? from, DateTime? to, string fileName);
         Task ImportWeightMeasurementsAsync(string filePath);
-        Task<WeightMeasurement> GetMeasurement(int id);
         Task<List<WeightMeasurement>> ListWeightMeasurementsAsync(int personId, DateTime? from, DateTime? to, int pageNumber, int pageSize);
         Task<WeightMeasurement> UpdateWeightMeasurementAsync(int id, int personId, DateTime? date, decimal weight);
     }

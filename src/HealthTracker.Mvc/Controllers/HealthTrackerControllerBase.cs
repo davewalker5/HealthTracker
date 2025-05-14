@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HealthTracker.Mvc.Controllers
 {
-    public class HealthTrackerControllerBase : Controller
+    public abstract class HealthTrackerControllerBase : Controller
     {
         protected readonly IPersonClient _personClient;
 

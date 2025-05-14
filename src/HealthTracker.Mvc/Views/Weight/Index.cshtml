@@ -22,57 +22,89 @@
 
 
 <div class="container-fluid">
-    @using (Html.BeginForm())
+    @if (!string.IsNullOrEmpty(Model.Message))
     {
-        @Html.EditorFor(m => m.Filters)
-    
-        @Html.HiddenFor(m => m.PageNumber)
+        <div class="row">
+            <div class="col-md-12 message">
+                <span>@Html.Raw(Model.Message)</span>
+            </div>
+        </div>
+        <hr />
+    }
 
-        @if ((Model.Measurements != null) && (Model.Measurements.Count() > 0))
-        {
-            <table class="table">
+    @using (Html.BeginForm("Index", "Weight", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.EditorFor(m => m.Filters)
+        @Html.HiddenFor(m => m.PageNumber)
+    }
+
+    @using (Html.BeginForm("Delete", "Weight", FormMethod.Post, new { name = "delete-form", id = "delete-form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.Hidden("id", 0)
+    }
+
+    @if ((Model.Measurements != null) && (Model.Measurements.Count() > 0))
+    {
+        <table class="table">
+            <tr>
+                <th>Person</th>
+                <th>Date</th>
+                <th>Weight</th>
+                <th>BMI</th>
+                <th>Assessment</th>
+                <th>BMR</th>
+                <th />
+            </tr>
+            @foreach (var measurement in Model.Measurements)
+            {
                 <tr>
-                    <th>Person</th>
-                    <th>Date</th>
-                    <th>Weight</th>
-                    <th>BMI</th>
-                    <th>Assessment</th>
-                    <th>BMR</th>
-                    <th />
+                    <td valign="center">@Model.Filters.SelectedPerson.Name</td>
+                    <td valign="center">@measurement.Date.ToString("dd-MMM-yyyy")</td>
+                    <td valign="center">@measurement.Weight.ToString(".##")</td>
+                    <td valign="center">@measurement.BMI.ToString(".##")</td>
+                    <td valign="center">@measurement.BMIAssessment</td>
+                    <td valign="center">@measurement.BMR.ToString(".##")</td>
+                    <td valign="center">
+                        <a class="btn btn-lg" asp-area="" asp-controller="Weight" asp-action="Edit" asp-route-id="@measurement.Id">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </td>
+                    <td valign="center">
+                        <a class="btn btn-lg" href="javascript:submitDeleteForm(@measurement.Id)">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
                 </tr>
-                @foreach (var measurement in Model.Measurements)
-                {
-                    <tr>
-                        <td valign="center">@Model.Filters.SelectedPerson.Name</td>
-                        <td valign="center">@measurement.Date.ToString("dd-MMM-yyyy")</td>
-                        <td valign="center">@measurement.Weight.ToString(".##")</td>
-                        <td valign="center">@measurement.BMI.ToString(".##")</td>
-                        <td valign="center">@measurement.BMIAssessment</td>
-                        <td valign="center">@measurement.BMR.ToString(".##")</td>
-                        <td valign="center">
-                            <a class="btn btn-lg" asp-area="" asp-controller="Weight" asp-action="Edit" asp-route-id="@measurement.Id">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                        </td>
-                        <td valign="center">
-                            <a class="btn btn-lg" asp-area="" asp-controller="Weight" asp-action="" asp-route-id="@measurement.Id">
-                                <i class="fas fa-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                }
-            </table>
-            <hr />
-            <p class="text-right">
-                <button type="submit" name="Action" value="@ControllerActions.ActionPreviousPage" class="btn btn-secondary" @previousDisabled>Previous</button>
-                <button type="submit" name="Action" value="@ControllerActions.ActionNextPage" class="btn btn-primary" @nextDisabled>Next</button>
-            </p>
-        }
-        else if (Model.HasNoMatchingResults)
-        {
-            <hr />
-            @Html.Raw("No matching measurements")
-        }
+            }
+        </table>
+        <hr />
+        <p class="text-right">
+            <button type="submit" name="Action" value="@ControllerActions.ActionPreviousPage" class="btn btn-secondary" @previousDisabled>Previous</button>
+            <button type="submit" name="Action" value="@ControllerActions.ActionNextPage" class="btn btn-primary" @nextDisabled>Next</button>
+        </p>
+    }
+    else if (Model.HasNoMatchingResults)
+    {
+        <hr />
+        @Html.Raw("No matching measurements")
     }
 
 </div>
+
+<script type="text/javascript">
+    function submitDeleteForm(id) {
+        $.confirm({
+            text: "Are you sure?",
+            confirm: function(button) {
+                $("#delete-form #id").val(id);
+                $("#delete-form").submit()
+            },
+            cancel: function(button) {
+            },
+            confirmButton: "Yes",
+            cancelButton: "No"
+        });
+    }
+</script>

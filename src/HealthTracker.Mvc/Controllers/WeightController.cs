@@ -1,5 +1,6 @@
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
+using HealthTracker.Entities.Measurements;
 using HealthTracker.Mvc.Entities;
 using HealthTracker.Mvc.Interfaces;
 using HealthTracker.Mvc.Models;
@@ -9,12 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace HealthTracker.Mvc.Controllers
 {
     [Authorize]
-    public class WeightController : HealthTrackerControllerBase
+    public class WeightController : MeasurementControllerBase<IWeightMeasurementClient, WeightListViewModel, WeightMeasurement>
     {
-
-        private readonly IWeightMeasurementClient _measurementClient;
-        private readonly IHealthTrackerApplicationSettings _settings;
-        private readonly IFilterGenerator _filterGenerator;
         private readonly ILogger<WeightController> _logger;
 
         public WeightController(
@@ -22,11 +19,8 @@ namespace HealthTracker.Mvc.Controllers
             IWeightMeasurementClient measurementClient,
             IHealthTrackerApplicationSettings settings,
             IFilterGenerator filterGenerator,
-            ILogger<WeightController> logger) : base(personClient)
+            ILogger<WeightController> logger) : base(personClient, measurementClient, settings, filterGenerator)
         {
-            _measurementClient = measurementClient;
-            _settings = settings;
-            _filterGenerator = filterGenerator;
             _logger = logger;
         }
 
@@ -143,7 +137,7 @@ namespace HealthTracker.Mvc.Controllers
 
             return View(model);
         }
-        
+
         /// <summary>
         /// Serve the page to edit an existing measurement
         /// </summary>
@@ -183,22 +177,15 @@ namespace HealthTracker.Mvc.Controllers
                     model.Measurement.Date,
                     model.Measurement.Weight);
 
-                // Serve the "list" view with the single measurement as the list of measurements.
-                // First, create the model
-                var listModel = new WeightListViewModel()
-                {
-                    PageNumber = 1,
-                    Filters = await _filterGenerator.Create()
-                };
+                // Return the measurement list view containing only the updated measurement and a confirmation message
+                result = await CreateMeasurementListResult(
+                    model.Measurement.PersonId,
+                    model.Measurement.Id,
+                    model.Measurement.Date,
+                    model.Measurement.Date,
+                    "Measurement successfully updated");
 
-                // Populate the list of people and select the person associated with this measurement
-                listModel.Filters.PersonId = model.Measurement.PersonId;
-                await _filterGenerator.PopulatePersonList(listModel.Filters);
-
-                // Set the list of measurements
-                var measurement = await _measurementClient.GetMeasurement(model.Measurement.Id);
-                listModel.SetEntities([measurement], 1, _settings.ResultsPageSize);
-                return View("Index", listModel);
+                return result;
             }
             else
             {
@@ -206,6 +193,30 @@ namespace HealthTracker.Mvc.Controllers
                 result = View(model);
             }
 
+            return result;
+        }
+
+        /// <summary>
+        /// Handle POST events to delete an existing measurement
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            // Retrieve the measurement and capture the person and date
+            _logger.LogDebug($"Retrieving weight measurement: ID = {id}");
+            var measurement = await _measurementClient.GetMeasurement(id);
+            var personId = measurement.PersonId;
+            var date = measurement.Date;
+
+            // Delete the measurement
+            _logger.LogDebug($"Deleting weight measurement: ID = {id}");
+            await _measurementClient.DeleteWeightMeasurementAsync(id);
+
+            // Return the list view with an empty list of measurements
+            var result = await CreateMeasurementListResult(personId, 0, date, date, "Measurement successfully deleted");
             return result;
         }
     }
