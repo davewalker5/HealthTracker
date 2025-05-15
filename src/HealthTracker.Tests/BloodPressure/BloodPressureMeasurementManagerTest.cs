@@ -37,7 +37,7 @@ namespace HealthTracker.Tests.BloodPressure
         [TestMethod]
         public async Task AddAndListTest()
         {
-            var measurements = await _factory.BloodPressureMeasurements.ListAsync(x => x.PersonId == _personId);
+            var measurements = await _factory.BloodPressureMeasurements.ListAsync(x => x.PersonId == _personId, 1, int.MaxValue);
             Assert.AreEqual(1, measurements.Count);
             Assert.AreEqual(_measurementId, measurements.First().Id);
             Assert.AreEqual(_personId, measurements.First().PersonId);
@@ -50,7 +50,7 @@ namespace HealthTracker.Tests.BloodPressure
         public async Task UpdateTest()
         {
             await _factory.BloodPressureMeasurements.UpdateAsync(_measurementId, _personId, UpdatedMeasurementDate, UpdatedSystolic, UpdatedDiastolic);
-            var measurements = await _factory.BloodPressureMeasurements.ListAsync(x => x.PersonId == _personId);
+            var measurements = await _factory.BloodPressureMeasurements.ListAsync(x => x.PersonId == _personId, 1, int.MaxValue);
             Assert.AreEqual(1, measurements.Count);
             Assert.AreEqual(_measurementId, measurements.First().Id);
             Assert.AreEqual(_personId, measurements.First().PersonId);
@@ -63,7 +63,7 @@ namespace HealthTracker.Tests.BloodPressure
         public async Task DeleteTest()
         {
             await _factory.BloodPressureMeasurements.DeleteAsync(_measurementId);
-            var measurements = await _factory.BloodPressureMeasurements.ListAsync(a => true);
+            var measurements = await _factory.BloodPressureMeasurements.ListAsync(a => true, 1, int.MaxValue);
             Assert.AreEqual(0, measurements.Count);
         }
 

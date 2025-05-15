@@ -2,7 +2,7 @@ using HealthTracker.Entities.Measurements;
 
 namespace HealthTracker.Client.Interfaces
 {
-    public interface IBloodPressureMeasurementClient
+    public interface IBloodPressureMeasurementClient : IMeasurementRetriever<BloodPressureMeasurement>
     {
         Task<BloodPressureMeasurement> AddBloodPressureMeasurementAsync(int personId, DateTime? date, int systolic, int diastolic);
         Task<BloodPressureMeasurement> CalculateAverageBloodPressureAsync(int personId, DateTime from, DateTime to);
@@ -13,7 +13,7 @@ namespace HealthTracker.Client.Interfaces
         Task ExportDailyAverageBloodPressureAsync(int personId, DateTime from, DateTime to, string fileName);
         Task ImportBloodPressureMeasurementsAsync(string filePath);
         Task ImportOmronBloodPressureMeasurementsAsync(string filePath, int personId);
-        Task<List<BloodPressureMeasurement>> ListBloodPressureMeasurementsAsync(int personId, DateTime? from, DateTime? to);
+        Task<List<BloodPressureMeasurement>> ListBloodPressureMeasurementsAsync(int personId, DateTime? from, DateTime? to, int pageNumber, int pageSize);
         Task<BloodPressureMeasurement> UpdateBloodPressureMeasurementAsync(int id, int personId, DateTime? date, int systolic, int diastolic);
     }
 }

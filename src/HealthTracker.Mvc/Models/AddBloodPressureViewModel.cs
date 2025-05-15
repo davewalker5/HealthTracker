@@ -1,6 +1,6 @@
 namespace HealthTracker.Mvc.Models
 {
-    public class AddWeightViewModel : WeightViewModel
+    public class AddBloodPressureViewModel : BloodPressureViewModel
     {
         public string Message { get; set; }
 
@@ -9,7 +9,8 @@ namespace HealthTracker.Mvc.Models
             Measurement.Id = 0;
             Measurement.PersonId = 0;
             Measurement.Date = DateTime.Now;
-            Measurement.Weight = 0;
+            Measurement.Systolic = 0;
+            Measurement.Diastolic = 0;
         }
     }
 }

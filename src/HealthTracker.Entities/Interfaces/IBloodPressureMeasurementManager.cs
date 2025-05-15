@@ -7,7 +7,7 @@ namespace HealthTracker.Entities.Interfaces
     {
         Task<BloodPressureMeasurement> AddAsync(int personId, DateTime date, int systolic, int diastolic);
         Task DeleteAsync(int id);
-        Task<List<BloodPressureMeasurement>> ListAsync(Expression<Func<BloodPressureMeasurement, bool>> predicate);
+        Task<List<BloodPressureMeasurement>> ListAsync(Expression<Func<BloodPressureMeasurement, bool>> predicate, int pageNumber, int pageSize);
         Task<BloodPressureMeasurement> UpdateAsync(int id, int personId, DateTime date, int systolic, int diastolic);
     }
 }

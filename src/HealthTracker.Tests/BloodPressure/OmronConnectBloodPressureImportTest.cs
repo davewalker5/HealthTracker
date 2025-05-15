@@ -45,7 +45,7 @@ namespace HealthTracker.Tests.BloodPressure
         public async Task ByteArrayImportTest()
         {
             await _importer.ImportAsync(_content, _person.Id);
-            var measurements = await _factory.BloodPressureMeasurements.ListAsync(x => true);
+            var measurements = await _factory.BloodPressureMeasurements.ListAsync(x => true, 1, int.MaxValue);
             Assert.AreEqual(1, measurements.Count);
             Assert.AreEqual(_person.Id, measurements.First().PersonId);
             Assert.AreEqual(MeasurementDate, measurements.First().Date);
@@ -58,7 +58,7 @@ namespace HealthTracker.Tests.BloodPressure
         {
             var base64 = Convert.ToBase64String(_content);
             await _importer.ImportAsync(base64, _person.Id);
-            var measurements = await _factory.BloodPressureMeasurements.ListAsync(x => true);
+            var measurements = await _factory.BloodPressureMeasurements.ListAsync(x => true, 1, int.MaxValue);
             Assert.AreEqual(1, measurements.Count);
             Assert.AreEqual(_person.Id, measurements.First().PersonId);
             Assert.AreEqual(MeasurementDate, measurements.First().Date);

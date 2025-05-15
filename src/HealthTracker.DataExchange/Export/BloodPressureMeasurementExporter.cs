@@ -29,7 +29,8 @@ namespace HealthTracker.DataExchange.Export
             var measurements = await _factory.BloodPressureMeasurements.ListAsync(x =>
                                                 (x.PersonId == personId) &&
                                                 ((from == null) || (x.Date >= from)) &&
-                                                ((to == null) || (x.Date <= to)));
+                                                ((to == null) || (x.Date <= to)),
+                                                1, int.MaxValue);
             await _factory.BloodPressureAssessor.Assess(measurements);
             await ExportAsync(measurements, file);
         }

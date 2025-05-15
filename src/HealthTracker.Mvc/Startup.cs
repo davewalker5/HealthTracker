@@ -38,6 +38,7 @@ namespace HealthTracker.Mvc
             services.AddSingleton<IHealthTrackerHttpClient>(provider => HealthTrackerHttpClient.Instance);
             services.AddSingleton<IAuthenticationClient, AuthenticationClient>();
             services.AddSingleton<IPersonClient, PersonClient>();
+            services.AddSingleton<IBloodPressureMeasurementClient, BloodPressureMeasurementClient>();
             services.AddSingleton<IWeightMeasurementClient, WeightMeasurementClient>();
 
             // Configure the helper used to build the filtering view model used on the measurements pages

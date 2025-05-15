@@ -80,7 +80,7 @@ namespace HealthTracker.Tests.BloodPressure
             Assert.AreEqual(info.FullName, _filePath);
             Assert.IsTrue(info.Length > 0);
 
-            var measurements = await _factory.BloodPressureMeasurements.ListAsync(x => true);
+            var measurements = await _factory.BloodPressureMeasurements.ListAsync(x => true, 1, int.MaxValue);
             Assert.AreEqual(1, measurements.Count);
             Assert.AreEqual(_measurement.PersonId, measurements[0].PersonId);
             Assert.AreEqual(_measurement.Systolic, measurements[0].Systolic);

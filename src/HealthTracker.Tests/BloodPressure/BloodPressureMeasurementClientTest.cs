@@ -114,13 +114,13 @@ namespace HealthTracker.Tests.BloodPressure
             var json = JsonSerializer.Serialize(new List<dynamic>() { measurement } );
             _httpClient.AddResponse(json);
 
-            var measurements = await _client.ListBloodPressureMeasurementsAsync(personId, null, null);
+            var measurements = await _client.ListBloodPressureMeasurementsAsync(personId, null, null, 1, int.MaxValue);
 
             var expectedTo = DateTime.Now;
             var expectedFrom = expectedTo.AddDays(-_settings.DefaultTimePeriodDays);
             var encodedFrom = HttpUtility.UrlEncode(expectedFrom.ToString("yyyy-MM-dd H:mm:ss"));
             var encodedTo = HttpUtility.UrlEncode(expectedTo.ToString("yyyy-MM-dd H:mm:ss"));
-            var expectedRoute = $"{_settings.ApiRoutes.First(x => x.Name == "BloodPressureMeasurement").Route}/{personId}/{encodedFrom}/{encodedTo}";
+            var expectedRoute = $"{_settings.ApiRoutes.First(x => x.Name == "BloodPressureMeasurement").Route}/{personId}/{encodedFrom}/{encodedTo}/1/{int.MaxValue}";
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -146,12 +146,12 @@ namespace HealthTracker.Tests.BloodPressure
             _httpClient.AddResponse(json);
 
             var from = measurement.Date.AddDays(-DataGenerator.RandomInt(30, 90));
-            var measurements = await _client.ListBloodPressureMeasurementsAsync(personId, from, null);
+            var measurements = await _client.ListBloodPressureMeasurementsAsync(personId, from, null, 1, int.MaxValue);
 
             var expectedTo = DateTime.Now;
             var encodedFrom = HttpUtility.UrlEncode(from.ToString("yyyy-MM-dd H:mm:ss"));
             var encodedTo = HttpUtility.UrlEncode(expectedTo.ToString("yyyy-MM-dd H:mm:ss"));
-            var expectedRoute = $"{_settings.ApiRoutes.First(x => x.Name == "BloodPressureMeasurement").Route}/{personId}/{encodedFrom}/{encodedTo}";
+            var expectedRoute = $"{_settings.ApiRoutes.First(x => x.Name == "BloodPressureMeasurement").Route}/{personId}/{encodedFrom}/{encodedTo}/1/{int.MaxValue}";
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -177,12 +177,12 @@ namespace HealthTracker.Tests.BloodPressure
             _httpClient.AddResponse(json);
 
             var to = measurement.Date.AddDays(DataGenerator.RandomInt(30, 90));
-            var measurements = await _client.ListBloodPressureMeasurementsAsync(personId, null, to);
+            var measurements = await _client.ListBloodPressureMeasurementsAsync(personId, null, to, 1, int.MaxValue);
 
             var expectedFrom = to.AddDays(-_settings.DefaultTimePeriodDays);
             var encodedFrom = HttpUtility.UrlEncode(expectedFrom.ToString("yyyy-MM-dd H:mm:ss"));
             var encodedTo = HttpUtility.UrlEncode(to.ToString("yyyy-MM-dd H:mm:ss"));
-            var expectedRoute = $"{_settings.ApiRoutes.First(x => x.Name == "BloodPressureMeasurement").Route}/{personId}/{encodedFrom}/{encodedTo}";
+            var expectedRoute = $"{_settings.ApiRoutes.First(x => x.Name == "BloodPressureMeasurement").Route}/{personId}/{encodedFrom}/{encodedTo}/1/{int.MaxValue}";
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -209,11 +209,11 @@ namespace HealthTracker.Tests.BloodPressure
 
             var from = measurement.Date.AddDays(-DataGenerator.RandomInt(30,90));
             var to = measurement.Date.AddDays(DataGenerator.RandomInt(30,90));
-            var measurements = await _client.ListBloodPressureMeasurementsAsync(personId, from, to);
+            var measurements = await _client.ListBloodPressureMeasurementsAsync(personId, from, to, 1, int.MaxValue);
 
             var encodedFrom = HttpUtility.UrlEncode(from.ToString("yyyy-MM-dd H:mm:ss"));
             var encodedTo = HttpUtility.UrlEncode(to.ToString("yyyy-MM-dd H:mm:ss"));
-            var expectedRoute = $"{_settings.ApiRoutes.First(x => x.Name == "BloodPressureMeasurement").Route}/{personId}/{encodedFrom}/{encodedTo}";
+            var expectedRoute = $"{_settings.ApiRoutes.First(x => x.Name == "BloodPressureMeasurement").Route}/{personId}/{encodedFrom}/{encodedTo}/1/{int.MaxValue}";
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
