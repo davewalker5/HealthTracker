@@ -6,7 +6,7 @@ namespace HealthTracker.Client.Interfaces
     {
         Task<ActivityType> AddActivityTypeAsync(string description);
         Task DeleteActivityTypeAsync(int id);
-        Task<List<ActivityType>> ListActivityTypesAsync();
+        Task<List<ActivityType>> ListActivityTypesAsync(int pageNumber, int pageSize);
         Task<ActivityType> UpdateActivityTypeAsync(int id, string description);
     }
 }

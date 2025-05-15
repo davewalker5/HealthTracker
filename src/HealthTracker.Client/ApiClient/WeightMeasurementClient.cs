@@ -106,11 +106,11 @@ namespace HealthTracker.Client.ApiClient
         }
         
         /// <summary>
-        /// Receive a single measurement given its ID
+        /// Retrieve a single measurement given its ID
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<WeightMeasurement> GetMeasurement(int id)
+        public async Task<WeightMeasurement> Get(int id)
         {
             // Request the measurement with the specified ID
             string baseRoute = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";

@@ -147,7 +147,7 @@ namespace HealthTracker.Mvc.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             // Load the measurement to edit
-            var measurement = await _measurementClient.GetMeasurement(id);
+            var measurement = await _measurementClient.Get(id);
 
             // Construct the view model
             var model = new EditWeightViewModel();
@@ -207,7 +207,7 @@ namespace HealthTracker.Mvc.Controllers
         {
             // Retrieve the measurement and capture the person and date
             _logger.LogDebug($"Retrieving weight measurement: ID = {id}");
-            var measurement = await _measurementClient.GetMeasurement(id);
+            var measurement = await _measurementClient.Get(id);
             var personId = measurement.PersonId;
             var date = measurement.Date;
 

@@ -20,7 +20,16 @@
 </p>
 
 <div class="container-fluid">
-    @using (Html.BeginForm())
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="row">
+            <div class="col-md-12 message">
+                <span>@Html.Raw(Model.Message)</span>
+            </div>
+        </div>
+    }
+
+    @using (Html.BeginForm("Index", "Person", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
         @Html.HiddenFor(m => m.PageNumber)

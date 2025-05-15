@@ -91,12 +91,13 @@ namespace HealthTracker.Tests.ActivityTypes
             var json = JsonSerializer.Serialize<List<ActivityType>>([activityType]);
             _httpClient.AddResponse(json);
 
-            var activities = await _client.ListActivityTypesAsync();
+            var activities = await _client.ListActivityTypesAsync(1, int.MaxValue);
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/1/{int.MaxValue}";
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
             Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
-            Assert.AreEqual(_settings.ApiRoutes[0].Route, _httpClient.Requests[0].Uri);
+            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
 
             Assert.IsNull(_httpClient.Requests[0].Content);
             Assert.IsNotNull(activities);

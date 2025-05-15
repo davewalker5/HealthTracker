@@ -2,7 +2,7 @@ using HealthTracker.Entities.Measurements;
 
 namespace HealthTracker.Client.Interfaces
 {
-    public interface IWeightMeasurementClient : IMeasurementRetriever<WeightMeasurement>
+    public interface IWeightMeasurementClient : IEntityRetriever<WeightMeasurement>
     {
         Task<WeightMeasurement> AddWeightMeasurementAsync(int personId, DateTime? date, decimal weight);
         Task<WeightMeasurement> CalculateAverageWeightAsync(int personId, DateTime from, DateTime to);

@@ -7,23 +7,47 @@ using Microsoft.AspNetCore.Mvc;
 namespace HealthTracker.Mvc.Controllers
 {
     public abstract class MeasurementControllerBase<C, L, M> : HealthTrackerControllerBase
-        where C: IMeasurementRetriever<M>
-        where L: ListViewModelBase<M>, new()
+        where C: IEntityRetriever<M>
+        where L: MeasurementListViewModelBase<M>, new()
         where M: class, new()
     {
         protected readonly C _measurementClient;
+        protected readonly IPersonClient _personClient;
         protected readonly IHealthTrackerApplicationSettings _settings;
         protected readonly IFilterGenerator _filterGenerator;
+
+        public MeasurementControllerBase()
+            => _personClient = null;
+
+        public MeasurementControllerBase(IPersonClient personClient)
+            => _personClient = personClient;
 
         public MeasurementControllerBase(
             IPersonClient personClient,
             C measurementClient,
             IHealthTrackerApplicationSettings settings,
-            IFilterGenerator filterGenerator) : base(personClient)
+            IFilterGenerator filterGenerator)
         {
+            _personClient = personClient;
             _measurementClient = measurementClient;
             _settings = settings;
             _filterGenerator = filterGenerator;
+        }
+
+        /// <summary>
+        /// Set person details on a view model
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="personId"></param>
+        /// <returns></returns>
+        protected async Task SetPersonDetails(IMeasurementPersonViewModel model, int personId)
+        {
+            // Retrieve the person with whom the new measurement is to be associated
+            var people = await _personClient.ListPeopleAsync(1, int.MaxValue);
+            var person = people.First(x => x.Id == personId);
+
+            // Set the person details on the model
+            model.PersonName = person.Name;
         }
         
         /// <summary>
@@ -55,7 +79,7 @@ namespace HealthTracker.Mvc.Controllers
             // Populate the list of measurements with the one of interest, if an ID is specified
             if (measurementId > 0)
             {
-                var measurement = await _measurementClient.GetMeasurement(measurementId);
+                var measurement = await _measurementClient.Get(measurementId);
                 model.SetEntities([measurement], 1, _settings.ResultsPageSize);
             }
 

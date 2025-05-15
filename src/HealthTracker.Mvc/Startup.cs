@@ -37,6 +37,7 @@ namespace HealthTracker.Mvc
             // Interactions with the REST service are managed via typed HttpClients
             services.AddSingleton<IHealthTrackerHttpClient>(provider => HealthTrackerHttpClient.Instance);
             services.AddSingleton<IAuthenticationClient, AuthenticationClient>();
+            services.AddSingleton<IActivityTypeClient, ActivityTypeClient>();
             services.AddSingleton<IPersonClient, PersonClient>();
             services.AddSingleton<IBloodPressureMeasurementClient, BloodPressureMeasurementClient>();
             services.AddSingleton<IWeightMeasurementClient, WeightMeasurementClient>();

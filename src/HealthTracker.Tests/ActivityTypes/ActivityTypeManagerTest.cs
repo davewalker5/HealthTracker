@@ -45,7 +45,7 @@ namespace HealthTracker.Tests.ActivityTypes
         [TestMethod]
         public async Task ListAllTest()
         {
-            var activityTypes = await _factory.ActivityTypes.ListAsync(x => true);
+            var activityTypes = await _factory.ActivityTypes.ListAsync(x => true, 1, int.MaxValue);
             Assert.AreEqual(1, activityTypes.Count);
             Assert.AreEqual(Description, activityTypes.First().Description);
         }
@@ -53,7 +53,7 @@ namespace HealthTracker.Tests.ActivityTypes
         [TestMethod]
         public async Task ListMissingTest()
         {
-            var activityTypes = await _factory.ActivityTypes.ListAsync(e => e.Description == "Missing");
+            var activityTypes = await _factory.ActivityTypes.ListAsync(e => e.Description == "Missing", 1, int.MaxValue);
             Assert.AreEqual(0, activityTypes.Count);
         }
 
@@ -72,7 +72,7 @@ namespace HealthTracker.Tests.ActivityTypes
         public async Task DeleteTest()
         {
             await _factory.ActivityTypes.DeleteAsync(_activityTypeId);
-            var activityTypes = await _factory.ActivityTypes.ListAsync(a => true);
+            var activityTypes = await _factory.ActivityTypes.ListAsync(a => true, 1, int.MaxValue);
             Assert.AreEqual(0, activityTypes.Count);
         }
 

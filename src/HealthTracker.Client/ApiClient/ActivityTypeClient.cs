@@ -68,11 +68,14 @@ namespace HealthTracker.Client.ApiClient
         /// <summary>
         /// Return a list of activity types
         /// </summary>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<List<ActivityType>> ListActivityTypesAsync()
+        public async Task<List<ActivityType>> ListActivityTypesAsync(int pageNumber, int pageSize)
         {
             // Request a list of activity types
-            string route = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
+            string baseRoute = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
+            var route = $"{baseRoute}/{pageNumber}/{pageSize}";
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no activity types in the database

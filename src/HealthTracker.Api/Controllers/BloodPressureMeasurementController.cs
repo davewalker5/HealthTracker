@@ -26,7 +26,7 @@ namespace HealthTracker.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("{id}")]
-        public async Task<ActionResult<BloodPressureMeasurement>> GetMeasurement(int id)
+        public async Task<ActionResult<BloodPressureMeasurement>> Get(int id)
         {
             var measurements = await _factory.BloodPressureMeasurements.ListAsync(x => x.Id == id, 1, int.MaxValue);
             await _factory.BloodPressureAssessor.Assess(measurements);

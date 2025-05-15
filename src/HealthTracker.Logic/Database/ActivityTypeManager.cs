@@ -21,7 +21,7 @@ namespace HealthTracker.Logic.Database
         /// <returns></returns>
         public async Task<ActivityType> GetAsync(Expression<Func<ActivityType, bool>> predicate)
         {
-            var activityTypes = await ListAsync(predicate);
+            var activityTypes = await ListAsync(predicate, 1, int.MaxValue);
             return activityTypes.FirstOrDefault();
         }
 
@@ -29,8 +29,10 @@ namespace HealthTracker.Logic.Database
         /// Return all activity types matching the specified criteria
         /// </summary>
         /// <param name="predicate"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<List<ActivityType>> ListAsync(Expression<Func<ActivityType, bool>> predicate)
+        public async Task<List<ActivityType>> ListAsync(Expression<Func<ActivityType, bool>> predicate, int pageNumber, int pageSize)
             => await Context.ActivityTypes
                             .Where(predicate)
                             .OrderBy(x => x.Description)

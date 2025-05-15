@@ -21,7 +21,7 @@ namespace HealthTracker.Api.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<ActionResult<WeightMeasurement>> GetMeasurement(int id)
+        public async Task<ActionResult<WeightMeasurement>> Get(int id)
         {
             var measurements = await _factory.WeightMeasurements.ListAsync(x => x.Id == id, 1, int.MaxValue);
             await _factory.WeightCalculator.CalculateRelatedProperties(measurements);

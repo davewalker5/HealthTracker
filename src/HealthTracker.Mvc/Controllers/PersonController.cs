@@ -1,5 +1,6 @@
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
+using HealthTracker.Entities.Identity;
 using HealthTracker.Mvc.Entities;
 using HealthTracker.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -8,40 +9,31 @@ using Microsoft.AspNetCore.Mvc;
 namespace HealthTracker.Mvc.Controllers
 {
     [Authorize]
-    public class PersonController : HealthTrackerControllerBase
+    public class PersonController : ReferenceDataControllerBase<PersonListViewModel, Person>
     {
-        private readonly IHealthTrackerApplicationSettings _settings;
+        private readonly IPersonClient _client;
         private readonly ILogger<PersonController> _logger;
 
         public PersonController(
             IPersonClient client,
             IHealthTrackerApplicationSettings settings,
-            ILogger<PersonController> logger) : base(client)
+            ILogger<PersonController> logger) : base(settings)
         {
-            _settings = settings;
+            _client = client;
             _logger = logger;
         }
 
         /// <summary>
         /// Serve the current list of people
         /// </summary>
-        /// <param name="personId"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> Index(int personId = 0)
+        public async Task<IActionResult> Index()
         {
             // Get the list of current people
-            var people = await _personClient.ListPeopleAsync(1, _settings.ResultsPageSize);
+            var people = await _client.ListPeopleAsync(1, _settings.ResultsPageSize);
             var personText = people.Count == 1 ? "person" : "people";
             _logger.LogDebug($"{people.Count} {personText} loaded via the service");
-
-            // If the peson ID is specified, filter out only that individual
-            if (personId > 0)
-            {
-                _logger.LogDebug($"Filtering results for person with ID {personId}");
-                var person = people.First(x => x.Id == personId);
-                people = [person];
-            }
 
             // Construct the view model and serve the page
             var model = new PersonListViewModel();
@@ -79,7 +71,7 @@ namespace HealthTracker.Mvc.Controllers
                 ModelState.Clear();
 
                 // Retrieve the matching person records
-                var people = await _personClient.ListPeopleAsync(page, _settings.ResultsPageSize);
+                var people = await _client.ListPeopleAsync(page, _settings.ResultsPageSize);
                 model.SetEntities(people, page, _settings.ResultsPageSize);
             }
             else
@@ -89,7 +81,7 @@ namespace HealthTracker.Mvc.Controllers
 
             return View(model);
         }
-        
+
         /// <summary>
         /// Serve the page to add a new person
         /// </summary>
@@ -110,25 +102,26 @@ namespace HealthTracker.Mvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(AddPersonViewModel model)
         {
+            IActionResult result;
+
             if (ModelState.IsValid)
             {
-                var name = model.Person.Name;
                 _logger.LogDebug(
                     $"Adding person: First Names = {model.Person.FirstNames}, Surname = {model.Person.Surname}, " +
                     $"DoB = {model.Person.DateOfBirth:dd-MMM-yyyy}, Height = {model.Person.Height}, Gender = {model.Person.Gender}");
-                await _personClient.AddPersonAsync(model.Person.FirstNames, model.Person.Surname, model.Person.DateOfBirth, model.Person.Height, model.Person.Gender);
-                ModelState.Clear();
-                model.Clear();
-                model.Message = $"'{name}' added successfully";
+                var person = await _client.AddPersonAsync(model.Person.FirstNames, model.Person.Surname, model.Person.DateOfBirth, model.Person.Height, model.Person.Gender);
+
+                result = CreateListResult(person, $"{person.Name} successfully added");
             }
             else
             {
                 LogModelStateErrors(_logger);
+                result = View(model);
             }
 
-            return View(model);
+            return result;
         }
-        
+
         /// <summary>
         /// Serve the page to edit an existing person
         /// </summary>
@@ -137,7 +130,7 @@ namespace HealthTracker.Mvc.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var people = await _personClient.ListPeopleAsync(1, int.MaxValue);
+            var people = await _client.ListPeopleAsync(1, int.MaxValue);
             var personText = people.Count == 1 ? "person" : "people";
             _logger.LogDebug($"{people.Count} {personText} loaded via the service");
 
@@ -166,7 +159,7 @@ namespace HealthTracker.Mvc.Controllers
                     $"Updating person: Id = {model.Person.Id}, First Names = {model.Person.FirstNames}, Surname = {model.Person.Surname}, " +
                     $"DoB = {model.Person.DateOfBirth:dd-MMM-yyyy}, Height = {model.Person.Height}, Gender = {model.Person.Gender}");
 
-                await _personClient.UpdatePersonAsync(
+                var person = await _client.UpdatePersonAsync(
                     model.Person.Id,
                     model.Person.FirstNames,
                     model.Person.Surname,
@@ -174,7 +167,7 @@ namespace HealthTracker.Mvc.Controllers
                     model.Person.Height,
                     model.Person.Gender);
 
-                result = RedirectToAction("Index", new { personId = model.Person.Id });
+                result = CreateListResult(person, $"{person.Name} successfully updated");
             }
             else
             {

@@ -1,0 +1,73 @@
+@using HealthTracker.Mvc.Entities
+@using Microsoft.AspNetCore.Mvc.ModelBinding
+@model HealthTracker.Mvc.Models.ActivityTypeListViewModel
+
+@{
+    ViewData["Title"] = "Activity Types";
+    var previousDisabled = (Model.PreviousEnabled) ? "" : "disabled";
+    var nextDisabled = (Model.NextEnabled) ? "" : "disabled";
+}
+
+<p class="text-center font-weight-bold">
+    <span style="font-size: 1.2rem">
+        Activity Types
+    </span>
+    <br />
+    <small class="text-muted">
+        <em>
+            View and manage activity types
+        </em>
+    </small>
+</p>
+
+
+<div class="container-fluid">
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="row">
+            <div class="col-md-12 message">
+                <span>@Html.Raw(Model.Message)</span>
+            </div>
+        </div>
+        <hr />
+    }
+
+    @using (Html.BeginForm("Index", "ActivityType", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.PageNumber)
+
+        @if ((Model.ActivityTypes != null) && (Model.ActivityTypes.Count() > 0))
+        {
+            <table class="table">
+                <tr>
+                    <th>Description</th>
+                    <th />
+                </tr>
+                @foreach (var activityType in Model.ActivityTypes)
+                {
+                    <tr>
+                        <td valign="center">@activityType.Description</td>
+                        <td valign="center">
+                            <a class="btn btn-lg" asp-area="" asp-controller="ActivityType" asp-action="Edit" asp-route-id="@activityType.Id">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </table>
+            <hr />
+            <p class="text-right">
+                <button type="submit" name="Action" value="@ControllerActions.ActionPreviousPage" class="btn btn-secondary" @previousDisabled>Previous</button>
+                <button type="submit" name="Action" value="@ControllerActions.ActionNextPage" class="btn btn-primary" @nextDisabled>Next</button>
+                <a class="btn btn-primary" href="/ActivityType/Add" role="button">Add</a>
+            </p>
+        }
+        else if (Model.HasNoMatchingResults)
+        {
+            <hr />
+            @Html.Raw("No matching measurements")
+        }
+    }
+
+</div>
