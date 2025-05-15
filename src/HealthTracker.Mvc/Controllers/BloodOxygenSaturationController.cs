@@ -10,16 +10,16 @@ using Microsoft.AspNetCore.Mvc;
 namespace HealthTracker.Mvc.Controllers
 {
     [Authorize]
-    public class BloodPressureController : MeasurementControllerBase<IBloodPressureMeasurementClient, BloodPressureListViewModel, BloodPressureMeasurement>
+    public class BloodOxygenSaturationController : MeasurementControllerBase<IBloodOxygenSaturationMeasurementClient, BloodOxygenSaturationListViewModel, BloodOxygenSaturationMeasurement>
     {
-        private readonly ILogger<BloodPressureController> _logger;
+        private readonly ILogger<BloodOxygenSaturationController> _logger;
 
-        public BloodPressureController(
+        public BloodOxygenSaturationController(
             IPersonClient personClient,
-            IBloodPressureMeasurementClient measurementClient,
+            IBloodOxygenSaturationMeasurementClient measurementClient,
             IHealthTrackerApplicationSettings settings,
             IFilterGenerator filterGenerator,
-            ILogger<BloodPressureController> logger) : base(personClient, measurementClient, settings, filterGenerator)
+            ILogger<BloodOxygenSaturationController> logger) : base(personClient, measurementClient, settings, filterGenerator)
         {
             _logger = logger;
         }
@@ -31,7 +31,7 @@ namespace HealthTracker.Mvc.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var model = new BloodPressureListViewModel
+            var model = new BloodOxygenSaturationListViewModel
             {
                 PageNumber = 1,
                 Filters = await _filterGenerator.Create()
@@ -47,7 +47,7 @@ namespace HealthTracker.Mvc.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(BloodPressureListViewModel model)
+        public async Task<IActionResult> Index(BloodOxygenSaturationListViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -73,14 +73,14 @@ namespace HealthTracker.Mvc.Controllers
 
                 // Retrieve the matching weight records
                 _logger.LogDebug(
-                    $"Retrieving page {page} of blood pressure measurements for person with ID {model.Filters.PersonId}" +
+                    $"Retrieving page {page} of % SPO2 measurements for person with ID {model.Filters.PersonId}" +
                     $" in the date range {model.Filters.From:dd-MMM-yyyy} to {model.Filters.To:dd-MMM-yyyy}");
 
-                var measurements = await _measurementClient.ListBloodPressureMeasurementsAsync(
+                var measurements = await _measurementClient.ListBloodOxygenSaturationMeasurementsAsync(
                     model.Filters.PersonId, model.Filters.From, model.Filters.To, page, _settings.ResultsPageSize);
                 model.SetEntities(measurements, page, _settings.ResultsPageSize);
 
-                _logger.LogDebug($"{measurements.Count} matching blood pressure measurements retrieved");
+                _logger.LogDebug($"{measurements.Count} matching % SPO2 measurements retrieved");
             }
             else
             {
@@ -100,7 +100,7 @@ namespace HealthTracker.Mvc.Controllers
         [HttpGet]
         public async Task<IActionResult> Add(int personId)
         {
-            var model = new AddBloodPressureViewModel();
+            var model = new AddBloodOxygenSaturationViewModel();
             model.Measurement.PersonId = personId;
             await SetPersonDetails(model, personId);
             return View(model);
@@ -113,7 +113,7 @@ namespace HealthTracker.Mvc.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add(AddBloodPressureViewModel model)
+        public async Task<IActionResult> Add(AddBloodOxygenSaturationViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -122,11 +122,11 @@ namespace HealthTracker.Mvc.Controllers
                 var personName = model.PersonName;
 
                 // Add the measurement
-                _logger.LogDebug($"Adding blood pressure measurement: Person = {personName}, Blood Pressure = {model.Measurement.Systolic}/{model.Measurement.Diastolic}");
-                var measurement = await _measurementClient.AddBloodPressureMeasurementAsync(personId, DateTime.Now, model.Measurement.Systolic, model.Measurement.Diastolic);
+                _logger.LogDebug($"Adding % SPO2 measurement: Person = {personName}, Percentage = {model.Measurement.Percentage:.##}");
+                var measurement = await _measurementClient.AddBloodOxygenSaturationMeasurementAsync(personId, DateTime.Now, model.Measurement.Percentage);
 
                 // Return the measurement list view containing only the new measurement and a confirmation message
-                var message = $"Blood pressure measurement of {model.Measurement.Systolic}/{model.Measurement.Diastolic} for {personName} added successfully";
+                var message = $"% SPO2 measurement of {model.Measurement.Percentage:.##} for {personName} added successfully";
                 var listModel = await CreateListViewModel(
                     measurement.PersonId,
                     measurement.Id,
@@ -156,7 +156,7 @@ namespace HealthTracker.Mvc.Controllers
             var measurement = await _measurementClient.Get(id);
 
             // Construct the view model
-            var model = new EditBloodPressureViewModel();
+            var model = new EditBloodOxygenSaturationViewModel();
             model.Measurement = measurement;
             await SetPersonDetails(model, measurement.PersonId);
             return View(model);
@@ -169,20 +169,19 @@ namespace HealthTracker.Mvc.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EditBloodPressureViewModel model)
+        public async Task<IActionResult> Edit(EditBloodOxygenSaturationViewModel model)
         {
             IActionResult result;
 
             if (ModelState.IsValid)
             {
                 // Update the measurement
-                _logger.LogDebug($"Updating blood pressure measurement: ID = {model.Measurement.Id}, Person ID = {model.Measurement.PersonId}, BloodPressure = {model.Measurement.Systolic}/{model.Measurement.Diastolic}");
-                await _measurementClient.UpdateBloodPressureMeasurementAsync(
+                _logger.LogDebug($"Updating % SPO2 measurement: ID = {model.Measurement.Id}, Person ID = {model.Measurement.PersonId}, Percentage = {model.Measurement.Percentage}");
+                await _measurementClient.UpdateBloodOxygenSaturationMeasurementAsync(
                     model.Measurement.Id,
                     model.Measurement.PersonId,
                     model.Measurement.Date,
-                    model.Measurement.Systolic,
-                    model.Measurement.Diastolic);
+                    model.Measurement.Percentage);
 
                 // Return the measurement list view containing only the updated measurement and a confirmation message
                 var listModel = await CreateListViewModel(
@@ -213,14 +212,14 @@ namespace HealthTracker.Mvc.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             // Retrieve the measurement and capture the person and date
-            _logger.LogDebug($"Retrieving blood pressure measurement: ID = {id}");
+            _logger.LogDebug($"Retrieving % SPO2 measurement: ID = {id}");
             var measurement = await _measurementClient.Get(id);
             var personId = measurement.PersonId;
             var date = measurement.Date;
 
             // Delete the measurement
-            _logger.LogDebug($"Deleting blood pressure measurement: ID = {id}");
-            await _measurementClient.DeleteBloodPressureMeasurementAsync(id);
+            _logger.LogDebug($"Deleting % SPO2 measurement: ID = {id}");
+            await _measurementClient.DeleteBloodOxygenSaturationMeasurementAsync(id);
 
             // Return the list view with an empty list of measurements
             var model = await CreateListViewModel(personId, 0, date, date, "Measurement successfully deleted");

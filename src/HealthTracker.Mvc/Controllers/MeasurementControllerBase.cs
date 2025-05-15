@@ -59,7 +59,7 @@ namespace HealthTracker.Mvc.Controllers
         /// <param name="to"></param>
         /// <param name="message"></param>
         /// <returns></returns>
-        protected async Task<IActionResult> CreateMeasurementListResult(int personId, int measurementId, DateTime from, DateTime to, string message)
+        protected async Task<L> CreateListViewModel(int personId, int measurementId, DateTime from, DateTime to, string message)
         {
             // Create the model
             L model = new()
@@ -86,8 +86,8 @@ namespace HealthTracker.Mvc.Controllers
             // Set the message
             model.Message = message;
 
-            // Render the view
-            return View("Index", model);
+            // Return the model
+            return model;
         }
     }
 }

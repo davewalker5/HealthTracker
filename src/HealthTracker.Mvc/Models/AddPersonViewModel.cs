@@ -5,12 +5,9 @@ namespace HealthTracker.Mvc.Models
 {
     public class AddPersonViewModel : PersonViewModel
     {
-        public string Message { get; set; }
+        public string Message { get; set; } = "";
 
         public AddPersonViewModel()
-            => Clear();
-
-        public void Clear()
         {
             Person.Id = 0;
             Person.FirstNames = "";

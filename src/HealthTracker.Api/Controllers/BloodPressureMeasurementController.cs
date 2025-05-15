@@ -20,7 +20,7 @@ namespace HealthTracker.Api.Controllers
             => _factory = factory;
 
         /// <summary>
-        /// 
+        /// Return a single measurement given its ID
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>

@@ -19,6 +19,11 @@ namespace HealthTracker.Api.Controllers
         public WeightMeasurementController(IHealthTrackerFactory factory)
             => _factory = factory;
 
+        /// <summary>
+        /// Return a single measurement given its ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{id}")]
         public async Task<ActionResult<WeightMeasurement>> Get(int id)

@@ -123,12 +123,18 @@ namespace HealthTracker.Mvc.Controllers
 
                 // Add the measurement
                 _logger.LogDebug($"Adding weight measurement: Person = {personName}, Weight = {model.Measurement.Weight}");
-                await _measurementClient.AddWeightMeasurementAsync(personId, DateTime.Now, model.Measurement.Weight);
-                model.Message = $"Weight measurement of {model.Measurement.Weight:.##} for {personName} added successfully";
+                var measurement = await _measurementClient.AddWeightMeasurementAsync(personId, DateTime.Now, model.Measurement.Weight);
 
-                // Clear model state and configure the model
-                ModelState.Clear();
-                model.Clear();
+                // Return the measurement list view containing only the new measurement and a confirmation message
+                var message = $"Weight measurement of {model.Measurement.Weight:.##} for {personName} added successfully";
+                var listModel = await CreateListViewModel(
+                    measurement.PersonId,
+                    measurement.Id,
+                    measurement.Date,
+                    measurement.Date,
+                    message);
+
+                return View("Index", listModel);
             }
             else
             {
@@ -178,14 +184,14 @@ namespace HealthTracker.Mvc.Controllers
                     model.Measurement.Weight);
 
                 // Return the measurement list view containing only the updated measurement and a confirmation message
-                result = await CreateMeasurementListResult(
+                var listModel = await CreateListViewModel(
                     model.Measurement.PersonId,
                     model.Measurement.Id,
                     model.Measurement.Date,
                     model.Measurement.Date,
                     "Measurement successfully updated");
 
-                return result;
+                return View("Index", listModel);
             }
             else
             {
@@ -216,8 +222,8 @@ namespace HealthTracker.Mvc.Controllers
             await _measurementClient.DeleteWeightMeasurementAsync(id);
 
             // Return the list view with an empty list of measurements
-            var result = await CreateMeasurementListResult(personId, 0, date, date, "Measurement successfully deleted");
-            return result;
+            var model = await CreateListViewModel(personId, 0, date, date, "Measurement successfully deleted");
+            return View("Index", model);
         }
     }
 }

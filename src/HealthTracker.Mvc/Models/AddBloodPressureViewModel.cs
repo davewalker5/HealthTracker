@@ -2,12 +2,9 @@ namespace HealthTracker.Mvc.Models
 {
     public class AddBloodPressureViewModel : BloodPressureViewModel
     {
-        public string Message { get; set; }
+        public string Message { get; set; } = "";
 
         public AddBloodPressureViewModel()
-            => Clear();
-
-        public void Clear()
         {
             Measurement.Id = 0;
             Measurement.PersonId = 0;

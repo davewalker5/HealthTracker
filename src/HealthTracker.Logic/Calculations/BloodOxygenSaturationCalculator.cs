@@ -20,7 +20,9 @@ namespace HealthTracker.Logic.Calculations
         public async Task<BloodOxygenSaturationMeasurement> AverageAsync(int personId, DateTime from, DateTime to)
         {
             BloodOxygenSaturationMeasurement average = null;
-            var measurements = await _factory.BloodOxygenSaturationMeasurements.ListAsync(x => (x.PersonId == personId) && (x.Date >= from) && (x.Date <= to));
+            var measurements = await _factory.BloodOxygenSaturationMeasurements.ListAsync(
+                x => (x.PersonId == personId) && (x.Date >= from) && (x.Date <= to),
+                1, int.MaxValue);
 
             if (measurements.Any())
             {
@@ -47,7 +49,9 @@ namespace HealthTracker.Logic.Calculations
             List<BloodOxygenSaturationMeasurement> averages = null;
 
             // Retrieve the measurements lying in the requested date range
-            var measurements = await _factory.BloodOxygenSaturationMeasurements.ListAsync(x => (x.PersonId == personId) && (x.Date >= from) && (x.Date <= to));
+            var measurements = await _factory.BloodOxygenSaturationMeasurements.ListAsync(
+                x => (x.PersonId == personId) && (x.Date >= from) && (x.Date <= to),
+                1, int.MaxValue);
             if (measurements.Any())
             {
                 averages = [];

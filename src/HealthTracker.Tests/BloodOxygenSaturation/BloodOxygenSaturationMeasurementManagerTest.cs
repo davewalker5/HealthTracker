@@ -34,7 +34,7 @@ namespace HealthTracker.Tests.BloodOxygenSaturation
         [TestMethod]
         public async Task AddAndListTest()
         {
-            var measurements = await _factory.BloodOxygenSaturationMeasurements.ListAsync(x => x.PersonId == _personId);
+            var measurements = await _factory.BloodOxygenSaturationMeasurements.ListAsync(x => x.PersonId == _personId, 1, int.MaxValue);
             Assert.AreEqual(1, measurements.Count);
             Assert.AreEqual(_measurementId, measurements.First().Id);
             Assert.AreEqual(_personId, measurements.First().PersonId);
@@ -46,7 +46,7 @@ namespace HealthTracker.Tests.BloodOxygenSaturation
         public async Task UpdateTest()
         {
             await _factory.BloodOxygenSaturationMeasurements.UpdateAsync(_measurementId, _personId, _UpdatedMeasurementDate, _UpdatedSPO2);
-            var measurements = await _factory.BloodOxygenSaturationMeasurements.ListAsync(x => x.PersonId == _personId);
+            var measurements = await _factory.BloodOxygenSaturationMeasurements.ListAsync(x => x.PersonId == _personId, 1, int.MaxValue);
             Assert.AreEqual(1, measurements.Count);
             Assert.AreEqual(_measurementId, measurements.First().Id);
             Assert.AreEqual(_personId, measurements.First().PersonId);
@@ -58,7 +58,7 @@ namespace HealthTracker.Tests.BloodOxygenSaturation
         public async Task DeleteTest()
         {
             await _factory.BloodOxygenSaturationMeasurements.DeleteAsync(_measurementId);
-            var measurements = await _factory.BloodOxygenSaturationMeasurements.ListAsync(a => true);
+            var measurements = await _factory.BloodOxygenSaturationMeasurements.ListAsync(a => true, 1, int.MaxValue);
             Assert.AreEqual(0, measurements.Count);
         }
 
