@@ -4,6 +4,9 @@ namespace HealthTracker.Mvc.Models
     {
         public string Message { get; set; }
 
+        public AddWeightViewModel()
+            => Clear();
+
         public void Clear()
         {
             Measurement.Id = 0;
