@@ -68,11 +68,15 @@ namespace HealthTracker.Client.ApiClient
         /// <summary>
         /// Return a list of medications
         /// </summary>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<List<Medication>> ListMedicationsAsync()
+        public async Task<List<Medication>> ListMedicationsAsync(int pageNumber, int pageSize)
         {
             // Request a list of medications
-            string json = await SendIndirectAsync(RouteKey, null, HttpMethod.Get);
+            var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
+            var route = $"{baseRoute}/{pageNumber}/{pageSize}";
+            string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no medications in the database
             List<Medication> medications = !string.IsNullOrEmpty(json) ? Deserialize<List<Medication>>(json) : null;

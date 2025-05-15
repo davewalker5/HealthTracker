@@ -46,7 +46,7 @@ namespace HealthTracker.Tests.Medications
         [TestMethod]
         public async Task ListAllTest()
         {
-            var medications = await _factory.Medications.ListAsync(x => true);
+            var medications = await _factory.Medications.ListAsync(x => true, 1, int.MaxValue);
             Assert.AreEqual(1, medications.Count);
             Assert.AreEqual(Name, medications.First().Name);
         }
@@ -54,7 +54,7 @@ namespace HealthTracker.Tests.Medications
         [TestMethod]
         public async Task ListMissingTest()
         {
-            var medications = await _factory.Medications.ListAsync(e => e.Name == "Missing");
+            var medications = await _factory.Medications.ListAsync(e => e.Name == "Missing", 1, int.MaxValue);
             Assert.AreEqual(0, medications.Count);
         }
 

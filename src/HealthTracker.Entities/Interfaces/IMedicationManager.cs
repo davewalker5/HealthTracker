@@ -6,7 +6,7 @@ namespace HealthTracker.Entities.Interfaces
     public interface IMedicationManager
     {
         Task<Medication> GetAsync(Expression<Func<Medication, bool>> predicate);
-        Task<List<Medication>> ListAsync(Expression<Func<Medication, bool>> predicate);
+        Task<List<Medication>> ListAsync(Expression<Func<Medication, bool>> predicate, int pageNumber, int pageSize);
         Task<Medication> AddAsync(string name);
         Task<Medication> UpdateAsync(int id, string name);
         Task DeleteAsync(int id);

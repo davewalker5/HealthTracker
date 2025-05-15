@@ -7,6 +7,6 @@ namespace HealthTracker.Client.Interfaces
         Task<Medication> AddMedicationAsync(string name);
         Task<Medication> UpdateMedicationAsync(int id, string name);
         Task DeleteMedicationAsync(int id);
-        Task<List<Medication>> ListMedicationsAsync();
+        Task<List<Medication>> ListMedicationsAsync(int pageNumber, int pageSize);
     }
 }

@@ -24,7 +24,7 @@ namespace HealthTracker.Logic.Database
         /// <returns></returns>
         public async Task<Medication> GetAsync(Expression<Func<Medication, bool>> predicate)
         {
-            var medications = await ListAsync(predicate);
+            var medications = await ListAsync(predicate, 1, int.MaxValue);
             return medications.FirstOrDefault();
         }
 
@@ -33,10 +33,12 @@ namespace HealthTracker.Logic.Database
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        public async Task<List<Medication>> ListAsync(Expression<Func<Medication, bool>> predicate)
+        public async Task<List<Medication>> ListAsync(Expression<Func<Medication, bool>> predicate, int pageNumber, int pageSize)
             => await Context.Medications
                             .Where(predicate)
                             .OrderBy(x => x.Name)
+                            .Skip((pageNumber - 1) * pageSize)
+                            .Take(pageSize)
                             .ToListAsync();
 
         /// <summary>
@@ -51,7 +53,7 @@ namespace HealthTracker.Logic.Database
 
             // Check the medication doesn't already exist
             var clean = StringCleaner.Clean(name);
-            var medications = await ListAsync(x => x.Name == clean);
+            var medications = await ListAsync(x => x.Name == clean, 1, int.MaxValue);
             if (medications.Any())
             {
                 var message = $"Medication '{name}' already exists";
@@ -79,7 +81,7 @@ namespace HealthTracker.Logic.Database
 
             // Check there isn't already a medication with the updated name
             var clean = StringCleaner.Clean(name);
-            var medications = await ListAsync(x => (x.Name == clean) && (x.Id != id));
+            var medications = await ListAsync(x => (x.Name == clean) && (x.Id != id), 1, int.MaxValue);
             if (medications.Any())
             {
                 var message = $"Medication '{name}' already exists";

@@ -1,0 +1,15 @@
+@model HealthTracker.Mvc.Models.MedicationViewModel
+
+@Html.HiddenFor(m => m.Medication.Id)
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Medication.Name)</strong>
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Medication.Name, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Medication.Name, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+</div>

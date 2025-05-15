@@ -89,12 +89,13 @@ namespace HealthTracker.Tests.Medications
             var json = JsonSerializer.Serialize(new List<dynamic>() { medication });
             _httpClient.AddResponse(json);
 
-            var medications = await _client.ListMedicationsAsync();
+            var medications = await _client.ListMedicationsAsync(1, int.MaxValue);
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/1/{int.MaxValue}";
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
             Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
-            Assert.AreEqual(_settings.ApiRoutes[0].Route, _httpClient.Requests[0].Uri);
+            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
 
             Assert.IsNull(_httpClient.Requests[0].Content);
             Assert.IsNotNull(medications);
