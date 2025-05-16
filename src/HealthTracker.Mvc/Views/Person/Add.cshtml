@@ -1,3 +1,4 @@
+@using HealthTracker.Mvc.Entities
 @model HealthTracker.Mvc.Models.AddPersonViewModel
 
 @{
@@ -16,16 +17,6 @@
         </div>
         <hr />
 
-        @if (!string.IsNullOrEmpty(Model.Message))
-        {
-            <div class="row">
-                <div class="col-md-12 message">
-                    <span>@Html.Raw(Model.Message)</span>
-                </div>
-            </div>
-            <hr />
-        }
-
         @await Html.PartialAsync("Person", Model)
 
         <br />
@@ -33,6 +24,7 @@
         <div class="row">
             <div class="col-md">
                 <div class="input-group">
+                    <button type="submit" name="Action" value="@ControllerActions.ActionCancel" class="btn btn-secondary" style="margin-right:10px">Cancel</button>
                     <button type="submit" class="btn btn-primary">Save</button>
                 </div>
             </div>

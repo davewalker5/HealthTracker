@@ -1,8 +1,8 @@
 @using HealthTracker.Mvc.Entities
-@model HealthTracker.Mvc.Models.EditActivityTypeViewModel
+@model HealthTracker.Mvc.Models.EditBloodGlucoseViewModel
 
 @{
-    ViewData["Title"] = "Edit Activity Type";
+    ViewData["Title"] = "Edit Glucose Measurement";
 }
 
 <div class="container-fluid">
@@ -12,12 +12,13 @@
 
         <div class="row">
             <div class="col-md">
-                <span style="font-size: 1.2rem"><strong>Edit Activity Type</strong></span>
+                <span style="font-size: 1.2rem"><strong>Edit Glucose Measurement</strong></span>
             </div>
         </div>
         <hr />
 
-        @await Html.PartialAsync("ActivityType", Model);
+        @await Html.PartialAsync("BloodGlucose", Model)
+
         <br />
 
         <div class="row">

@@ -1,12 +1,18 @@
 using HealthTracker.Entities.Measurements;
-using HealthTracker.Mvc.Interfaces;
 
 namespace HealthTracker.Mvc.Models
 {
-    public class BloodOxygenSaturationViewModel : IMeasurementPersonViewModel
+    public class BloodOxygenSaturationViewModel : SelectedFiltersViewModel
     {
-        public int PersonId { get; set; }
-        public string PersonName { get; set; }
         public BloodOxygenSaturationMeasurement Measurement { get; set; } = new();
+        public string Action { get; set; }
+
+        public BloodOxygenSaturationViewModel()
+        {
+            Measurement.Id = 0;
+            Measurement.PersonId = 0;
+            Measurement.Date = DateTime.Now;
+            Measurement.Percentage = 0;
+        }
     }
 }

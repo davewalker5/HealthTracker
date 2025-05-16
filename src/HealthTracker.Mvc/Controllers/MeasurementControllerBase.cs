@@ -1,8 +1,9 @@
+using System.Globalization;
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
+using HealthTracker.Mvc.Entities;
 using HealthTracker.Mvc.Interfaces;
 using HealthTracker.Mvc.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace HealthTracker.Mvc.Controllers
 {
@@ -35,21 +36,40 @@ namespace HealthTracker.Mvc.Controllers
         }
 
         /// <summary>
-        /// Set person details on a view model
+        /// Set filter details on a view model
         /// </summary>
         /// <param name="model"></param>
         /// <param name="personId"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
         /// <returns></returns>
-        protected async Task SetPersonDetails(IMeasurementPersonViewModel model, int personId)
+        protected async Task SetFilterDetails(IMeasurementFiltersViewModel model, int personId, string from, string to)
+        {
+            var fromDate = DateTime.ParseExact(from, DateFormats.DateTime, CultureInfo.InvariantCulture);
+            var toDate = DateTime.ParseExact(to, DateFormats.DateTime, CultureInfo.InvariantCulture);
+            await SetFilterDetails(model, personId, fromDate, toDate);
+        }
+
+        /// <summary>
+        /// Set filter details on a view model
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="personId"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
+        protected async Task SetFilterDetails(IMeasurementFiltersViewModel model, int personId, DateTime from, DateTime to)
         {
             // Retrieve the person with whom the new measurement is to be associated
             var people = await _personClient.ListPeopleAsync(1, int.MaxValue);
             var person = people.First(x => x.Id == personId);
 
-            // Set the person details on the model
+            // Set the filter details on the model
             model.PersonName = person.Name;
+            model.From = from;
+            model.To = to;
         }
-        
+
         /// <summary>
         /// Helper method to create a list view result when editing or deleting a measurement
         /// </summary>
@@ -89,5 +109,14 @@ namespace HealthTracker.Mvc.Controllers
             // Return the model
             return model;
         }
+
+        /// <summary>
+        /// Convert a "to" date supplied by the date pickers, and therefore have a time of 00:00:00, to
+        /// a date that will capture all data up to midnight on the specified date
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        protected DateTime ToDate(DateTime date)
+            => new(date.Year, date.Month, date.Day, 23, 59, 59);
     }
 }

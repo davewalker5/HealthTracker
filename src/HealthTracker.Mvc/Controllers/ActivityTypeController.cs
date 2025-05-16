@@ -105,6 +105,11 @@ namespace HealthTracker.Mvc.Controllers
         {
             IActionResult result;
 
+            if (model.Action == ControllerActions.ActionCancel)
+            {
+                return RedirectToAction("Index");
+            }
+
             if (ModelState.IsValid)
             {
                 var description = model.ActivityType.Description;
@@ -152,6 +157,11 @@ namespace HealthTracker.Mvc.Controllers
         public async Task<IActionResult> Edit(EditActivityTypeViewModel model)
         {
             IActionResult result;
+
+            if (model.Action == ControllerActions.ActionCancel)
+            {
+                return RedirectToAction("Index");
+            }
 
             if (ModelState.IsValid)
             {

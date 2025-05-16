@@ -3,14 +3,14 @@
 @model HealthTracker.Mvc.Models.BloodOxygenSaturationListViewModel
 
 @{
-    ViewData["Title"] = "Blood Pressure Measurements";
+    ViewData["Title"] = "% SPO2 Measurements";
     var previousDisabled = (Model.PreviousEnabled) ? "" : "disabled";
     var nextDisabled = (Model.NextEnabled) ? "" : "disabled";
 }
 
 <p class="text-center font-weight-bold">
     <span style="font-size: 1.2rem">
-        Blood Pressure Measurements
+        % SPO2 Measurements
     </span>
     <br />
     <small class="text-muted">
@@ -62,7 +62,7 @@
                         <td valign="center"><span>@measurement.Percentage.ToString(".##")</span></td>
                         <td valign="center">@measurement.Assessment</td>
                         <td valign="center">
-                            <a class="btn btn-lg" asp-area="" asp-controller="BloodOxygenSaturation" asp-action="Edit" asp-route-id="@measurement.Id">
+                            <a class="btn btn-lg" asp-area="" asp-controller="BloodOxygenSaturation" asp-action="Edit" asp-route-id="@measurement.Id" asp-route-start="@Model.Filters.From.ToString(DateFormats.DateTime)" asp-route-end="@Model.Filters.To.ToString(DateFormats.DateTime)">
                                 <i class="fas fa-edit"></i>
                             </a>
                         </td>

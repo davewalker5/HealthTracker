@@ -105,6 +105,11 @@ namespace HealthTracker.Mvc.Controllers
         {
             IActionResult result;
 
+            if (model.Action == ControllerActions.ActionCancel)
+            {
+                return RedirectToAction("Index");
+            }
+
             if (ModelState.IsValid)
             {
                 _logger.LogDebug($"Adding medication: Name = {model.Medication.Name}");
@@ -151,6 +156,11 @@ namespace HealthTracker.Mvc.Controllers
         public async Task<IActionResult> Edit(EditMedicationViewModel model)
         {
             IActionResult result;
+
+            if (model.Action == ControllerActions.ActionCancel)
+            {
+                return RedirectToAction("Index");
+            }
 
             if (ModelState.IsValid)
             {

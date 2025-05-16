@@ -1,6 +1,9 @@
+@using HealthTracker.Mvc.Entities
 @model HealthTracker.Mvc.Models.WeightViewModel
 
 @Html.HiddenFor(m => m.PersonName)
+@Html.HiddenFor(m => m.From)
+@Html.HiddenFor(m => m.To)
 @Html.HiddenFor(m => m.Measurement.Id)
 @Html.HiddenFor(m => m.Measurement.PersonId)
 
@@ -23,8 +26,8 @@
                     new GijgoDatePicker(document.getElementById("Measurement_Date"), {
                         calendarWeeks: false,
                         uiLibrary: "bootstrap4",
-                        format: "dd/mm/yyyy",
-                        value: "@Model.Measurement.Date.ToString("dd/MM/yyyy")"
+                        format: "@DateFormats.DateJavascript",
+                        value: "@Model.Measurement.Date.ToString(DateFormats.Date)"
                     });
                 </script>
             </div>

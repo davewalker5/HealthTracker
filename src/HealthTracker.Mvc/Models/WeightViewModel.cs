@@ -1,12 +1,18 @@
 using HealthTracker.Entities.Measurements;
-using HealthTracker.Mvc.Interfaces;
 
 namespace HealthTracker.Mvc.Models
 {
-    public class WeightViewModel : IMeasurementPersonViewModel
+    public class WeightViewModel : SelectedFiltersViewModel
     {
-        public int PersonId { get; set; }
-        public string PersonName { get; set; }
         public WeightMeasurement Measurement { get; set; } = new();
+        public string Action { get; set; }
+
+        public WeightViewModel()
+        {
+            Measurement.Id = 0;
+            Measurement.PersonId = 0;
+            Measurement.Date = DateTime.Now;
+            Measurement.Weight = 0;
+        }
     }
 }

@@ -1,21 +1,21 @@
 @using HealthTracker.Mvc.Entities
 @using Microsoft.AspNetCore.Mvc.ModelBinding
-@model HealthTracker.Mvc.Models.WeightListViewModel
+@model HealthTracker.Mvc.Models.BloodGlucoseListViewModel
 
 @{
-    ViewData["Title"] = "Weight Measurements";
+    ViewData["Title"] = "Blood Glucose Measurements";
     var previousDisabled = (Model.PreviousEnabled) ? "" : "disabled";
     var nextDisabled = (Model.NextEnabled) ? "" : "disabled";
 }
 
 <p class="text-center font-weight-bold">
     <span style="font-size: 1.2rem">
-        Weight Measurements
+        Blood Glucose Measurements
     </span>
     <br />
     <small class="text-muted">
         <em>
-            View and manage weight measurements
+            View and manage blood glucose measurements
         </em>
     </small>
 </p>
@@ -32,13 +32,13 @@
         <hr />
     }
 
-    @using (Html.BeginForm("Delete", "Weight", FormMethod.Post, new { name = "delete-form", id = "delete-form" }))
+    @using (Html.BeginForm("Delete", "BloodGlucose", FormMethod.Post, new { name = "delete-form", id = "delete-form" }))
     {
         @Html.AntiForgeryToken()
         @Html.Hidden("id", 0)
     }
 
-    @using (Html.BeginForm("Index", "Weight", FormMethod.Post))
+    @using (Html.BeginForm("Index", "BloodGlucose", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
         @Html.EditorFor(m => m.Filters)
@@ -50,10 +50,8 @@
                 <tr>
                     <th>Person</th>
                     <th>Date</th>
-                    <th>Weight</th>
-                    <th>BMI</th>
-                    <th>Assessment</th>
-                    <th>BMR</th>
+                    <th>Time</th>
+                    <th>Level</th>
                     <th />
                 </tr>
                 @foreach (var measurement in Model.Measurements)
@@ -61,12 +59,10 @@
                     <tr>
                         <td valign="center">@Model.Filters.SelectedPerson.Name</td>
                         <td valign="center">@measurement.Date.ToString("dd-MMM-yyyy")</td>
-                        <td valign="center">@measurement.Weight.ToString(".##")</td>
-                        <td valign="center">@measurement.BMI.ToString(".##")</td>
-                        <td valign="center">@measurement.BMIAssessment</td>
-                        <td valign="center">@measurement.BMR.ToString(".##")</td>
+                        <td valign="center">@measurement.Date.ToString("HH:mm")</td>
+                        <td valign="center">@measurement.Level</td>
                         <td valign="center">
-                            <a class="btn btn-lg" asp-area="" asp-controller="Weight" asp-action="Edit" asp-route-id="@measurement.Id" asp-route-start="@Model.Filters.From.ToString(DateFormats.DateTime)" asp-route-end="@Model.Filters.To.ToString(DateFormats.DateTime)">
+                            <a class="btn btn-lg" asp-area="" asp-controller="BloodGlucose" asp-action="Edit" asp-route-id="@measurement.Id" asp-route-start="@Model.Filters.From.ToString(DateFormats.DateTime)" asp-route-end="@Model.Filters.To.ToString(DateFormats.DateTime)">
                                 <i class="fas fa-edit"></i>
                             </a>
                         </td>

@@ -8,6 +8,7 @@ namespace HealthTracker.Mvc.Models
     {
         public Person Person { get; set; } = new();
         public IList<SelectListItem> Genders { get; set; }= [];
+        public string Action { get; set; }
 
         public PersonViewModel()
         {
@@ -16,6 +17,14 @@ namespace HealthTracker.Mvc.Models
             {
                 Genders.Add(new SelectListItem() { Text = gender.ToString(), Value = gender.ToString() });
             }
+
+            // Reset the person properties
+            Person.Id = 0;
+            Person.FirstNames = "";
+            Person.Surname = "";
+            Person.DateOfBirth = DateTime.Today;
+            Person.Height = 0M;
+            Person.Gender = Gender.Unspecified;
         }
     }
 }

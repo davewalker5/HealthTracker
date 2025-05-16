@@ -1,12 +1,19 @@
 using HealthTracker.Entities.Measurements;
-using HealthTracker.Mvc.Interfaces;
 
 namespace HealthTracker.Mvc.Models
 {
-    public class BloodPressureViewModel : IMeasurementPersonViewModel
+    public class BloodPressureViewModel : SelectedFiltersViewModel
     {
-        public int PersonId { get; set; }
-        public string PersonName { get; set; }
         public BloodPressureMeasurement Measurement { get; set; } = new();
+        public string Action { get; set; }
+
+        public BloodPressureViewModel()
+        {
+            Measurement.Id = 0;
+            Measurement.PersonId = 0;
+            Measurement.Date = DateTime.Now;
+            Measurement.Systolic = 0;
+            Measurement.Diastolic = 0;
+        }
     }
 }

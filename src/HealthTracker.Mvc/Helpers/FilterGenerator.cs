@@ -24,14 +24,27 @@ namespace HealthTracker.Mvc.Helpers
         /// </summary>
         /// <returns></returns>
         public async Task<FiltersViewModel> Create()
+            => await Create(0, null, null);
+
+        /// <summary>
+        /// Create a filters view model with filter properties selected
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
+        public async Task<FiltersViewModel> Create(int personId, DateTime? from, DateTime? to)
         {
             // Create a new model and populate the list of people
-            var model = new FiltersViewModel();
+            var model = new FiltersViewModel()
+            {
+                PersonId = personId
+            };
             await PopulatePersonList(model);
 
             // Set the default date range
-            model.From = DateTime.Today.AddDays(-_settings.DefaultTimePeriodDays);
-            model.To = DateTime.Today;
+            model.From = from ?? DateTime.Today.AddDays(-_settings.DefaultTimePeriodDays);
+            model.To = to ?? DateTime.Today;
 
             return model;
         }

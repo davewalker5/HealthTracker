@@ -25,16 +25,21 @@ namespace HealthTracker.Mvc.Controllers
         }
 
         /// <summary>
-        /// Serve the weight measurements page
+        /// Serve the measurements list page
         /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int personId = 0, DateTime? start = null, DateTime? end = null)
         {
+            _logger.LogDebug($"Rendering index view: Person ID = {personId}, From = {start}, To = {end}");
+
             var model = new BloodOxygenSaturationListViewModel
             {
                 PageNumber = 1,
-                Filters = await _filterGenerator.Create()
+                Filters = await _filterGenerator.Create(personId, start, end)
             };
 
             return View(model);
@@ -61,7 +66,12 @@ namespace HealthTracker.Mvc.Controllers
                         page += 1;
                         break;
                     case ControllerActions.ActionAdd:
-                        return RedirectToAction("Add", new { personId = model.Filters.PersonId });
+                        return RedirectToAction("Add", new
+                        {
+                            personId = model.Filters.PersonId,
+                            start = model.Filters.From,
+                            end = model.Filters.To
+                        });
                     default:
                         break;
                 }
@@ -71,13 +81,13 @@ namespace HealthTracker.Mvc.Controllers
                 // and amend the page number, above, then apply it, below
                 ModelState.Clear();
 
-                // Retrieve the matching weight records
+                // Retrieve the matching records
                 _logger.LogDebug(
                     $"Retrieving page {page} of % SPO2 measurements for person with ID {model.Filters.PersonId}" +
                     $" in the date range {model.Filters.From:dd-MMM-yyyy} to {model.Filters.To:dd-MMM-yyyy}");
 
                 var measurements = await _measurementClient.ListBloodOxygenSaturationMeasurementsAsync(
-                    model.Filters.PersonId, model.Filters.From, model.Filters.To, page, _settings.ResultsPageSize);
+                    model.Filters.PersonId, model.Filters.From, ToDate(model.Filters.To), page, _settings.ResultsPageSize);
                 model.SetEntities(measurements, page, _settings.ResultsPageSize);
 
                 _logger.LogDebug($"{measurements.Count} matching % SPO2 measurements retrieved");
@@ -96,13 +106,17 @@ namespace HealthTracker.Mvc.Controllers
         /// Serve the page to add a new measurement
         /// </summary>
         /// <param name="personId"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> Add(int personId)
+        public async Task<IActionResult> Add(int personId, DateTime start, DateTime end)
         {
+            _logger.LogDebug($"Rendering add view: Person ID = {personId}, From = {start}, To = {end}");
+
             var model = new AddBloodOxygenSaturationViewModel();
             model.Measurement.PersonId = personId;
-            await SetPersonDetails(model, personId);
+            await SetFilterDetails(model, personId, start, end);
             return View(model);
         }
 
@@ -115,6 +129,11 @@ namespace HealthTracker.Mvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(AddBloodOxygenSaturationViewModel model)
         {
+            if (model.Action == ControllerActions.ActionCancel)
+            {
+                return RedirectToAction("Index", new { personId = model.PersonId, start = model.From, end = model.To });
+            }
+
             if (ModelState.IsValid)
             {
                 // Capture person details
@@ -148,17 +167,21 @@ namespace HealthTracker.Mvc.Controllers
         /// Serve the page to edit an existing measurement
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int id, string start, string end)
         {
+            _logger.LogDebug($"Rendering edit view: Measurement ID = {id}, From = {start}, To = {end}");
+
             // Load the measurement to edit
             var measurement = await _measurementClient.Get(id);
 
             // Construct the view model
             var model = new EditBloodOxygenSaturationViewModel();
             model.Measurement = measurement;
-            await SetPersonDetails(model, measurement.PersonId);
+            await SetFilterDetails(model, measurement.PersonId, start, end);
             return View(model);
         }
 
@@ -172,6 +195,11 @@ namespace HealthTracker.Mvc.Controllers
         public async Task<IActionResult> Edit(EditBloodOxygenSaturationViewModel model)
         {
             IActionResult result;
+
+            if (model.Action == ControllerActions.ActionCancel)
+            {
+                return RedirectToAction("Index", new { personId = model.Measurement.PersonId, start = model.From, end = model.To });
+            }
 
             if (ModelState.IsValid)
             {

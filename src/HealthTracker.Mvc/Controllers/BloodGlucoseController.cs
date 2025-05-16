@@ -10,16 +10,16 @@ using Microsoft.AspNetCore.Mvc;
 namespace HealthTracker.Mvc.Controllers
 {
     [Authorize]
-    public class BloodPressureController : MeasurementControllerBase<IBloodPressureMeasurementClient, BloodPressureListViewModel, BloodPressureMeasurement>
+    public class BloodGlucoseController : MeasurementControllerBase<IBloodGlucoseMeasurementClient, BloodGlucoseListViewModel, BloodGlucoseMeasurement>
     {
-        private readonly ILogger<BloodPressureController> _logger;
+        private readonly ILogger<BloodGlucoseController> _logger;
 
-        public BloodPressureController(
+        public BloodGlucoseController(
             IPersonClient personClient,
-            IBloodPressureMeasurementClient measurementClient,
+            IBloodGlucoseMeasurementClient measurementClient,
             IHealthTrackerApplicationSettings settings,
             IFilterGenerator filterGenerator,
-            ILogger<BloodPressureController> logger) : base(personClient, measurementClient, settings, filterGenerator)
+            ILogger<BloodGlucoseController> logger) : base(personClient, measurementClient, settings, filterGenerator)
         {
             _logger = logger;
         }
@@ -36,7 +36,7 @@ namespace HealthTracker.Mvc.Controllers
         {
             _logger.LogDebug($"Rendering index view: Person ID = {personId}, From = {start}, To = {end}");
 
-            var model = new BloodPressureListViewModel
+            var model = new BloodGlucoseListViewModel
             {
                 PageNumber = 1,
                 Filters = await _filterGenerator.Create(personId, start, end)
@@ -52,7 +52,7 @@ namespace HealthTracker.Mvc.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(BloodPressureListViewModel model)
+        public async Task<IActionResult> Index(BloodGlucoseListViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -83,14 +83,15 @@ namespace HealthTracker.Mvc.Controllers
 
                 // Retrieve the matching records
                 _logger.LogDebug(
-                    $"Retrieving page {page} of blood pressure measurements for person with ID {model.Filters.PersonId}" +
+                    $"Retrieving page {page} of blood glucose measurements for person with ID {model.Filters.PersonId}" +
                     $" in the date range {model.Filters.From:dd-MMM-yyyy} to {model.Filters.To:dd-MMM-yyyy}");
 
-                var measurements = await _measurementClient.ListBloodPressureMeasurementsAsync(
+                // 
+                var measurements = await _measurementClient.ListBloodGlucoseMeasurementsAsync(
                     model.Filters.PersonId, model.Filters.From, ToDate(model.Filters.To), page, _settings.ResultsPageSize);
                 model.SetEntities(measurements, page, _settings.ResultsPageSize);
 
-                _logger.LogDebug($"{measurements.Count} matching blood pressure measurements retrieved");
+                _logger.LogDebug($"{measurements.Count} matching blood glucose measurements retrieved");
             }
             else
             {
@@ -114,7 +115,7 @@ namespace HealthTracker.Mvc.Controllers
         {
             _logger.LogDebug($"Rendering add view: Person ID = {personId}, From = {start}, To = {end}");
 
-            var model = new AddBloodPressureViewModel();
+            var model = new AddBloodGlucoseViewModel();
             model.Measurement.PersonId = personId;
             await SetFilterDetails(model, personId, start, end);
             return View(model);
@@ -127,7 +128,7 @@ namespace HealthTracker.Mvc.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add(AddBloodPressureViewModel model)
+        public async Task<IActionResult> Add(AddBloodGlucoseViewModel model)
         {
             if (model.Action == ControllerActions.ActionCancel)
             {
@@ -140,17 +141,20 @@ namespace HealthTracker.Mvc.Controllers
                 var personId = model.Measurement.PersonId;
                 var personName = model.PersonName;
 
+                // Combine the date and time strings to produce a timestamp
+                var timestamp = model.Timestamp();
+
                 // Add the measurement
-                _logger.LogDebug($"Adding blood pressure measurement: Person = {personName}, Blood Pressure = {model.Measurement.Systolic}/{model.Measurement.Diastolic}");
-                var measurement = await _measurementClient.AddBloodPressureMeasurementAsync(personId, DateTime.Now, model.Measurement.Systolic, model.Measurement.Diastolic);
+                _logger.LogDebug($"Adding blood glucose measurement: Person = {personName}, Timestamp = {timestamp}, Level = {model.Measurement.Level}");
+                var measurement = await _measurementClient.AddBloodGlucoseMeasurementAsync(personId, DateTime.Now, model.Measurement.Level);
 
                 // Return the measurement list view containing only the new measurement and a confirmation message
-                var message = $"Blood pressure measurement of {model.Measurement.Systolic}/{model.Measurement.Diastolic} for {personName} added successfully";
+                var message = $"Blood glucose measurement of {model.Measurement.Level} for {personName} added successfully";
                 var listModel = await CreateListViewModel(
                     measurement.PersonId,
                     measurement.Id,
                     measurement.Date,
-                    measurement.Date,
+                    timestamp,
                     message);
 
                 return View("Index", listModel);
@@ -179,7 +183,7 @@ namespace HealthTracker.Mvc.Controllers
             var measurement = await _measurementClient.Get(id);
 
             // Construct the view model
-            var model = new EditBloodPressureViewModel();
+            var model = new EditBloodGlucoseViewModel();
             model.Measurement = measurement;
             await SetFilterDetails(model, measurement.PersonId, start, end);
             return View(model);
@@ -192,7 +196,7 @@ namespace HealthTracker.Mvc.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EditBloodPressureViewModel model)
+        public async Task<IActionResult> Edit(EditBloodGlucoseViewModel model)
         {
             IActionResult result;
 
@@ -203,21 +207,23 @@ namespace HealthTracker.Mvc.Controllers
 
             if (ModelState.IsValid)
             {
+                // Combine the date and time strings to produce a timestamp
+                var timestamp = model.Timestamp();
+
                 // Update the measurement
-                _logger.LogDebug($"Updating blood pressure measurement: ID = {model.Measurement.Id}, Person ID = {model.Measurement.PersonId}, BloodPressure = {model.Measurement.Systolic}/{model.Measurement.Diastolic}");
-                await _measurementClient.UpdateBloodPressureMeasurementAsync(
+                _logger.LogDebug($"Updating blood glucose measurement: ID = {model.Measurement.Id}, Person ID = {model.Measurement.PersonId}, Timestamp = {timestamp}, Level = {model.Measurement.Level}");
+                var measurement = await _measurementClient.UpdateBloodGlucoseMeasurementAsync(
                     model.Measurement.Id,
                     model.Measurement.PersonId,
                     model.Measurement.Date,
-                    model.Measurement.Systolic,
-                    model.Measurement.Diastolic);
+                    model.Measurement.Level);
 
                 // Return the measurement list view containing only the updated measurement and a confirmation message
                 var listModel = await CreateListViewModel(
-                    model.Measurement.PersonId,
-                    model.Measurement.Id,
-                    model.Measurement.Date,
-                    model.Measurement.Date,
+                    measurement.PersonId,
+                    measurement.Id,
+                    timestamp,
+                    timestamp,
                     "Measurement successfully updated");
 
                 return View("Index", listModel);
@@ -241,14 +247,14 @@ namespace HealthTracker.Mvc.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             // Retrieve the measurement and capture the person and date
-            _logger.LogDebug($"Retrieving blood pressure measurement: ID = {id}");
+            _logger.LogDebug($"Retrieving blood glucose measurement: ID = {id}");
             var measurement = await _measurementClient.Get(id);
             var personId = measurement.PersonId;
             var date = measurement.Date;
 
             // Delete the measurement
-            _logger.LogDebug($"Deleting blood pressure measurement: ID = {id}");
-            await _measurementClient.DeleteBloodPressureMeasurementAsync(id);
+            _logger.LogDebug($"Deleting blood glucose measurement: ID = {id}");
+            await _measurementClient.DeleteBloodGlucoseMeasurementAsync(id);
 
             // Return the list view with an empty list of measurements
             var model = await CreateListViewModel(personId, 0, date, date, "Measurement successfully deleted");

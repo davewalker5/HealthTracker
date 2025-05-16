@@ -62,7 +62,7 @@
                         <td valign="center"><span>@measurement.Systolic</span>/<span>@measurement.Diastolic</span></td>
                         <td valign="center">@measurement.Assessment</td>
                         <td valign="center">
-                            <a class="btn btn-lg" asp-area="" asp-controller="BloodPressure" asp-action="Edit" asp-route-id="@measurement.Id">
+                            <a class="btn btn-lg" asp-area="" asp-controller="BloodPressure" asp-action="Edit" asp-route-id="@measurement.Id" asp-route-start="@Model.Filters.From.ToString(DateFormats.DateTime)" asp-route-end="@Model.Filters.To.ToString(DateFormats.DateTime)">
                                 <i class="fas fa-edit"></i>
                             </a>
                         </td>

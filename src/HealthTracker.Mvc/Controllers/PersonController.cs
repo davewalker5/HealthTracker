@@ -104,6 +104,11 @@ namespace HealthTracker.Mvc.Controllers
         {
             IActionResult result;
 
+            if (model.Action == ControllerActions.ActionCancel)
+            {
+                return RedirectToAction("Index");
+            }
+
             if (ModelState.IsValid)
             {
                 _logger.LogDebug(
@@ -152,6 +157,11 @@ namespace HealthTracker.Mvc.Controllers
         public async Task<IActionResult> Edit(EditPersonViewModel model)
         {
             IActionResult result;
+
+            if (model.Action == ControllerActions.ActionCancel)
+            {
+                return RedirectToAction("Index");
+            }
 
             if (ModelState.IsValid)
             {
