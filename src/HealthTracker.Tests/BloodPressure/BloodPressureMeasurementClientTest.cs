@@ -107,6 +107,31 @@ namespace HealthTracker.Tests.BloodPressure
         }
 
         [TestMethod]
+        public async Task GetTest()
+        {
+            var personId = DataGenerator.RandomId();
+            var measurement = DataGenerator.RandomBloodPressureMeasurement(personId, 2025, 100, 130, 70, 80);
+            var json = JsonSerializer.Serialize(measurement);
+            _httpClient.AddResponse(json);
+
+            var retrieved = await _client.Get(measurement.Id);
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/{measurement.Id}";
+
+            Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
+            Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
+            Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
+            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+
+            Assert.IsNull(_httpClient.Requests[0].Content);
+            Assert.IsNotNull(retrieved);
+            Assert.AreEqual(measurement.Id, retrieved.Id);
+            Assert.AreEqual(personId, retrieved.PersonId);
+            Assert.AreEqual(measurement.Date, retrieved.Date);
+            Assert.AreEqual(measurement.Systolic, retrieved.Systolic);
+            Assert.AreEqual(measurement.Diastolic, retrieved.Diastolic);
+        }
+
+        [TestMethod]
         public async Task ListWithNoDateRangeTest()
         {
             var personId = DataGenerator.RandomId();

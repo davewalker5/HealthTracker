@@ -101,6 +101,29 @@ namespace HealthTracker.Tests.Weight
         }
 
         [TestMethod]
+        public async Task GetTest()
+        {
+            var measurement = DataGenerator.RandomWeightMeasurement(70, 90);
+            var json = JsonSerializer.Serialize(measurement);
+            _httpClient.AddResponse(json);
+
+            var retrieved = await _client.Get(measurement.Id);
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/{measurement.Id}";
+
+            Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
+            Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
+            Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
+            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+
+            Assert.IsNull(_httpClient.Requests[0].Content);
+            Assert.IsNotNull(retrieved);
+            Assert.AreEqual(measurement.Id, retrieved.Id);
+            Assert.AreEqual(measurement.PersonId, retrieved.PersonId);
+            Assert.AreEqual(measurement.Date, retrieved.Date);
+            Assert.AreEqual(measurement.Weight, retrieved.Weight);
+        }
+
+        [TestMethod]
         public async Task ListWithNoDateRangeTest()
         {
             var measurement = DataGenerator.RandomWeightMeasurement(50, 100);

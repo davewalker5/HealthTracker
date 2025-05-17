@@ -108,6 +108,30 @@ namespace HealthTracker.Tests.BloodGlucose
         }
 
         [TestMethod]
+        public async Task GetTest()
+        {
+            var personId = DataGenerator.RandomId();
+            var measurement = DataGenerator.RandomBloodGlucoseMeasurement(personId, 2025);
+            var json = JsonSerializer.Serialize(measurement);
+            _httpClient.AddResponse(json);
+
+            var retrieved = await _client.Get(measurement.Id);
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/{measurement.Id}";
+
+            Assert.AreEqual($"Bearer {_apiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
+            Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
+            Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
+            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+
+            Assert.IsNull(_httpClient.Requests[0].Content);
+            Assert.IsNotNull(retrieved);
+            Assert.AreEqual(measurement.Id, retrieved.Id);
+            Assert.AreEqual(personId, retrieved.PersonId);
+            Assert.AreEqual(measurement.Date, retrieved.Date);
+            Assert.AreEqual(measurement.Level, retrieved.Level);
+        }
+
+        [TestMethod]
         public async Task ListWithNoDateRangeTest()
         {
             var id = DataGenerator.RandomId();

@@ -1,0 +1,40 @@
+@using HealthTracker.Mvc.Entities
+@model HealthTracker.Mvc.Models.BloodOxygenSaturationBandListViewModel
+
+@{
+    ViewData["Title"] = "% SPO2 Assessment Bands";
+}
+
+<p class="text-center font-weight-bold">
+    <span style="font-size: 1.2rem">
+        % SPO2 Assessment Bands
+    </span>
+    <br />
+    <small class="text-muted">
+        <em>
+            Bandings used to assess % SPO2 measurements
+        </em>
+    </small>
+</p>
+
+<div class="container-fluid">
+    <table class="table">
+        <tr>
+            <th>Name</th>
+            <th>Minimum % SPO2</th>
+            <th>Maximum % SPO2</th>
+            <th>Minimum Age</th>
+            <th>Maximum Age</th>
+        </tr>
+        @foreach (var band in Model.Bands)
+        {
+            <tr>
+                <td valign="center">@band.Name</td>
+                <td valign="center">@Model.GetFormattedValue(band.MinimumSPO2)</td>
+                <td valign="center">@Model.GetFormattedValue(band.MaximumSPO2)</td>
+                <td valign="center">@Model.GetFormattedValue(band.MinimumAge)</td>
+                <td valign="center">@Model.GetFormattedValue(band.MaximumAge)</td>
+            </tr>
+        }
+    </table>
+</div>

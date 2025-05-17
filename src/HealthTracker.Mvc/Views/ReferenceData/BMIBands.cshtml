@@ -1,0 +1,36 @@
+@using HealthTracker.Mvc.Entities
+@model HealthTracker.Mvc.Models.BMIBandListViewModel
+
+@{
+    ViewData["Title"] = "BMI Assessment Bands";
+}
+
+<p class="text-center font-weight-bold">
+    <span style="font-size: 1.2rem">
+        BMI Assessment Bands
+    </span>
+    <br />
+    <small class="text-muted">
+        <em>
+            Bandings used to assess BMI values calculated from weight measurements
+        </em>
+    </small>
+</p>
+
+<div class="container-fluid">
+    <table class="table">
+        <tr>
+            <th>Name</th>
+            <th>Minimum BMI</th>
+            <th>Maximum BMI</th>
+        </tr>
+        @foreach (var band in Model.Bands)
+        {
+            <tr>
+                <td valign="center">@band.Name</td>
+                <td valign="center">@Model.GetFormattedValue(band.MinimumBMI)</td>
+                <td valign="center">@Model.GetFormattedValue(band.MaximumBMI)</td>
+            </tr>
+        }
+    </table>
+</div>
