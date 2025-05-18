@@ -1,8 +1,9 @@
+using HealthTracker.Client.ApiClient;
 using HealthTracker.Entities.Measurements;
 
 namespace HealthTracker.Client.Interfaces
 {
-    public interface IExerciseMeasurementClient
+    public interface IExerciseMeasurementClient : IEntityRetriever<ExerciseMeasurement>
     {
         Task<ExerciseMeasurement> AddExerciseMeasurementAsync(
             int personId,
@@ -17,7 +18,7 @@ namespace HealthTracker.Client.Interfaces
         Task DeleteExerciseMeasurementAsync(int id);
         Task ExportExerciseMeasurementsAsync(int personId, DateTime? from, DateTime? to, string fileName);
         Task ImportExerciseMeasurementsAsync(string filePath);
-        Task<List<ExerciseMeasurement>> ListExerciseMeasurementsAsync(int personId, DateTime? from, DateTime? to);
+        Task<List<ExerciseMeasurement>> ListExerciseMeasurementsAsync(int personId, DateTime? from, DateTime? to, int pageNumber, int pageSize);
 
         Task<ExerciseMeasurement> UpdateExerciseMeasurementAsync(
             int id,

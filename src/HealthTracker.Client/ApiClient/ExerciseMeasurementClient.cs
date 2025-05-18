@@ -134,6 +134,23 @@ namespace HealthTracker.Client.ApiClient
             var json = Serialize(data);
             await SendIndirectAsync(ExportRouteKey, json, HttpMethod.Post);
         }
+        
+        /// <summary>
+        /// Retrieve a single measurement given its ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<ExerciseMeasurement> Get(int id)
+        {
+            // Request the measurement with the specified ID
+            string baseRoute = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
+            string route = $"{baseRoute}/{id}";
+            string json = await SendDirectAsync(route, null, HttpMethod.Get);
+
+            // Extract the measurement from the response
+            var measurement = Deserialize<ExerciseMeasurement>(json);
+            return measurement;
+        }
 
         /// <summary>
         /// Delete a exercise measurement from the database
@@ -153,15 +170,17 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="personId"></param>
         /// <param name="from"></param>
         /// <param name="to"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<List<ExerciseMeasurement>> ListExerciseMeasurementsAsync(int personId, DateTime? from, DateTime? to)
+        public async Task<List<ExerciseMeasurement>> ListExerciseMeasurementsAsync(int personId, DateTime? from, DateTime? to, int pageNumber, int pageSize)
         {
             // Determine the encoded date range
             (var encodedFromDate, var encodedToDate) = CalculateEncodedDateRange(from, to);
 
             // Request a list of exercise measurements
             string baseRoute = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
-            string route = $"{baseRoute}/{personId}/{encodedFromDate}/{encodedToDate}";
+            string route = $"{baseRoute}/{personId}/{encodedFromDate}/{encodedToDate}/{pageNumber}/{pageSize}";
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no people in the database

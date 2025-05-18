@@ -92,7 +92,8 @@ namespace HealthTracker.Logic.Calculations
             var measurements = await _factory.ExerciseMeasurements.ListAsync(x =>   (x.PersonId == personId) &&
                                                                                     ((activityTypeId == null) || (x.ActivityTypeId == activityTypeId.Value)) &&
                                                                                     (x.Date >= from) &&
-                                                                                    (x.Date <= to));
+                                                                                    (x.Date <= to),
+                                                                                    1, int.MaxValue);
 
             var summaries = Summarise(measurements);
             return summaries;

@@ -1,21 +1,21 @@
 @using HealthTracker.Mvc.Entities
 @using Microsoft.AspNetCore.Mvc.ModelBinding
-@model HealthTracker.Mvc.Models.BloodPressureListViewModel
+@model HealthTracker.Mvc.Models.ExerciseListViewModel
 
 @{
-    ViewData["Title"] = "Blood Pressure Measurements";
+    ViewData["Title"] = "Exercise Measurements";
     var previousDisabled = (Model.PreviousEnabled) ? "" : "disabled";
     var nextDisabled = (Model.NextEnabled) ? "" : "disabled";
 }
 
 <p class="text-center font-weight-bold">
     <span style="font-size: 1.2rem">
-        Blood Pressure Measurements
+        Exercise Measurements
     </span>
     <br />
     <small class="text-muted">
         <em>
-            View and manage blood pressure measurements
+            View and manage exercise measurements
         </em>
     </small>
 </p>
@@ -32,13 +32,13 @@
         <hr />
     }
 
-    @using (Html.BeginForm("Delete", "BloodPressure", FormMethod.Post, new { name = "delete-form", id = "delete-form" }))
+    @using (Html.BeginForm("Delete", "Exercise", FormMethod.Post, new { name = "delete-form", id = "delete-form" }))
     {
         @Html.AntiForgeryToken()
         @Html.Hidden("id", 0)
     }
 
-    @using (Html.BeginForm("Index", "BloodPressure", FormMethod.Post))
+    @using (Html.BeginForm("Index", "Exercise", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
         @Html.EditorFor(m => m.Filters)
@@ -50,20 +50,29 @@
                 <tr>
                     <th>Person</th>
                     <th>Date</th>
-                    <th>Reading</th>
-                    <th>Assessment</th>
-                    <th />
-                    <th />
+                    <th>Activity</th>
+                    <th>Duration</th>
+                    <th>Distance</th>
+                    <th>Calories</th>
+                    <th>Minimum HR</th>
+                    <th>Maximum HR</th>
+                    @* <th /> *@
+                    @* <th /> *@
                 </tr>
                 @foreach (var measurement in Model.Measurements)
                 {
+                    var distance = (measurement.Distance ?? 0M) > 0 ? measurement.Distance.Value.ToString(".##") : "-";
                     <tr>
                         <td valign="center">@Model.Filters.SelectedPerson.Name</td>
                         <td valign="center">@measurement.Date.ToString("dd-MMM-yyyy")</td>
-                        <td valign="center"><span>@measurement.Systolic</span>/<span>@measurement.Diastolic</span></td>
-                        <td valign="center">@measurement.Assessment</td>
-                        <td valign="center">
-                            <a class="btn btn-lg" asp-area="" asp-controller="BloodPressure" asp-action="Edit" asp-route-id="@measurement.Id" asp-route-start="@Model.Filters.From.ToString(DateFormats.DateTime)" asp-route-end="@Model.Filters.To.ToString(DateFormats.DateTime)">
+                        <td valign="center">@measurement.ActivityType</td>
+                        <td valign="center">@measurement.FormattedDuration</td>
+                        <td valign="center">@distance</td>
+                        <td valign="center">@measurement.Calories</td>
+                        <td valign="center">@measurement.MinimumHeartRate</td>
+                        <td valign="center">@measurement.MaximumHeartRate</td>
+                        @* <td valign="center">
+                            <a class="btn btn-lg" asp-area="" asp-controller="BloodGlucose" asp-action="Edit" asp-route-id="@measurement.Id" asp-route-start="@Model.Filters.From.ToString(DateFormats.DateTime)" asp-route-end="@Model.Filters.To.ToString(DateFormats.DateTime)">
                                 <i class="fas fa-edit"></i>
                             </a>
                         </td>
@@ -71,7 +80,7 @@
                             <a class="btn btn-lg" href="javascript:submitDeleteForm(@measurement.Id)">
                                 <i class="fas fa-trash"></i>
                             </a>
-                        </td>
+                        </td> *@
                     </tr>
                 }
             </table>

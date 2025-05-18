@@ -46,7 +46,7 @@ namespace HealthTracker.Tests.Exercise
         [TestMethod]
         public async Task AddAndListTest()
         {
-            var measurements = await _factory.ExerciseMeasurements.ListAsync(x => x.PersonId == _personId);
+            var measurements = await _factory.ExerciseMeasurements.ListAsync(x => x.PersonId == _personId, 1, int.MaxValue);
             Assert.AreEqual(1, measurements.Count);
             Assert.AreEqual(_measurementId, measurements.First().Id);
             Assert.AreEqual(_personId, measurements.First().PersonId);
@@ -63,7 +63,7 @@ namespace HealthTracker.Tests.Exercise
         public async Task UpdateTest()
         {
             await _factory.ExerciseMeasurements.UpdateAsync(_measurementId, _personId, _activityTypeId, UpdatedExerciseDate, UpdatedDuration, UpdatedDistance, UpdatedCalories, UpdatedMinimumHeartRate, UpdatedMaximumHeartRate);
-            var measurements = await _factory.ExerciseMeasurements.ListAsync(x => x.PersonId == _personId);
+            var measurements = await _factory.ExerciseMeasurements.ListAsync(x => x.PersonId == _personId, 1, int.MaxValue);
             Assert.AreEqual(1, measurements.Count);
             Assert.AreEqual(_measurementId, measurements.First().Id);
             Assert.AreEqual(_personId, measurements.First().PersonId);
@@ -80,7 +80,7 @@ namespace HealthTracker.Tests.Exercise
         public async Task DeleteTest()
         {
             await _factory.ExerciseMeasurements.DeleteAsync(_measurementId);
-            var measurements = await _factory.ExerciseMeasurements.ListAsync(a => true);
+            var measurements = await _factory.ExerciseMeasurements.ListAsync(a => true, 1, int.MaxValue);
             Assert.AreEqual(0, measurements.Count);
         }
 

@@ -17,7 +17,7 @@ namespace HealthTracker.Entities.Interfaces
 
         Task DeleteAsync(int id);
 
-        Task<List<ExerciseMeasurement>> ListAsync(Expression<Func<ExerciseMeasurement, bool>> predicate);
+        Task<List<ExerciseMeasurement>> ListAsync(Expression<Func<ExerciseMeasurement, bool>> predicate, int pageNumber, int pageSize);
 
         Task<ExerciseMeasurement> UpdateAsync(
             int id,

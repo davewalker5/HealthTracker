@@ -91,7 +91,7 @@ namespace HealthTracker.Tests.Exercise
             Assert.AreEqual(info.FullName, _filePath);
             Assert.IsTrue(info.Length > 0);
 
-            var measurements = await _factory.ExerciseMeasurements.ListAsync(x => true);
+            var measurements = await _factory.ExerciseMeasurements.ListAsync(x => true, 1, int.MaxValue);
             Assert.AreEqual(1, measurements.Count);
             Assert.AreEqual(_person.Id, measurements.First().PersonId);
             Assert.AreEqual(_activityType.Id, measurements.First().ActivityTypeId);

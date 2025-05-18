@@ -1,5 +1,6 @@
 using HealthTracker.Entities.Interfaces;
 using HealthTracker.Entities.Measurements;
+using HealthTracker.Logic.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
@@ -20,24 +21,44 @@ namespace HealthTracker.Api.Controllers
             => _factory = factory;
 
         /// <summary>
+        /// Return a single measurement given its ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<ActionResult<ExerciseMeasurement>> Get(int id)
+        {
+            var measurements = await _factory.ExerciseMeasurements.ListAsync(x => x.Id == id, 1, int.MaxValue);
+            await PopulateAncillaryProperties(measurements);
+            return measurements.First();
+        }
+
+        /// <summary>
         /// Return a list of all exercise measurements for a person
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("{personId}/{from}/{to}")]
-        public async Task<ActionResult<IEnumerable<ExerciseMeasurement>>> ListExerciseMeasurementsForPersonAsync(int personId, string from, string to)
+        [Route("{personId}/{from}/{to}/{pageNumber}/{pageSize}")]
+        public async Task<ActionResult<IEnumerable<ExerciseMeasurement>>> ListExerciseMeasurementsForPersonAsync(int personId, string from, string to, int pageNumber, int pageSize)
         {
             // Decode the start and end date and convert them to dates
             DateTime fromDate = DateTime.ParseExact(HttpUtility.UrlDecode(from), DateTimeFormat, null);
             DateTime toDate = DateTime.ParseExact(HttpUtility.UrlDecode(to), DateTimeFormat, null);
 
             // Retrieve matching results
-            var measurements = await _factory.ExerciseMeasurements.ListAsync(x => (x.PersonId == personId) && (x.Date >= fromDate) && (x.Date <= toDate));
+            var measurements = await _factory.ExerciseMeasurements.ListAsync(
+                x => (x.PersonId == personId) && (x.Date >= fromDate) && (x.Date <= toDate),
+                pageNumber,
+                pageSize);
 
             if (measurements == null)
             {
                 return NoContent();
             }
+
+            // Populate ancillary properties
+            await PopulateAncillaryProperties(measurements);
 
             return measurements;
         }
@@ -124,7 +145,7 @@ namespace HealthTracker.Api.Controllers
         public async Task<IActionResult> DeleteExerciseMeasurements(int id)
         {
             // Check the measurement exists, first
-            var measurements = await _factory.ExerciseMeasurements.ListAsync(x => x.Id == id);
+            var measurements = await _factory.ExerciseMeasurements.ListAsync(x => x.Id == id, 1, int.MaxValue);
             if (!measurements.Any())
             {
                 return NotFound();
@@ -133,6 +154,21 @@ namespace HealthTracker.Api.Controllers
             // It does, so delete it
             await _factory.ExerciseMeasurements.DeleteAsync(id);
             return Ok();
+        }
+
+        /// <summary>
+        /// Populate ancillary exercise measurement properties
+        /// </summary>
+        /// <param name="measurements"></param>
+        /// <returns></returns>
+        private async Task PopulateAncillaryProperties(IEnumerable<ExerciseMeasurement> measurements)
+        {
+            var activityTypes = await _factory.ActivityTypes.ListAsync(x => true, 1, int.MaxValue);
+            foreach (var measurement in measurements)
+            {
+                measurement.ActivityType = activityTypes.First(x => x.Id == measurement.ActivityTypeId).Description;
+                measurement.FormattedDuration = measurement.Duration.ToFormattedDuration();
+            }
         }
     }
 }
