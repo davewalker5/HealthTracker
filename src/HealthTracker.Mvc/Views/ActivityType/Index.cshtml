@@ -42,12 +42,15 @@
             <table class="table">
                 <tr>
                     <th>Description</th>
+                    <th>Distance Based</th>
                     <th />
                 </tr>
                 @foreach (var activityType in Model.ActivityTypes)
                 {
+                    var distanceBased = activityType.DistanceBased ? "Yes" : "No";
                     <tr>
                         <td valign="center">@activityType.Description</td>
+                        <td valign="center">@distanceBased</td>
                         <td valign="center">
                             <a class="btn btn-lg" asp-area="" asp-controller="ActivityType" asp-action="Edit" asp-route-id="@activityType.Id">
                                 <i class="fas fa-edit"></i>

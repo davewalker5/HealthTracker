@@ -12,7 +12,9 @@ namespace HealthTracker.Tests.ActivityTypes
     public class ActivityTypeManagerTest
     {
         private readonly string Description = DataGenerator.RandomActivityTypeName();
+        private readonly bool DistanceBased = true;
         private readonly string UpdatedDescription = DataGenerator.RandomActivityTypeName();
+        private readonly bool UpdatedDistanceBased = false;
 
         private IHealthTrackerFactory _factory;
         private int _activityTypeId;
@@ -23,7 +25,7 @@ namespace HealthTracker.Tests.ActivityTypes
             HealthTrackerDbContext context = HealthTrackerDbContextFactory.CreateInMemoryDbContext();
             var logger = new Mock<IHealthTrackerLogger>();
             _factory = new HealthTrackerFactory(context, null, logger.Object);
-            _activityTypeId = Task.Run(() => _factory.ActivityTypes.AddAsync(Description)).Result.Id;
+            _activityTypeId = Task.Run(() => _factory.ActivityTypes.AddAsync(Description, DistanceBased)).Result.Id;
         }
 
         [TestMethod]
@@ -33,6 +35,7 @@ namespace HealthTracker.Tests.ActivityTypes
             Assert.IsNotNull(activityType);
             Assert.AreEqual(_activityTypeId, activityType.Id);
             Assert.AreEqual(Description, activityType.Description);
+            Assert.AreEqual(DistanceBased, activityType.DistanceBased);
         }
 
         [TestMethod]
@@ -48,6 +51,7 @@ namespace HealthTracker.Tests.ActivityTypes
             var activityTypes = await _factory.ActivityTypes.ListAsync(x => true, 1, int.MaxValue);
             Assert.AreEqual(1, activityTypes.Count);
             Assert.AreEqual(Description, activityTypes.First().Description);
+            Assert.AreEqual(DistanceBased, activityTypes.First().DistanceBased);
         }
 
         [TestMethod]
@@ -60,12 +64,14 @@ namespace HealthTracker.Tests.ActivityTypes
         [TestMethod]
         public async Task UpdateTest()
         {
-            await _factory.ActivityTypes.UpdateAsync(_activityTypeId, UpdatedDescription);
+            await _factory.ActivityTypes.UpdateAsync(_activityTypeId, UpdatedDescription, UpdatedDistanceBased);
             var activityType = await _factory.ActivityTypes.GetAsync(a => a.Id == _activityTypeId);
             Assert.IsNotNull(activityType);
             Assert.AreEqual(_activityTypeId, activityType.Id);
             Assert.AreEqual(UpdatedDescription, activityType.Description);
+            Assert.AreEqual(UpdatedDistanceBased, activityType.DistanceBased);
             Assert.AreNotEqual(Description, UpdatedDescription);
+            Assert.AreNotEqual(DistanceBased, UpdatedDistanceBased);
         }
 
         [TestMethod]
@@ -79,7 +85,7 @@ namespace HealthTracker.Tests.ActivityTypes
         [TestMethod]
         [ExpectedException(typeof(ActivityTypeExistsException))]
         public async Task CannotAddDuplicateActivityTypeTest()
-            => _ = await _factory.ActivityTypes.AddAsync(Description);
+            => _ = await _factory.ActivityTypes.AddAsync(Description, true);
 
         [TestMethod]
         [ExpectedException(typeof(ActivityTypeInUseException))]

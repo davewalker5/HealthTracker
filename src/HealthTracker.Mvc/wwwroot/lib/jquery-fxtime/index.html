@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>jQuery fxtime.js Plugin Examples</title>
+<style>
+  html,* { font-family: 'Inter'; box-sizing: border-box; }
+body { background-color: #f0f0eb; line-height:1.6; padding: 20px;}
+.lead { font-size: 1.5rem; font-weight: 300;background: linear-gradient(to right, #000000 0%, #000000 50%,#999999 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color:transparent; }
+.container { margin: 20px auto; max-width: 960px; }
+h1 {
+  background: linear-gradient( 120deg, #bd34fe 30%, #41d1ff );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.btn { padding: 1.25rem; border: 0; border-radius: 3px; background-color: #4F46E5; color: #fff; background:linear-gradient(102deg, rgb(0, 153, 255) 0%, rgb(204, 0, 255) 100%); cursor: pointer; }
+input.time:invalid {
+  border: 2px solid #f88;
+  border-radius: 2px;
+}
+h2 { font-size: 1.25rem; margin: 10px auto; }
+input.time {
+      -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: #fff;
+    border-color: #6b7280;
+    border-width: 1px;
+    border-radius: 0;
+    padding-top: 0.5rem;
+    padding-right: 0.75rem;
+    padding-bottom: 0.5rem;
+    padding-left: 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5rem;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <h1>jQuery fxtime.js Plugin Examples</h1>
+  <style>
+.download{ padding: 1.25rem; border:0; border-radius:3px; background-color:#4F46E5; color:#fff;cursor:pointer; text-decoration:none;}.download:hover{color: #fff}#carbonads{display:block;overflow:hidden;max-width:728px;position:relative;font-size:22px;box-sizing:content-box}#carbonads>span{display:block}#carbonads a{color:#4F46E5;text-decoration:none}#carbonads a:hover{color:#4F46E5}.carbon-wrap{display:flex;align-items:center}.carbon-img{display:block;margin:0;line-height:1}.carbon-img img{display:block;height:90px;width:auto}.carbon-text{display:block;padding:0 1em;line-height:1.35;text-align:left}.carbon-poweredby{display:block;position:absolute;bottom:0;right:0;padding:6px 10px;text-align:center;text-transform:uppercase;letter-spacing:.5px;font-weight:600;font-size:8px;border-top-left-radius:4px;line-height:1;color:#aaa!important}@media only screen and (min-width:320px) and (max-width:759px){.carbon-text{font-size:14px}}
+</style>
+<div><div id="carbon-block"></div><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2783044520727903"
+     crossorigin="anonymous"></script>
+<!-- jQuery_Replace_Demo -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2783044520727903"
+     data-ad-slot="7325992188"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<p style="margin:2rem auto"><a class="download" href="https://www.jqueryscript.net/time-clock/duration-picker-fxtime.html">Download This Plugin</a> <a class="download" href="https://www.jqueryscript.net/">Back To jQueryScript</a></p>
+  <p class="lead">An accessible, user-friendly time/duration picker for jQuery with input restriction, automatic formatting, and validation options.</p>
+  <h2>Basic</h2>
+  <input type="text" class="time">
+  <h2>With Seconds Slot</h2>
+ <input type="text" class="time" id="seconds" step="1">
+   <p><input type="button" id="inc" value="+ min">
+<input type="button" id="dec" value="- min">
+<input type="button" id="clear" value="Clear Min"></p>
+<h2>Time Range</h2>
+ <input type="text" class="time" id="range" min="08:30" max="17:30">
+   <p><input type="button" id="set" value="Set to 04:30">
+<input type="button" id="cleara" value="Clear All"></p>
+</div>
+<script src="https://code.jquery.com/jquery-3.7.0.slim.min.js"></script>
+<script src="dist/jquery-fxtime.js"></script>
+<script>
+  $().ready(function() {
+  // initialise all time elements
+  $("input.time").fxtime();
+  $("#inc").on('click', function() {
+    $("#seconds").fxtime('inc', 1);
+  });
+  $("#dec").on('click', function() {
+    $("#seconds").fxtime('inc', 1, -1);
+  });
+  $("#clear").on('click', function() {
+    $("#seconds").fxtime('seg', 1, null);
+  });
+  $("#set").on('click', function() {
+    $("#range").fxtime('val', '04:30');
+  });
+  $("#cleara").on('click', function() {
+    $("#range").fxtime('val', null);
+  });
+});
+</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-1VDDWMRSTH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-1VDDWMRSTH');
+</script><script>
+try {
+  fetch(new Request("https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js", { method: 'HEAD', mode: 'no-cors' })).then(function(response) {
+    return true;
+  }).catch(function(e) {
+    var carbonScript = document.createElement("script");
+    carbonScript.src = "//cdn.carbonads.com/carbon.js?serve=CK7DKKQU&placement=wwwjqueryscriptnet";
+    carbonScript.id = "_carbonads_js";
+    document.getElementById("carbon-block").appendChild(carbonScript);
+  });
+} catch (error) {
+  console.log(error);
+}
+</script>
+</body>
+</html>

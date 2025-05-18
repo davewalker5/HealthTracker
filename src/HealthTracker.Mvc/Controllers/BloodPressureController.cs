@@ -141,7 +141,7 @@ namespace HealthTracker.Mvc.Controllers
                 var personName = model.PersonName;
 
                 // Add the measurement
-                _logger.LogDebug($"Adding blood pressure measurement: Person = {personName}, Blood Pressure = {model.Measurement.Systolic}/{model.Measurement.Diastolic}");
+                _logger.LogDebug($"Adding blood pressure measurement: Person = {personName}, Date = {model.Measurement.Date}, Blood Pressure = {model.Measurement.Systolic}/{model.Measurement.Diastolic}");
                 var measurement = await _measurementClient.AddBloodPressureMeasurementAsync(personId, DateTime.Now, model.Measurement.Systolic, model.Measurement.Diastolic);
 
                 // Return the measurement list view containing only the new measurement and a confirmation message
@@ -204,7 +204,7 @@ namespace HealthTracker.Mvc.Controllers
             if (ModelState.IsValid)
             {
                 // Update the measurement
-                _logger.LogDebug($"Updating blood pressure measurement: ID = {model.Measurement.Id}, Person ID = {model.Measurement.PersonId}, BloodPressure = {model.Measurement.Systolic}/{model.Measurement.Diastolic}");
+                _logger.LogDebug($"Updating blood pressure measurement: ID = {model.Measurement.Id}, Person ID = {model.Measurement.PersonId}, Date = {model.Measurement.Date}, BloodPressure = {model.Measurement.Systolic}/{model.Measurement.Diastolic}");
                 await _measurementClient.UpdateBloodPressureMeasurementAsync(
                     model.Measurement.Id,
                     model.Measurement.PersonId,

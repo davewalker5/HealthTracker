@@ -113,8 +113,8 @@ namespace HealthTracker.Mvc.Controllers
             if (ModelState.IsValid)
             {
                 var description = model.ActivityType.Description;
-                _logger.LogDebug($"Adding activity type: Description = {model.ActivityType.Description}");
-                var activityType = await _client.AddActivityTypeAsync(model.ActivityType.Description);
+                _logger.LogDebug($"Adding activity type: Description = {model.ActivityType.Description}, Distance Based = {model.ActivityType.DistanceBased}");
+                var activityType = await _client.AddActivityTypeAsync(model.ActivityType.Description, model.ActivityType.DistanceBased);
 
                 result = CreateListResult(activityType, $"{activityType.Description} successfully added");
             }
@@ -165,8 +165,8 @@ namespace HealthTracker.Mvc.Controllers
 
             if (ModelState.IsValid)
             {
-                _logger.LogDebug($"Updating activity type: Id = {model.ActivityType.Id}, Description = {model.ActivityType.Description}");
-                var activityType = await _client.UpdateActivityTypeAsync(model.ActivityType.Id, model.ActivityType.Description);
+                _logger.LogDebug($"Updating activity type: Id = {model.ActivityType.Id}, Description = {model.ActivityType.Description}, Distance Based = {model.ActivityType.DistanceBased}");
+                var activityType = await _client.UpdateActivityTypeAsync(model.ActivityType.Id, model.ActivityType.Description, model.ActivityType.DistanceBased);
 
                 result = CreateListResult(activityType, $"{activityType.Description} successfully added");
             }

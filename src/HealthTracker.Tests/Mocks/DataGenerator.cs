@@ -181,7 +181,8 @@ namespace HealthTracker.Tests.Mocks
             => new()
             {
                 Id = RandomId(),
-                Description = RandomActivityTypeName()
+                Description = RandomActivityTypeName(),
+                DistanceBased = RandomInt(0, 100) > 50
             };
 
         /// <summary>

@@ -141,7 +141,7 @@ namespace HealthTracker.Mvc.Controllers
                 var personName = model.PersonName;
 
                 // Add the measurement
-                _logger.LogDebug($"Adding weight measurement: Person = {personName}, Weight = {model.Measurement.Weight}");
+                _logger.LogDebug($"Adding weight measurement: Person = {personName}, Date = {model.Measurement.Date}, Weight = {model.Measurement.Weight}");
                 var measurement = await _measurementClient.AddWeightMeasurementAsync(personId, DateTime.Now, model.Measurement.Weight);
 
                 // Return the measurement list view containing only the new measurement and a confirmation message
@@ -204,7 +204,7 @@ namespace HealthTracker.Mvc.Controllers
             if (ModelState.IsValid)
             {
                 // Update the measurement
-                _logger.LogDebug($"Updating weight measurement: ID = {model.Measurement.Id}, Person ID = {model.Measurement.PersonId}, Weight = {model.Measurement.Weight}");
+                _logger.LogDebug($"Updating weight measurement: ID = {model.Measurement.Id}, Person ID = {model.Measurement.PersonId}, Date = {model.Measurement.Date}, Weight = {model.Measurement.Weight}");
                 await _measurementClient.UpdateWeightMeasurementAsync(
                     model.Measurement.Id,
                     model.Measurement.PersonId,

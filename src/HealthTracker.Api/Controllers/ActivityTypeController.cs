@@ -62,7 +62,7 @@ namespace HealthTracker.Api.Controllers
         [Route("")]
         public async Task<ActionResult<ActivityType>> AddActivityTypeAsync([FromBody] ActivityType template)
         {
-            var activityType = await _factory.ActivityTypes.AddAsync(template.Description);
+            var activityType = await _factory.ActivityTypes.AddAsync(template.Description, template.DistanceBased);
             return activityType;
         }
 
@@ -73,9 +73,9 @@ namespace HealthTracker.Api.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("")]
-        public async Task<ActionResult<ActivityType>> UpdatePersonAsync([FromBody] ActivityType template)
+        public async Task<ActionResult<ActivityType>> UpdateActivityTypeAsync([FromBody] ActivityType template)
         {
-            var activityType = await _factory.ActivityTypes.UpdateAsync(template.Id, template.Description);
+            var activityType = await _factory.ActivityTypes.UpdateAsync(template.Id, template.Description, template.DistanceBased);
             return activityType;
         }
 

@@ -47,8 +47,10 @@ namespace HealthTracker.Mvc
             services.AddSingleton<IExerciseMeasurementClient, ExerciseMeasurementClient>();
             services.AddSingleton<IWeightMeasurementClient, WeightMeasurementClient>();
 
-            // Configure the helper used to build the filtering view model used on the measurements pages
+            // Configure the helpers used to build the filtering view model used on the measurements pages
+            // and the activity type select list
             services.AddSingleton<IFilterGenerator, FilterGenerator>();
+            services.AddSingleton<IActivityTypeListGenerator, ActivityTypeListGenerator>();
 
             // Configure session state for token storage
             services.AddSession(options =>

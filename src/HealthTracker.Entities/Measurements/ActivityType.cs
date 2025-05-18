@@ -13,5 +13,8 @@ namespace HealthTracker.Entities.Measurements
         [DisplayName("Description")]
         [Required(ErrorMessage = "You must provide a description")]
         public string Description { get; set; }
+
+        [DisplayName("Distance Based")]
+        public bool DistanceBased { get; set; }
     }
 }

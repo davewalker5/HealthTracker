@@ -7,6 +7,8 @@
     <div class="row">
         <div class="col">
             <strong>@Html.LabelFor(m => m.Person.FirstNames)</strong>
+        </div>
+        <div class="col">
             <div class="input-group">
                 @Html.TextBoxFor(m => m.Person.FirstNames, new { @class = "form-control" })
             </div>
@@ -17,6 +19,8 @@
     <div class="row">
         <div class="col">
             <strong>@Html.LabelFor(m => m.Person.Surname)</strong>
+        </div>
+        <div class="col">
             <div class="input-group">
                 @Html.TextBoxFor(m => m.Person.Surname, new { @class = "form-control" })
             </div>
@@ -27,6 +31,8 @@
     <div class="row">
         <div class="col">
             <strong>@Html.LabelFor(m => m.Person.DateOfBirth)</strong>
+        </div>
+        <div class="col">
             <div class="input-group">
                 @Html.TextBoxFor(m => m.Person.DateOfBirth, null, new { @class = "form-control" })
                 <script type="text/javascript">
@@ -45,6 +51,8 @@
     <div class="row">
         <div class="col">
             <strong>@Html.LabelFor(m => m.Person.Height)</strong>
+        </div>
+        <div class="col">
             <div class="input-group">
                 @Html.TextBoxFor(m => m.Person.Height, new { @class = "form-control" })
             </div>
@@ -52,9 +60,11 @@
         </div>
     </div>
     <br/>
-    <div class="row"></div>
+    <div class="row">
         <div class="col">
             <strong>@Html.LabelFor(m => m.Person.Gender)</strong>
+        </div>
+        <div class="col">
             <div class="input-group">
                 @Html.DropDownListFor(m => m.Person.Gender, Model.Genders, new { @class = "form-control" })
             </div>

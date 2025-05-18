@@ -141,7 +141,7 @@ namespace HealthTracker.Mvc.Controllers
                 var personName = model.PersonName;
 
                 // Add the measurement
-                _logger.LogDebug($"Adding % SPO2 measurement: Person = {personName}, Percentage = {model.Measurement.Percentage:.##}");
+                _logger.LogDebug($"Adding % SPO2 measurement: Person = {personName}, Date = {model.Measurement.Date}, Percentage = {model.Measurement.Percentage:.##}");
                 var measurement = await _measurementClient.AddBloodOxygenSaturationMeasurementAsync(personId, DateTime.Now, model.Measurement.Percentage);
 
                 // Return the measurement list view containing only the new measurement and a confirmation message
@@ -204,7 +204,7 @@ namespace HealthTracker.Mvc.Controllers
             if (ModelState.IsValid)
             {
                 // Update the measurement
-                _logger.LogDebug($"Updating % SPO2 measurement: ID = {model.Measurement.Id}, Person ID = {model.Measurement.PersonId}, Percentage = {model.Measurement.Percentage}");
+                _logger.LogDebug($"Updating % SPO2 measurement: ID = {model.Measurement.Id}, Person ID = {model.Measurement.PersonId}, Date = {model.Measurement.Date}, Percentage = {model.Measurement.Percentage}");
                 await _measurementClient.UpdateBloodOxygenSaturationMeasurementAsync(
                     model.Measurement.Id,
                     model.Measurement.PersonId,

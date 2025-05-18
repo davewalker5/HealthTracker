@@ -17,12 +17,15 @@ namespace HealthTracker.Client.ApiClient
         /// Add a new activity type to the database
         /// </summary>
         /// <param
+        /// <param name="description"></param>
+        /// <param name="distanceBased"></param>
         /// <returns></returns>
-        public async Task<ActivityType> AddActivityTypeAsync(string description)
+        public async Task<ActivityType> AddActivityTypeAsync(string description, bool distanceBased)
         {
             dynamic template = new
             {
-                Description = description
+                Description = description,
+                DistanceBased = distanceBased
             };
 
             var data = Serialize(template);
@@ -37,13 +40,15 @@ namespace HealthTracker.Client.ApiClient
         /// </summary>
         /// <param name="id"></param>
         /// <param name="description"></param>
+        /// <param name="distanceBased"></param>
         /// <returns></returns>
-        public async Task<ActivityType> UpdateActivityTypeAsync(int id, string description)
+        public async Task<ActivityType> UpdateActivityTypeAsync(int id, string description, bool distanceBased)
         {
             dynamic template = new
             {
                 Id = id,
-                Description = description
+                Description = description,
+                DistanceBased = distanceBased
             };
 
             var data = Serialize(template);

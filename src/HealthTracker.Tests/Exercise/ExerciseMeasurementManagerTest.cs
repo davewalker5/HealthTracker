@@ -39,7 +39,7 @@ namespace HealthTracker.Tests.Exercise
             var logger = new Mock<IHealthTrackerLogger>();
             _factory = new HealthTrackerFactory(context, null, logger.Object);
             _personId = Task.Run(() => _factory.People.AddAsync("", "", DateTime.Now, 0, Gender.Unspecified)).Result.Id;
-            _activityTypeId = Task.Run(() => _factory.ActivityTypes.AddAsync("Cycling")).Result.Id;
+            _activityTypeId = Task.Run(() => _factory.ActivityTypes.AddAsync("Cycling", true)).Result.Id;
             _measurementId = Task.Run(() => _factory.ExerciseMeasurements.AddAsync(_personId, _activityTypeId, ExerciseDate, Duration, Distance, Calories, MinimumHeartRate, MaximumHeartRate)).Result.Id;
         }
 
