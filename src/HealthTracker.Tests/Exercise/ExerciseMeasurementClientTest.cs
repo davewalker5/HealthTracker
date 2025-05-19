@@ -129,6 +129,33 @@ namespace HealthTracker.Tests.Exercise
         }
 
         [TestMethod]
+        public async Task GetTest()
+        {
+            var measurement = DataGenerator.RandomExerciseMeasurement(2024);
+            var json = JsonSerializer.Serialize(measurement);
+            _httpClient.AddResponse(json);
+
+            var retrieved = await _client.Get(measurement.Id);
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/{measurement.Id}";
+
+            Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
+            Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
+            Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
+            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+
+            Assert.IsNull(_httpClient.Requests[0].Content);
+            Assert.IsNotNull(retrieved);
+            Assert.AreEqual(measurement.Id, retrieved.Id);
+            Assert.AreEqual(measurement.PersonId, retrieved.PersonId);
+            Assert.AreEqual(measurement.Date, retrieved.Date);
+            Assert.AreEqual(measurement.Duration, retrieved.Duration);
+            Assert.AreEqual(measurement.Distance, retrieved.Distance);
+            Assert.AreEqual(measurement.Calories, retrieved.Calories);
+            Assert.AreEqual(measurement.MinimumHeartRate, retrieved.MinimumHeartRate);
+            Assert.AreEqual(measurement.MaximumHeartRate, retrieved.MaximumHeartRate);
+        }
+
+        [TestMethod]
         public async Task ListWithNoDateRangeTest()
         {
             var measurement = DataGenerator.RandomExerciseMeasurement(2024);

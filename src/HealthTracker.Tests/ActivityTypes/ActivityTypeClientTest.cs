@@ -58,7 +58,7 @@ namespace HealthTracker.Tests.ActivityTypes
             var json = JsonSerializer.Serialize(activityType);
             _httpClient.AddResponse(json);
 
-            var updated = await _client.UpdateActivityTypeAsync(activityType.Id, activityType.Description, true);
+            var updated = await _client.UpdateActivityTypeAsync(activityType.Id, activityType.Description, activityType.DistanceBased);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());

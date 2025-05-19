@@ -1,0 +1,141 @@
+@using HealthTracker.Mvc.Entities
+@using Microsoft.AspNetCore.Mvc.ModelBinding
+@model HealthTracker.Mvc.Models.PersonMedicationListViewModel
+
+@{
+    ViewData["Title"] = "Person Medications";
+    var previousDisabled = (Model.PreviousEnabled) ? "" : "disabled";
+    var nextDisabled = (Model.NextEnabled) ? "" : "disabled";
+}
+
+@functions {
+    public string GetRowBackgroundColour(bool isActive, int daysRemaining)
+    {
+        if (!isActive)
+        {
+            return "white";
+        }
+        else if (daysRemaining <= Model.Settings.MedicationDaysRemainingCriticalDays)
+        {
+            return "#FFC0CB";
+        }
+        else if (daysRemaining <= Model.Settings.MedicationDaysRemainingWarningDays)
+        {
+            return "#FFFFE0";
+        }
+        else
+        {
+            return "white";
+        }
+    }
+}
+
+<p class="text-center font-weight-bold">
+    <span style="font-size: 1.2rem">
+        Person Medications
+    </span>
+    <br />
+    <small class="text-muted">
+        <em>
+            View and manage medications for a person
+        </em>
+    </small>
+</p>
+
+
+<div class="container-fluid">
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="row">
+            <div class="col-md-12 message">
+                <span>@Html.Raw(Model.Message)</span>
+            </div>
+        </div>
+        <hr />
+    }
+
+    @using (Html.BeginForm("Delete", "PersonMedication", FormMethod.Post, new { name = "delete-form", id = "delete-form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.Hidden("id", 0)
+    }
+
+    @using (Html.BeginForm("Index", "PersonMedication", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @await Html.PartialAsync("Filters", Model)
+        @Html.HiddenFor(m => m.PageNumber)
+
+        @if ((Model.Associations != null) && (Model.Associations.Count() > 0))
+        {
+            <table class="table">
+                <tr>
+                    <th>Person</th>
+                    <th>Medication</th>
+                    <th>Active</th>
+                    <th>Stock</th>
+                    <th>Daily Dose</th>
+                    <th>Last Taken</th>
+                    <th>Actions</th>
+                    <th />
+                    <th />
+                </tr>
+                @foreach (var association in Model.Associations)
+                {
+                    var lastTaken = association.LastTaken.HasValue ? association.LastTaken.Value.ToString("dd-MMM-yyyy") : "-";
+                    var active = association.Active ? "Yes" : "No";
+                    var actions = association.Active ? string.Join(", ", association.Actions ?? []) : "";
+                    var rowColor = GetRowBackgroundColour(association.Active, association.DaysRemaining());
+                    var textColor = association.Active ? "black" : "lightgrey";
+
+                    <tr style="background-color: @rowColor">
+                        <td valign="center"><span style="color: @textColor">@Model.Filters.SelectedPerson.Name</span></td>
+                        <td valign="center"><span style="color: @textColor">@association.Medication.Name</span></td>
+                        <td valign="center"><span style="color: @textColor">@active</span></td>
+                        <td valign="center"><span style="color: @textColor">@association.Stock</span></td>
+                        <td valign="center"><span style="color: @textColor">@association.DailyDose</span></td>
+                        <td valign="center"><span style="color: @textColor">@lastTaken</span></td>
+                        <td valign="center"><span style="color: @textColor">@actions</span></td>
+                        <td valign="center">
+                            <a class="btn btn-lg" asp-area="" asp-controller="PersonMedication" asp-action="Edit" asp-route-id="@association.Id" asp-route-start="@Model.Filters.From.ToString(DateFormats.DateTime)" asp-route-end="@Model.Filters.To.ToString(DateFormats.DateTime)">
+                                <span style="color: @textColor"><i class="fas fa-edit"></i></span>
+                            </a>
+                        </td>
+                        <td valign="center">
+                            <a class="btn btn-lg" href="javascript:submitDeleteForm(@association.Id)">
+                                <span style="color: @textColor"><i class="fas fa-trash"></i></span>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </table>
+            <hr />
+            <p class="text-right">
+                <button type="submit" name="Action" value="@ControllerActions.ActionPreviousPage" class="btn btn-secondary" @previousDisabled>Previous</button>
+                <button type="submit" name="Action" value="@ControllerActions.ActionNextPage" class="btn btn-primary" @nextDisabled>Next</button>
+            </p>
+        }
+        else if (Model.HasNoMatchingResults)
+        {
+            <hr />
+            @Html.Raw("No matching measurements")
+        }
+    }
+
+</div>
+
+<script type="text/javascript">
+    function submitDeleteForm(id) {
+        $.confirm({
+            text: "Are you sure?",
+            confirm: function(button) {
+                $("#delete-form #id").val(id);
+                $("#delete-form").submit()
+            },
+            cancel: function(button) {
+            },
+            confirmButton: "Yes",
+            cancelButton: "No"
+        });
+    }
+</script>

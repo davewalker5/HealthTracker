@@ -48,7 +48,8 @@ namespace HealthTracker.Logic.Medications
             var associations = await _factory.PersonMedications
                                              .ListAsync(x =>    x.Active &&
                                                                 (x.PersonId == personId) &&
-                                                                ((x.LastTaken == null) || (x.LastTaken < today)));
+                                                                ((x.LastTaken == null) || (x.LastTaken < today)),
+                                                        1, int.MaxValue);
             foreach (var association in associations)
             {
                 await DecrementAsync(association.Id, doses);
@@ -70,7 +71,7 @@ namespace HealthTracker.Logic.Medications
         /// <param name="doses"></param>
         public async Task IncrementAllAsync(int personId, int doses)
         {
-            var associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == personId);
+            var associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == personId, 1, int.MaxValue);
             foreach (var association in associations.Where(x => x.Active))
             {
                 await IncrementAsync(association.Id, doses);
@@ -87,7 +88,8 @@ namespace HealthTracker.Logic.Medications
             var associations = await _factory.PersonMedications
                                             .ListAsync(x =>
                                                 (x.Id == id) &&
-                                                ((x.LastTaken == null) || (x.LastTaken < today)));
+                                                ((x.LastTaken == null) || (x.LastTaken < today)),
+                                                1, int.MaxValue);
             await FastForward(associations);
             return associations.FirstOrDefault();
         }
@@ -103,7 +105,8 @@ namespace HealthTracker.Logic.Medications
                                              .ListAsync(x =>
                                                 x.Active &&
                                                 (x.PersonId == personId) &&
-                                                ((x.LastTaken == null) || (x.LastTaken < today)));
+                                                ((x.LastTaken == null) || (x.LastTaken < today)),
+                                                1, int.MaxValue);
             await FastForward(associations);
         }
 
@@ -120,7 +123,7 @@ namespace HealthTracker.Logic.Medications
         /// <param name="personId"></param>
         public async Task SkipAllAsync(int personId)
         {
-            var associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == personId);
+            var associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == personId, 1, int.MaxValue);
             foreach (var association in associations.Where(x => x.Active))
             {
                 await SkipAsync(association.Id);
@@ -160,7 +163,7 @@ namespace HealthTracker.Logic.Medications
             _factory.Logger.LogMessage(Severity.Info, $"Adding {doses} doses to the medication association with ID {id}");
 
             // Retrieve the association
-            var associations = await _factory.PersonMedications.ListAsync(x => x.Id == id);
+            var associations = await _factory.PersonMedications.ListAsync(x => x.Id == id, 1, int.MaxValue);
             var association = associations.FirstOrDefault();
             if (association != null)
             {

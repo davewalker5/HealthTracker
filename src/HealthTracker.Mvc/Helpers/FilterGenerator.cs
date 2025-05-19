@@ -27,6 +27,14 @@ namespace HealthTracker.Mvc.Helpers
             => await Create(0, null, null);
 
         /// <summary>
+        /// Create a filters view model
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <returns></returns>
+        public async Task<FiltersViewModel> Create(int personId)
+            => await Create(personId, null, null);
+
+        /// <summary>
         /// Create a filters view model with filter properties selected
         /// </summary>
         /// <param name="personId"></param>

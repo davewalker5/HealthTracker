@@ -17,6 +17,9 @@ namespace HealthTracker.Entities.Medications
         public bool Active { get; set; }
 
         [NotMapped]
+        public Medication Medication { get; set; }
+
+        [NotMapped]
         public List<string> Actions { get; set; }
 
         public int DaysRemaining()

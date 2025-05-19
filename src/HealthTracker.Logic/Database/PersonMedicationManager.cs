@@ -20,10 +20,16 @@ namespace HealthTracker.Logic.Database
         /// Return all associations matching the specified criteria
         /// </summary>
         /// <param name="predicate"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<List<PersonMedication>> ListAsync(Expression<Func<PersonMedication, bool>> predicate)
+        public async Task<List<PersonMedication>> ListAsync(Expression<Func<PersonMedication, bool>> predicate, int pageNumber, int pageSize)
             => await Context.PersonMedications
                             .Where(predicate)
+                            .OrderBy(x => x.PersonId)
+                            .ThenBy(x => x.MedicationId)
+                            .Skip((pageNumber - 1) * pageSize)
+                            .Take(pageSize)
                             .ToListAsync();
 
         /// <summary>
@@ -239,7 +245,7 @@ namespace HealthTracker.Logic.Database
         {
             Factory.Logger.LogMessage(Severity.Info, $"Deleting the medication association with ID {id}");
 
-            var associations = await ListAsync(x => x.Id == id);
+            var associations = await ListAsync(x => x.Id == id, 1, int.MaxValue);
             if (associations.Any())
             {
                 Factory.Context.Remove(associations.First());

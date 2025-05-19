@@ -148,6 +148,33 @@ namespace HealthTracker.Tests.PersonMedicationAssociations
         }
 
         [TestMethod]
+        public async Task GetTest()
+        {
+            var personId = DataGenerator.RandomId();
+            var medicationId = DataGenerator.RandomId();
+            var association = DataGenerator.RandomPersonMedicationAssociation(personId, medicationId, true);
+            var json = JsonSerializer.Serialize(association);
+            _httpClient.AddResponse(json);
+
+            var retrieved = await _client.Get(association.Id);
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/{association.Id}";
+
+            Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
+            Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
+            Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
+            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+
+            Assert.IsNull(_httpClient.Requests[0].Content);
+            Assert.IsNotNull(retrieved);
+            Assert.AreEqual(association.Id, retrieved.Id);
+            Assert.AreEqual(association.PersonId, retrieved.PersonId);
+            Assert.AreEqual(association.MedicationId, retrieved.MedicationId);
+            Assert.AreEqual(association.DailyDose, retrieved.DailyDose);
+            Assert.AreEqual(association.Stock, retrieved.Stock);
+            Assert.AreEqual(association.LastTaken, retrieved.LastTaken);
+        }
+
+        [TestMethod]
         public async Task ListTest()
         {
             var personId = DataGenerator.RandomId();
@@ -156,12 +183,12 @@ namespace HealthTracker.Tests.PersonMedicationAssociations
             var json = JsonSerializer.Serialize(new List<dynamic> { association });
             _httpClient.AddResponse(json);
 
-            var associations = await _client.ListPersonMedicationsAsync(personId);
+            var associations = await _client.ListPersonMedicationsAsync(personId, 1, int.MaxValue);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
             Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
-            Assert.AreEqual($"{_settings.ApiRoutes[0].Route}/{personId}", _httpClient.Requests[0].Uri);
+            Assert.AreEqual($"{_settings.ApiRoutes[0].Route}/{personId}/1/{int.MaxValue}", _httpClient.Requests[0].Uri);
 
             Assert.IsNull(_httpClient.Requests[0].Content);
             Assert.IsNotNull(associations);

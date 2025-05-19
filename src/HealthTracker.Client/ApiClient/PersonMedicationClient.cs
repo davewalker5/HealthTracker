@@ -99,17 +99,36 @@ namespace HealthTracker.Client.ApiClient
             var route = $"{baseRoute}/{id}";
             _ = await SendDirectAsync(route, null, HttpMethod.Delete);
         }
+        
+        /// <summary>
+        /// Retrieve a single measurement given its ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<PersonMedication> Get(int id)
+        {
+            // Request the association with the specified ID
+            string baseRoute = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
+            string route = $"{baseRoute}/{id}";
+            string json = await SendDirectAsync(route, null, HttpMethod.Get);
+
+            // Extract the association from the response
+            var association = Deserialize<PersonMedication>(json);
+            return association;
+        }
 
         /// <summary>
         /// Return a list of person/medication associations for a person
         /// </summary>
         /// <param name="personId"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<List<PersonMedication>> ListPersonMedicationsAsync(int personId)
+        public async Task<List<PersonMedication>> ListPersonMedicationsAsync(int personId, int pageNumber, int pageSize)
         {
             // Request a list of medications
             var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
-            string route = $"{baseRoute}/{personId}";
+            string route = $"{baseRoute}/{personId}/{pageNumber}/{pageSize}";
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no associations for the person in the database
