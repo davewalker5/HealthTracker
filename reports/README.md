@@ -20,6 +20,7 @@ The following reports are currently available:
 | glucose | glucose_histogram.ipynb | Glucose level distribution histograms and KDE charts |
 | glucose | glucose_metrics.ipynb | All time and daily glucose metrics |
 | glucose | glucose_overlay.ipynb | Daily glucose overlay or "spaghetti" charts |
+| glucose | glucose_segment_plot.ipynb | Chart a segment of data, delimited by two timestamps, as a line chart |
 | weight | weight_calendar_heatmap.ipynb | Heatmap of weight and weight trends over time |
 | weight | weight_over_time.ipynb | Charts weight and BMI measurements over time |
 
