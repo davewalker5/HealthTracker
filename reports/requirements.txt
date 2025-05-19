@@ -46,6 +46,7 @@ pandas==2.2.3
 pandocfilters==1.5.1
 papermill==2.6.0
 parso==0.8.4
+pathvalidate==3.2.3
 patsy==1.0.1
 pexpect==4.9.0
 pillow==11.2.1
