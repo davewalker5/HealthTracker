@@ -16,6 +16,7 @@ The following reports are currently available:
 | blood_pressure | systolic_diastolic_correlation.ipynb | Systolic/diastolic correlation chart |
 | glucose | glucose_agp.ipynb | Ambulatory Glucose Profile charts |
 | glucose | glucose_daily_mean.ipynb | Daily mean glucose levels with variability and in-range indicators |
+| glucose | glucose_daily_mean_comparison.ipynb | "glucose_daily_mean" for two date ranges with comparison data on one chart |
 | glucose | glucose_heatmap.ipynb | Glucose level heatmap by time of day |
 | glucose | glucose_histogram.ipynb | Glucose level distribution histograms and KDE charts |
 | glucose | glucose_metrics.ipynb | All time and daily glucose metrics |
