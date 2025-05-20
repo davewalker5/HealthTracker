@@ -16,11 +16,12 @@ The following reports are currently available:
 | blood_pressure | systolic_diastolic_correlation.ipynb | Systolic/diastolic correlation chart |
 | glucose | glucose_agp.ipynb | Ambulatory Glucose Profile charts |
 | glucose | glucose_daily_mean.ipynb | Daily mean glucose levels with variability and in-range indicators |
-| glucose | glucose_daily_mean_comparison.ipynb | "glucose_daily_mean" for two date ranges with comparison data on one chart |
+| glucose | glucose_daily_mean_comparison.ipynb | As "glucose_daily_mean.ipynb" but for two date ranges on a single chart |
 | glucose | glucose_heatmap.ipynb | Glucose level heatmap by time of day |
 | glucose | glucose_histogram.ipynb | Glucose level distribution histograms and KDE charts |
 | glucose | glucose_metrics.ipynb | All time and daily glucose metrics |
 | glucose | glucose_overlay.ipynb | Daily glucose overlay or "spaghetti" charts |
+| glucose | glucose_overlay_comparison.ipynb | As "glucose_overlay.ipynb" but for two date ranges on a single chart |
 | glucose | glucose_segment_plot.ipynb | Chart a segment of data, delimited by two timestamps, as a line chart |
 | weight | weight_calendar_heatmap.ipynb | Heatmap of weight and weight trends over time |
 | weight | weight_over_time.ipynb | Charts weight and BMI measurements over time |
