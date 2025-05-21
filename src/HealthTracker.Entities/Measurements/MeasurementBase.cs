@@ -1,6 +1,8 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using HealthTracker.Entities.Identity;
 
 namespace HealthTracker.Entities.Measurements
 {
@@ -12,6 +14,7 @@ namespace HealthTracker.Entities.Measurements
 
         [DisplayName("Person")]
         [Required(ErrorMessage = "You must select a person")]
+        [ForeignKey(nameof(Person))]
         public int PersonId { get; set; }
 
         [DisplayName("Date")]

@@ -10,6 +10,7 @@ namespace HealthTracker.Entities.Measurements
     {
         [DisplayName("Activity")]
         [Range(1, int.MaxValue, ErrorMessage = "You must select an activity")]
+        [ForeignKey(nameof(ActivityType))]
         public int ActivityTypeId { get; set; }
 
         [DisplayName("Duration")]

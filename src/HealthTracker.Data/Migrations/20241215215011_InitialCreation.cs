@@ -13,6 +13,24 @@ namespace HealthTracker.Data.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("PRAGMA foreign_keys = ON;");
+
+            migrationBuilder.CreateTable(
+                name: "PEOPLE",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    firstnames = table.Column<string>(type: "VARCHAR(100)", nullable: false),
+                    surname = table.Column<string>(type: "VARCHAR(100)", nullable: false),
+                    dob = table.Column<DateTime>(type: "DATETIME", nullable: false),
+                    height = table.Column<decimal>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PEOPLE", x => x.id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "ACTIVITY_TYPES",
                 columns: table => new
@@ -40,6 +58,12 @@ namespace HealthTracker.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BLOOD_PRESSURE", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_BLOOD_PRESSURE_PEOPLE_person_id",
+                        column: x => x.person_id,
+                        principalTable: "PEOPLE",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -60,22 +84,18 @@ namespace HealthTracker.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_EXERCISE", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PEOPLE",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    firstnames = table.Column<string>(type: "VARCHAR(100)", nullable: false),
-                    surname = table.Column<string>(type: "VARCHAR(100)", nullable: false),
-                    dob = table.Column<DateTime>(type: "DATETIME", nullable: false),
-                    height = table.Column<decimal>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PEOPLE", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_EXERCISE_PEOPLE_person_id",
+                        column: x => x.person_id,
+                        principalTable: "PEOPLE",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_EXERCISE_ACTIVITY_activity_id",
+                        column: x => x.activity_id,
+                        principalTable: "ACTIVITY_TYPES",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -105,6 +125,12 @@ namespace HealthTracker.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_WEIGHT", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_WEIGHT_PEOPLE_person_id",
+                        column: x => x.person_id,
+                        principalTable: "PEOPLE",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
                 });
         }
 

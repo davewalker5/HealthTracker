@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using HealthTracker.Entities.Identity;
 
 namespace HealthTracker.Entities.Medications
 {
@@ -9,8 +10,13 @@ namespace HealthTracker.Entities.Medications
     {
         [Key]
         public int Id { get ; set; }
+
+        [ForeignKey(nameof(Person))]
         public int PersonId { get; set; }
+
+        [ForeignKey(nameof(Medication))]
         public int MedicationId { get; set; }
+
         public int DailyDose { get; set; }
         public int Stock { get; set; }
         public DateTime? LastTaken { get; set; }

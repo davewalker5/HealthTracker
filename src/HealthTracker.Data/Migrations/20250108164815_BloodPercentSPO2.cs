@@ -14,6 +14,8 @@ namespace HealthTracker.Data.Migrations
         [ExcludeFromCodeCoverage]
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("PRAGMA foreign_keys = ON;");
+
             migrationBuilder.CreateTable(
                 name: "SPO2_BAND",
                 columns: table => new
@@ -44,6 +46,12 @@ namespace HealthTracker.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SPO2_MEASUREMENT", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_SPO2_PEOPLE_person_id",
+                        column: x => x.person_id,
+                        principalTable: "PEOPLE",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             // Populate the banding table
