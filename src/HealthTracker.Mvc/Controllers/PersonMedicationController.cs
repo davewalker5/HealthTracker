@@ -13,15 +13,18 @@ namespace HealthTracker.Mvc.Controllers
     public class PersonMedicationController : MeasurementControllerBase<IPersonMedicationClient, PersonMedicationListViewModel, PersonMedication>
     {
         private readonly ILogger<PersonMedicationController> _logger;
+        private readonly IMedicationTrackingClient _medicationTrackingClient;
 
         public PersonMedicationController(
             IPersonClient personClient,
             IPersonMedicationClient measurementClient,
+            IMedicationTrackingClient medicationTrackingClient,
             IHealthTrackerApplicationSettings settings,
             IFilterGenerator filterGenerator,
             ILogger<PersonMedicationController> logger) : base(personClient, measurementClient, settings, filterGenerator)
         {
             _logger = logger;
+            _medicationTrackingClient = medicationTrackingClient;
         }
 
         /// <summary>
@@ -66,6 +69,24 @@ namespace HealthTracker.Mvc.Controllers
                         break;
                     case ControllerActions.ActionAdd:
                         return RedirectToAction("Add", new { personId = model.Filters.PersonId });
+                    case ControllerActions.ActionTake:
+                        await model.Take(_logger, _measurementClient, _medicationTrackingClient);
+                        break;
+                    case ControllerActions.ActionUnTake:
+                        await model.Untake(_logger, _measurementClient, _medicationTrackingClient);
+                        break;
+                    case ControllerActions.ActionSkip:
+                        await model.Skip(_logger, _measurementClient, _medicationTrackingClient);
+                        break;
+                    case ControllerActions.ActionTakeAll:
+                        await model.TakeAll(_logger, _medicationTrackingClient);
+                        break;
+                    case ControllerActions.ActionUnTakeAll:
+                        await model.UntakeAll(_logger, _medicationTrackingClient);
+                        break;
+                    case ControllerActions.ActionSkipAll:
+                        await model.SkipAll(_logger, _medicationTrackingClient);
+                        break;
                     default:
                         break;
                 }
@@ -74,6 +95,9 @@ namespace HealthTracker.Mvc.Controllers
                 // is returned and page navigation doesn't work correctly. So, capture
                 // and amend the page number, above, then apply it, below
                 ModelState.Clear();
+
+                // Clear the selected association IDs
+                model.SelectedAssociationIds = "";
 
                 // Retrieve the matching records
                 _logger.LogDebug($"Retrieving page {page} of person/medication associations for person with ID {model.Filters.PersonId}");

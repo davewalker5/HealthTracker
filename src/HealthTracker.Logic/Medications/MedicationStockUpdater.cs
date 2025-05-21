@@ -165,6 +165,8 @@ namespace HealthTracker.Logic.Medications
             // Retrieve the association
             var associations = await _factory.PersonMedications.ListAsync(x => x.Id == id, 1, int.MaxValue);
             var association = associations.FirstOrDefault();
+            
+            // Check it's valid and that we're not attempting to advance the "last taken" date beyond today
             if (association != null)
             {
                 // Calculate the updated stock level, making sure it doesn't drop below 0
@@ -175,12 +177,20 @@ namespace HealthTracker.Logic.Medications
                 }
 
                 _factory.Logger.LogMessage(Severity.Info, $"Stock level will be updated from {association.Stock} to {updatedStock}");
-            
+
                 // Calculate the updated "last taken" date
                 var lastTaken = CalculateStockDate(association.LastTaken, doses);
 
-                // Apply the updates
-                association = await _factory.PersonMedications.SetStockAsync(id, updatedStock, lastTaken);
+                // If the resulting date is greater than now, then this is attempting to take doses beyond
+                // today, which isn't allowed. In this case, cancel the operation. Otherwise, apply the updates
+                if (lastTaken <= DateTime.Now)
+                {
+                    association = await _factory.PersonMedications.SetStockAsync(id, updatedStock, lastTaken);
+                }
+                else
+                {
+                    _factory.Logger.LogMessage(Severity.Warning, $"Stock date {lastTaken.ToShortDateString()} is in the future - operation cancelled");
+                }
 
                 // Determine actions for this medication
                 _factory.MedicationActionGenerator.DetermineActions(association);
@@ -215,14 +225,6 @@ namespace HealthTracker.Logic.Medications
                 date = HealthTrackerDateExtensions.DateWithoutTime(stockDate.Value.AddDays(daysToAdvance));
 
                 _factory.Logger.LogMessage(Severity.Info, $"Advancing stock date by {daysToAdvance} days to {date.ToShortDateString()}");
-
-                // If the resulting date is greater than now, then this is attempting to take doses beyond
-                // today, which isn't allowed
-                if (date > DateTime.Now)
-                {
-                    var message = $"Stock date {date.ToShortDateString()} is in the future";
-                    throw new StockDateOutOfRangeException(message);
-                }
             }
             else
             {

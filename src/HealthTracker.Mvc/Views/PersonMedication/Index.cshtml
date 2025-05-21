@@ -28,6 +28,24 @@
             return "white";
         }
     }
+
+    public string ToggleAssociationSelection(string currentSelections, string checkboxName)
+    {
+        var associationId = checkboxName.Split("_")[1];
+        var selectedIds = currentSelections.Split(",").ToList();
+        var index = selectedIds.IndexOf(associationId);
+
+        if (index >= 0)
+        {
+            selectedIds.RemoveAt(index);
+        }
+        else
+        {
+            selectedIds.Add(associationId);
+        }
+
+        return string.Join(",", selectedIds);
+    }
 }
 
 <p class="text-center font-weight-bold">
@@ -65,11 +83,13 @@
         @Html.AntiForgeryToken()
         @await Html.PartialAsync("Filters", Model)
         @Html.HiddenFor(m => m.PageNumber)
+        @Html.HiddenFor(m => m.SelectedAssociationIds)
 
         @if ((Model.Associations != null) && (Model.Associations.Count() > 0))
         {
             <table class="table">
                 <tr>
+                    <th/>
                     <th>Person</th>
                     <th>Medication</th>
                     <th>Active</th>
@@ -89,6 +109,14 @@
                     var textColor = association.Active ? "black" : "lightgrey";
 
                     <tr style="background-color: @rowColor">
+                        <td valign="center">
+                            <span style="color: @textColor">
+                                @if (association.Active)
+                                {
+                                    @Html.CheckBox($"Selected_{association.Id}")
+                                }
+                            </span>
+                        </td>
                         <td valign="center"><span style="color: @textColor">@Model.Filters.SelectedPerson.Name</span></td>
                         <td valign="center"><span style="color: @textColor">@association.Medication.Name</span></td>
                         <td valign="center"><span style="color: @textColor">@active</span></td>
@@ -98,21 +126,31 @@
                         <td valign="center"><span style="color: @textColor">@actions</span></td>
                         <td valign="center">
                             <a class="btn btn-lg" asp-area="" asp-controller="PersonMedication" asp-action="Edit" asp-route-id="@association.Id" asp-route-start="@Model.Filters.From.ToString(DateFormats.DateTime)" asp-route-end="@Model.Filters.To.ToString(DateFormats.DateTime)">
-                                <span style="color: @textColor"><i class="fas fa-edit"></i></span>
+                                <i class="fas fa-edit"></i>
                             </a>
                         </td>
                         <td valign="center">
                             <a class="btn btn-lg" href="javascript:submitDeleteForm(@association.Id)">
-                                <span style="color: @textColor"><i class="fas fa-trash"></i></span>
+                                <i class="fas fa-trash"></i>
                             </a>
                         </td>
                     </tr>
                 }
             </table>
             <hr />
-            <p class="text-right">
-                <button type="submit" name="Action" value="@ControllerActions.ActionPreviousPage" class="btn btn-secondary" @previousDisabled>Previous</button>
-                <button type="submit" name="Action" value="@ControllerActions.ActionNextPage" class="btn btn-primary" @nextDisabled>Next</button>
+            <p>
+                <div style="float: left">
+                    <button type="submit" name="Action" value="@ControllerActions.ActionTake" class="btn btn-primary" style="margin-right: 10px">Take</button>
+                    <button type="submit" name="Action" value="@ControllerActions.ActionUnTake" class="btn btn-primary" style="margin-right: 10px">Un-take</button>
+                    <button type="submit" name="Action" value="@ControllerActions.ActionSkip" class="btn btn-primary" style="margin-right: 10px">Skip</button>
+                    <button type="submit" name="Action" value="@ControllerActions.ActionTakeAll" class="btn btn-primary" style="margin-right: 10px">Take All</button>
+                    <button type="submit" name="Action" value="@ControllerActions.ActionUnTakeAll" class="btn btn-primary" style="margin-right: 10px">Un-take All</button>
+                    <button type="submit" name="Action" value="@ControllerActions.ActionSkipAll" class="btn btn-primary" style="margin-right: 10px">Skip All</button>
+                </div>
+                <div style="float: right">
+                    <button type="submit" name="Action" value="@ControllerActions.ActionPreviousPage" class="btn btn-secondary" @previousDisabled>Previous</button>
+                    <button type="submit" name="Action" value="@ControllerActions.ActionNextPage" class="btn btn-primary" @nextDisabled>Next</button>
+                </div>
             </p>
         }
         else if (Model.HasNoMatchingResults)
@@ -138,4 +176,52 @@
             cancelButton: "No"
         });
     }
+
+    function toggleAssociationSelection(checkBoxName) {
+        var newValue = "";
+
+        // Checkbox name is the association ID with a prefix - extract the ID and retrieve
+        // the current comma-separated list of selected association IDs from the form
+        var id = checkBoxName.split("_")[1];
+        var currentValue = $("#SelectedAssociationIds").val();
+
+        if (currentValue == id) {
+            // If the current list is just the selected ID, we're toggling it off so
+            // just blank out the current list
+            newValue = "";
+
+        } else if ((currentValue != "")) {
+            // Split the current selections and locate the selected ID in the resulting
+            // array
+            var selectedIDs = currentValue.split(",");
+            var index = selectedIDs.indexOf(id);
+
+            if (index == -1)
+            {
+                // Not there so we're adding it
+                selectedIDs.push(id);
+            }
+            else
+            {
+                // There so we're removing it
+                selectedIDs.splice(index, 1);
+            }
+
+            // Reconstruct a string containing the list of selected association IDs
+            newValue = selectedIDs.join(",");
+
+        } else {
+            // If the current list is blank, we're selecting the selected ID so set
+            // the list to equal it
+            newValue = id;
+        }
+
+        $("#SelectedAssociationIds").val(newValue);
+    }
+
+    $(document).ready(function() {
+        $("[name^='Selected']").on("click", function() {
+            toggleAssociationSelection($(this).attr("name"));
+        });
+    });
 </script>
