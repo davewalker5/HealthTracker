@@ -29,7 +29,7 @@ namespace HealthTracker.Mvc.Helpers
             _logger.LogDebug($"{activityTypes.Count} activity type{plural} loaded via the service");
 
             // Create a list of select list items from the list of activity types. Add an empty entry if there
-            // is more than one. If not, the list will only contain that one person which will be the default
+            // is more than one. If not, the list will only contain that one activity type which will be the default
             // selection
             if (activityTypes.Count != 1)
             {

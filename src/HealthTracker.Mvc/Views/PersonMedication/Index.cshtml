@@ -96,13 +96,20 @@
                     <th>Stock</th>
                     <th>Daily Dose</th>
                     <th>Last Taken</th>
+                    <th>Days Left</th>
+                    <th>Last Day</th>
+                    <th>Order More</th>
                     <th>Actions</th>
                     <th />
                     <th />
                 </tr>
                 @foreach (var association in Model.Associations)
                 {
-                    var lastTaken = association.LastTaken.HasValue ? association.LastTaken.Value.ToString("dd-MMM-yyyy") : "-";
+                    var lastDay = association.LastDay();
+                    var orderMore = association.OrderMoreDate(Model.Settings.MedicationOrderLeadTimeDays);
+                    var lastTaken = association.LastTaken.HasValue ? association.LastTaken.Value.ToString(DateFormats.Date) : "-";
+                    var lastDayString = lastDay.HasValue ? lastDay.Value.ToString(DateFormats.Date) : "-";
+                    var orderMoreString = orderMore.HasValue ? orderMore.Value.ToString(DateFormats.Date) : "-";
                     var active = association.Active ? "Yes" : "No";
                     var actions = association.Active ? string.Join(", ", association.Actions ?? []) : "";
                     var rowColor = GetRowBackgroundColour(association.Active, association.DaysRemaining());
@@ -123,9 +130,12 @@
                         <td valign="center"><span style="color: @textColor">@association.Stock</span></td>
                         <td valign="center"><span style="color: @textColor">@association.DailyDose</span></td>
                         <td valign="center"><span style="color: @textColor">@lastTaken</span></td>
+                        <td valign="center"><span style="color: @textColor">@association.DaysRemaining()</span></td>
+                        <td valign="center"><span style="color: @textColor">@lastDayString</span></td>
+                        <td valign="center"><span style="color: @textColor">@orderMoreString</span></td>
                         <td valign="center"><span style="color: @textColor">@actions</span></td>
                         <td valign="center">
-                            <a class="btn btn-lg" asp-area="" asp-controller="PersonMedication" asp-action="Edit" asp-route-id="@association.Id" asp-route-start="@Model.Filters.From.ToString(DateFormats.DateTime)" asp-route-end="@Model.Filters.To.ToString(DateFormats.DateTime)">
+                            <a class="btn btn-lg" asp-area="" asp-controller="PersonMedication" asp-action="Edit" asp-route-id="@association.Id">
                                 <i class="fas fa-edit"></i>
                             </a>
                         </td>

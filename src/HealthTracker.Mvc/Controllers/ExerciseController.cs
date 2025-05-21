@@ -127,6 +127,7 @@ namespace HealthTracker.Mvc.Controllers
             await SetFilterDetails(model, personId, start, end);
             return View(model);
         }
+
         /// <summary>
         /// Handle POST events to save new measurements
         /// </summary>
@@ -215,6 +216,7 @@ namespace HealthTracker.Mvc.Controllers
             await SetFilterDetails(model, measurement.PersonId, start, end);
             return View(model);
         }
+
         /// <summary>
         /// Handle POST events to save updated measurements
         /// </summary>
