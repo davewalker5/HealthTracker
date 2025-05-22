@@ -38,7 +38,7 @@ namespace HealthTracker.Tests.ActivityTypes
             var json = JsonSerializer.Serialize(new { activityType.Description, activityType.DistanceBased });
             _httpClient.AddResponse(json);
 
-            var added = await _client.AddActivityTypeAsync(activityType.Description, activityType.DistanceBased);
+            var added = await _client.AddAsync(activityType.Description, activityType.DistanceBased);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -58,7 +58,7 @@ namespace HealthTracker.Tests.ActivityTypes
             var json = JsonSerializer.Serialize(activityType);
             _httpClient.AddResponse(json);
 
-            var updated = await _client.UpdateActivityTypeAsync(activityType.Id, activityType.Description, activityType.DistanceBased);
+            var updated = await _client.UpdateAsync(activityType.Id, activityType.Description, activityType.DistanceBased);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -76,7 +76,7 @@ namespace HealthTracker.Tests.ActivityTypes
         public async Task DeleteTest()
         {
             var id = DataGenerator.RandomId();
-            await _client.DeleteActivityTypeAsync(id);
+            await _client.DeleteAsync(id);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -93,7 +93,7 @@ namespace HealthTracker.Tests.ActivityTypes
             var json = JsonSerializer.Serialize<List<ActivityType>>([activityType]);
             _httpClient.AddResponse(json);
 
-            var activities = await _client.ListActivityTypesAsync(1, int.MaxValue);
+            var activities = await _client.ListAsync(1, int.MaxValue);
             var expectedRoute = $"{_settings.ApiRoutes[0].Route}/1/{int.MaxValue}";
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());

@@ -1,8 +1,7 @@
 namespace HealthTracker.Mvc.Interfaces
 {
-    public interface IMeasurementFiltersViewModel
+    public interface IFiltersViewModel : IPersonFilterViewModel
     {
-        string PersonName { get; set; }
         DateTime From { get; set; }
         DateTime To { get; set; }
     }

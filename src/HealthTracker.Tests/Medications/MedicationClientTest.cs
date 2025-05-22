@@ -37,7 +37,7 @@ namespace HealthTracker.Tests.Medications
             var json = JsonSerializer.Serialize(new { Name = name });
             _httpClient.AddResponse(json);
 
-            var medication = await _client.AddMedicationAsync(name);
+            var medication = await _client.AddAsync(name);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -56,7 +56,7 @@ namespace HealthTracker.Tests.Medications
             var json = JsonSerializer.Serialize(medication);
             _httpClient.AddResponse(json);
 
-            var updated = await _client.UpdateMedicationAsync(medication.Id, medication.Name);
+            var updated = await _client.UpdateAsync(medication.Id, medication.Name);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -72,7 +72,7 @@ namespace HealthTracker.Tests.Medications
         public async Task DeleteTest()
         {
             var id = DataGenerator.RandomId();
-            await _client.DeleteMedicationAsync(id);
+            await _client.DeleteAsync(id);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -89,7 +89,7 @@ namespace HealthTracker.Tests.Medications
             var json = JsonSerializer.Serialize(new List<dynamic>() { medication });
             _httpClient.AddResponse(json);
 
-            var medications = await _client.ListMedicationsAsync(1, int.MaxValue);
+            var medications = await _client.ListAsync(1, int.MaxValue);
             var expectedRoute = $"{_settings.ApiRoutes[0].Route}/1/{int.MaxValue}";
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());

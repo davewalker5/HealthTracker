@@ -1,5 +1,6 @@
 using HealthTracker.Entities.Interfaces;
 using HealthTracker.Entities.Measurements;
+using HealthTracker.Logic.Extensions;
 
 namespace HealthTracker.Logic.Calculations
 {
@@ -15,7 +16,7 @@ namespace HealthTracker.Logic.Calculations
         /// </summary>
         /// <param name="measurements"></param>
         /// <returns></returns>
-        public IEnumerable<ExerciseSummary> Summarise(IEnumerable<ExerciseMeasurement> measurements)
+        public async Task<IEnumerable<ExerciseSummary>> Summarise(IEnumerable<ExerciseMeasurement> measurements)
         {
             List<ExerciseSummary> summaries = null;
 
@@ -33,6 +34,24 @@ namespace HealthTracker.Logic.Calculations
                     if (group.Select(x => x.ActivityTypeId).Distinct().Count() > 1)
                     {
                         summaries.Add(SummariseMeasurementGroup(group));
+                    }
+                }
+
+                // Populate the name of the person and the activity name, if possible, and set the formatted duration
+                var people = await _factory.People.ListAsync(x => true, 1, int.MaxValue);
+                var activityTypes = await _factory.ActivityTypes.ListAsync(x => true, 1, int.MaxValue);
+                foreach (var summary in summaries)
+                {
+                    summary.FormattedDuration = summary.TotalDuration.ToFormattedDuration();
+
+                    if (summary.PersonId != null)
+                    {
+                        summary.PersonName = people.FirstOrDefault(x => x.Id == summary.PersonId)?.Name;
+                    }
+
+                    if (summary.ActivityTypeId != null)
+                    {
+                        summary.ActivityDescription = activityTypes.FirstOrDefault(x => x.Id == summary.ActivityTypeId)?.Description;
                     }
                 }
             }
@@ -95,7 +114,7 @@ namespace HealthTracker.Logic.Calculations
                                                                                     (x.Date <= to),
                                                                                     1, int.MaxValue);
 
-            var summaries = Summarise(measurements);
+            var summaries = await Summarise(measurements);
             return summaries;
         }
 

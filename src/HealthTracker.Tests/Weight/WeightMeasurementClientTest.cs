@@ -51,7 +51,7 @@ namespace HealthTracker.Tests.Weight
             var json = JsonSerializer.Serialize(measurement);
             _httpClient.AddResponse(json);
 
-            var added = await _client.AddWeightMeasurementAsync(measurement.PersonId, measurement.Date, measurement.Weight);
+            var added = await _client.AddAsync(measurement.PersonId, measurement.Date, measurement.Weight);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -72,7 +72,7 @@ namespace HealthTracker.Tests.Weight
             var json = JsonSerializer.Serialize(measurement);
             _httpClient.AddResponse(json);
 
-            var updated = await _client.UpdateWeightMeasurementAsync(measurement.Id, measurement.PersonId, measurement.Date, measurement.Weight);
+            var updated = await _client.UpdateAsync(measurement.Id, measurement.PersonId, measurement.Date, measurement.Weight);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -90,7 +90,7 @@ namespace HealthTracker.Tests.Weight
         public async Task DeleteTest()
         {
             var id = DataGenerator.RandomId();
-            await _client.DeleteWeightMeasurementAsync(id);
+            await _client.DeleteAsync(id);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -107,7 +107,7 @@ namespace HealthTracker.Tests.Weight
             var json = JsonSerializer.Serialize(measurement);
             _httpClient.AddResponse(json);
 
-            var retrieved = await _client.Get(measurement.Id);
+            var retrieved = await _client.GetAsync(measurement.Id);
             var expectedRoute = $"{_settings.ApiRoutes[0].Route}/{measurement.Id}";
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
@@ -130,7 +130,7 @@ namespace HealthTracker.Tests.Weight
             var json = JsonSerializer.Serialize(new List<dynamic> { measurement });
             _httpClient.AddResponse(json);
 
-            var measurements = await _client.ListWeightMeasurementsAsync(measurement.PersonId, null, null, 1, int.MaxValue);
+            var measurements = await _client.ListAsync(measurement.PersonId, null, null, 1, int.MaxValue);
 
             var expectedTo = DateTime.Now;
             var expectedFrom = expectedTo.AddDays(-_settings.DefaultTimePeriodDays);
@@ -160,7 +160,7 @@ namespace HealthTracker.Tests.Weight
             _httpClient.AddResponse(json);
 
             var from = measurement.Date.AddDays(-DataGenerator.RandomInt(30, 90));
-            var measurements = await _client.ListWeightMeasurementsAsync(measurement.PersonId, from, null, 1, int.MaxValue);
+            var measurements = await _client.ListAsync(measurement.PersonId, from, null, 1, int.MaxValue);
 
             var expectedTo = DateTime.Now;
             var encodedFrom = HttpUtility.UrlEncode(from.ToString("yyyy-MM-dd H:mm:ss"));
@@ -189,7 +189,7 @@ namespace HealthTracker.Tests.Weight
             _httpClient.AddResponse(json);
 
             var to = measurement.Date.AddDays(DataGenerator.RandomInt(30, 90));
-            var measurements = await _client.ListWeightMeasurementsAsync(measurement.PersonId, null, to, 1, int.MaxValue);
+            var measurements = await _client.ListAsync(measurement.PersonId, null, to, 1, int.MaxValue);
 
             var expectedFrom = to.AddDays(-_settings.DefaultTimePeriodDays);
             var encodedFrom = HttpUtility.UrlEncode(expectedFrom.ToString("yyyy-MM-dd H:mm:ss"));
@@ -219,7 +219,7 @@ namespace HealthTracker.Tests.Weight
 
             var from = measurement.Date.AddDays(DataGenerator.RandomInt(30, 90));
             var to = measurement.Date.AddDays(DataGenerator.RandomInt(30, 90));
-            var measurements = await _client.ListWeightMeasurementsAsync(measurement.PersonId, from, to, 1, int.MaxValue);
+            var measurements = await _client.ListAsync(measurement.PersonId, from, to, 1, int.MaxValue);
 
             var encodedFrom = HttpUtility.UrlEncode(from.ToString("yyyy-MM-dd H:mm:ss"));
             var encodedTo = HttpUtility.UrlEncode(to.ToString("yyyy-MM-dd H:mm:ss"));
@@ -250,7 +250,7 @@ namespace HealthTracker.Tests.Weight
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 
-            await _client.ImportWeightMeasurementsAsync(_filePath);
+            await _client.ImportAsync(_filePath);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -265,7 +265,7 @@ namespace HealthTracker.Tests.Weight
             var personId = DataGenerator.RandomId();
             _filePath = DataGenerator.TemporaryCsvFilePath();
 
-            await _client.ExportWeightMeasurementsAsync(personId, null, null, _filePath);
+            await _client.ExportAsync(personId, null, null, _filePath);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -282,7 +282,7 @@ namespace HealthTracker.Tests.Weight
 
             var from = measurement.Date.AddDays(-DataGenerator.RandomInt(30,90));
             var to = measurement.Date.AddDays(DataGenerator.RandomInt(30,90));
-            var average = await _client.CalculateAverageWeightAsync(measurement.PersonId, from, to);
+            var average = await _client.CalculateAverageAsync(measurement.PersonId, from, to);
 
             var encodedFrom = HttpUtility.UrlEncode(from.ToString("yyyy-MM-dd H:mm:ss"));
             var encodedTo = HttpUtility.UrlEncode(to.ToString("yyyy-MM-dd H:mm:ss"));
@@ -308,7 +308,7 @@ namespace HealthTracker.Tests.Weight
             var json = JsonSerializer.Serialize(measurement);
             _httpClient.AddResponse(json);
 
-            var average = await _client.CalculateAverageWeightAsync(measurement.PersonId, _settings.DefaultTimePeriodDays);
+            var average = await _client.CalculateAverageAsync(measurement.PersonId, _settings.DefaultTimePeriodDays);
 
             var expectedRoute = $"{_settings.ApiRoutes.First(x => x.Name == "WeightMeasurement").Route}/average/{measurement.PersonId}/";
 

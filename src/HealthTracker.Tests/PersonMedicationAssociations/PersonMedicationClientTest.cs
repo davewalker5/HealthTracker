@@ -39,7 +39,7 @@ namespace HealthTracker.Tests.PersonMedicationAssociations
             var json = JsonSerializer.Serialize(association);
             _httpClient.AddResponse(json);
 
-            var added = await _client.AddPersonMedicationAsync(personId, medicationId, association.DailyDose, association.Stock, association.LastTaken);
+            var added = await _client.AddAsync(personId, medicationId, association.DailyDose, association.Stock, association.LastTaken);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -64,7 +64,7 @@ namespace HealthTracker.Tests.PersonMedicationAssociations
             var json = JsonSerializer.Serialize(association);
             _httpClient.AddResponse(json);
 
-            var updated = await _client.UpdatePersonMedicationAsync(association.Id, personId, medicationId, association.DailyDose, association.Stock, association.Active, association.LastTaken);
+            var updated = await _client.UpdateAsync(association.Id, personId, medicationId, association.DailyDose, association.Stock, association.Active, association.LastTaken);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -90,7 +90,7 @@ namespace HealthTracker.Tests.PersonMedicationAssociations
             var json = JsonSerializer.Serialize(association);
             _httpClient.AddResponse(json);
 
-            var updated = await _client.ActivatePersonMedicationAsync(association.Id);
+            var updated = await _client.ActivateAsync(association.Id);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -116,7 +116,7 @@ namespace HealthTracker.Tests.PersonMedicationAssociations
             var json = JsonSerializer.Serialize(association);
             _httpClient.AddResponse(json);
 
-            var updated = await _client.ActivatePersonMedicationAsync(association.Id);
+            var updated = await _client.ActivateAsync(association.Id);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -137,7 +137,7 @@ namespace HealthTracker.Tests.PersonMedicationAssociations
         public async Task DeleteTest()
         {
             var id = DataGenerator.RandomId();
-            await _client.DeletePersonMedicationAsync(id);
+            await _client.DeleteAsync(id);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -156,7 +156,7 @@ namespace HealthTracker.Tests.PersonMedicationAssociations
             var json = JsonSerializer.Serialize(association);
             _httpClient.AddResponse(json);
 
-            var retrieved = await _client.Get(association.Id);
+            var retrieved = await _client.GetAsync(association.Id);
             var expectedRoute = $"{_settings.ApiRoutes[0].Route}/{association.Id}";
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
@@ -183,7 +183,7 @@ namespace HealthTracker.Tests.PersonMedicationAssociations
             var json = JsonSerializer.Serialize(new List<dynamic> { association });
             _httpClient.AddResponse(json);
 
-            var associations = await _client.ListPersonMedicationsAsync(personId, 1, int.MaxValue);
+            var associations = await _client.ListAsync(personId, 1, int.MaxValue);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());

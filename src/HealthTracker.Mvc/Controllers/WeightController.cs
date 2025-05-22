@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HealthTracker.Mvc.Controllers
 {
     [Authorize]
-    public class WeightController : MeasurementControllerBase<IWeightMeasurementClient, WeightListViewModel, WeightMeasurement>
+    public class WeightController : FilteredControllerBase<IWeightMeasurementClient, WeightListViewModel, WeightMeasurement>
     {
         private readonly ILogger<WeightController> _logger;
 
@@ -19,7 +19,8 @@ namespace HealthTracker.Mvc.Controllers
             IWeightMeasurementClient measurementClient,
             IHealthTrackerApplicationSettings settings,
             IFilterGenerator filterGenerator,
-            ILogger<WeightController> logger) : base(personClient, measurementClient, settings, filterGenerator)
+            IViewModelBuilder builder,
+            ILogger<WeightController> logger) : base(personClient, measurementClient, settings, filterGenerator, builder)
         {
             _logger = logger;
         }
@@ -39,7 +40,7 @@ namespace HealthTracker.Mvc.Controllers
             var model = new WeightListViewModel
             {
                 PageNumber = 1,
-                Filters = await _filterGenerator.Create(personId, start, end)
+                Filters = await _filterGenerator.Create(personId, start, end, true)
             };
 
             return View(model);
@@ -86,7 +87,7 @@ namespace HealthTracker.Mvc.Controllers
                     $"Retrieving page {page} of weight measurements for person with ID {model.Filters.PersonId}" +
                     $" in the date range {model.Filters.From:dd-MMM-yyyy} to {model.Filters.To:dd-MMM-yyyy}");
 
-                var measurements = await _measurementClient.ListWeightMeasurementsAsync(
+                var measurements = await _measurementClient.ListAsync(
                     model.Filters.PersonId, model.Filters.From, ToDate(model.Filters.To), page, _settings.ResultsPageSize);
                 model.SetEntities(measurements, page, _settings.ResultsPageSize);
 
@@ -99,6 +100,7 @@ namespace HealthTracker.Mvc.Controllers
 
             // Populate the list of people and render the view
             await _filterGenerator.PopulatePersonList(model.Filters);
+            model.Filters.ShowAddButton = true;
             return View(model);
         }
 
@@ -142,7 +144,7 @@ namespace HealthTracker.Mvc.Controllers
 
                 // Add the measurement
                 _logger.LogDebug($"Adding weight measurement: Person = {personName}, Date = {model.Measurement.Date}, Weight = {model.Measurement.Weight}");
-                var measurement = await _measurementClient.AddWeightMeasurementAsync(personId, DateTime.Now, model.Measurement.Weight);
+                var measurement = await _measurementClient.AddAsync(personId, DateTime.Now, model.Measurement.Weight);
 
                 // Return the measurement list view containing only the new measurement and a confirmation message
                 var message = $"Weight measurement of {model.Measurement.Weight:.##} for {personName} added successfully";
@@ -151,7 +153,9 @@ namespace HealthTracker.Mvc.Controllers
                     measurement.Id,
                     measurement.Date,
                     measurement.Date,
-                    message);
+                    message,
+                    true,
+                    true);
 
                 return View("Index", listModel);
             }
@@ -176,7 +180,7 @@ namespace HealthTracker.Mvc.Controllers
             _logger.LogDebug($"Rendering edit view: Measurement ID = {id}, From = {start}, To = {end}");
 
             // Load the measurement to edit
-            var measurement = await _measurementClient.Get(id);
+            var measurement = await _measurementClient.GetAsync(id);
 
             // Construct the view model
             var model = new EditWeightViewModel();
@@ -205,7 +209,7 @@ namespace HealthTracker.Mvc.Controllers
             {
                 // Update the measurement
                 _logger.LogDebug($"Updating weight measurement: ID = {model.Measurement.Id}, Person ID = {model.Measurement.PersonId}, Date = {model.Measurement.Date}, Weight = {model.Measurement.Weight}");
-                await _measurementClient.UpdateWeightMeasurementAsync(
+                await _measurementClient.UpdateAsync(
                     model.Measurement.Id,
                     model.Measurement.PersonId,
                     model.Measurement.Date,
@@ -217,7 +221,9 @@ namespace HealthTracker.Mvc.Controllers
                     model.Measurement.Id,
                     model.Measurement.Date,
                     model.Measurement.Date,
-                    "Measurement successfully updated");
+                    "Measurement successfully updated",
+                    true,
+                    true);
 
                 return View("Index", listModel);
             }
@@ -241,16 +247,16 @@ namespace HealthTracker.Mvc.Controllers
         {
             // Retrieve the measurement and capture the person and date
             _logger.LogDebug($"Retrieving weight measurement: ID = {id}");
-            var measurement = await _measurementClient.Get(id);
+            var measurement = await _measurementClient.GetAsync(id);
             var personId = measurement.PersonId;
             var date = measurement.Date;
 
             // Delete the measurement
             _logger.LogDebug($"Deleting weight measurement: ID = {id}");
-            await _measurementClient.DeleteWeightMeasurementAsync(id);
+            await _measurementClient.DeleteAsync(id);
 
             // Return the list view with an empty list of measurements
-            var model = await CreateListViewModel(personId, 0, date, date, "Measurement successfully deleted");
+            var model = await CreateListViewModel(personId, 0, date, date, "Measurement successfully deleted", true, true);
             return View("Index", model);
         }
     }

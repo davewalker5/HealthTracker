@@ -25,7 +25,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="ldl"></param>
         /// <param name="triglycerides"></param>
         /// <returns></returns>
-        public async Task<CholesterolMeasurement> AddCholesterolMeasurementAsync(
+        public async Task<CholesterolMeasurement> AddAsync(
             int personId,
             DateTime? date,
             decimal total,
@@ -62,7 +62,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="ldl"></param>
         /// <param name="triglycerides"></param>
         /// <returns></returns>
-        public async Task<CholesterolMeasurement> UpdateCholesterolMeasurementAsync(
+        public async Task<CholesterolMeasurement> UpdateAsync(
             int id, 
             int personId,
             DateTime? date,
@@ -95,7 +95,7 @@ namespace HealthTracker.Client.ApiClient
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public async Task ImportCholesterolMeasurementsAsync(string filePath)
+        public async Task ImportAsync(string filePath)
         {
             dynamic data = new{ Content = File.ReadAllText(filePath) };
             var json = Serialize(data);
@@ -110,7 +110,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="to"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public async Task ExportCholesterolMeasurementsAsync(int personId, DateTime? from, DateTime? to, string fileName)
+        public async Task ExportAsync(int personId, DateTime? from, DateTime? to, string fileName)
         {
             dynamic data = new { PersonId = personId, From = from, To = to, FileName = fileName };
             var json = Serialize(data);
@@ -122,7 +122,7 @@ namespace HealthTracker.Client.ApiClient
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task DeleteCholesterolMeasurementAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
             var route = $"{baseRoute}/{id}";
@@ -136,7 +136,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="from"></param>
         /// <param name="to"></param>
         /// <returns></returns>
-        public async Task<List<CholesterolMeasurement>> ListCholesterolMeasurementsAsync(int personId, DateTime? from, DateTime? to)
+        public async Task<List<CholesterolMeasurement>> ListAsync(int personId, DateTime? from, DateTime? to)
         {
             // Determine the encoded date range
             (var encodedFromDate, var encodedToDate) = CalculateEncodedDateRange(from, to);

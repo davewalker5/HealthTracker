@@ -3,9 +3,9 @@ using HealthTracker.Entities.Measurements;
 
 namespace HealthTracker.Client.Interfaces
 {
-    public interface IExerciseMeasurementClient : IEntityRetriever<ExerciseMeasurement>
+    public interface IExerciseMeasurementClient : IDateBasedEntityRetriever<ExerciseMeasurement>
     {
-        Task<ExerciseMeasurement> AddExerciseMeasurementAsync(
+        Task<ExerciseMeasurement> AddAsync(
             int personId,
             int activityId,
             DateTime? date,
@@ -15,12 +15,11 @@ namespace HealthTracker.Client.Interfaces
             int minimumHeartRate,
             int maximumHeartRate);
 
-        Task DeleteExerciseMeasurementAsync(int id);
-        Task ExportExerciseMeasurementsAsync(int personId, DateTime? from, DateTime? to, string fileName);
-        Task ImportExerciseMeasurementsAsync(string filePath);
-        Task<List<ExerciseMeasurement>> ListExerciseMeasurementsAsync(int personId, DateTime? from, DateTime? to, int pageNumber, int pageSize);
+        Task DeleteAsync(int id);
+        Task ExportAsync(int personId, DateTime? from, DateTime? to, string fileName);
+        Task ImportAsync(string filePath);
 
-        Task<ExerciseMeasurement> UpdateExerciseMeasurementAsync(
+        Task<ExerciseMeasurement> UpdateAsync(
             int id,
             int personId,
             int activityId,

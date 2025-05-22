@@ -20,7 +20,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="description"></param>
         /// <param name="distanceBased"></param>
         /// <returns></returns>
-        public async Task<ActivityType> AddActivityTypeAsync(string description, bool distanceBased)
+        public async Task<ActivityType> AddAsync(string description, bool distanceBased)
         {
             dynamic template = new
             {
@@ -42,7 +42,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="description"></param>
         /// <param name="distanceBased"></param>
         /// <returns></returns>
-        public async Task<ActivityType> UpdateActivityTypeAsync(int id, string description, bool distanceBased)
+        public async Task<ActivityType> UpdateAsync(int id, string description, bool distanceBased)
         {
             dynamic template = new
             {
@@ -63,7 +63,7 @@ namespace HealthTracker.Client.ApiClient
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task DeleteActivityTypeAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
             var route = $"{baseRoute}/{id}";
@@ -76,7 +76,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="pageNumber"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<List<ActivityType>> ListActivityTypesAsync(int pageNumber, int pageSize)
+        public async Task<List<ActivityType>> ListAsync(int pageNumber, int pageSize)
         {
             // Request a list of activity types
             string baseRoute = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";

@@ -28,7 +28,7 @@ namespace HealthTracker.Mvc.Helpers
             var list = new List<SelectListItem>();
 
             // Load the list of medications
-            var medications = await _medicationsClient.ListMedicationsAsync(1, int.MaxValue);
+            var medications = await _medicationsClient.ListAsync(1, int.MaxValue);
             var plural = medications.Count == 1 ? "" : "s";
             _logger.LogDebug($"{medications.Count} medication{plural} loaded via the service");
 
@@ -37,7 +37,7 @@ namespace HealthTracker.Mvc.Helpers
             // an existing association but all other *associated* medications need to be removed from
             // the list to avoid potentially creating duplicate associations. Similarly with adding a
             // ned association, medications for all existing associations must be removed
-            var associations = await _personMedicationClient.ListPersonMedicationsAsync(personId, 1, int.MaxValue);
+            var associations = await _personMedicationClient.ListAsync(personId, 1, int.MaxValue);
             var removeMedicationIds = associations.Where(x => x.Id != associationId).Select(x => x.MedicationId).ToList();
             medications.RemoveAll(x => removeMedicationIds.Contains(x.Id));
 

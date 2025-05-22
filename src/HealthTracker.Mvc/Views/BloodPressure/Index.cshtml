@@ -46,35 +46,7 @@
 
         @if ((Model.Measurements != null) && (Model.Measurements.Count() > 0))
         {
-            <table class="table">
-                <tr>
-                    <th>Person</th>
-                    <th>Date</th>
-                    <th>Reading</th>
-                    <th>Assessment</th>
-                    <th />
-                    <th />
-                </tr>
-                @foreach (var measurement in Model.Measurements)
-                {
-                    <tr>
-                        <td valign="center">@Model.Filters.SelectedPerson.Name</td>
-                        <td valign="center">@measurement.Date.ToString("dd-MMM-yyyy")</td>
-                        <td valign="center"><span>@measurement.Systolic</span>/<span>@measurement.Diastolic</span></td>
-                        <td valign="center">@measurement.Assessment</td>
-                        <td valign="center">
-                            <a class="btn btn-lg" asp-area="" asp-controller="BloodPressure" asp-action="Edit" asp-route-id="@measurement.Id" asp-route-start="@Model.Filters.From.ToString(DateFormats.DateTime)" asp-route-end="@Model.Filters.To.ToString(DateFormats.DateTime)">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                        </td>
-                        <td valign="center">
-                            <a class="btn btn-lg" href="javascript:submitDeleteForm(@measurement.Id)">
-                                <i class="fas fa-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                }
-            </table>
+            @await Html.PartialAsync("_BloodPressureList", Model)
             <hr />
             <p class="text-right">
                 <button type="submit" name="Action" value="@ControllerActions.ActionPreviousPage" class="btn btn-secondary" @previousDisabled>Previous</button>

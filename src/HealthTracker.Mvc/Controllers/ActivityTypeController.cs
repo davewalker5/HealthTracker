@@ -32,7 +32,7 @@ namespace HealthTracker.Mvc.Controllers
         public async Task<IActionResult> Index()
         {
             // Get the list of current activity types
-            var activityTypes = await _client.ListActivityTypesAsync(1, _settings.ResultsPageSize);
+            var activityTypes = await _client.ListAsync(1, _settings.ResultsPageSize);
             var plural = activityTypes.Count == 1 ? "" : "s";
             _logger.LogDebug($"{activityTypes.Count} activity type{plural} loaded via the service");
 
@@ -72,7 +72,7 @@ namespace HealthTracker.Mvc.Controllers
                 ModelState.Clear();
 
                 // Retrieve the matching records
-                var activityTypes = await _client.ListActivityTypesAsync(page, _settings.ResultsPageSize);
+                var activityTypes = await _client.ListAsync(page, _settings.ResultsPageSize);
                 model.SetEntities(activityTypes, page, _settings.ResultsPageSize);
             }
             else
@@ -114,7 +114,7 @@ namespace HealthTracker.Mvc.Controllers
             {
                 var description = model.ActivityType.Description;
                 _logger.LogDebug($"Adding activity type: Description = {model.ActivityType.Description}, Distance Based = {model.ActivityType.DistanceBased}");
-                var activityType = await _client.AddActivityTypeAsync(model.ActivityType.Description, model.ActivityType.DistanceBased);
+                var activityType = await _client.AddAsync(model.ActivityType.Description, model.ActivityType.DistanceBased);
 
                 result = CreateListResult(activityType, $"{activityType.Description} successfully added");
             }
@@ -135,7 +135,7 @@ namespace HealthTracker.Mvc.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var activityTypes = await _client.ListActivityTypesAsync(1, int.MaxValue);
+            var activityTypes = await _client.ListAsync(1, int.MaxValue);
             var plural = activityTypes.Count == 1 ? "" : "s";
             _logger.LogDebug($"{activityTypes.Count} activity type{plural} loaded via the service");
 
@@ -166,7 +166,7 @@ namespace HealthTracker.Mvc.Controllers
             if (ModelState.IsValid)
             {
                 _logger.LogDebug($"Updating activity type: Id = {model.ActivityType.Id}, Description = {model.ActivityType.Description}, Distance Based = {model.ActivityType.DistanceBased}");
-                var activityType = await _client.UpdateActivityTypeAsync(model.ActivityType.Id, model.ActivityType.Description, model.ActivityType.DistanceBased);
+                var activityType = await _client.UpdateAsync(model.ActivityType.Id, model.ActivityType.Description, model.ActivityType.DistanceBased);
 
                 result = CreateListResult(activityType, $"{activityType.Description} successfully added");
             }

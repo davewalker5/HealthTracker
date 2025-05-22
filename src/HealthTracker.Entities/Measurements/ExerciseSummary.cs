@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
 namespace HealthTracker.Entities.Measurements
@@ -15,5 +16,14 @@ namespace HealthTracker.Entities.Measurements
         public int TotalCalories { get; set; } = 0;
         public int MinimumHeartRate { get; set; } = 0;
         public int MaximumHeartRate { get; set; } = 0;
+
+        [NotMapped]
+        public string PersonName { get; set; }
+
+        [NotMapped]
+        public string ActivityDescription { get; set; }
+
+        [NotMapped]
+        public string FormattedDuration { get; set; }
     }
 }

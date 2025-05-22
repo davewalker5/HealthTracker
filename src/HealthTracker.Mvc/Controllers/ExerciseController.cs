@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HealthTracker.Mvc.Controllers
 {
     [Authorize]
-    public class ExerciseController : MeasurementControllerBase<IExerciseMeasurementClient, ExerciseListViewModel, ExerciseMeasurement>
+    public class ExerciseController : FilteredControllerBase<IExerciseMeasurementClient, ExerciseListViewModel, ExerciseMeasurement>
     {
         private const string DurationPattern = @"^\d{2}:\d{2}:\d{2}$";
         private readonly Regex _durationRegex = new(DurationPattern, RegexOptions.Compiled);
@@ -24,7 +24,8 @@ namespace HealthTracker.Mvc.Controllers
             IHealthTrackerApplicationSettings settings,
             IFilterGenerator filterGenerator,
             IActivityTypeListGenerator activityTypeListGenerator,
-            ILogger<ExerciseController> logger) : base(personClient, measurementClient, settings, filterGenerator)
+            IViewModelBuilder builder,
+            ILogger<ExerciseController> logger) : base(personClient, measurementClient, settings, filterGenerator, builder)
         {
             _logger = logger;
             _activityTypeListGenerator = activityTypeListGenerator;
@@ -45,7 +46,7 @@ namespace HealthTracker.Mvc.Controllers
             var model = new ExerciseListViewModel
             {
                 PageNumber = 1,
-                Filters = await _filterGenerator.Create(personId, start, end)
+                Filters = await _filterGenerator.Create(personId, start, end, true)
             };
 
             return View(model);
@@ -93,7 +94,7 @@ namespace HealthTracker.Mvc.Controllers
                     $" in the date range {model.Filters.From:dd-MMM-yyyy} to {model.Filters.To:dd-MMM-yyyy}");
 
                 // 
-                var measurements = await _measurementClient.ListExerciseMeasurementsAsync(
+                var measurements = await _measurementClient.ListAsync(
                     model.Filters.PersonId, model.Filters.From, ToDate(model.Filters.To), page, _settings.ResultsPageSize);
                 model.SetEntities(measurements, page, _settings.ResultsPageSize);
 
@@ -106,6 +107,7 @@ namespace HealthTracker.Mvc.Controllers
 
             // Populate the list of people and render the view
             await _filterGenerator.PopulatePersonList(model.Filters);
+            model.Filters.ShowAddButton = true;
             return View(model);
         }
 
@@ -162,7 +164,7 @@ namespace HealthTracker.Mvc.Controllers
                     $"Minimum HR = {model.Measurement.MinimumHeartRate}, " +
                     $"Maximum HR = {model.Measurement.MaximumHeartRate}");
 
-                var measurement = await _measurementClient.AddExerciseMeasurementAsync(
+                var measurement = await _measurementClient.AddAsync(
                     model.Measurement.PersonId,
                     model.Measurement.ActivityTypeId,
                     model.Measurement.Date,
@@ -179,7 +181,9 @@ namespace HealthTracker.Mvc.Controllers
                     measurement.Id,
                     measurement.Date,
                     measurement.Date,
-                    message);
+                    message,
+                    true,
+                    true);
 
                 return View("Index", listModel);
             }
@@ -204,7 +208,7 @@ namespace HealthTracker.Mvc.Controllers
             _logger.LogDebug($"Rendering edit view: Measurement ID = {id}, From = {start}, To = {end}");
 
             // Load the measurement to edit
-            var measurement = await _measurementClient.Get(id);
+            var measurement = await _measurementClient.GetAsync(id);
 
             // Construct the view model
             var model = new EditExerciseViewModel
@@ -250,7 +254,7 @@ namespace HealthTracker.Mvc.Controllers
                     $"Minimum HR = {model.Measurement.MinimumHeartRate}, " +
                     $"Maximum HR = {model.Measurement.MaximumHeartRate}");
 
-                await _measurementClient.UpdateExerciseMeasurementAsync(
+                await _measurementClient.UpdateAsync(
                     model.Measurement.Id,
                     model.Measurement.PersonId,
                     model.Measurement.ActivityTypeId,
@@ -267,7 +271,9 @@ namespace HealthTracker.Mvc.Controllers
                     model.Measurement.Id,
                     model.Measurement.Date,
                     model.Measurement.Date,
-                    "Measurement successfully updated");
+                    "Measurement successfully updated",
+                    true,
+                    true);
 
                 return View("Index", listModel);
             }
@@ -315,16 +321,16 @@ namespace HealthTracker.Mvc.Controllers
         {
             // Retrieve the measurement and capture the person and date
             _logger.LogDebug($"Retrieving exercise measurement: ID = {id}");
-            var measurement = await _measurementClient.Get(id);
+            var measurement = await _measurementClient.GetAsync(id);
             var personId = measurement.PersonId;
             var date = measurement.Date;
 
             // Delete the measurement
             _logger.LogDebug($"Deleting blood glucose measurement: ID = {id}");
-            await _measurementClient.DeleteExerciseMeasurementAsync(id);
+            await _measurementClient.DeleteAsync(id);
 
             // Return the list view with an empty list of measurements
-            var model = await CreateListViewModel(personId, 0, date, date, "Measurement successfully deleted");
+            var model = await CreateListViewModel(personId, 0, date, date, "Measurement successfully deleted", true, true);
             return View("Index", model);
         }
     }

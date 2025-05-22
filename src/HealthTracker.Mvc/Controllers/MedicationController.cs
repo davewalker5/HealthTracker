@@ -32,7 +32,7 @@ namespace HealthTracker.Mvc.Controllers
         public async Task<IActionResult> Index()
         {
             // Get the list of current medications
-            var medications = await _client.ListMedicationsAsync(1, _settings.ResultsPageSize);
+            var medications = await _client.ListAsync(1, _settings.ResultsPageSize);
             var plural = medications.Count == 1 ? "" : "s";
             _logger.LogDebug($"{medications.Count} medication{plural} loaded via the service");
 
@@ -72,7 +72,7 @@ namespace HealthTracker.Mvc.Controllers
                 ModelState.Clear();
 
                 // Retrieve the matching records
-                var medications = await _client.ListMedicationsAsync(page, _settings.ResultsPageSize);
+                var medications = await _client.ListAsync(page, _settings.ResultsPageSize);
                 model.SetEntities(medications, page, _settings.ResultsPageSize);
             }
             else
@@ -113,7 +113,7 @@ namespace HealthTracker.Mvc.Controllers
             if (ModelState.IsValid)
             {
                 _logger.LogDebug($"Adding medication: Name = {model.Medication.Name}");
-                var medication = await _client.AddMedicationAsync(model.Medication.Name);
+                var medication = await _client.AddAsync(model.Medication.Name);
 
                 result = CreateListResult(medication, $"{medication.Name} successfully added");
             }
@@ -134,7 +134,7 @@ namespace HealthTracker.Mvc.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var medications = await _client.ListMedicationsAsync(1, int.MaxValue);
+            var medications = await _client.ListAsync(1, int.MaxValue);
             var plural = medications.Count == 1 ? "" : "s";
             _logger.LogDebug($"{medications.Count} medication{plural} loaded via the service");
 
@@ -165,7 +165,7 @@ namespace HealthTracker.Mvc.Controllers
             if (ModelState.IsValid)
             {
                 _logger.LogDebug($"Updating medication: Id = {model.Medication.Id}, Name = {model.Medication.Name}");
-                var medication = await _client.UpdateMedicationAsync(model.Medication.Id, model.Medication.Name);
+                var medication = await _client.UpdateAsync(model.Medication.Id, model.Medication.Name);
 
                 result = CreateListResult(medication, $"{medication.Name} successfully added");
             }

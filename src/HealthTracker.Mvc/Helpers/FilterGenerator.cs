@@ -20,33 +20,20 @@ namespace HealthTracker.Mvc.Helpers
         }
 
         /// <summary>
-        /// Create a filters view model
-        /// </summary>
-        /// <returns></returns>
-        public async Task<FiltersViewModel> Create()
-            => await Create(0, null, null);
-
-        /// <summary>
-        /// Create a filters view model
-        /// </summary>
-        /// <param name="personId"></param>
-        /// <returns></returns>
-        public async Task<FiltersViewModel> Create(int personId)
-            => await Create(personId, null, null);
-
-        /// <summary>
         /// Create a filters view model with filter properties selected
         /// </summary>
         /// <param name="personId"></param>
         /// <param name="from"></param>
         /// <param name="to"></param>
+        /// <param name="showAddButton"></param>
         /// <returns></returns>
-        public async Task<FiltersViewModel> Create(int personId, DateTime? from, DateTime? to)
+        public async Task<FiltersViewModel> Create(int personId, DateTime? from, DateTime? to, bool showAddButton)
         {
             // Create a new model and populate the list of people
             var model = new FiltersViewModel()
             {
-                PersonId = personId
+                PersonId = personId,
+                ShowAddButton = showAddButton
             };
             await PopulatePersonList(model);
 
@@ -58,14 +45,35 @@ namespace HealthTracker.Mvc.Helpers
         }
 
         /// <summary>
+        /// Create a person filter view model with filter properties selected
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <param name="showAddButton"></param>
+        /// <returns></returns>
+        public async Task<PersonFilterViewModel> Create(int personId, bool showAddButton)
+        {
+            // Create a new model and populate the list of people
+            var model = new PersonFilterViewModel()
+            {
+                PersonId = personId,
+                ShowAddButton = showAddButton
+            };
+            await PopulatePersonList(model);
+
+            return model;
+        }
+
+        /// <summary>
         /// Populate the list of people in a filters view model
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async Task PopulatePersonList(FiltersViewModel model)
+        public async Task PopulatePersonList(PersonFilterViewModel model)
         {
             // Load the list of people
-            var people = await _client.ListPeopleAsync(1, int.MaxValue);
+            var people = await _client.ListAsync(1, int.MaxValue);
             var personText = people.Count == 1 ? "person" : "people";
             _logger.LogDebug($"{people.Count} {personText} loaded via the service");
 

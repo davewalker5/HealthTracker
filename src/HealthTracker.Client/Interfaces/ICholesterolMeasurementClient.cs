@@ -4,7 +4,7 @@ namespace HealthTracker.Client.Interfaces
 {
     public interface ICholesterolMeasurementClient
     {
-        Task<CholesterolMeasurement> AddCholesterolMeasurementAsync(
+        Task<CholesterolMeasurement> AddAsync(
             int personId,
             DateTime? date,
             decimal total,
@@ -12,12 +12,12 @@ namespace HealthTracker.Client.Interfaces
             decimal ldl,
             decimal triglycerides);
 
-        Task DeleteCholesterolMeasurementAsync(int id);
-        Task ExportCholesterolMeasurementsAsync(int personId, DateTime? from, DateTime? to, string fileName);
-        Task ImportCholesterolMeasurementsAsync(string filePath);
-        Task<List<CholesterolMeasurement>> ListCholesterolMeasurementsAsync(int personId, DateTime? from, DateTime? to);
+        Task DeleteAsync(int id);
+        Task ExportAsync(int personId, DateTime? from, DateTime? to, string fileName);
+        Task ImportAsync(string filePath);
+        Task<List<CholesterolMeasurement>> ListAsync(int personId, DateTime? from, DateTime? to);
 
-        Task<CholesterolMeasurement> UpdateCholesterolMeasurementAsync(
+        Task<CholesterolMeasurement> UpdateAsync(
             int id,
             int personId,
             DateTime? date,

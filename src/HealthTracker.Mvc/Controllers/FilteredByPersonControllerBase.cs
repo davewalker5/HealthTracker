@@ -1,38 +1,39 @@
-using System.Globalization;
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
-using HealthTracker.Mvc.Entities;
 using HealthTracker.Mvc.Interfaces;
 using HealthTracker.Mvc.Models;
 
 namespace HealthTracker.Mvc.Controllers
 {
-    public abstract class MeasurementControllerBase<C, L, M> : HealthTrackerControllerBase
-        where C: IEntityRetriever<M>
-        where L: MeasurementListViewModelBase<M>, new()
+    public abstract class FilteredByPersonControllerBase<C, L, M> : HealthTrackerControllerBase
+        where C: IPersonBasedEntityRetriever<M>
+        where L: FilteredByPersonViewModelBase<M>, new()
         where M: class, new()
     {
         protected readonly C _measurementClient;
         protected readonly IPersonClient _personClient;
         protected readonly IHealthTrackerApplicationSettings _settings;
         protected readonly IFilterGenerator _filterGenerator;
+        protected readonly IViewModelBuilder _builder;
 
-        public MeasurementControllerBase()
+        public FilteredByPersonControllerBase()
             => _personClient = null;
 
-        public MeasurementControllerBase(IPersonClient personClient)
+        public FilteredByPersonControllerBase(IPersonClient personClient)
             => _personClient = personClient;
 
-        public MeasurementControllerBase(
+        public FilteredByPersonControllerBase(
             IPersonClient personClient,
             C measurementClient,
             IHealthTrackerApplicationSettings settings,
-            IFilterGenerator filterGenerator)
+            IFilterGenerator filterGenerator,
+            IViewModelBuilder builder)
         {
             _personClient = personClient;
             _measurementClient = measurementClient;
             _settings = settings;
             _filterGenerator = filterGenerator;
+            _builder = builder;
         }
 
         /// <summary>
@@ -43,31 +44,14 @@ namespace HealthTracker.Mvc.Controllers
         /// <param name="from"></param>
         /// <param name="to"></param>
         /// <returns></returns>
-        protected async Task SetFilterDetails(IMeasurementFiltersViewModel model, int personId, string from, string to)
-        {
-            var fromDate = DateTime.ParseExact(from, DateFormats.DateTime, CultureInfo.InvariantCulture);
-            var toDate = DateTime.ParseExact(to, DateFormats.DateTime, CultureInfo.InvariantCulture);
-            await SetFilterDetails(model, personId, fromDate, toDate);
-        }
-
-        /// <summary>
-        /// Set filter details on a view model
-        /// </summary>
-        /// <param name="model"></param>
-        /// <param name="personId"></param>
-        /// <param name="from"></param>
-        /// <param name="to"></param>
-        /// <returns></returns>
-        protected async Task SetFilterDetails(IMeasurementFiltersViewModel model, int personId, DateTime from, DateTime to)
+        protected async Task SetFilterDetails(IPersonFilterViewModel model, int personId)
         {
             // Retrieve the person with whom the new measurement is to be associated
-            var people = await _personClient.ListPeopleAsync(1, int.MaxValue);
+            var people = await _personClient.ListAsync(1, int.MaxValue);
             var person = people.First(x => x.Id == personId);
 
             // Set the filter details on the model
             model.PersonName = person.Name;
-            model.From = from;
-            model.To = to;
         }
 
         /// <summary>
@@ -78,28 +62,25 @@ namespace HealthTracker.Mvc.Controllers
         /// <param name="from"></param>
         /// <param name="to"></param>
         /// <param name="message"></param>
+        /// <param name="showAddButton"></param>
         /// <returns></returns>
-        protected async Task<L> CreateListViewModel(int personId, int measurementId, DateTime from, DateTime to, string message)
+        protected async Task<L> CreateListViewModel(int personId, int measurementId, string message, bool showAddButton)
         {
             // Create the model
             L model = new()
             {
                 PageNumber = 1,
-                Filters = await _filterGenerator.Create()
+                Filters = await _filterGenerator.Create(personId, showAddButton)
             };
 
             // Populate the list of people and select the person associated with this measurement
             model.Filters.PersonId = personId;
             await _filterGenerator.PopulatePersonList(model.Filters);
 
-            // Set the from and to dates
-            model.Filters.From = from;
-            model.Filters.To = to;
-
             // Populate the list of measurements with the one of interest, if an ID is specified
             if (measurementId > 0)
             {
-                var measurement = await _measurementClient.Get(measurementId);
+                var measurement = await _measurementClient.GetAsync(measurementId);
                 model.SetEntities([measurement], 1, _settings.ResultsPageSize);
             }
 
@@ -109,14 +90,5 @@ namespace HealthTracker.Mvc.Controllers
             // Return the model
             return model;
         }
-
-        /// <summary>
-        /// Convert a "to" date supplied by the date pickers, and therefore have a time of 00:00:00, to
-        /// a date that will capture all data up to midnight on the specified date
-        /// </summary>
-        /// <param name="date"></param>
-        /// <returns></returns>
-        protected DateTime ToDate(DateTime date)
-            => new(date.Year, date.Month, date.Day, 23, 59, 59);
     }
 }

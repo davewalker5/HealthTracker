@@ -2,7 +2,7 @@ using HealthTracker.Mvc.Interfaces;
 
 namespace HealthTracker.Mvc.Models
 {
-    public class SelectedFiltersViewModel : IMeasurementFiltersViewModel
+    public class SelectedFiltersViewModel : IFiltersViewModel
     {
         public int PersonId { get; set; }
         public string PersonName { get; set; }

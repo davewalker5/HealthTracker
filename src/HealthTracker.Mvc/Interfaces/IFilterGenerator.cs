@@ -4,9 +4,8 @@ namespace HealthTracker.Mvc.Interfaces
 {
     public interface IFilterGenerator
     {
-        Task<FiltersViewModel> Create();
-        Task<FiltersViewModel> Create(int personId);
-        Task<FiltersViewModel> Create(int personId, DateTime? from, DateTime? to);
-        Task PopulatePersonList(FiltersViewModel model);
+        Task<PersonFilterViewModel> Create(int personId, bool showAddButton);
+        Task<FiltersViewModel> Create(int personId, DateTime? from, DateTime? to, bool showAddButton);
+        Task PopulatePersonList(PersonFilterViewModel model);
     }
 }

@@ -1,0 +1,38 @@
+@using HealthTracker.Mvc.Entities
+@model HealthTracker.Mvc.Models.BloodOxygenSaturationListViewModel
+
+<table class="table">
+    <tr>
+        <th>Person</th>
+        <th>Date</th>
+        <th>% SPO2</th>
+        <th>Assessment</th>
+        @if (Model.Editable)
+        {
+            <th />
+            <th />
+        }
+    </tr>
+    @foreach (var measurement in Model.Measurements)
+    {
+        <tr>
+            <td valign="center">@Model.Filters.SelectedPerson.Name</td>
+            <td valign="center">@measurement.Date.ToString("dd-MMM-yyyy")</td>
+            <td valign="center"><span>@measurement.Percentage.ToString(".##")</span></td>
+            <td valign="center">@measurement.Assessment</td>
+            @if (Model.Editable)
+            {
+                <td valign="center">
+                    <a class="btn btn-lg" asp-area="" asp-controller="BloodOxygenSaturation" asp-action="Edit" asp-route-id="@measurement.Id" asp-route-start="@Model.Filters.From.ToString(DateFormats.DateTime)" asp-route-end="@Model.Filters.To.ToString(DateFormats.DateTime)">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                </td>
+                <td valign="center">
+                    <a class="btn btn-lg" href="javascript:submitDeleteForm(@measurement.Id)">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </td>
+            }
+        </tr>
+    }
+</table>

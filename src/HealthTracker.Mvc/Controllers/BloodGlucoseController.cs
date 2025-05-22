@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HealthTracker.Mvc.Controllers
 {
     [Authorize]
-    public class BloodGlucoseController : MeasurementControllerBase<IBloodGlucoseMeasurementClient, BloodGlucoseListViewModel, BloodGlucoseMeasurement>
+    public class BloodGlucoseController : FilteredControllerBase<IBloodGlucoseMeasurementClient, BloodGlucoseListViewModel, BloodGlucoseMeasurement>
     {
         private readonly ILogger<BloodGlucoseController> _logger;
 
@@ -19,7 +19,8 @@ namespace HealthTracker.Mvc.Controllers
             IBloodGlucoseMeasurementClient measurementClient,
             IHealthTrackerApplicationSettings settings,
             IFilterGenerator filterGenerator,
-            ILogger<BloodGlucoseController> logger) : base(personClient, measurementClient, settings, filterGenerator)
+            IViewModelBuilder builder,
+            ILogger<BloodGlucoseController> logger) : base(personClient, measurementClient, settings, filterGenerator, builder)
         {
             _logger = logger;
         }
@@ -39,7 +40,7 @@ namespace HealthTracker.Mvc.Controllers
             var model = new BloodGlucoseListViewModel
             {
                 PageNumber = 1,
-                Filters = await _filterGenerator.Create(personId, start, end)
+                Filters = await _filterGenerator.Create(personId, start, end, true)
             };
 
             return View(model);
@@ -87,7 +88,7 @@ namespace HealthTracker.Mvc.Controllers
                     $" in the date range {model.Filters.From:dd-MMM-yyyy} to {model.Filters.To:dd-MMM-yyyy}");
 
                 // 
-                var measurements = await _measurementClient.ListBloodGlucoseMeasurementsAsync(
+                var measurements = await _measurementClient.ListAsync(
                     model.Filters.PersonId, model.Filters.From, ToDate(model.Filters.To), page, _settings.ResultsPageSize);
                 model.SetEntities(measurements, page, _settings.ResultsPageSize);
 
@@ -100,6 +101,7 @@ namespace HealthTracker.Mvc.Controllers
 
             // Populate the list of people and render the view
             await _filterGenerator.PopulatePersonList(model.Filters);
+            model.Filters.ShowAddButton = true;
             return View(model);
         }
 
@@ -146,7 +148,7 @@ namespace HealthTracker.Mvc.Controllers
 
                 // Add the measurement
                 _logger.LogDebug($"Adding blood glucose measurement: Person = {personName}, Timestamp = {timestamp}, Level = {model.Measurement.Level}");
-                var measurement = await _measurementClient.AddBloodGlucoseMeasurementAsync(personId, DateTime.Now, model.Measurement.Level);
+                var measurement = await _measurementClient.AddAsync(personId, DateTime.Now, model.Measurement.Level);
 
                 // Return the measurement list view containing only the new measurement and a confirmation message
                 var message = $"Blood glucose measurement of {model.Measurement.Level} for {personName} added successfully";
@@ -155,7 +157,9 @@ namespace HealthTracker.Mvc.Controllers
                     measurement.Id,
                     measurement.Date,
                     timestamp,
-                    message);
+                    message,
+                    true,
+                    true);
 
                 return View("Index", listModel);
             }
@@ -180,7 +184,7 @@ namespace HealthTracker.Mvc.Controllers
             _logger.LogDebug($"Rendering edit view: Measurement ID = {id}, From = {start}, To = {end}");
 
             // Load the measurement to edit
-            var measurement = await _measurementClient.Get(id);
+            var measurement = await _measurementClient.GetAsync(id);
 
             // Construct the view model
             var model = new EditBloodGlucoseViewModel();
@@ -212,7 +216,7 @@ namespace HealthTracker.Mvc.Controllers
 
                 // Update the measurement
                 _logger.LogDebug($"Updating blood glucose measurement: ID = {model.Measurement.Id}, Person ID = {model.Measurement.PersonId}, Timestamp = {timestamp}, Level = {model.Measurement.Level}");
-                var measurement = await _measurementClient.UpdateBloodGlucoseMeasurementAsync(
+                var measurement = await _measurementClient.UpdateAsync(
                     model.Measurement.Id,
                     model.Measurement.PersonId,
                     model.Measurement.Date,
@@ -224,7 +228,9 @@ namespace HealthTracker.Mvc.Controllers
                     measurement.Id,
                     timestamp,
                     timestamp,
-                    "Measurement successfully updated");
+                    "Measurement successfully updated",
+                    true,
+                    true);
 
                 return View("Index", listModel);
             }
@@ -248,16 +254,16 @@ namespace HealthTracker.Mvc.Controllers
         {
             // Retrieve the measurement and capture the person and date
             _logger.LogDebug($"Retrieving blood glucose measurement: ID = {id}");
-            var measurement = await _measurementClient.Get(id);
+            var measurement = await _measurementClient.GetAsync(id);
             var personId = measurement.PersonId;
             var date = measurement.Date;
 
             // Delete the measurement
             _logger.LogDebug($"Deleting blood glucose measurement: ID = {id}");
-            await _measurementClient.DeleteBloodGlucoseMeasurementAsync(id);
+            await _measurementClient.DeleteAsync(id);
 
             // Return the list view with an empty list of measurements
-            var model = await CreateListViewModel(personId, 0, date, date, "Measurement successfully deleted");
+            var model = await CreateListViewModel(personId, 0, date, date, "Measurement successfully deleted", true, true);
             return View("Index", model);
         }
     }

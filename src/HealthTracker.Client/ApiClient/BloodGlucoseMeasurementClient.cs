@@ -1,4 +1,3 @@
-using System.Web;
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
 using HealthTracker.Entities.Measurements;
@@ -23,7 +22,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="date"></param>
         /// <param name="level"></param>
         /// <returns></returns>
-        public async Task<BloodGlucoseMeasurement> AddBloodGlucoseMeasurementAsync(int personId, DateTime? date, decimal level)
+        public async Task<BloodGlucoseMeasurement> AddAsync(int personId, DateTime? date, decimal level)
         {
             var measurementDate = date ?? DateTime.Now;
             dynamic template = new
@@ -48,7 +47,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="date"></param>
         /// <param name="level"></param>
         /// <returns></returns>
-        public async Task<BloodGlucoseMeasurement> UpdateBloodGlucoseMeasurementAsync(int id, int personId, DateTime? date, decimal level)
+        public async Task<BloodGlucoseMeasurement> UpdateAsync(int id, int personId, DateTime? date, decimal level)
         {
             var measurementDate = date ?? DateTime.Now;
             dynamic template = new
@@ -71,7 +70,7 @@ namespace HealthTracker.Client.ApiClient
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public async Task ImportBloodGlucoseMeasurementsAsync(string filePath)
+        public async Task ImportAsync(string filePath)
         {
             dynamic data = new{ Content = File.ReadAllText(filePath) };
             var json = Serialize(data);
@@ -86,7 +85,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="to"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public async Task ExportBloodGlucoseMeasurementsAsync(int personId, DateTime? from, DateTime? to, string fileName)
+        public async Task ExportAsync(int personId, DateTime? from, DateTime? to, string fileName)
         {
             dynamic data = new { PersonId = personId, From = from, To = to, FileName = fileName };
             var json = Serialize(data);
@@ -98,7 +97,7 @@ namespace HealthTracker.Client.ApiClient
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<BloodGlucoseMeasurement> Get(int id)
+        public async Task<BloodGlucoseMeasurement> GetAsync(int id)
         {
             // Request the measurement with the specified ID
             string baseRoute = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
@@ -115,7 +114,7 @@ namespace HealthTracker.Client.ApiClient
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task DeleteBloodGlucoseMeasurementAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
             var route = $"{baseRoute}/{id}";
@@ -131,7 +130,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="pageNumber"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<List<BloodGlucoseMeasurement>> ListBloodGlucoseMeasurementsAsync(int personId, DateTime? from, DateTime? to, int pageNumber, int pageSize)
+        public async Task<List<BloodGlucoseMeasurement>> ListAsync(int personId, DateTime? from, DateTime? to, int pageNumber, int pageSize)
         {
             // Determine the encoded date range
             (var encodedFromDate, var encodedToDate) = CalculateEncodedDateRange(from, to);

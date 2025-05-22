@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HealthTracker.Mvc.Controllers
 {
     [Authorize]
-    public class PersonMedicationController : MeasurementControllerBase<IPersonMedicationClient, PersonMedicationListViewModel, PersonMedication>
+    public class PersonMedicationController : FilteredByPersonControllerBase<IPersonMedicationClient, PersonMedicationListViewModel, PersonMedication>
     {
         private readonly ILogger<PersonMedicationController> _logger;
         private readonly IMedicationTrackingClient _medicationTrackingClient;
@@ -22,8 +22,9 @@ namespace HealthTracker.Mvc.Controllers
             IMedicationTrackingClient medicationTrackingClient,
             IHealthTrackerApplicationSettings settings,
             IFilterGenerator filterGenerator,
+            IViewModelBuilder builder,
             IMedicationListGenerator medicationListGenerator,
-            ILogger<PersonMedicationController> logger) : base(personClient, measurementClient, settings, filterGenerator)
+            ILogger<PersonMedicationController> logger) : base(personClient, measurementClient, settings, filterGenerator, builder)
         {
             _logger = logger;
             _medicationTrackingClient = medicationTrackingClient;
@@ -39,7 +40,7 @@ namespace HealthTracker.Mvc.Controllers
         public async Task<IActionResult> Index(int personId = 0)
         {
             _logger.LogDebug($"Rendering index view: Person ID = {personId}");
-            var model = await CreatePersonMedicationListViewModel(personId, "");
+            var model = await _builder.CreatePersonMedicationListViewModel(personId, "", true, true);
             return View(model);
         }
 
@@ -82,7 +83,7 @@ namespace HealthTracker.Mvc.Controllers
                 }
 
                 // Generate a model containing the associations for the selected person
-                model = await CreatePersonMedicationListViewModel(model.Filters.PersonId, "");
+                model = await _builder.CreatePersonMedicationListViewModel(model.Filters.PersonId, "", true, true);
             }
             else
             {
@@ -91,7 +92,8 @@ namespace HealthTracker.Mvc.Controllers
                 model.Settings = _settings;
             }
 
-            // Populate the list of people and render the view
+            // Render the view
+            model.Filters.ShowAddButton = true;
             return View(model);
         }
 
@@ -110,7 +112,7 @@ namespace HealthTracker.Mvc.Controllers
             var model = new AddPersonMedicationViewModel();
             model.Association.PersonId = personId;
             model.Medications = await _medicationListGenerator.Create(personId, 0);
-            await SetFilterDetails(model, personId, DateTime.Now, DateTime.Now);
+            await SetFilterDetails(model, personId);
             return View(model);
         }
 
@@ -139,7 +141,7 @@ namespace HealthTracker.Mvc.Controllers
                     $"Active = {model.Association.Active}, " +
                     $"LastTaken = {model.Association.LastTaken}");
 
-                var measurement = await _measurementClient.AddPersonMedicationAsync(
+                var measurement = await _measurementClient.AddAsync(
                     model.Association.PersonId,
                     model.Association.MedicationId,
                     model.Association.DailyDose,
@@ -147,7 +149,7 @@ namespace HealthTracker.Mvc.Controllers
                     model.Association.LastTaken);
 
                 // Return the measurement list view with a confirmation message
-                var listModel = await CreatePersonMedicationListViewModel(model.Association.PersonId, "Association successfully added");
+                var listModel = await _builder.CreatePersonMedicationListViewModel(model.Association.PersonId, "Association successfully added", true, true);
                 return View("Index", listModel);
             }
             else
@@ -169,7 +171,7 @@ namespace HealthTracker.Mvc.Controllers
             _logger.LogDebug($"Rendering edit view: Association ID = {id}");
 
             // Load the measurement to edit
-            var association = await _measurementClient.Get(id);
+            var association = await _measurementClient.GetAsync(id);
 
             // Construct the view model
             var model = new EditPersonMedicationViewModel
@@ -178,7 +180,7 @@ namespace HealthTracker.Mvc.Controllers
                 Medications = await _medicationListGenerator.Create(association.PersonId, id)
             };
 
-            await SetFilterDetails(model, association.PersonId, DateTime.Now, DateTime.Now);
+            await SetFilterDetails(model, association.PersonId);
             return View(model);
         }
 
@@ -210,7 +212,7 @@ namespace HealthTracker.Mvc.Controllers
                     $"Active = {model.Association.Active}, " +
                     $"LastTaken = {model.Association.LastTaken}");
 
-                await _measurementClient.UpdatePersonMedicationAsync(
+                await _measurementClient.UpdateAsync(
                     model.Association.Id,
                     model.Association.PersonId,
                     model.Association.MedicationId,
@@ -220,7 +222,7 @@ namespace HealthTracker.Mvc.Controllers
                     model.Association.LastTaken);
 
                 // Return the measurement list view with a confirmation message
-                var listModel = await CreatePersonMedicationListViewModel(model.Association.PersonId, "Association successfully updated");
+                var listModel = await _builder.CreatePersonMedicationListViewModel(model.Association.PersonId, "Association successfully updated", true, true);
                 return View("Index", listModel);
             }
             else
@@ -243,46 +245,16 @@ namespace HealthTracker.Mvc.Controllers
         {
             // Retrieve the measurement and capture the person
             _logger.LogDebug($"Retrieving exercise measurement: ID = {id}");
-            var measurement = await _measurementClient.Get(id);
+            var measurement = await _measurementClient.GetAsync(id);
             var personId = measurement.PersonId;
 
             // Delete the measurement
             _logger.LogDebug($"Deleting blood glucose measurement: ID = {id}");
-            await _measurementClient.DeletePersonMedicationAsync(id);
+            await _measurementClient.DeleteAsync(id);
 
             // Return the list view with an empty list of measurements
-            var model = await CreatePersonMedicationListViewModel(personId, "Association successfully deleted");
+            var model = await _builder.CreatePersonMedicationListViewModel(personId, "Association successfully deleted", true, true);
             return View("Index", model);
-        }
-
-        /// <summary>
-        /// Helper method to create a list view result when editing or deleting an association
-        /// </summary>
-        /// <param name="personId"></param>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        protected async Task<PersonMedicationListViewModel> CreatePersonMedicationListViewModel(int personId, string message)
-        {
-            // Create the model
-            var model = new PersonMedicationListViewModel
-            {
-                Filters = await _filterGenerator.Create(personId),
-                Settings = _settings,
-                SelectedAssociationIds = "",
-                Message = message
-            };
-
-            // Retrieve and set the medication associations for the specified person, if specified
-            if (personId > 0)
-            {
-                _logger.LogDebug($"Retrieving person/medication associations for person with ID {model.Filters.PersonId}");
-                var associations = await _measurementClient.ListPersonMedicationsAsync(personId, 1, int.MaxValue);
-                model.SetEntities(associations, 1, int.MaxValue);
-                _logger.LogDebug($"{associations.Count} matching person/medication associations retrieved");
-            }
-
-            // Return the model
-            return model;
         }
     }
 }

@@ -31,7 +31,7 @@ namespace HealthTracker.Mvc.Controllers
         public async Task<IActionResult> Index()
         {
             // Get the list of current people
-            var people = await _client.ListPeopleAsync(1, _settings.ResultsPageSize);
+            var people = await _client.ListAsync(1, _settings.ResultsPageSize);
             var personText = people.Count == 1 ? "person" : "people";
             _logger.LogDebug($"{people.Count} {personText} loaded via the service");
 
@@ -71,7 +71,7 @@ namespace HealthTracker.Mvc.Controllers
                 ModelState.Clear();
 
                 // Retrieve the matching person records
-                var people = await _client.ListPeopleAsync(page, _settings.ResultsPageSize);
+                var people = await _client.ListAsync(page, _settings.ResultsPageSize);
                 model.SetEntities(people, page, _settings.ResultsPageSize);
             }
             else
@@ -114,7 +114,7 @@ namespace HealthTracker.Mvc.Controllers
                 _logger.LogDebug(
                     $"Adding person: First Names = {model.Person.FirstNames}, Surname = {model.Person.Surname}, " +
                     $"DoB = {model.Person.DateOfBirth:dd-MMM-yyyy}, Height = {model.Person.Height}, Gender = {model.Person.Gender}");
-                var person = await _client.AddPersonAsync(model.Person.FirstNames, model.Person.Surname, model.Person.DateOfBirth, model.Person.Height, model.Person.Gender);
+                var person = await _client.AddAsync(model.Person.FirstNames, model.Person.Surname, model.Person.DateOfBirth, model.Person.Height, model.Person.Gender);
 
                 result = CreateListResult(person, $"{person.Name} successfully added");
             }
@@ -135,7 +135,7 @@ namespace HealthTracker.Mvc.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var people = await _client.ListPeopleAsync(1, int.MaxValue);
+            var people = await _client.ListAsync(1, int.MaxValue);
             var personText = people.Count == 1 ? "person" : "people";
             _logger.LogDebug($"{people.Count} {personText} loaded via the service");
 
@@ -169,7 +169,7 @@ namespace HealthTracker.Mvc.Controllers
                     $"Updating person: Id = {model.Person.Id}, First Names = {model.Person.FirstNames}, Surname = {model.Person.Surname}, " +
                     $"DoB = {model.Person.DateOfBirth:dd-MMM-yyyy}, Height = {model.Person.Height}, Gender = {model.Person.Gender}");
 
-                var person = await _client.UpdatePersonAsync(
+                var person = await _client.UpdateAsync(
                     model.Person.Id,
                     model.Person.FirstNames,
                     model.Person.Surname,

@@ -24,7 +24,7 @@ namespace HealthTracker.Mvc.Helpers
             var list = new List<SelectListItem>();
 
             // Load the list of activity types
-            var activityTypes = await _client.ListActivityTypesAsync(1, int.MaxValue);
+            var activityTypes = await _client.ListAsync(1, int.MaxValue);
             var plural = activityTypes.Count == 1 ? "" : "s";
             _logger.LogDebug($"{activityTypes.Count} activity type{plural} loaded via the service");
 

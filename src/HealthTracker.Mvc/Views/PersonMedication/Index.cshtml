@@ -8,27 +8,8 @@
     var nextDisabled = (Model.NextEnabled) ? "" : "disabled";
 }
 
-@functions {
-    public string GetRowBackgroundColour(bool isActive, int daysRemaining)
-    {
-        if (!isActive)
-        {
-            return "white";
-        }
-        else if (daysRemaining <= Model.Settings.MedicationDaysRemainingCriticalDays)
-        {
-            return "#FFC0CB";
-        }
-        else if (daysRemaining <= Model.Settings.MedicationDaysRemainingWarningDays)
-        {
-            return "#FFFFE0";
-        }
-        else
-        {
-            return "white";
-        }
-    }
-
+@functions
+{
     public string ToggleAssociationSelection(string currentSelections, string checkboxName)
     {
         var associationId = checkboxName.Split("_")[1];
@@ -81,72 +62,13 @@
     @using (Html.BeginForm("Index", "PersonMedication", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
-        @await Html.PartialAsync("Filters", Model)
+        @Html.EditorFor(m => m.Filters)
         @Html.HiddenFor(m => m.PageNumber)
         @Html.HiddenFor(m => m.SelectedAssociationIds)
 
         @if ((Model.Associations != null) && (Model.Associations.Count() > 0))
         {
-            <table class="table">
-                <tr>
-                    <th/>
-                    <th>Person</th>
-                    <th>Medication</th>
-                    <th>Active</th>
-                    <th>Stock</th>
-                    <th>Daily Dose</th>
-                    <th>Last Taken</th>
-                    <th>Days Left</th>
-                    <th>Last Day</th>
-                    <th>Order More</th>
-                    <th>Actions</th>
-                    <th />
-                    <th />
-                </tr>
-                @foreach (var association in Model.Associations)
-                {
-                    var lastDay = association.LastDay();
-                    var orderMore = association.OrderMoreDate(Model.Settings.MedicationOrderLeadTimeDays);
-                    var lastTaken = association.LastTaken.HasValue ? association.LastTaken.Value.ToString(DateFormats.Date) : "-";
-                    var lastDayString = lastDay.HasValue ? lastDay.Value.ToString(DateFormats.Date) : "-";
-                    var orderMoreString = orderMore.HasValue ? orderMore.Value.ToString(DateFormats.Date) : "-";
-                    var active = association.Active ? "Yes" : "No";
-                    var actions = association.Active ? string.Join(", ", association.Actions ?? []) : "";
-                    var rowColor = GetRowBackgroundColour(association.Active, association.DaysRemaining());
-                    var textColor = association.Active ? "black" : "lightgrey";
-
-                    <tr style="background-color: @rowColor">
-                        <td valign="center">
-                            <span style="color: @textColor">
-                                @if (association.Active)
-                                {
-                                    @Html.CheckBox($"Selected_{association.Id}")
-                                }
-                            </span>
-                        </td>
-                        <td valign="center"><span style="color: @textColor">@Model.Filters.SelectedPerson.Name</span></td>
-                        <td valign="center"><span style="color: @textColor">@association.Medication.Name</span></td>
-                        <td valign="center"><span style="color: @textColor">@active</span></td>
-                        <td valign="center"><span style="color: @textColor">@association.Stock</span></td>
-                        <td valign="center"><span style="color: @textColor">@association.DailyDose</span></td>
-                        <td valign="center"><span style="color: @textColor">@lastTaken</span></td>
-                        <td valign="center"><span style="color: @textColor">@association.DaysRemaining()</span></td>
-                        <td valign="center"><span style="color: @textColor">@lastDayString</span></td>
-                        <td valign="center"><span style="color: @textColor">@orderMoreString</span></td>
-                        <td valign="center"><span style="color: @textColor">@actions</span></td>
-                        <td valign="center">
-                            <a class="btn btn-lg" asp-area="" asp-controller="PersonMedication" asp-action="Edit" asp-route-id="@association.Id">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                        </td>
-                        <td valign="center">
-                            <a class="btn btn-lg" href="javascript:submitDeleteForm(@association.Id)">
-                                <i class="fas fa-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                }
-            </table>
+            @await Html.PartialAsync("_PersonMedicationList", Model)
             <hr />
             <p>
                 <div style="float: left">

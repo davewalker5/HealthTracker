@@ -5,7 +5,7 @@ using HealthTracker.Entities.Medications;
 
 namespace HealthTracker.Mvc.Models
 {
-    public class PersonMedicationListViewModel : MeasurementListViewModelBase<PersonMedication>
+    public class PersonMedicationListViewModel : FilteredByPersonViewModelBase<PersonMedication>
     {
         public IEnumerable<PersonMedication> Associations => Entities;
         public IHealthTrackerApplicationSettings Settings { get; set; }
@@ -95,7 +95,7 @@ namespace HealthTracker.Mvc.Models
             if (associationIds.Any())
             {
                 // We need the medication IDs so retrieve the association details for the selected person
-                var associations = await associationClient.ListPersonMedicationsAsync(Filters.PersonId, 1, int.MaxValue);
+                var associations = await associationClient.ListAsync(Filters.PersonId, 1, int.MaxValue);
 
                 // Iterate over the selected association IDs
                 foreach (var associationId in associationIds)

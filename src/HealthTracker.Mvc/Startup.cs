@@ -54,6 +54,7 @@ namespace HealthTracker.Mvc
             services.AddSingleton<IFilterGenerator, FilterGenerator>();
             services.AddSingleton<IActivityTypeListGenerator, ActivityTypeListGenerator>();
             services.AddSingleton<IMedicationListGenerator, MedicationListGenerator>();
+            services.AddSingleton<IViewModelBuilder, ViewModelBuilder>();
 
             // Configure session state for token storage
             services.AddSession(options =>

@@ -2,17 +2,16 @@ using HealthTracker.Entities.Measurements;
 
 namespace HealthTracker.Client.Interfaces
 {
-    public interface IBloodOxygenSaturationMeasurementClient : IEntityRetriever<BloodOxygenSaturationMeasurement>
+    public interface IBloodOxygenSaturationMeasurementClient : IDateBasedEntityRetriever<BloodOxygenSaturationMeasurement>
     {
-        Task<BloodOxygenSaturationMeasurement> AddBloodOxygenSaturationMeasurementAsync(int personId, DateTime? date, decimal percentage);
-        Task<BloodOxygenSaturationMeasurement> UpdateBloodOxygenSaturationMeasurementAsync(int id, int personId, DateTime? date, decimal percentage);
-        Task ImportBloodOxygenSaturationMeasurementsAsync(string filePath);
-        Task ExportBloodOxygenSaturationMeasurementsAsync(int personId, DateTime? from, DateTime? to, string fileName);
-        Task DeleteBloodOxygenSaturationMeasurementAsync(int id);
-        Task<List<BloodOxygenSaturationMeasurement>> ListBloodOxygenSaturationMeasurementsAsync(int personId, DateTime? from, DateTime? to, int pageNumber, int pageSize);
-        Task<BloodOxygenSaturationMeasurement> CalculateAverageBloodOxygenSaturationAsync(int personId, DateTime from, DateTime to);
-        Task<BloodOxygenSaturationMeasurement> CalculateAverageBloodOxygenSaturationAsync(int personId, int days);
-        Task<List<BloodOxygenSaturationMeasurement>> CalculateDailyAverageBloodOxygenSaturationAsync(int personId, DateTime from, DateTime to);
-        Task ExportDailyAverageBloodOxygenSaturationAsync(int personId, DateTime from, DateTime to, string fileName);
+        Task<BloodOxygenSaturationMeasurement> AddAsync(int personId, DateTime? date, decimal percentage);
+        Task<BloodOxygenSaturationMeasurement> UpdateAsync(int id, int personId, DateTime? date, decimal percentage);
+        Task ImportAsync(string filePath);
+        Task ExportAsync(int personId, DateTime? from, DateTime? to, string fileName);
+        Task DeleteAsync(int id);
+        Task<BloodOxygenSaturationMeasurement> CalculateAverageAsync(int personId, DateTime from, DateTime to);
+        Task<BloodOxygenSaturationMeasurement> CalculateAverageAsync(int personId, int days);
+        Task<List<BloodOxygenSaturationMeasurement>> CalculateDailyAverageAsync(int personId, DateTime from, DateTime to);
+        Task ExportDailyAverageAsync(int personId, DateTime from, DateTime to, string fileName);
     }
 }
