@@ -31,7 +31,7 @@ namespace HealthTracker.Api.Services
         {
             // Get the list of people to export
             MessageLogger.LogInformation("Retrieving people for export");
-            var people = await factory.People.ListAsync(x => true);
+            var people = await factory.People.ListAsync(x => true, 1, int.MaxValue);
 
             // Get the full path to the export file
             var filePath = Path.Combine(_settings.ExportPath, item.FileName);

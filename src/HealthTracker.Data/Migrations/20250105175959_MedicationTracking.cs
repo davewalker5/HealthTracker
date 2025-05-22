@@ -14,6 +14,8 @@ namespace HealthTracker.Data.Migrations
         [ExcludeFromCodeCoverage]
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("PRAGMA foreign_keys = ON;");
+
             migrationBuilder.CreateTable(
                 name: "MEDICATION",
                 columns: table => new
@@ -42,6 +44,18 @@ namespace HealthTracker.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PERSON_MEDICATION", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_PERSON_MEDICATION_PEOPLE_person_id",
+                        column: x => x.person_id,
+                        principalTable: "PEOPLE",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PERSON_MEDICATION_MEDICATION_medication_id",
+                        column: x => x.medication_id,
+                        principalTable: "MEDICATION",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
                 });
         }
 

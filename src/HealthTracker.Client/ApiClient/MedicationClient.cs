@@ -18,7 +18,7 @@ namespace HealthTracker.Client.ApiClient
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public async Task<Medication> AddMedicationAsync(string name)
+        public async Task<Medication> AddAsync(string name)
         {
             dynamic template = new
             {
@@ -38,7 +38,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="id"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public async Task<Medication> UpdateMedicationAsync(int id, string name)
+        public async Task<Medication> UpdateAsync(int id, string name)
         {
             dynamic template = new
             {
@@ -58,7 +58,7 @@ namespace HealthTracker.Client.ApiClient
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task DeleteMedicationAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
             var route = $"{baseRoute}/{id}";
@@ -68,11 +68,15 @@ namespace HealthTracker.Client.ApiClient
         /// <summary>
         /// Return a list of medications
         /// </summary>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<List<Medication>> ListMedicationsAsync()
+        public async Task<List<Medication>> ListAsync(int pageNumber, int pageSize)
         {
             // Request a list of medications
-            string json = await SendIndirectAsync(RouteKey, null, HttpMethod.Get);
+            var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
+            var route = $"{baseRoute}/{pageNumber}/{pageSize}";
+            string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no medications in the database
             List<Medication> medications = !string.IsNullOrEmpty(json) ? Deserialize<List<Medication>>(json) : null;

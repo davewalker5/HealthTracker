@@ -82,7 +82,7 @@ namespace HealthTracker.Tests.Weight
         [TestMethod]
         public async Task ImportMeasurementsTest()
         {
-            var record = $@"""{_measurement.PersonId}"",""{_person.Name()}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Weight}"",""{_measurement.BMI}"",""{_measurement.BMIAssessment}"",""{_measurement.BMR}""";
+            var record = $@"""{_measurement.PersonId}"",""{_person.Name}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Weight}"",""{_measurement.BMI}"",""{_measurement.BMIAssessment}"",""{_measurement.BMR}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
             await _importer.ImportAsync(_filePath);
@@ -91,7 +91,7 @@ namespace HealthTracker.Tests.Weight
             Assert.AreEqual(info.FullName, _filePath);
             Assert.IsTrue(info.Length > 0);
 
-            var measurements = await _factory.WeightMeasurements.ListAsync(x => true);
+            var measurements = await _factory.WeightMeasurements.ListAsync(x => true, 1, int.MaxValue);
             Assert.AreEqual(1, measurements.Count);
             Assert.AreEqual(_measurement.PersonId, measurements.First().PersonId);
             Assert.AreEqual(_measurement.Date, measurements.First().Date);
@@ -114,7 +114,7 @@ namespace HealthTracker.Tests.Weight
         [ExpectedException(typeof(InvalidFieldValueException))]
         public async Task InvalidWeightTest()
         {
-            var record = $@"""{_measurement.PersonId}"",""{_person.Name()}"",""{_measurement.Date:dd/MM/yyyy}"",""{0}"",""{_measurement.BMI}"",""{_measurement.BMIAssessment}"",""{_measurement.BMR}""";
+            var record = $@"""{_measurement.PersonId}"",""{_person.Name}"",""{_measurement.Date:dd/MM/yyyy}"",""{0}"",""{_measurement.BMI}"",""{_measurement.BMIAssessment}"",""{_measurement.BMR}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 

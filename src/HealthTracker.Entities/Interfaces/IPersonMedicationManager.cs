@@ -5,7 +5,7 @@ namespace HealthTracker.Entities.Interfaces
 {
     public interface IPersonMedicationManager
     {
-        Task<List<PersonMedication>> ListAsync(Expression<Func<PersonMedication, bool>> predicate);
+        Task<List<PersonMedication>> ListAsync(Expression<Func<PersonMedication, bool>> predicate, int pageNumber, int pageSize);
         Task<PersonMedication> AddAsync(int personId, int medicationId, int dose, int stock, DateTime? taken);
         Task<PersonMedication> UpdateAsync(int id, int personId, int medicationId, int dose, int stock, DateTime? taken, bool active);
         Task<PersonMedication> ActivateAsync(int id);

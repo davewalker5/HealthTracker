@@ -3,6 +3,7 @@ using System.Text;
 using HealthTracker.Entities.Identity;
 using HealthTracker.Entities.Measurements;
 using HealthTracker.Entities.Medications;
+using HealthTracker.Enumerations.Enumerations;
 
 namespace HealthTracker.Tests.Mocks
 {
@@ -101,7 +102,7 @@ namespace HealthTracker.Tests.Mocks
 
             // If required, generate a random time
             var hours = 0;
-            var minutes= 0;
+            var minutes = 0;
             var seconds = 0;
             if (includeTime)
             {
@@ -180,7 +181,8 @@ namespace HealthTracker.Tests.Mocks
             => new()
             {
                 Id = RandomId(),
-                Description = RandomActivityTypeName()
+                Description = RandomActivityTypeName(),
+                DistanceBased = RandomInt(0, 100) > 50
             };
 
         /// <summary>
@@ -205,7 +207,7 @@ namespace HealthTracker.Tests.Mocks
         /// </summary>
         /// <returns></returns>
         public static Gender RandomGender()
-            => (Gender)RandomInt(0,2);
+            => (Gender)RandomInt(0, 2);
 
         /// <summary>
         /// Generate a random height in cm
@@ -609,6 +611,50 @@ namespace HealthTracker.Tests.Mocks
                 TotalCalories = RandomInt(1000, 100000),
                 MinimumHeartRate = RandomInt(50, 80),
                 MaximumHeartRate = RandomInt(130, 160)
+            };
+
+        /// <summary>
+        /// Generate a random blood pressure band
+        /// </summary>
+        /// <returns></returns>
+        public static BloodPressureBand RandomBloodPressureBand()
+            => new()
+            {
+                Id = RandomId(),
+                Name = RandomWord(5, 20),
+                MinimumSystolic = RandomInt(100, 130),
+                MaximumSystolic = RandomInt(130, 200),
+                MinimumDiastolic = RandomInt(50, 90),
+                MaximumDiastolic = RandomInt(90, 120)
+            };
+
+        /// <summary>
+        /// Generate a random % SPO2 band
+        /// </summary>
+        /// <returns></returns>
+        public static BloodOxygenSaturationBand RandomBloodOxygenSaturationBand()
+            => new()
+            {
+                Id = RandomId(),
+                Name = RandomWord(5, 20),
+                MinimumSPO2 = RandomInt(80, 90),
+                MaximumSPO2 = RandomInt(90, 100),
+                MinimumAge = RandomInt(20, 30),
+                MaximumAge = RandomInt(30, 80)
+            };
+
+        /// <summary>
+        /// Generate a random BMI band
+        /// </summary>
+        /// <returns></returns>
+        public static BMIBand RandomBMIBand()
+            => new()
+            {
+                Id = RandomId(),
+                Name = RandomWord(5, 20),
+                MinimumBMI = RandomInt(15, 25),
+                MaximumBMI = RandomInt(25, 30),
+                Order = RandomInt(10, 20)
             };
     }
 }

@@ -1,0 +1,34 @@
+@using HealthTracker.Mvc.Entities
+@model HealthTracker.Mvc.Models.ExerciseSummaryListViewModel
+
+<table class="table">
+    <tr>
+        <th>Person</th>
+        <th>From</th>
+        <th>To</th>
+        <th>Activity</th>
+        <th>Duration</th>
+        <th>Distance</th>
+        <th>Calories</th>
+        <th>Minimum HR</th>
+        <th>Maximum HR</th>
+    </tr>
+    @foreach (var summary in Model.Summaries)
+    {
+        var from = summary.From.HasValue ? summary.From.Value.ToString("dd-MMM-yyyy") : "-";
+        var to = summary.To.HasValue ? summary.To.Value.ToString("dd-MMM-yyyy") : "-";
+        var person = summary.PersonName ?? "-";
+        var activity = summary.ActivityDescription ?? "Total";
+        <tr>
+            <td valign="center">@person</td>
+            <td valign="center">@from</td>
+            <td valign="center">@to</td>
+            <td valign="center">@activity</td>
+            <td valign="center">@summary.FormattedDuration</td>
+            <td valign="center">@summary.TotalDistance.ToString("0.00")</td>
+            <td valign="center">@summary.TotalCalories</td>
+            <td valign="center">@summary.MinimumHeartRate</td>
+            <td valign="center">@summary.MaximumHeartRate</td>
+        </tr>
+    }
+</table>

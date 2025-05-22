@@ -58,7 +58,7 @@ namespace HealthTracker.Tests.Weight
         {
             var exportable = _measurement.ToExportable([_person]);
             Assert.AreEqual(_person.Id, exportable.PersonId);
-            Assert.AreEqual(_person.Name(), exportable.Name);
+            Assert.AreEqual(_person.Name, exportable.Name);
             Assert.AreEqual(_measurement.Date, exportable.Date);
             Assert.AreEqual(_measurement.Weight, exportable.Weight);
             Assert.AreEqual(_measurement.BMI, exportable.BMI);
@@ -71,7 +71,7 @@ namespace HealthTracker.Tests.Weight
             List<WeightMeasurement> measurements = [_measurement];
             var exportable = measurements.ToExportable([_person]);
             Assert.AreEqual(_person.Id, exportable.First().PersonId);
-            Assert.AreEqual(_person.Name(), exportable.First().Name);
+            Assert.AreEqual(_person.Name, exportable.First().Name);
             Assert.AreEqual(_measurement.Date, exportable.First().Date);
             Assert.AreEqual(_measurement.Weight, exportable.First().Weight);
             Assert.AreEqual(_measurement.BMI, exportable.First().BMI);
@@ -81,10 +81,10 @@ namespace HealthTracker.Tests.Weight
         [TestMethod]
         public void FromCsvRecordTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name()}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Weight}"",""{_measurement.BMI}"",""{_measurement.BMIAssessment}"",""{_measurement.BMR}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Weight}"",""{_measurement.BMI}"",""{_measurement.BMIAssessment}"",""{_measurement.BMR}""";
             var exportable = ExportableWeightMeasurement.FromCsv(record);
             Assert.AreEqual(_person.Id, exportable.PersonId);
-            Assert.AreEqual(_person.Name(), exportable.Name);
+            Assert.AreEqual(_person.Name, exportable.Name);
             Assert.AreEqual(_measurement.Date, exportable.Date);
             Assert.AreEqual(_measurement.Weight, exportable.Weight);
             Assert.AreEqual(_measurement.BMI, exportable.BMI);
@@ -116,7 +116,7 @@ namespace HealthTracker.Tests.Weight
 
             var exportable = ExportableWeightMeasurement.FromCsv(records[1]);
             Assert.AreEqual(_person.Id, exportable.PersonId);
-            Assert.AreEqual(_person.Name(), exportable.Name);
+            Assert.AreEqual(_person.Name, exportable.Name);
             Assert.AreEqual(_measurement.Date, exportable.Date);
             Assert.AreEqual(_measurement.Weight, exportable.Weight);
         }
@@ -145,7 +145,7 @@ namespace HealthTracker.Tests.Weight
 
             var exportable = ExportableWeightMeasurement.FromCsv(records[1]);
             Assert.AreEqual(_person.Id, exportable.PersonId);
-            Assert.AreEqual(_person.Name(), exportable.Name);
+            Assert.AreEqual(_person.Name, exportable.Name);
             Assert.AreEqual(_measurement.Date, exportable.Date);
             Assert.AreEqual(_measurement.Weight, exportable.Weight);
         }

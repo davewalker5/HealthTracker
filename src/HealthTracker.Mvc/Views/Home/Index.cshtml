@@ -1,0 +1,65 @@
+﻿@using HealthTracker.Mvc.Entities
+@using Microsoft.AspNetCore.Mvc.ModelBinding
+@model HealthTracker.Mvc.Models.HomeViewModel
+
+@{
+    ViewData["Title"] = "Home";
+}
+
+<p class="text-center font-weight-bold">
+    <span style="font-size: 1.2rem">
+        Summary
+    </span>
+    <br />
+    <small class="text-muted">
+        <em>
+            Personal summary page
+        </em>
+    </small>
+</p>
+
+@using (Html.BeginForm("Index", "Home", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.EditorFor(m => m.Filters)
+    <hr/>
+
+    @if ((Model.WeightMeasurements != null) && (Model.WeightMeasurements.Measurements != null) && (Model.WeightMeasurements.Measurements.Count() > 0))
+    {
+        <div class="container-fluid">
+            <p class="text-center font-weight-bold">
+                <span style="font-size: 1.2rem">
+                    Rolling Average Weight
+                </span>
+            </p>
+            @await Html.PartialAsync("_WeightList", Model.WeightMeasurements)
+        </div>
+        <br/>
+    }
+
+    @if ((Model.ExerciseSummaries != null) && (Model.ExerciseSummaries.Summaries != null) && (Model.ExerciseSummaries.Summaries.Count() > 0))
+    {
+        <div class="container-fluid">
+            <p class="text-center font-weight-bold">
+                <span style="font-size: 1.2rem">
+                    Exercise
+                </span>
+            </p>
+            @await Html.PartialAsync("_ExerciseSummaryList", Model.ExerciseSummaries)
+        </div>
+        <br/>
+    }
+
+    @if ((Model.PersonMedications != null) && (Model.PersonMedications.Associations != null) && (Model.PersonMedications.Associations.Count() > 0))
+    {
+        <div class="container-fluid">
+            <p class="text-center font-weight-bold">
+                <span style="font-size: 1.2rem">
+                    Medications
+                </span>
+            </p>
+            @await Html.PartialAsync("_PersonMedicationList", Model.PersonMedications)
+        </div>
+        <br/>
+    }
+}

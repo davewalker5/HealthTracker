@@ -79,7 +79,7 @@ namespace HealthTracker.Tests.MedicationTracking
         public async Task AssociationCollectionTest()
         {
             await _factory.PersonMedications.AddAsync(_person.Id, _medication.Id, 1, LeadTimeDays, Today.AddDays(-1));
-            var associations = await _factory.PersonMedications.ListAsync(x => true);
+            var associations = await _factory.PersonMedications.ListAsync(x => true, 1, int.MaxValue);
             Assert.IsNull(associations[0].Actions);
             _factory.MedicationActionGenerator.DetermineActions(associations);
             Assert.IsNotNull(associations[0].Actions);

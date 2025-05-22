@@ -22,7 +22,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="stock"></param>
         /// <param name="lastTaken"></param>
         /// <returns></returns>
-        public async Task<PersonMedication> AddPersonMedicationAsync(int personId, int medicationId, int dose, int stock, DateTime? lastTaken)
+        public async Task<PersonMedication> AddAsync(int personId, int medicationId, int dose, int stock, DateTime? lastTaken)
         {
             dynamic template = new
             {
@@ -52,7 +52,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="active"></param>
         /// <param name="lastTaken"></param>
         /// <returns></returns>
-        public async Task<PersonMedication> UpdatePersonMedicationAsync(int id, int personId, int medicationId, int dose, int stock, bool active, DateTime? lastTaken)
+        public async Task<PersonMedication> UpdateAsync(int id, int personId, int medicationId, int dose, int stock, bool active, DateTime? lastTaken)
         {
             dynamic template = new
             {
@@ -77,7 +77,7 @@ namespace HealthTracker.Client.ApiClient
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<PersonMedication> ActivatePersonMedicationAsync(int id)
+        public async Task<PersonMedication> ActivateAsync(int id)
             => await SetPersonMedicationStateAsync(id, true);
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace HealthTracker.Client.ApiClient
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<PersonMedication> DeactivatePersonMedicationAsync(int id)
+        public async Task<PersonMedication> DeactivateAsync(int id)
             => await SetPersonMedicationStateAsync(id, false);
 
         /// <summary>
@@ -93,23 +93,42 @@ namespace HealthTracker.Client.ApiClient
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task DeletePersonMedicationAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
             var route = $"{baseRoute}/{id}";
             _ = await SendDirectAsync(route, null, HttpMethod.Delete);
+        }
+        
+        /// <summary>
+        /// Retrieve a single measurement given its ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<PersonMedication> GetAsync(int id)
+        {
+            // Request the association with the specified ID
+            string baseRoute = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
+            string route = $"{baseRoute}/{id}";
+            string json = await SendDirectAsync(route, null, HttpMethod.Get);
+
+            // Extract the association from the response
+            var association = Deserialize<PersonMedication>(json);
+            return association;
         }
 
         /// <summary>
         /// Return a list of person/medication associations for a person
         /// </summary>
         /// <param name="personId"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<List<PersonMedication>> ListPersonMedicationsAsync(int personId)
+        public async Task<List<PersonMedication>> ListAsync(int personId, int pageNumber, int pageSize)
         {
             // Request a list of medications
             var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
-            string route = $"{baseRoute}/{personId}";
+            string route = $"{baseRoute}/{personId}/{pageNumber}/{pageSize}";
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no associations for the person in the database

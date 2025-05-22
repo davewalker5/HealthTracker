@@ -1,0 +1,28 @@
+@model HealthTracker.Mvc.Models.ActivityTypeViewModel
+
+@Html.HiddenFor(m => m.ActivityType.Id)
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.ActivityType.Description)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.ActivityType.Description, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.ActivityType.Description, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.ActivityType.DistanceBased)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.CheckBoxFor(m => m.ActivityType.DistanceBased, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.ActivityType.DistanceBased, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+</div>

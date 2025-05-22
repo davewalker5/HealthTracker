@@ -23,7 +23,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="date"></param>
         /// <param name="weight"></param>
         /// <returns></returns>
-        public async Task<WeightMeasurement> AddWeightMeasurementAsync(int personId, DateTime? date, decimal weight)
+        public async Task<WeightMeasurement> AddAsync(int personId, DateTime? date, decimal weight)
         {
             var measurementDate = date ?? DateTime.Now;
             dynamic template = new
@@ -48,7 +48,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="date"></param>
         /// <param name="weight"></param>
         /// <returns></returns>
-        public async Task<WeightMeasurement> UpdateWeightMeasurementAsync(int id, int personId, DateTime? date, decimal weight)
+        public async Task<WeightMeasurement> UpdateAsync(int id, int personId, DateTime? date, decimal weight)
         {
             var measurementDate = date ?? DateTime.Now;
             dynamic template = new
@@ -71,7 +71,7 @@ namespace HealthTracker.Client.ApiClient
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task DeleteWeightMeasurementAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
             var route = $"{baseRoute}/{id}";
@@ -83,7 +83,7 @@ namespace HealthTracker.Client.ApiClient
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public async Task ImportWeightMeasurementsAsync(string filePath)
+        public async Task ImportAsync(string filePath)
         {
             dynamic data = new{ Content = File.ReadAllText(filePath) };
             var json = Serialize(data);
@@ -98,11 +98,28 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="to"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public async Task ExportWeightMeasurementsAsync(int personId, DateTime? from, DateTime? to, string fileName)
+        public async Task ExportAsync(int personId, DateTime? from, DateTime? to, string fileName)
         {
             dynamic data = new { PersonId = personId, From = from, To = to, FileName = fileName };
             var json = Serialize(data);
             await SendIndirectAsync(ExportRouteKey, json, HttpMethod.Post);
+        }
+        
+        /// <summary>
+        /// Retrieve a single measurement given its ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<WeightMeasurement> GetAsync(int id)
+        {
+            // Request the measurement with the specified ID
+            string baseRoute = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
+            string route = $"{baseRoute}/{id}";
+            string json = await SendDirectAsync(route, null, HttpMethod.Get);
+
+            // Extract the measurement from the response
+            var measurement = Deserialize<WeightMeasurement>(json);
+            return measurement;
         }
 
         /// <summary>
@@ -111,18 +128,20 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="personId"></param>
         /// <param name="from"></param>
         /// <param name="to"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<List<WeightMeasurement>> ListWeightMeasurementsAsync(int personId, DateTime? from, DateTime? to)
+        public async Task<List<WeightMeasurement>> ListAsync(int personId, DateTime? from, DateTime? to, int pageNumber, int pageSize)
         {
             // Determine the encoded date range
             (var encodedFromDate, var encodedToDate) = CalculateEncodedDateRange(from, to);
 
             // Request a list of weight measurements
             string baseRoute = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
-            string route = $"{baseRoute}/{personId}/{encodedFromDate}/{encodedToDate}";
+            string route = $"{baseRoute}/{personId}/{encodedFromDate}/{encodedToDate}/{pageNumber}/{pageSize}";
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
-            // The returned JSON will be empty if there are no people in the database
+            // The returned JSON will be empty if there are no measurements in the database
             List<WeightMeasurement> measurements = !string.IsNullOrEmpty(json) ? Deserialize<List<WeightMeasurement>>(json) : null;
             return measurements;
         }
@@ -136,7 +155,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="systolic"></param>
         /// <param name="diastolic"></param>
         /// <returns></returns>
-        public async Task<WeightMeasurement> CalculateAverageWeightAsync(int personId, DateTime from, DateTime to)
+        public async Task<WeightMeasurement> CalculateAverageAsync(int personId, DateTime from, DateTime to)
         {
             var encodedFromDate = HttpUtility.UrlEncode(from.ToString(DateTimeFormat));
             var encodedToDate = HttpUtility.UrlEncode(to.ToString(DateTimeFormat));
@@ -144,7 +163,9 @@ namespace HealthTracker.Client.ApiClient
             var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
             var route = $"{baseRoute}/average/{personId}/{encodedFromDate}/{encodedToDate}";
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
-            var measurement = Deserialize<WeightMeasurement>(json);
+
+            // If there are no measurements in range, the result will be empty
+            var measurement = !string.IsNullOrEmpty(json) ? Deserialize<WeightMeasurement>(json) : null;
 
             return measurement;
         }
@@ -155,14 +176,14 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="personId"></param>
         /// <param name="days"></param>
         /// <returns></returns>
-        public async Task<WeightMeasurement> CalculateAverageWeightAsync(int personId, int days)
+        public async Task<WeightMeasurement> CalculateAverageAsync(int personId, int days)
         {
             // Calculate an inclusive date range that ensures the whole of the start and end days are covered
             var now = DateTime.Now;
             var from = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0).AddDays(-days + 1);
             var to = new DateTime(now.Year, now.Month, now.Day, 23, 59, 59);
 
-            return await CalculateAverageWeightAsync(personId, from, to);
+            return await CalculateAverageAsync(personId, from, to);
         }
     }
 }

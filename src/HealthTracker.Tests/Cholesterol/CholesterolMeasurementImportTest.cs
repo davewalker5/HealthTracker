@@ -74,7 +74,7 @@ namespace HealthTracker.Tests.Cholesterol
         [TestMethod]
         public async Task ImportMeasurementsTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name()}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Total}"",""{_measurement.HDL}"",""{_measurement.LDL}"",""{_measurement.Triglycerides}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Total}"",""{_measurement.HDL}"",""{_measurement.LDL}"",""{_measurement.Triglycerides}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 
@@ -111,7 +111,7 @@ namespace HealthTracker.Tests.Cholesterol
         [ExpectedException(typeof(InvalidFieldValueException))]
         public async Task InvalidTotalTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name()}"",""{_measurement.Date:dd/MM/yyyy}"",""{0}"",""{_measurement.HDL}"",""{_measurement.LDL}"",""{_measurement.Triglycerides}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd/MM/yyyy}"",""{0}"",""{_measurement.HDL}"",""{_measurement.LDL}"",""{_measurement.Triglycerides}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 
@@ -122,7 +122,7 @@ namespace HealthTracker.Tests.Cholesterol
         [ExpectedException(typeof(InvalidFieldValueException))]
         public async Task InvalidHDLTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name()}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Total}"",""{0}"",""{_measurement.LDL}"",""{_measurement.Triglycerides}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Total}"",""{0}"",""{_measurement.LDL}"",""{_measurement.Triglycerides}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 
@@ -133,7 +133,7 @@ namespace HealthTracker.Tests.Cholesterol
         [ExpectedException(typeof(InvalidFieldValueException))]
         public async Task InvalidLDLTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name()}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Total}"",""{_measurement.HDL}"",""{0}"",""{_measurement.Triglycerides}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Total}"",""{_measurement.HDL}"",""{0}"",""{_measurement.Triglycerides}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 
@@ -144,7 +144,7 @@ namespace HealthTracker.Tests.Cholesterol
         [ExpectedException(typeof(InvalidFieldValueException))]
         public async Task InvalidTriglyceridesTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name()}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Total}"",""{_measurement.HDL}"",""{_measurement.LDL}"",""{0}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Total}"",""{_measurement.HDL}"",""{_measurement.LDL}"",""{0}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 

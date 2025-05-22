@@ -1,5 +1,5 @@
 using HealthTracker.Data;
-using HealthTracker.Entities.Identity;
+using HealthTracker.Enumerations.Enumerations;
 using HealthTracker.Entities.Interfaces;
 using HealthTracker.Logic.Factory;
 using HealthTracker.Tests.Mocks;

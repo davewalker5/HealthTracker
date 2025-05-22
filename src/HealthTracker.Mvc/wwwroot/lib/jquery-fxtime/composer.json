@@ -1,0 +1,23 @@
+{
+    "name": "rocketman/jquery-fxtime",
+    "type": "library",
+    "description": "Firefox-like time plugin for jQuery",
+    "license": "MIT",
+    "authors": [
+	{
+	    "name": "Jim Mason",
+	    "email": "jmason@ibinx.com",
+	    "homepage": "https://www.ibinx.com/"
+	}
+    ],
+    "extra": {
+	"component": {
+	    "scripts": [
+		"dist/jquery-fxtime.js"
+	    ]
+	}
+    },
+    "require": {
+	"components/jquery": "^3.6.0"
+    }
+}

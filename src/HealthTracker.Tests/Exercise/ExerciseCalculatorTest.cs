@@ -22,21 +22,21 @@ namespace HealthTracker.Tests.Exercise
         }
 
         [TestMethod]
-        public void SummariseEmptyMeasurementsCollectionTest()
+        public async Task SummariseEmptyMeasurementsCollectionTest()
         {
-            var summaries = _factory.ExerciseCalculator.Summarise([]);
+            var summaries = await _factory.ExerciseCalculator.Summarise([]);
             Assert.IsNull(summaries);
         }
 
         [TestMethod]
-        public void SummariseNullMeasurementsCollectionTest()
+        public async Task SummariseNullMeasurementsCollectionTest()
         {
-            var summaries = _factory.ExerciseCalculator.Summarise(null);
+            var summaries = await _factory.ExerciseCalculator.Summarise(null);
             Assert.IsNull(summaries);
         }
 
         [TestMethod]
-        public void SummariseForSingleActivityTypeTest()
+        public async Task SummariseForSingleActivityTypeTest()
         {
             var personId = DataGenerator.RandomId();
             var activityTypeId = DataGenerator.RandomId();
@@ -44,7 +44,7 @@ namespace HealthTracker.Tests.Exercise
             var second = DataGenerator.RandomExerciseMeasurement(personId, activityTypeId, DataGenerator.RandomDateInYear(2024));
 
             List<ExerciseMeasurement> measurements = [first, second];
-            var summaries = _factory.ExerciseCalculator.Summarise(measurements);
+            var summaries = await _factory.ExerciseCalculator.Summarise(measurements);
 
             Assert.AreEqual(1, summaries.Count());
             Assert.AreEqual(2, summaries.First().Count);
@@ -60,7 +60,7 @@ namespace HealthTracker.Tests.Exercise
         }
 
         [TestMethod]
-        public void ExcludesZeroMinimumHeartRateTest()
+        public async Task ExcludesZeroMinimumHeartRateTest()
         {
             var personId = DataGenerator.RandomId();
             var activityTypeId = DataGenerator.RandomId();
@@ -68,13 +68,13 @@ namespace HealthTracker.Tests.Exercise
             var second = DataGenerator.RandomExerciseMeasurement(personId, activityTypeId, DataGenerator.RandomDateInYear(2024));
             second.MinimumHeartRate = 0;
 
-            var summaries = _factory.ExerciseCalculator.Summarise([first, second]);
+            var summaries = await _factory.ExerciseCalculator.Summarise([first, second]);
 
             Assert.AreEqual(first.MinimumHeartRate, summaries.First().MinimumHeartRate);
         }
 
         [TestMethod]
-        public void ExcludesZeroMaximumHeartRateTest()
+        public async Task ExcludesZeroMaximumHeartRateTest()
         {
             var personId = DataGenerator.RandomId();
             var activityTypeId = DataGenerator.RandomId();
@@ -82,13 +82,13 @@ namespace HealthTracker.Tests.Exercise
             var second = DataGenerator.RandomExerciseMeasurement(personId, activityTypeId, DataGenerator.RandomDateInYear(2024));
             second.MaximumHeartRate = 0;
 
-            var summaries = _factory.ExerciseCalculator.Summarise([first, second]);
+            var summaries = await _factory.ExerciseCalculator.Summarise([first, second]);
 
             Assert.AreEqual(first.MaximumHeartRate, summaries.First().MaximumHeartRate);
         }
 
         [TestMethod]
-        public void SummariseForMixedActivityTypeTest()
+        public async Task SummariseForMixedActivityTypeTest()
         {
             var personId = DataGenerator.RandomId();
             var firstActivityTypeId =  DataGenerator.RandomId();
@@ -97,7 +97,7 @@ namespace HealthTracker.Tests.Exercise
             var second = DataGenerator.RandomExerciseMeasurement(personId, secondActivityTypeId, DataGenerator.RandomDateInYear(2025));
 
             List<ExerciseMeasurement> measurements = [first, second];
-            var summaries = _factory.ExerciseCalculator.Summarise(measurements);
+            var summaries = await _factory.ExerciseCalculator.Summarise(measurements);
 
             Assert.AreEqual(3, summaries.Count());
 

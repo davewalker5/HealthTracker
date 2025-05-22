@@ -24,7 +24,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="date"></param>
         /// <param name="percentage"></param>
         /// <returns></returns>
-        public async Task<BloodOxygenSaturationMeasurement> AddBloodOxygenSaturationMeasurementAsync(int personId, DateTime? date, decimal percentage)
+        public async Task<BloodOxygenSaturationMeasurement> AddAsync(int personId, DateTime? date, decimal percentage)
         {
             var measurementDate = date ?? DateTime.Now;
             dynamic template = new
@@ -49,7 +49,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="date"></param>
         /// <param name="percentage"></param>
         /// <returns></returns>
-        public async Task<BloodOxygenSaturationMeasurement> UpdateBloodOxygenSaturationMeasurementAsync(int id, int personId, DateTime? date, decimal percentage)
+        public async Task<BloodOxygenSaturationMeasurement> UpdateAsync(int id, int personId, DateTime? date, decimal percentage)
         {
             var measurementDate = date ?? DateTime.Now;
             dynamic template = new
@@ -72,7 +72,7 @@ namespace HealthTracker.Client.ApiClient
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public async Task ImportBloodOxygenSaturationMeasurementsAsync(string filePath)
+        public async Task ImportAsync(string filePath)
         {
             dynamic data = new{ Content = File.ReadAllText(filePath) };
             var json = Serialize(data);
@@ -87,11 +87,28 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="to"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public async Task ExportBloodOxygenSaturationMeasurementsAsync(int personId, DateTime? from, DateTime? to, string fileName)
+        public async Task ExportAsync(int personId, DateTime? from, DateTime? to, string fileName)
         {
             dynamic data = new { PersonId = personId, From = from, To = to, FileName = fileName };
             var json = Serialize(data);
             await SendIndirectAsync(ExportRouteKey, json, HttpMethod.Post);
+        }
+        
+        /// <summary>
+        /// Retrieve a single measurement given its ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<BloodOxygenSaturationMeasurement> GetAsync(int id)
+        {
+            // Request the measurement with the specified ID
+            string baseRoute = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
+            string route = $"{baseRoute}/{id}";
+            string json = await SendDirectAsync(route, null, HttpMethod.Get);
+
+            // Extract the measurement from the response
+            var measurement = Deserialize<BloodOxygenSaturationMeasurement>(json);
+            return measurement;
         }
 
         /// <summary>
@@ -99,7 +116,7 @@ namespace HealthTracker.Client.ApiClient
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task DeleteBloodOxygenSaturationMeasurementAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
             var route = $"{baseRoute}/{id}";
@@ -112,15 +129,17 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="personId"></param>
         /// <param name="from"></param>
         /// <param name="to"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<List<BloodOxygenSaturationMeasurement>> ListBloodOxygenSaturationMeasurementsAsync(int personId, DateTime? from, DateTime? to)
+        public async Task<List<BloodOxygenSaturationMeasurement>> ListAsync(int personId, DateTime? from, DateTime? to, int pageNumber, int pageSize)
         {
             // Determine the encoded date range
             (var encodedFromDate, var encodedToDate) = CalculateEncodedDateRange(from, to);
 
             // Request a list of % SPO2 measurements
             string baseRoute = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
-            string route = $"{baseRoute}/{personId}/{encodedFromDate}/{encodedToDate}";
+            string route = $"{baseRoute}/{personId}/{encodedFromDate}/{encodedToDate}/{pageNumber}/{pageSize}";
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no people in the database
@@ -135,7 +154,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="from"></param>
         /// <param name="to"></param>
         /// <returns></returns>
-        public async Task<BloodOxygenSaturationMeasurement> CalculateAverageBloodOxygenSaturationAsync(int personId, DateTime from, DateTime to)
+        public async Task<BloodOxygenSaturationMeasurement> CalculateAverageAsync(int personId, DateTime from, DateTime to)
         {
             var encodedFromDate = HttpUtility.UrlEncode(from.ToString(DateTimeFormat));
             var encodedToDate = HttpUtility.UrlEncode(to.ToString(DateTimeFormat));
@@ -154,14 +173,14 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="personId"></param>
         /// <param name="days"></param>
         /// <returns></returns>
-        public async Task<BloodOxygenSaturationMeasurement> CalculateAverageBloodOxygenSaturationAsync(int personId, int days)
+        public async Task<BloodOxygenSaturationMeasurement> CalculateAverageAsync(int personId, int days)
         {
             // Calculate an inclusive date range that ensures the whole of the start and end days are covered
             var now = DateTime.Now;
             var from = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0).AddDays(-days + 1);
             var to = new DateTime(now.Year, now.Month, now.Day, 23, 59, 59);
 
-            return await CalculateAverageBloodOxygenSaturationAsync(personId, from, to);
+            return await CalculateAverageAsync(personId, from, to);
         }
 
         /// <summary>
@@ -171,7 +190,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="from"></param>
         /// <param name="to"></param>
         /// <returns></returns>
-        public async Task<List<BloodOxygenSaturationMeasurement>> CalculateDailyAverageBloodOxygenSaturationAsync(int personId, DateTime from, DateTime to)
+        public async Task<List<BloodOxygenSaturationMeasurement>> CalculateDailyAverageAsync(int personId, DateTime from, DateTime to)
         {
             var encodedFromDate = HttpUtility.UrlEncode(from.ToString(DateTimeFormat));
             var encodedToDate = HttpUtility.UrlEncode(to.ToString(DateTimeFormat));
@@ -192,7 +211,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="to"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public async Task ExportDailyAverageBloodOxygenSaturationAsync(int personId, DateTime from, DateTime to, string fileName)
+        public async Task ExportDailyAverageAsync(int personId, DateTime from, DateTime to, string fileName)
         {
             dynamic data = new { PersonId = personId, From = from, To = to, FileName = fileName };
             var json = Serialize(data);

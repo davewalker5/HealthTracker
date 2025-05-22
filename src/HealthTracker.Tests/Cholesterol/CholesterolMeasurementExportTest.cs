@@ -39,7 +39,7 @@ namespace HealthTracker.Tests.Cholesterol
         {
             var exportable = _measurement.ToExportable([_person]);
             Assert.AreEqual(_person.Id, exportable.PersonId);
-            Assert.AreEqual(_person.Name(), exportable.Name);
+            Assert.AreEqual(_person.Name, exportable.Name);
             Assert.AreEqual(_measurement.Date, exportable.Date);
             Assert.AreEqual(_measurement.Total, exportable.Total);
             Assert.AreEqual(_measurement.HDL, exportable.HDL);
@@ -53,7 +53,7 @@ namespace HealthTracker.Tests.Cholesterol
             List<CholesterolMeasurement> measurements = [_measurement];
             var exportable = measurements.ToExportable([_person]);
             Assert.AreEqual(_person.Id, exportable.First().PersonId);
-            Assert.AreEqual(_person.Name(), exportable.First().Name);
+            Assert.AreEqual(_person.Name, exportable.First().Name);
             Assert.AreEqual(_measurement.Date, exportable.First().Date);
             Assert.AreEqual(_measurement.Total, exportable.First().Total);
             Assert.AreEqual(_measurement.HDL, exportable.First().HDL);
@@ -64,10 +64,10 @@ namespace HealthTracker.Tests.Cholesterol
         [TestMethod]
         public void FromCsvRecordTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name()}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Total}"",""{_measurement.HDL}"",""{_measurement.LDL}"",""{_measurement.Triglycerides}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Total}"",""{_measurement.HDL}"",""{_measurement.LDL}"",""{_measurement.Triglycerides}""";
             var exportable = ExportableCholesterolMeasurement.FromCsv(record);
             Assert.AreEqual(_person.Id, exportable.PersonId);
-            Assert.AreEqual(_person.Name(), exportable.Name);
+            Assert.AreEqual(_person.Name, exportable.Name);
             Assert.AreEqual(_measurement.Date, exportable.Date);
             Assert.AreEqual(_measurement.Total, exportable.Total);
             Assert.AreEqual(_measurement.HDL, exportable.HDL);
@@ -100,7 +100,7 @@ namespace HealthTracker.Tests.Cholesterol
 
             var exportable = ExportableCholesterolMeasurement.FromCsv(records[1]);
             Assert.AreEqual(_person.Id, exportable.PersonId);
-            Assert.AreEqual(_person.Name(), exportable.Name);
+            Assert.AreEqual(_person.Name, exportable.Name);
             Assert.AreEqual(_measurement.Date, exportable.Date);
             Assert.AreEqual(_measurement.Total, exportable.Total);
             Assert.AreEqual(_measurement.HDL, exportable.HDL);
@@ -132,7 +132,7 @@ namespace HealthTracker.Tests.Cholesterol
 
             var exportable = ExportableCholesterolMeasurement.FromCsv(records[1]);
             Assert.AreEqual(_person.Id, exportable.PersonId);
-            Assert.AreEqual(_person.Name(), exportable.Name);
+            Assert.AreEqual(_person.Name, exportable.Name);
             Assert.AreEqual(_measurement.Date, exportable.Date);
             Assert.AreEqual(_measurement.Total, exportable.Total);
             Assert.AreEqual(_measurement.HDL, exportable.HDL);

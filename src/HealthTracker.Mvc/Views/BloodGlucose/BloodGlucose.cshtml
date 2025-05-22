@@ -1,0 +1,67 @@
+@using HealthTracker.Mvc.Entities
+@model HealthTracker.Mvc.Models.BloodGlucoseViewModel
+
+@Html.HiddenFor(m => m.PersonName)
+@Html.HiddenFor(m => m.From)
+@Html.HiddenFor(m => m.To)
+@Html.HiddenFor(m => m.Measurement.Id)
+@Html.HiddenFor(m => m.Measurement.PersonId)
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <strong>@Html.Label("Name")</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.PersonName, new { @class = "form-control", disabled = "disabled" })
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.MeasurementDate)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.EditorFor(m => m.MeasurementDate, new { @class = "form-control" })
+                <script type="text/javascript">
+                    new GijgoDatePicker(document.getElementById("MeasurementDate"), {
+                        calendarWeeks: false,
+                        uiLibrary: "bootstrap4",
+                        format: "@DateFormats.DateJavascript",
+                        value: "@Model.MeasurementDate"
+                    });
+                </script>
+                <span>@Html.ValidationMessageFor(m => m.MeasurementDate, "", new { @class = "text-danger" })</span>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.MeasurementTime)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.EditorFor(m => m.MeasurementTime, new { @class = "form-control" })
+                <script type="text/javascript">$("#MeasurementTime").timepicker();</script>
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.MeasurementTime, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Measurement.Level)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Measurement.Level, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Measurement.Level, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+</div>
+

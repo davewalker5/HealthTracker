@@ -36,7 +36,7 @@ namespace HealthTracker.Tests.PersonMedicationAssociations
         [TestMethod]
         public async Task ListAllTest()
         {
-            var associations = await _factory.PersonMedications.ListAsync(x => true);
+            var associations = await _factory.PersonMedications.ListAsync(x => true, 1, int.MaxValue);
             Assert.AreEqual(1, associations.Count);
             Assert.AreEqual(_personId, associations.First().PersonId);
             Assert.AreEqual(_firstMedicationId, associations.First().MedicationId);
@@ -49,7 +49,7 @@ namespace HealthTracker.Tests.PersonMedicationAssociations
         [TestMethod]
         public async Task ListMissingTest()
         {
-            var associations = await _factory.PersonMedications.ListAsync(e => e.MedicationId == _secondMedicationId);
+            var associations = await _factory.PersonMedications.ListAsync(e => e.MedicationId == _secondMedicationId, 1, int.MaxValue);
             Assert.AreEqual(0, associations.Count);
         }
 
@@ -57,7 +57,7 @@ namespace HealthTracker.Tests.PersonMedicationAssociations
         public async Task UpdateTest()
         {
             await _factory.PersonMedications.UpdateAsync(_associationId, _personId, _secondMedicationId, 2, 10, DateTime.Now, false);
-            var associations = await _factory.PersonMedications.ListAsync(a => a.Id == _associationId);
+            var associations = await _factory.PersonMedications.ListAsync(a => a.Id == _associationId, 1, int.MaxValue);
             Assert.AreEqual(1, associations.Count);
             Assert.AreEqual(_personId, associations.First().PersonId);
             Assert.AreEqual(_secondMedicationId, associations.First().MedicationId);
@@ -70,11 +70,11 @@ namespace HealthTracker.Tests.PersonMedicationAssociations
         [TestMethod]
         public async Task DeactivateTest()
         {
-            var association = (await _factory.PersonMedications.ListAsync(x => x.Id == _associationId)).First();
+            var association = (await _factory.PersonMedications.ListAsync(x => x.Id == _associationId, 1, int.MaxValue)).First();
             Assert.IsTrue(association.Active);
 
             await _factory.PersonMedications.DeactivateAsync(_associationId);
-            association = (await _factory.PersonMedications.ListAsync(x => x.Id == _associationId)).First();
+            association = (await _factory.PersonMedications.ListAsync(x => x.Id == _associationId, 1, int.MaxValue)).First();
             Assert.IsFalse(association.Active);
         }
 
@@ -82,11 +82,11 @@ namespace HealthTracker.Tests.PersonMedicationAssociations
         public async Task ActivateTest()
         {
             await _factory.PersonMedications.DeactivateAsync(_associationId);
-            var association = (await _factory.PersonMedications.ListAsync(x => x.Id == _associationId)).First();
+            var association = (await _factory.PersonMedications.ListAsync(x => x.Id == _associationId, 1, int.MaxValue)).First();
             Assert.IsFalse(association.Active);
 
             await _factory.PersonMedications.ActivateAsync(_associationId);
-            association = (await _factory.PersonMedications.ListAsync(x => x.Id == _associationId)).First();
+            association = (await _factory.PersonMedications.ListAsync(x => x.Id == _associationId, 1, int.MaxValue)).First();
             Assert.IsTrue(association.Active);
         }
 
@@ -94,7 +94,7 @@ namespace HealthTracker.Tests.PersonMedicationAssociations
         public async Task SetDoseTest()
         {
             await _factory.PersonMedications.SetDoseAsync(_associationId, 3);
-            var associations = await _factory.PersonMedications.ListAsync(a => true);
+            var associations = await _factory.PersonMedications.ListAsync(a => true, 1, int.MaxValue);
             Assert.AreEqual(1, associations.Count);
             Assert.AreEqual(_personId, associations.First().PersonId);
             Assert.AreEqual(_firstMedicationId, associations.First().MedicationId);
@@ -108,7 +108,7 @@ namespace HealthTracker.Tests.PersonMedicationAssociations
         public async Task SetStockTest()
         {
             await _factory.PersonMedications.SetStockAsync(_associationId, 35);
-            var associations = await _factory.PersonMedications.ListAsync(a => true);
+            var associations = await _factory.PersonMedications.ListAsync(a => true, 1, int.MaxValue);
             Assert.AreEqual(1, associations.Count);
             Assert.AreEqual(_personId, associations.First().PersonId);
             Assert.AreEqual(_firstMedicationId, associations.First().MedicationId);
@@ -122,7 +122,7 @@ namespace HealthTracker.Tests.PersonMedicationAssociations
         public async Task SetStockAndDateTakenTest()
         {
             await _factory.PersonMedications.SetStockAsync(_associationId, 35, DateTime.Now);
-            var associations = await _factory.PersonMedications.ListAsync(a => true);
+            var associations = await _factory.PersonMedications.ListAsync(a => true, 1, int.MaxValue);
             Assert.AreEqual(1, associations.Count);
             Assert.AreEqual(_personId, associations.First().PersonId);
             Assert.AreEqual(_firstMedicationId, associations.First().MedicationId);
@@ -136,7 +136,7 @@ namespace HealthTracker.Tests.PersonMedicationAssociations
         public async Task DeleteTest()
         {
             await _factory.PersonMedications.DeleteAsync(_associationId);
-            var associations = await _factory.PersonMedications.ListAsync(a => true);
+            var associations = await _factory.PersonMedications.ListAsync(a => true, 1, int.MaxValue);
             Assert.AreEqual(0, associations.Count);
         }
 

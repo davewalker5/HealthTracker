@@ -1,7 +1,7 @@
 using HealthTracker.Entities.Interfaces;
 using HealthTracker.DataExchange.Entities;
 using HealthTracker.DataExchange.Interfaces;
-using HealthTracker.Entities.Identity;
+using HealthTracker.Enumerations.Enumerations;
 
 namespace HealthTracker.DataExchange.Import
 {

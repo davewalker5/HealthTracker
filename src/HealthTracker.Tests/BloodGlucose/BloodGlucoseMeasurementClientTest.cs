@@ -54,7 +54,7 @@ namespace HealthTracker.Tests.BloodGlucose
             var json = JsonSerializer.Serialize(new { PersonId = personId, Date = date, Level = level });
             _httpClient.AddResponse(json);
 
-            var measurement = await _client.AddBloodGlucoseMeasurementAsync(personId, date, level);
+            var measurement = await _client.AddAsync(personId, date, level);
 
             Assert.AreEqual($"Bearer {_apiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -78,7 +78,7 @@ namespace HealthTracker.Tests.BloodGlucose
             var json = JsonSerializer.Serialize(new { Id = id, PersonId = personId, Date = date, Level = level });
             _httpClient.AddResponse(json);
 
-            var measurement = await _client.UpdateBloodGlucoseMeasurementAsync(id, personId, date, level);
+            var measurement = await _client.UpdateAsync(id, personId, date, level);
 
             Assert.AreEqual($"Bearer {_apiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -97,7 +97,7 @@ namespace HealthTracker.Tests.BloodGlucose
         public async Task DeleteTest()
         {
             var id = DataGenerator.RandomId();
-            await _client.DeleteBloodGlucoseMeasurementAsync(id);
+            await _client.DeleteAsync(id);
 
             Assert.AreEqual($"Bearer {_apiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -105,6 +105,30 @@ namespace HealthTracker.Tests.BloodGlucose
             Assert.AreEqual($"{_settings.ApiRoutes[0].Route}/{id}", _httpClient.Requests[0].Uri);
 
             Assert.IsNull(_httpClient.Requests[0].Content);
+        }
+
+        [TestMethod]
+        public async Task GetTest()
+        {
+            var personId = DataGenerator.RandomId();
+            var measurement = DataGenerator.RandomBloodGlucoseMeasurement(personId, 2025);
+            var json = JsonSerializer.Serialize(measurement);
+            _httpClient.AddResponse(json);
+
+            var retrieved = await _client.GetAsync(measurement.Id);
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/{measurement.Id}";
+
+            Assert.AreEqual($"Bearer {_apiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
+            Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
+            Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
+            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+
+            Assert.IsNull(_httpClient.Requests[0].Content);
+            Assert.IsNotNull(retrieved);
+            Assert.AreEqual(measurement.Id, retrieved.Id);
+            Assert.AreEqual(personId, retrieved.PersonId);
+            Assert.AreEqual(measurement.Date, retrieved.Date);
+            Assert.AreEqual(measurement.Level, retrieved.Level);
         }
 
         [TestMethod]
@@ -126,13 +150,13 @@ namespace HealthTracker.Tests.BloodGlucose
             });
             _httpClient.AddResponse(json);
 
-            var measurements = await _client.ListBloodGlucoseMeasurementsAsync(personId, null, null);
+            var measurements = await _client.ListAsync(personId, null, null, 1, int.MaxValue);
 
             var expectedTo = DateTime.Now;
             var expectedFrom = expectedTo.AddDays(-_settings.DefaultTimePeriodDays);
             var encodedFrom = HttpUtility.UrlEncode(expectedFrom.ToString("yyyy-MM-dd H:mm:ss"));
             var encodedTo = HttpUtility.UrlEncode(expectedTo.ToString("yyyy-MM-dd H:mm:ss"));
-            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/{personId}/{encodedFrom}/{encodedTo}";
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/{personId}/{encodedFrom}/{encodedTo}/1/{int.MaxValue}";
 
             Assert.AreEqual($"Bearer {_apiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -168,12 +192,12 @@ namespace HealthTracker.Tests.BloodGlucose
             _httpClient.AddResponse(json);
 
             var from = date.AddDays(-DataGenerator.RandomInt(30, 90));
-            var measurements = await _client.ListBloodGlucoseMeasurementsAsync(personId, from, null);
+            var measurements = await _client.ListAsync(personId, from, null, 1, int.MaxValue);
 
             var expectedTo = DateTime.Now;
             var encodedFrom = HttpUtility.UrlEncode(from.ToString("yyyy-MM-dd H:mm:ss"));
             var encodedTo = HttpUtility.UrlEncode(expectedTo.ToString("yyyy-MM-dd H:mm:ss"));
-            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/{personId}/{encodedFrom}/{encodedTo}";
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/{personId}/{encodedFrom}/{encodedTo}/1/{int.MaxValue}";
 
             Assert.AreEqual($"Bearer {_apiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -209,12 +233,12 @@ namespace HealthTracker.Tests.BloodGlucose
             _httpClient.AddResponse(json);
 
             var to = date.AddDays(DataGenerator.RandomInt(30, 90));
-            var measurements = await _client.ListBloodGlucoseMeasurementsAsync(personId, null, to);
+            var measurements = await _client.ListAsync(personId, null, to, 1, int.MaxValue);
 
             var expectedFrom = to.AddDays(-_settings.DefaultTimePeriodDays);
             var encodedFrom = HttpUtility.UrlEncode(expectedFrom.ToString("yyyy-MM-dd H:mm:ss"));
             var encodedTo = HttpUtility.UrlEncode(to.ToString("yyyy-MM-dd H:mm:ss"));
-            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/{personId}/{encodedFrom}/{encodedTo}";
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/{personId}/{encodedFrom}/{encodedTo}/1/{int.MaxValue}";
 
             Assert.AreEqual($"Bearer {_apiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -251,11 +275,11 @@ namespace HealthTracker.Tests.BloodGlucose
 
             var from = date.AddDays(-DataGenerator.RandomInt(30, 90));
             var to = date.AddDays(DataGenerator.RandomInt(30, 90));
-            var measurements = await _client.ListBloodGlucoseMeasurementsAsync(personId, from, to);
+            var measurements = await _client.ListAsync(personId, from, to, 1, int.MaxValue);
 
             var encodedFrom = HttpUtility.UrlEncode(from.ToString("yyyy-MM-dd H:mm:ss"));
             var encodedTo = HttpUtility.UrlEncode(to.ToString("yyyy-MM-dd H:mm:ss"));
-            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/{personId}/{encodedFrom}/{encodedTo}";
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/{personId}/{encodedFrom}/{encodedTo}/1/{int.MaxValue}";
 
             Assert.AreEqual($"Bearer {_apiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -285,7 +309,7 @@ namespace HealthTracker.Tests.BloodGlucose
 
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
-            await _client.ImportBloodGlucoseMeasurementsAsync(_filePath);
+            await _client.ImportAsync(_filePath);
 
             Assert.AreEqual($"Bearer {_apiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -301,7 +325,7 @@ namespace HealthTracker.Tests.BloodGlucose
             var personId = DataGenerator.RandomId();
             _filePath = DataGenerator.TemporaryCsvFilePath();
 
-            await _client.ExportBloodGlucoseMeasurementsAsync(personId, null, null, _filePath);
+            await _client.ExportAsync(personId, null, null, _filePath);
 
             Assert.AreEqual($"Bearer {_apiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());

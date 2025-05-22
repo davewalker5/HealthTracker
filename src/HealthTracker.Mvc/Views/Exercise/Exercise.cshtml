@@ -1,0 +1,130 @@
+@using HealthTracker.Mvc.Entities
+@model HealthTracker.Mvc.Models.ExerciseViewModel
+
+@Html.HiddenFor(m => m.PersonName)
+@Html.HiddenFor(m => m.From)
+@Html.HiddenFor(m => m.To)
+@Html.HiddenFor(m => m.Measurement.Id)
+@Html.HiddenFor(m => m.Measurement.PersonId)
+@Html.HiddenFor(m => m.Measurement.Duration)
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <strong>@Html.Label("Name")</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.PersonName, new { @class = "form-control", disabled = "disabled" })
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Measurement.ActivityTypeId)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.DropDownListFor(m => m.Measurement.ActivityTypeId, Model.ActivityTypes, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Measurement.ActivityTypeId, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Measurement.Date)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Measurement.Date, null, new { @class = "form-control" })
+                <script type="text/javascript">
+                    new GijgoDatePicker(document.getElementById("Measurement_Date"), {
+                        calendarWeeks: false,
+                        uiLibrary: "bootstrap4",
+                        format: "@DateFormats.DateJavascript",
+                        value: "@Model.Measurement.Date.ToString(DateFormats.Date)"
+                    });
+                </script>
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Measurement.Date, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Measurement.Duration)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Measurement.FormattedDuration, new { @class = "form-control time", @step = "1" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Measurement.Duration, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Measurement.Distance)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Measurement.Distance, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Measurement.Distance, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Measurement.Calories)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Measurement.Calories, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Measurement.Calories, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Measurement.MinimumHeartRate)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Measurement.MinimumHeartRate, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Measurement.MinimumHeartRate, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Measurement.MaximumHeartRate)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Measurement.MaximumHeartRate, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Measurement.MaximumHeartRate, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+</div>
+
+<script type-"text/javascript">
+    $(document).ready(function() {
+        // Extract the components of the duration
+        var seconds = parseInt($("#Measurement_Duration").val());
+        var hours = Math.floor(seconds / 3600);
+        var minutes = Math.floor((seconds - 3600 * hours) / 60);
+        seconds = seconds - 3600 * hours - 60 * minutes;
+        
+        // Set up the duration picker
+        $("#Measurement_FormattedDuration").fxtime();
+        $("#Measurement_FormattedDuration").fxtime("seg", 0, hours)
+        $("#Measurement_FormattedDuration").fxtime("seg", 1, minutes)
+        $("#Measurement_FormattedDuration").fxtime("seg", 2, seconds)
+    })
+</script>

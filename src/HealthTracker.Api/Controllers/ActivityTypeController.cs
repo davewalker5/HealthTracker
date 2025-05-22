@@ -40,10 +40,10 @@ namespace HealthTracker.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("")]
-        public async Task<ActionResult<IEnumerable<ActivityType>>> ListAllActivityTypesAsync()
+        [Route("{pageNumber}/{pageSize}")]
+        public async Task<ActionResult<IEnumerable<ActivityType>>> ListAllActivityTypesAsync(int pageNumber, int pageSize)
         {
-            var activityTypes = await _factory.ActivityTypes.ListAsync(x => true);
+            var activityTypes = await _factory.ActivityTypes.ListAsync(x => true, pageNumber, pageSize);
 
             if (activityTypes == null)
             {
@@ -62,7 +62,7 @@ namespace HealthTracker.Api.Controllers
         [Route("")]
         public async Task<ActionResult<ActivityType>> AddActivityTypeAsync([FromBody] ActivityType template)
         {
-            var activityType = await _factory.ActivityTypes.AddAsync(template.Description);
+            var activityType = await _factory.ActivityTypes.AddAsync(template.Description, template.DistanceBased);
             return activityType;
         }
 
@@ -73,9 +73,9 @@ namespace HealthTracker.Api.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("")]
-        public async Task<ActionResult<ActivityType>> UpdatePersonAsync([FromBody] ActivityType template)
+        public async Task<ActionResult<ActivityType>> UpdateActivityTypeAsync([FromBody] ActivityType template)
         {
-            var activityType = await _factory.ActivityTypes.UpdateAsync(template.Id, template.Description);
+            var activityType = await _factory.ActivityTypes.UpdateAsync(template.Id, template.Description, template.DistanceBased);
             return activityType;
         }
 

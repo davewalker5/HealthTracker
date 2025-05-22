@@ -16,7 +16,13 @@ namespace HealthTracker.Client.ApiClient
         public Uri BaseAddress
         {
             get { return _client.BaseAddress;}
-            set { _client.BaseAddress = value; }
+            set
+            {
+                if (_client.BaseAddress == null)
+                {
+                    _client.BaseAddress = value;
+                }
+            }
         }
 
         public HttpRequestHeaders DefaultRequestHeaders

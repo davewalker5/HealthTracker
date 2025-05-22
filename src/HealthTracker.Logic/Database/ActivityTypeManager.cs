@@ -21,7 +21,7 @@ namespace HealthTracker.Logic.Database
         /// <returns></returns>
         public async Task<ActivityType> GetAsync(Expression<Func<ActivityType, bool>> predicate)
         {
-            var activityTypes = await ListAsync(predicate);
+            var activityTypes = await ListAsync(predicate, 1, int.MaxValue);
             return activityTypes.FirstOrDefault();
         }
 
@@ -29,8 +29,10 @@ namespace HealthTracker.Logic.Database
         /// Return all activity types matching the specified criteria
         /// </summary>
         /// <param name="predicate"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<List<ActivityType>> ListAsync(Expression<Func<ActivityType, bool>> predicate)
+        public async Task<List<ActivityType>> ListAsync(Expression<Func<ActivityType, bool>> predicate, int pageNumber, int pageSize)
             => await Context.ActivityTypes
                             .Where(predicate)
                             .OrderBy(x => x.Description)
@@ -39,21 +41,20 @@ namespace HealthTracker.Logic.Database
         /// <summary>
         /// Add an activity type, if it doesn't already exist
         /// </summary>
-        /// <param name="firstnames"></param>
-        /// <param name="surname"></param>
-        /// <param name="dob"></param>
-        /// <param name="height"></param>
+        /// <param name="description"></param>
+        /// <param name="distanceBased"></param>
         /// <returns></returns>
-        public async Task<ActivityType> AddAsync(string description)
+        public async Task<ActivityType> AddAsync(string description, bool distanceBased)
         {
             Factory.Logger.LogMessage(Severity.Info, $"Creating new activity type '{description}'");
 
             var clean = StringCleaner.Clean(description);
-            await CheckActivityTypeIsNotADuplicate(clean);
+            await CheckActivityTypeIsNotADuplicate(clean, 0);
 
             var activityType = new ActivityType
             {
-                Description = clean
+                Description = clean,
+                DistanceBased = distanceBased
             };
 
             await Context.ActivityTypes.AddAsync(activityType);
@@ -68,19 +69,22 @@ namespace HealthTracker.Logic.Database
         /// </summary>
         /// <param name="id"></param>
         /// <param name="description"></param>
+        /// <param name="distanceBased"></param>
         /// <returns></returns>
-        public async Task<ActivityType> UpdateAsync(int id, string description)
+        public async Task<ActivityType> UpdateAsync(int id, string description, bool distanceBased)
         {
             Factory.Logger.LogMessage(Severity.Info, $"Updating activity type with ID {id} to '{description}'");
-
-            var clean = StringCleaner.Clean(description);
-            await CheckActivityTypeIsNotADuplicate(clean);
 
             var activityType = Context.ActivityTypes.FirstOrDefault(x => x.Id == id);
             if (activityType != null)
             {
+                // Clean up the description and check the operation won't create a duplicate
+                var clean = StringCleaner.Clean(description);
+                await CheckActivityTypeIsNotADuplicate(clean, id);
+
                 // Save the changes
                 activityType.Description = clean;
+                activityType.DistanceBased = distanceBased;
                 await Context.SaveChangesAsync();
             }
 
@@ -118,11 +122,12 @@ namespace HealthTracker.Logic.Database
         /// description
         /// </summary>
         /// <param name="description"></param>
+        /// <param name="id"></param>
         /// <exception cref="ActivityTypeInUseException"></exception>
-        private async Task CheckActivityTypeIsNotADuplicate(string description)
+        private async Task CheckActivityTypeIsNotADuplicate(string description, int id)
         {
             var activityType = await Context.ActivityTypes.FirstOrDefaultAsync(x => x.Description == description);
-            if (activityType != null)
+            if ((activityType != null) && (activityType.Id != id))
             {
                 var message = $"Activity type {description} already exists";
                 throw new ActivityTypeExistsException(message);

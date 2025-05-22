@@ -4,7 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <PackageId>HealthTracker.DataExchange</PackageId>
-    <PackageVersion>1.23.0.0</PackageVersion>
+    <PackageVersion>1.24.0.0</PackageVersion>
     <Authors>Dave Walker</Authors>
     <Copyright>Copyright (c) 2024, 2025 Dave Walker</Copyright>
     <Owners>Dave Walker</Owners>
@@ -16,12 +16,13 @@
     <PackageProjectUrl>https://github.com/davewalker5/HealthTracker</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <ReleaseVersion>1.23.0.0</ReleaseVersion>
+    <ReleaseVersion>1.24.0.0</ReleaseVersion>
     <NoWarn>$(NoWarn);NU1900;NU1902;NU1904</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\HealthTracker.Logic\HealthTracker.Logic.csproj" />
+    <ProjectReference Include="..\HealthTracker.Enumerations\HealthTracker.Enumerations.csproj" />
     <ProjectReference Include="..\HealthTracker.Entities\HealthTracker.Entities.csproj" />
   </ItemGroup>
 

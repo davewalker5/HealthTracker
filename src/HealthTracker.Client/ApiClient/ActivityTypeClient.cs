@@ -17,12 +17,15 @@ namespace HealthTracker.Client.ApiClient
         /// Add a new activity type to the database
         /// </summary>
         /// <param
+        /// <param name="description"></param>
+        /// <param name="distanceBased"></param>
         /// <returns></returns>
-        public async Task<ActivityType> AddActivityTypeAsync(string description)
+        public async Task<ActivityType> AddAsync(string description, bool distanceBased)
         {
             dynamic template = new
             {
-                Description = description
+                Description = description,
+                DistanceBased = distanceBased
             };
 
             var data = Serialize(template);
@@ -37,13 +40,15 @@ namespace HealthTracker.Client.ApiClient
         /// </summary>
         /// <param name="id"></param>
         /// <param name="description"></param>
+        /// <param name="distanceBased"></param>
         /// <returns></returns>
-        public async Task<ActivityType> UpdateActivityTypeAsync(int id, string description)
+        public async Task<ActivityType> UpdateAsync(int id, string description, bool distanceBased)
         {
             dynamic template = new
             {
                 Id = id,
-                Description = description
+                Description = description,
+                DistanceBased = distanceBased
             };
 
             var data = Serialize(template);
@@ -58,7 +63,7 @@ namespace HealthTracker.Client.ApiClient
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task DeleteActivityTypeAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
             var route = $"{baseRoute}/{id}";
@@ -68,11 +73,14 @@ namespace HealthTracker.Client.ApiClient
         /// <summary>
         /// Return a list of activity types
         /// </summary>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<List<ActivityType>> ListActivityTypesAsync()
+        public async Task<List<ActivityType>> ListAsync(int pageNumber, int pageSize)
         {
             // Request a list of activity types
-            string route = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
+            string baseRoute = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
+            var route = $"{baseRoute}/{pageNumber}/{pageSize}";
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no activity types in the database

@@ -19,7 +19,7 @@ namespace HealthTracker.DataExchange.Import
         protected override async Task Prepare()
         {
             await base.Prepare();
-            _activityTypes = await _factory.ActivityTypes.ListAsync(x => true);
+            _activityTypes = await _factory.ActivityTypes.ListAsync(x => true, 1, int.MaxValue);
         }
 
         /// <summary>

@@ -29,7 +29,8 @@ namespace HealthTracker.DataExchange.Export
             var measurements = await _factory.ExerciseMeasurements.ListAsync(x =>
                                                 (x.PersonId == personId) &&
                                                 ((from == null) || (x.Date >= from)) &&
-                                                ((to == null) || (x.Date <= to)));
+                                                ((to == null) || (x.Date <= to)),
+                                                1, int.MaxValue);
             await ExportAsync(measurements, file);
         }
 
@@ -42,8 +43,8 @@ namespace HealthTracker.DataExchange.Export
         {
             // Get a list of activity types so we can map IDs to descriptions and convert the collection to "exportable" equivalents
             // with all properties at the same level
-            var people = await _factory.People.ListAsync(x => true);
-            var activityTypes = await _factory.ActivityTypes.ListAsync(x => true);
+            var people = await _factory.People.ListAsync(x => true, 1, int.MaxValue);
+            var activityTypes = await _factory.ActivityTypes.ListAsync(x => true, 1, int.MaxValue);
             var exportable = measurements.ToExportable(people, activityTypes);
 
             // Configure an exporter to export them

@@ -1,6 +1,7 @@
 using HealthTracker.Entities.Identity;
 using HealthTracker.Entities.Interfaces;
 using HealthTracker.Entities.Measurements;
+using HealthTracker.Enumerations.Enumerations;
 
 namespace HealthTracker.Logic.Calculations
 {
@@ -21,7 +22,7 @@ namespace HealthTracker.Logic.Calculations
         public async Task<WeightMeasurement> AverageAsync(int personId, DateTime from, DateTime to)
         {
             WeightMeasurement average = null;
-            var measurements = await _factory.WeightMeasurements.ListAsync(x => (x.PersonId == personId) && (x.Date >= from) && (x.Date <= to));
+            var measurements = await _factory.WeightMeasurements.ListAsync(x => (x.PersonId == personId) && (x.Date >= from) && (x.Date <= to), 1, int.MaxValue);
 
             if (measurements.Any())
             {
@@ -44,7 +45,7 @@ namespace HealthTracker.Logic.Calculations
         public async Task CalculateRelatedProperties(IEnumerable<WeightMeasurement> measurements)
         {
             // Load the list of people to provide height measurements
-            var people = await _factory.People.ListAsync(x => true);
+            var people = await _factory.People.ListAsync(x => true, 1, int.MaxValue);
 
             // Load the BMI bandings. . They are returned in "assessment" order and are expected
             // to be defined in lowest-to-highest BMI order
@@ -70,7 +71,6 @@ namespace HealthTracker.Logic.Calculations
 
             // Weight is assumed to be in kg and height in metres
             measurement.BMI = measurement.Weight / (person.Height * person.Height);
-            Console.WriteLine($"Person height = {person.Height}, weight = {measurement.Weight}, bmi = {measurement.BMI}");
 
             // Determine which band the BMI belongs to
             BMIBand matched = null;

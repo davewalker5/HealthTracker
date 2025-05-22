@@ -81,7 +81,7 @@ namespace HealthTracker.Tests.Exercise
         [TestMethod]
         public async Task ImportMeasurementsTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name()}"",""{_measurement.Date:dd/MM/yyyy}"",""{_activityType.Description}"",""{_measurement.Duration}"",""{_measurement.Distance}"",""{_measurement.Calories}"",""{_measurement.MinimumHeartRate}"",""{_measurement.MaximumHeartRate}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd/MM/yyyy}"",""{_activityType.Description}"",""{_measurement.Duration}"",""{_measurement.Distance}"",""{_measurement.Calories}"",""{_measurement.MinimumHeartRate}"",""{_measurement.MaximumHeartRate}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 
@@ -91,7 +91,7 @@ namespace HealthTracker.Tests.Exercise
             Assert.AreEqual(info.FullName, _filePath);
             Assert.IsTrue(info.Length > 0);
 
-            var measurements = await _factory.ExerciseMeasurements.ListAsync(x => true);
+            var measurements = await _factory.ExerciseMeasurements.ListAsync(x => true, 1, int.MaxValue);
             Assert.AreEqual(1, measurements.Count);
             Assert.AreEqual(_person.Id, measurements.First().PersonId);
             Assert.AreEqual(_activityType.Id, measurements.First().ActivityTypeId);
@@ -120,7 +120,7 @@ namespace HealthTracker.Tests.Exercise
         [ExpectedException(typeof(InvalidFieldValueException))]
         public async Task InvalidActivityTypeTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name()}"",""{_measurement.Date:dd/MM/yyyy}"",""Not valid"",""{_measurement.Duration}"",""{_measurement.Distance}"",""{_measurement.Calories}"",""{_measurement.MinimumHeartRate}"",""{_measurement.MaximumHeartRate}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd/MM/yyyy}"",""Not valid"",""{_measurement.Duration}"",""{_measurement.Distance}"",""{_measurement.Calories}"",""{_measurement.MinimumHeartRate}"",""{_measurement.MaximumHeartRate}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 
@@ -131,7 +131,7 @@ namespace HealthTracker.Tests.Exercise
         [ExpectedException(typeof(InvalidFieldValueException))]
         public async Task InvalidDurationTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name()}"",""{_measurement.Date:dd/MM/yyyy}"",""{_activityType.Description}"",""00:00:00"",""{_measurement.Distance}"",""{_measurement.Calories}"",""{_measurement.MinimumHeartRate}"",""{_measurement.MaximumHeartRate}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd/MM/yyyy}"",""{_activityType.Description}"",""00:00:00"",""{_measurement.Distance}"",""{_measurement.Calories}"",""{_measurement.MinimumHeartRate}"",""{_measurement.MaximumHeartRate}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 
@@ -142,7 +142,7 @@ namespace HealthTracker.Tests.Exercise
         [ExpectedException(typeof(InvalidFieldValueException))]
         public async Task InvalidHeartRateTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name()}"",""{_measurement.Date:dd/MM/yyyy}"",""{_activityType.Description}"",""{_measurement.Duration}"",""{_measurement.Distance}"",""{_measurement.Calories}"",""{_measurement.MaximumHeartRate}"",""{_measurement.MinimumHeartRate}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd/MM/yyyy}"",""{_activityType.Description}"",""{_measurement.Duration}"",""{_measurement.Distance}"",""{_measurement.Calories}"",""{_measurement.MaximumHeartRate}"",""{_measurement.MinimumHeartRate}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 

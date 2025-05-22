@@ -1,0 +1,159 @@
+@using HealthTracker.Mvc.Entities
+@using Microsoft.AspNetCore.Mvc.ModelBinding
+@model HealthTracker.Mvc.Models.PersonMedicationListViewModel
+
+@{
+    ViewData["Title"] = "Person Medications";
+    var previousDisabled = (Model.PreviousEnabled) ? "" : "disabled";
+    var nextDisabled = (Model.NextEnabled) ? "" : "disabled";
+}
+
+@functions
+{
+    public string ToggleAssociationSelection(string currentSelections, string checkboxName)
+    {
+        var associationId = checkboxName.Split("_")[1];
+        var selectedIds = currentSelections.Split(",").ToList();
+        var index = selectedIds.IndexOf(associationId);
+
+        if (index >= 0)
+        {
+            selectedIds.RemoveAt(index);
+        }
+        else
+        {
+            selectedIds.Add(associationId);
+        }
+
+        return string.Join(",", selectedIds);
+    }
+}
+
+<p class="text-center font-weight-bold">
+    <span style="font-size: 1.2rem">
+        Person Medications
+    </span>
+    <br />
+    <small class="text-muted">
+        <em>
+            View and manage medications for a person
+        </em>
+    </small>
+</p>
+
+
+<div class="container-fluid">
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="row">
+            <div class="col-md-12 message">
+                <span>@Html.Raw(Model.Message)</span>
+            </div>
+        </div>
+        <hr />
+    }
+
+    @using (Html.BeginForm("Delete", "PersonMedication", FormMethod.Post, new { name = "delete-form", id = "delete-form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.Hidden("id", 0)
+    }
+
+    @using (Html.BeginForm("Index", "PersonMedication", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.EditorFor(m => m.Filters)
+        @Html.HiddenFor(m => m.PageNumber)
+        @Html.HiddenFor(m => m.SelectedAssociationIds)
+
+        @if ((Model.Associations != null) && (Model.Associations.Count() > 0))
+        {
+            @await Html.PartialAsync("_PersonMedicationList", Model)
+            <hr />
+            <p>
+                <div style="float: left">
+                    <button type="submit" name="Action" value="@ControllerActions.ActionTake" class="btn btn-primary" style="margin-right: 10px">Take</button>
+                    <button type="submit" name="Action" value="@ControllerActions.ActionUnTake" class="btn btn-primary" style="margin-right: 10px">Un-take</button>
+                    <button type="submit" name="Action" value="@ControllerActions.ActionSkip" class="btn btn-primary" style="margin-right: 10px">Skip</button>
+                    <button type="submit" name="Action" value="@ControllerActions.ActionTakeAll" class="btn btn-primary" style="margin-right: 10px">Take All</button>
+                    <button type="submit" name="Action" value="@ControllerActions.ActionUnTakeAll" class="btn btn-primary" style="margin-right: 10px">Un-take All</button>
+                    <button type="submit" name="Action" value="@ControllerActions.ActionSkipAll" class="btn btn-primary" style="margin-right: 10px">Skip All</button>
+                </div>
+                <div style="float: right">
+                    <button type="submit" name="Action" value="@ControllerActions.ActionPreviousPage" class="btn btn-secondary" @previousDisabled>Previous</button>
+                    <button type="submit" name="Action" value="@ControllerActions.ActionNextPage" class="btn btn-primary" @nextDisabled>Next</button>
+                </div>
+            </p>
+        }
+        else if (Model.HasNoMatchingResults)
+        {
+            <hr />
+            @Html.Raw("No matching measurements")
+        }
+    }
+
+</div>
+
+<script type="text/javascript">
+    function submitDeleteForm(id) {
+        $.confirm({
+            text: "Are you sure?",
+            confirm: function(button) {
+                $("#delete-form #id").val(id);
+                $("#delete-form").submit()
+            },
+            cancel: function(button) {
+            },
+            confirmButton: "Yes",
+            cancelButton: "No"
+        });
+    }
+
+    function toggleAssociationSelection(checkBoxName) {
+        var newValue = "";
+
+        // Checkbox name is the association ID with a prefix - extract the ID and retrieve
+        // the current comma-separated list of selected association IDs from the form
+        var id = checkBoxName.split("_")[1];
+        var currentValue = $("#SelectedAssociationIds").val();
+
+        if (currentValue == id) {
+            // If the current list is just the selected ID, we're toggling it off so
+            // just blank out the current list
+            newValue = "";
+
+        } else if ((currentValue != "")) {
+            // Split the current selections and locate the selected ID in the resulting
+            // array
+            var selectedIDs = currentValue.split(",");
+            var index = selectedIDs.indexOf(id);
+
+            if (index == -1)
+            {
+                // Not there so we're adding it
+                selectedIDs.push(id);
+            }
+            else
+            {
+                // There so we're removing it
+                selectedIDs.splice(index, 1);
+            }
+
+            // Reconstruct a string containing the list of selected association IDs
+            newValue = selectedIDs.join(",");
+
+        } else {
+            // If the current list is blank, we're selecting the selected ID so set
+            // the list to equal it
+            newValue = id;
+        }
+
+        $("#SelectedAssociationIds").val(newValue);
+    }
+
+    $(document).ready(function() {
+        $("[name^='Selected']").on("click", function() {
+            toggleAssociationSelection($(this).attr("name"));
+        });
+    });
+</script>

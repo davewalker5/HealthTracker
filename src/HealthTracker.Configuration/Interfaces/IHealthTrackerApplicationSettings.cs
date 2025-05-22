@@ -1,6 +1,5 @@
 using HealthTracker.Entities.Logging;
 using HealthTracker.Configuration.Entities;
-using System.Diagnostics.CodeAnalysis;
 
 namespace HealthTracker.Configuration.Interfaces
 {
@@ -26,5 +25,6 @@ namespace HealthTracker.Configuration.Interfaces
         decimal SmallGlassSize { get; set; }
         decimal MediumGlassSize { get; set; }
         decimal LargeGlassSize { get; set; }
+        int ResultsPageSize { get; set; }
     }
 }

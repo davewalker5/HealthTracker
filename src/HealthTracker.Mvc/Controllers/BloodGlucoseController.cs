@@ -1,0 +1,270 @@
+using HealthTracker.Client.Interfaces;
+using HealthTracker.Configuration.Interfaces;
+using HealthTracker.Entities.Measurements;
+using HealthTracker.Mvc.Entities;
+using HealthTracker.Mvc.Interfaces;
+using HealthTracker.Mvc.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace HealthTracker.Mvc.Controllers
+{
+    [Authorize]
+    public class BloodGlucoseController : FilteredControllerBase<IBloodGlucoseMeasurementClient, BloodGlucoseListViewModel, BloodGlucoseMeasurement>
+    {
+        private readonly ILogger<BloodGlucoseController> _logger;
+
+        public BloodGlucoseController(
+            IPersonClient personClient,
+            IBloodGlucoseMeasurementClient measurementClient,
+            IHealthTrackerApplicationSettings settings,
+            IFilterGenerator filterGenerator,
+            IViewModelBuilder builder,
+            ILogger<BloodGlucoseController> logger) : base(personClient, measurementClient, settings, filterGenerator, builder)
+        {
+            _logger = logger;
+        }
+
+        /// <summary>
+        /// Serve the measurements list page
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> Index(int personId = 0, DateTime? start = null, DateTime? end = null)
+        {
+            _logger.LogDebug($"Rendering index view: Person ID = {personId}, From = {start}, To = {end}");
+
+            var model = new BloodGlucoseListViewModel
+            {
+                PageNumber = 1,
+                Filters = await _filterGenerator.Create(personId, start, end, true)
+            };
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// Handle POST events for page navigation
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Index(BloodGlucoseListViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                int page = model.PageNumber;
+                switch (model.Action)
+                {
+                    case ControllerActions.ActionPreviousPage:
+                        page -= 1;
+                        break;
+                    case ControllerActions.ActionNextPage:
+                        page += 1;
+                        break;
+                    case ControllerActions.ActionAdd:
+                        return RedirectToAction("Add", new
+                        {
+                            personId = model.Filters.PersonId,
+                            start = model.Filters.From,
+                            end = model.Filters.To
+                        });
+                    default:
+                        break;
+                }
+
+                // Need to clear model state here or the page number that was posted
+                // is returned and page navigation doesn't work correctly. So, capture
+                // and amend the page number, above, then apply it, below
+                ModelState.Clear();
+
+                // Retrieve the matching records
+                _logger.LogDebug(
+                    $"Retrieving page {page} of blood glucose measurements for person with ID {model.Filters.PersonId}" +
+                    $" in the date range {model.Filters.From:dd-MMM-yyyy} to {model.Filters.To:dd-MMM-yyyy}");
+
+                // 
+                var measurements = await _measurementClient.ListAsync(
+                    model.Filters.PersonId, model.Filters.From, ToDate(model.Filters.To), page, _settings.ResultsPageSize);
+                model.SetEntities(measurements, page, _settings.ResultsPageSize);
+
+                _logger.LogDebug($"{measurements.Count} matching blood glucose measurements retrieved");
+            }
+            else
+            {
+                LogModelStateErrors(_logger);
+            }
+
+            // Populate the list of people and render the view
+            await _filterGenerator.PopulatePersonList(model.Filters);
+            model.Filters.ShowAddButton = true;
+            return View(model);
+        }
+
+        /// <summary>
+        /// Serve the page to add a new measurement
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> Add(int personId, DateTime start, DateTime end)
+        {
+            _logger.LogDebug($"Rendering add view: Person ID = {personId}, From = {start}, To = {end}");
+
+            var model = new AddBloodGlucoseViewModel();
+            model.Measurement.PersonId = personId;
+            await SetFilterDetails(model, personId, start, end);
+            return View(model);
+        }
+
+        /// <summary>
+        /// Handle POST events to save new measurements
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Add(AddBloodGlucoseViewModel model)
+        {
+            if (model.Action == ControllerActions.ActionCancel)
+            {
+                return RedirectToAction("Index", new { personId = model.PersonId, start = model.From, end = model.To });
+            }
+
+            if (ModelState.IsValid)
+            {
+                // Capture person details
+                var personId = model.Measurement.PersonId;
+                var personName = model.PersonName;
+
+                // Combine the date and time strings to produce a timestamp
+                var timestamp = model.Timestamp();
+
+                // Add the measurement
+                _logger.LogDebug($"Adding blood glucose measurement: Person = {personName}, Timestamp = {timestamp}, Level = {model.Measurement.Level}");
+                var measurement = await _measurementClient.AddAsync(personId, DateTime.Now, model.Measurement.Level);
+
+                // Return the measurement list view containing only the new measurement and a confirmation message
+                var message = $"Blood glucose measurement of {model.Measurement.Level} for {personName} added successfully";
+                var listModel = await CreateListViewModel(
+                    measurement.PersonId,
+                    measurement.Id,
+                    measurement.Date,
+                    timestamp,
+                    message,
+                    true,
+                    true);
+
+                return View("Index", listModel);
+            }
+            else
+            {
+                LogModelStateErrors(_logger);
+            }
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// Serve the page to edit an existing measurement
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id, string start, string end)
+        {
+            _logger.LogDebug($"Rendering edit view: Measurement ID = {id}, From = {start}, To = {end}");
+
+            // Load the measurement to edit
+            var measurement = await _measurementClient.GetAsync(id);
+
+            // Construct the view model
+            var model = new EditBloodGlucoseViewModel();
+            model.Measurement = measurement;
+            await SetFilterDetails(model, measurement.PersonId, start, end);
+            return View(model);
+        }
+
+        /// <summary>
+        /// Handle POST events to save updated measurements
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(EditBloodGlucoseViewModel model)
+        {
+            IActionResult result;
+
+            if (model.Action == ControllerActions.ActionCancel)
+            {
+                return RedirectToAction("Index", new { personId = model.Measurement.PersonId, start = model.From, end = model.To });
+            }
+
+            if (ModelState.IsValid)
+            {
+                // Combine the date and time strings to produce a timestamp
+                var timestamp = model.Timestamp();
+
+                // Update the measurement
+                _logger.LogDebug($"Updating blood glucose measurement: ID = {model.Measurement.Id}, Person ID = {model.Measurement.PersonId}, Timestamp = {timestamp}, Level = {model.Measurement.Level}");
+                var measurement = await _measurementClient.UpdateAsync(
+                    model.Measurement.Id,
+                    model.Measurement.PersonId,
+                    model.Measurement.Date,
+                    model.Measurement.Level);
+
+                // Return the measurement list view containing only the updated measurement and a confirmation message
+                var listModel = await CreateListViewModel(
+                    measurement.PersonId,
+                    measurement.Id,
+                    timestamp,
+                    timestamp,
+                    "Measurement successfully updated",
+                    true,
+                    true);
+
+                return View("Index", listModel);
+            }
+            else
+            {
+                LogModelStateErrors(_logger);
+                result = View(model);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Handle POST events to delete an existing measurement
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            // Retrieve the measurement and capture the person and date
+            _logger.LogDebug($"Retrieving blood glucose measurement: ID = {id}");
+            var measurement = await _measurementClient.GetAsync(id);
+            var personId = measurement.PersonId;
+            var date = measurement.Date;
+
+            // Delete the measurement
+            _logger.LogDebug($"Deleting blood glucose measurement: ID = {id}");
+            await _measurementClient.DeleteAsync(id);
+
+            // Return the list view with an empty list of measurements
+            var model = await CreateListViewModel(personId, 0, date, date, "Measurement successfully deleted", true, true);
+            return View("Index", model);
+        }
+    }
+}

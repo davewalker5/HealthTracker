@@ -40,7 +40,7 @@ namespace HealthTracker.Tests.MedicationTracking
         [TestMethod]
         public async Task AddStockTest()
         {
-            var associations = await _factory.PersonMedications.ListAsync(x => x.Id == _associationId);
+            var associations = await _factory.PersonMedications.ListAsync(x => x.Id == _associationId, 1, int.MaxValue);
             Assert.AreEqual(0, associations[0].Stock);
 
             var expectedStock = 0;
@@ -51,40 +51,40 @@ namespace HealthTracker.Tests.MedicationTracking
                 await _factory.MedicationStockUpdater.AddStockAsync(_associationId, numberToAdd);
             }
 
-            associations = await _factory.PersonMedications.ListAsync(x => x.Id == _associationId);
+            associations = await _factory.PersonMedications.ListAsync(x => x.Id == _associationId, 1, int.MaxValue);
             Assert.AreEqual(expectedStock, associations[0].Stock);
         }
 
         [TestMethod]
         public async Task SetStockTest()
         {
-            var associations = await _factory.PersonMedications.ListAsync(x => x.Id == _associationId);
+            var associations = await _factory.PersonMedications.ListAsync(x => x.Id == _associationId, 1, int.MaxValue);
             Assert.AreEqual(0, associations[0].Stock);
 
             var expectedStock = DataGenerator.RandomInt(1, 100);
             await _factory.MedicationStockUpdater.SetStockAsync(_associationId, expectedStock);
 
-            associations = await _factory.PersonMedications.ListAsync(x => x.Id == _associationId);
+            associations = await _factory.PersonMedications.ListAsync(x => x.Id == _associationId, 1, int.MaxValue);
             Assert.AreEqual(expectedStock, associations[0].Stock);
         }
 
         [TestMethod]
         public async Task DecrementTest()
         {
-            var associations = await _factory.PersonMedications.ListAsync(x => x.Id == _associationId);
+            var associations = await _factory.PersonMedications.ListAsync(x => x.Id == _associationId, 1, int.MaxValue);
             Assert.AreEqual(0, associations[0].Stock);
             Assert.IsNull(associations[0].LastTaken);
 
             var doses = DataGenerator.RandomInt(1, 10);
             await _factory.MedicationStockUpdater.SetStockAsync(_associationId, doses * DailyDose);
 
-            associations = await _factory.PersonMedications.ListAsync(x => x.Id == _associationId);
+            associations = await _factory.PersonMedications.ListAsync(x => x.Id == _associationId, 1, int.MaxValue);
             Assert.AreEqual(doses * DailyDose, associations[0].Stock);
             Assert.IsNull(associations[0].LastTaken);
 
             await _factory.MedicationStockUpdater.DecrementAsync(_associationId, doses);
 
-            associations = await _factory.PersonMedications.ListAsync(x => x.Id == _associationId);
+            associations = await _factory.PersonMedications.ListAsync(x => x.Id == _associationId, 1, int.MaxValue);
             Assert.AreEqual(0, associations[0].Stock);
             Assert.AreEqual(HealthTrackerDateExtensions.TodayWithoutTime(), associations[0].LastTaken);
         }
@@ -92,20 +92,20 @@ namespace HealthTracker.Tests.MedicationTracking
         [TestMethod]
         public async Task DecrementAllTest()
         {
-            var associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == _person.Id);
+            var associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == _person.Id, 1, int.MaxValue);
             Assert.AreEqual(0, associations[0].Stock);
             Assert.IsNull(associations[0].LastTaken);
 
             var doses = DataGenerator.RandomInt(1, 10);
             await _factory.MedicationStockUpdater.SetStockAsync(_associationId, doses * DailyDose);
 
-            associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == _person.Id);
+            associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == _person.Id, 1, int.MaxValue);
             Assert.AreEqual(doses * DailyDose, associations[0].Stock);
             Assert.IsNull(associations[0].LastTaken);
 
             await _factory.MedicationStockUpdater.DecrementAllAsync(_associationId, doses);
 
-            associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == _person.Id);
+            associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == _person.Id, 1, int.MaxValue);
             Assert.AreEqual(0, associations[0].Stock);
             Assert.AreEqual(HealthTrackerDateExtensions.TodayWithoutTime(), associations[0].LastTaken);
         }
@@ -117,13 +117,13 @@ namespace HealthTracker.Tests.MedicationTracking
             await _factory.PersonMedications.DeactivateAsync(_associationId);
             await _factory.MedicationStockUpdater.SetStockAsync(_associationId, doses * DailyDose);
 
-            var associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == _person.Id);
+            var associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == _person.Id, 1, int.MaxValue);
             Assert.AreEqual(doses * DailyDose, associations[0].Stock);
             Assert.IsNull(associations[0].LastTaken);
 
             await _factory.MedicationStockUpdater.DecrementAllAsync(_associationId, doses);
 
-            associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == _person.Id);
+            associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == _person.Id, 1, int.MaxValue);
             Assert.AreEqual(doses * DailyDose, associations[0].Stock);
             Assert.IsNull(associations[0].LastTaken);
         }
@@ -131,14 +131,14 @@ namespace HealthTracker.Tests.MedicationTracking
         [TestMethod]
         public async Task IncrementTest()
         {
-            var associations = await _factory.PersonMedications.ListAsync(x => x.Id == _associationId);
+            var associations = await _factory.PersonMedications.ListAsync(x => x.Id == _associationId, 1, int.MaxValue);
             Assert.AreEqual(0, associations[0].Stock);
             Assert.IsNull(associations[0].LastTaken);
 
             var doses = DataGenerator.RandomInt(1, 10);
             await _factory.MedicationStockUpdater.IncrementAsync(_associationId, doses);
 
-            associations = await _factory.PersonMedications.ListAsync(x => x.Id == _associationId);
+            associations = await _factory.PersonMedications.ListAsync(x => x.Id == _associationId, 1, int.MaxValue);
             Assert.AreEqual(doses * DailyDose, associations[0].Stock);
             Assert.AreEqual(HealthTrackerDateExtensions.TodayWithoutTime(),associations[0].LastTaken);
         }
@@ -146,14 +146,14 @@ namespace HealthTracker.Tests.MedicationTracking
         [TestMethod]
         public async Task IncrementAllTest()
         {
-            var associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == _person.Id);
+            var associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == _person.Id, 1, int.MaxValue);
             Assert.AreEqual(0, associations[0].Stock);
             Assert.IsNull(associations[0].LastTaken);
 
             var doses = DataGenerator.RandomInt(1, 10);
             await _factory.MedicationStockUpdater.IncrementAllAsync(_associationId, doses);
 
-            associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == _person.Id);
+            associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == _person.Id, 1, int.MaxValue);
             Assert.AreEqual(doses * DailyDose, associations[0].Stock);
             Assert.AreEqual(HealthTrackerDateExtensions.TodayWithoutTime(),associations[0].LastTaken);
         }
@@ -161,7 +161,7 @@ namespace HealthTracker.Tests.MedicationTracking
         [TestMethod]
         public async Task IncrementAllIgnoresInactiveAssociationsTest()
         {
-            var associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == _person.Id);
+            var associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == _person.Id, 1, int.MaxValue);
             Assert.AreEqual(0, associations[0].Stock);
             Assert.IsNull(associations[0].LastTaken);
 
@@ -169,7 +169,7 @@ namespace HealthTracker.Tests.MedicationTracking
             await _factory.PersonMedications.DeactivateAsync(_associationId);
             await _factory.MedicationStockUpdater.IncrementAllAsync(_associationId, doses);
 
-            associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == _person.Id);
+            associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == _person.Id, 1, int.MaxValue);
             Assert.AreEqual(0, associations[0].Stock);
             Assert.IsNull(associations[0].LastTaken);
         }
@@ -191,7 +191,7 @@ namespace HealthTracker.Tests.MedicationTracking
 
             await _factory.MedicationStockUpdater.FastForwardAsync(_associationId);
 
-            var associations = await _factory.PersonMedications.ListAsync(x => x.Id == _associationId);
+            var associations = await _factory.PersonMedications.ListAsync(x => x.Id == _associationId, 1, int.MaxValue);
             Assert.AreEqual(DailyDose, associations[0].Stock);
             Assert.AreEqual(today, associations[0].LastTaken);
         }
@@ -213,7 +213,7 @@ namespace HealthTracker.Tests.MedicationTracking
 
             await _factory.MedicationStockUpdater.FastForwardAllAsync(_person.Id);
 
-            var associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == _person.Id);
+            var associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == _person.Id, 1, int.MaxValue);
             Assert.AreEqual(DailyDose, associations[0].Stock);
             Assert.AreEqual(today, associations[0].LastTaken);
         }
@@ -234,7 +234,7 @@ namespace HealthTracker.Tests.MedicationTracking
             await _factory.PersonMedications.DeactivateAsync(_associationId);
             await _factory.MedicationStockUpdater.FastForwardAllAsync(_person.Id);
 
-            var associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == _person.Id);
+            var associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == _person.Id, 1, int.MaxValue);
             Assert.AreEqual(doses * DailyDose, association.Stock);
             Assert.IsNull(association.LastTaken);
         }
@@ -256,7 +256,7 @@ namespace HealthTracker.Tests.MedicationTracking
 
             await _factory.MedicationStockUpdater.SkipAsync(_associationId);
 
-            var associations = await _factory.PersonMedications.ListAsync(x => x.Id == _associationId);
+            var associations = await _factory.PersonMedications.ListAsync(x => x.Id == _associationId, 1, int.MaxValue);
             Assert.AreEqual(doses * DailyDose, associations[0].Stock);
             Assert.AreEqual(today, associations[0].LastTaken);
         }
@@ -278,7 +278,7 @@ namespace HealthTracker.Tests.MedicationTracking
 
             await _factory.MedicationStockUpdater.SkipAllAsync(_person.Id);
 
-            var associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == _person.Id);
+            var associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == _person.Id, 1, int.MaxValue);
             Assert.AreEqual(doses * DailyDose, associations[0].Stock);
             Assert.AreEqual(today, associations[0].LastTaken);
         }
@@ -297,7 +297,7 @@ namespace HealthTracker.Tests.MedicationTracking
             await _factory.PersonMedications.DeactivateAsync(association.Id);
             await _factory.MedicationStockUpdater.SkipAllAsync(_person.Id);
 
-            var associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == _person.Id);
+            var associations = await _factory.PersonMedications.ListAsync(x => x.PersonId == _person.Id, 1, int.MaxValue);
             Assert.AreEqual(doses * DailyDose, associations[0].Stock);
             Assert.IsNull(association.LastTaken);
         }

@@ -7,7 +7,7 @@ namespace HealthTracker.Entities.Interfaces
     {
         Task<WeightMeasurement> AddAsync(int personId, DateTime date, decimal weight);
         Task DeleteAsync(int id);
-        Task<List<WeightMeasurement>> ListAsync(Expression<Func<WeightMeasurement, bool>> predicate);
+        Task<List<WeightMeasurement>> ListAsync(Expression<Func<WeightMeasurement, bool>> predicate, int pageNumber, int pageSize);
         Task<WeightMeasurement> UpdateAsync(int id, int personId, DateTime date, decimal weight);
     }
 }

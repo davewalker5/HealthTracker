@@ -1,6 +1,7 @@
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
 using HealthTracker.Entities.Identity;
+using HealthTracker.Enumerations.Enumerations;
 
 namespace HealthTracker.Client.ApiClient
 {
@@ -24,7 +25,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="height"></param>
         /// <param name="gender"></param>
         /// <returns></returns>
-        public async Task<Person> AddPersonAsync(string firstnames, string surname, DateTime dateOfBirth, decimal height, Gender gender)
+        public async Task<Person> AddAsync(string firstnames, string surname, DateTime dateOfBirth, decimal height, Gender gender)
         {
             dynamic template = new
             {
@@ -52,7 +53,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="height"></param>
         /// <param name="gender"></param>
         /// <returns></returns>
-        public async Task<Person> UpdatePersonAsync(int id, string firstnames, string surname, DateTime dateOfBirth, decimal height, Gender gender)
+        public async Task<Person> UpdateAsync(int id, string firstnames, string surname, DateTime dateOfBirth, decimal height, Gender gender)
         {
             dynamic template = new
             {
@@ -76,7 +77,7 @@ namespace HealthTracker.Client.ApiClient
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task DeletePersonAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
             var route = $"{baseRoute}/{id}";
@@ -88,7 +89,7 @@ namespace HealthTracker.Client.ApiClient
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public async Task ImportPeopleAsync(string filePath)
+        public async Task ImportAsync(string filePath)
         {
             dynamic data = new { Content = File.ReadAllText(filePath) };
             var json = Serialize(data);
@@ -100,7 +101,7 @@ namespace HealthTracker.Client.ApiClient
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public async Task ExportPeopleAsync(string fileName)
+        public async Task ExportAsync(string fileName)
         {
             dynamic data = new { FileName = fileName };
             var json = Serialize(data);
@@ -110,11 +111,14 @@ namespace HealthTracker.Client.ApiClient
         /// <summary>
         /// Return a list of people
         /// </summary>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<List<Person>> ListPeopleAsync()
+        public async Task<List<Person>> ListAsync(int pageNumber, int pageSize)
         {
             // Request a list of people
-            string route = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
+            string baseRoute = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
+            var route = $"{baseRoute}/{pageNumber}/{pageSize}";
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no people in the database

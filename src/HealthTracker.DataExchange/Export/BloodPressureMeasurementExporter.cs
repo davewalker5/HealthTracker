@@ -29,7 +29,8 @@ namespace HealthTracker.DataExchange.Export
             var measurements = await _factory.BloodPressureMeasurements.ListAsync(x =>
                                                 (x.PersonId == personId) &&
                                                 ((from == null) || (x.Date >= from)) &&
-                                                ((to == null) || (x.Date <= to)));
+                                                ((to == null) || (x.Date <= to)),
+                                                1, int.MaxValue);
             await _factory.BloodPressureAssessor.Assess(measurements);
             await ExportAsync(measurements, file);
         }
@@ -54,7 +55,7 @@ namespace HealthTracker.DataExchange.Export
         public async Task ExportAsync(IEnumerable<BloodPressureMeasurement> measurements, string file)
         {
             // Convert the collection to "exportable" equivalents with all properties at the same level
-            var people = await _factory.People.ListAsync(x => true);
+            var people = await _factory.People.ListAsync(x => true, 1, int.MaxValue);
             var exportable = measurements.ToExportable(people);
 
             // Configure an exporter to export them

@@ -1,7 +1,8 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
-using HealthTracker.Entities.Measurements;
+using HealthTracker.Enumerations.Enumerations;
 
 namespace HealthTracker.Entities.Identity
 {
@@ -10,10 +11,24 @@ namespace HealthTracker.Entities.Identity
     {
         [Key]
         public int Id { get ; set; }
+
+        [DisplayName("First Names")]
+        [Required(ErrorMessage = "You must provide first names")]
         public string FirstNames { get ; set; }
+
+        [DisplayName("Surname")]
+        [Required(ErrorMessage = "You must provide a surname")]
         public string Surname { get ; set; }
+
+        [DisplayName("Date of Birth")]
+        [Required(ErrorMessage = "You must provide a date of birth")]
         public DateTime DateOfBirth { get ; set; }
+
+        [DisplayName("Height")]
+        [Range(1.0, double.MaxValue, ErrorMessage = "{0} must be >= {1}")]
         public decimal Height { get; set; }
+
+        [DisplayName("Gender")]
         public Gender Gender { get; set; } = Gender.Unspecified;
 
         [NotMapped]
@@ -34,8 +49,7 @@ namespace HealthTracker.Entities.Identity
         [NotMapped]
         public CholesterolUnit CholesterolUnits { get; private set; } = CholesterolUnit.MillimolesPerLitre;
 
-        public string Name()
-            => $"{FirstNames} {Surname}";
+        public string Name { get { return $"{FirstNames} {Surname}"; } }
 
         /// <summary>
         /// Return the persons age in years

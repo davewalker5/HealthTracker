@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <PackageId>HealthTracker.Enumerations</PackageId>
+    <PackageVersion>1.24.0.0</PackageVersion>
+    <Authors>Dave Walker</Authors>
+    <Copyright>Copyright (c) 2024, 2025 Dave Walker</Copyright>
+    <Owners>Dave Walker</Owners>
+    <Summary>Health Tracker Enumerations</Summary>
+    <PackageTags>Health Tracker enumerations</PackageTags>
+    <Title>Health Tracker Enumerations</Title>
+    <Description>Health Tracker Enumerations</Description>
+    <PackOnBuild>true</PackOnBuild>
+    <PackageProjectUrl>https://github.com/davewalker5/HealthTracker</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <ReleaseVersion>1.24.0.0</ReleaseVersion>
+    <NoWarn>$(NoWarn);NU1900;NU1902;NU1904</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" />
+  </ItemGroup>
+</Project>

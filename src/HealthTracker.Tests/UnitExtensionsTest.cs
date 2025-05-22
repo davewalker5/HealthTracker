@@ -1,4 +1,4 @@
-using HealthTracker.Entities.Measurements;
+using HealthTracker.Enumerations.Enumerations;
 
 namespace HealthTracker.Tests
 {

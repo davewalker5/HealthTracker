@@ -227,7 +227,8 @@ namespace HealthTracker.Api.Controllers
             var associations = await _factory.PersonMedications
                                              .ListAsync(x =>
                                                 (x.PersonId == personId) &&
-                                                (x.MedicationId == medicationId));
+                                                (x.MedicationId == medicationId),
+                                                1, int.MaxValue);
             return associations.FirstOrDefault();
         }
     }

@@ -26,7 +26,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="systolic"></param>
         /// <param name="diastolic"></param>
         /// <returns></returns>
-        public async Task<BloodPressureMeasurement> AddBloodPressureMeasurementAsync(int personId, DateTime? date, int systolic, int diastolic)
+        public async Task<BloodPressureMeasurement> AddAsync(int personId, DateTime? date, int systolic, int diastolic)
         {
             var measurementDate = date ?? DateTime.Now;
             dynamic template = new
@@ -53,7 +53,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="systolic"></param>
         /// <param name="diastolic"></param>
         /// <returns></returns>
-        public async Task<BloodPressureMeasurement> UpdateBloodPressureMeasurementAsync(int id, int personId, DateTime? date, int systolic, int diastolic)
+        public async Task<BloodPressureMeasurement> UpdateAsync(int id, int personId, DateTime? date, int systolic, int diastolic)
         {
             var measurementDate = date ?? DateTime.Now;
             dynamic template = new
@@ -77,7 +77,7 @@ namespace HealthTracker.Client.ApiClient
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public async Task ImportBloodPressureMeasurementsAsync(string filePath)
+        public async Task ImportAsync(string filePath)
         {
             dynamic data = new{ Content = File.ReadAllText(filePath) };
             var json = Serialize(data);
@@ -90,7 +90,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="fileName"></param>
         /// <param name="personId"></param>
         /// <returns></returns>
-        public async Task ImportOmronBloodPressureMeasurementsAsync(string filePath, int personId)
+        public async Task ImportOmronAsync(string filePath, int personId)
         {
             dynamic data = new
             {
@@ -109,7 +109,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="to"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public async Task ExportBloodPressureMeasurementsAsync(int personId, DateTime? from, DateTime? to, string fileName)
+        public async Task ExportAsync(int personId, DateTime? from, DateTime? to, string fileName)
         {
             dynamic data = new { PersonId = personId, From = from, To = to, FileName = fileName };
             var json = Serialize(data);
@@ -117,11 +117,28 @@ namespace HealthTracker.Client.ApiClient
         }
 
         /// <summary>
+        /// Retrieve a single measurement given its ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<BloodPressureMeasurement> GetAsync(int id)
+        {
+            // Request the measurement with the specified ID
+            string baseRoute = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
+            string route = $"{baseRoute}/{id}";
+            string json = await SendDirectAsync(route, null, HttpMethod.Get);
+
+            // Extract the measurement from the response
+            var measurement = Deserialize<BloodPressureMeasurement>(json);
+            return measurement;
+        }
+
+        /// <summary>
         /// Delete a blood pressure measurement from the database
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task DeleteBloodPressureMeasurementAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
             var route = $"{baseRoute}/{id}";
@@ -134,15 +151,17 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="personId"></param>
         /// <param name="from"></param>
         /// <param name="to"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<List<BloodPressureMeasurement>> ListBloodPressureMeasurementsAsync(int personId, DateTime? from, DateTime? to)
+        public async Task<List<BloodPressureMeasurement>> ListAsync(int personId, DateTime? from, DateTime? to, int pageNumber, int pageSize)
         {
             // Determine the encoded date range
             (var encodedFromDate, var encodedToDate) = CalculateEncodedDateRange(from, to);
 
             // Request a list of blood pressure measurements
             string baseRoute = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
-            string route = $"{baseRoute}/{personId}/{encodedFromDate}/{encodedToDate}";
+            string route = $"{baseRoute}/{personId}/{encodedFromDate}/{encodedToDate}/{pageNumber}/{pageSize}";
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no people in the database
@@ -157,7 +176,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="from"></param>
         /// <param name="to"></param>
         /// <returns></returns>
-        public async Task<BloodPressureMeasurement> CalculateAverageBloodPressureAsync(int personId, DateTime from, DateTime to)
+        public async Task<BloodPressureMeasurement> CalculateAverageAsync(int personId, DateTime from, DateTime to)
         {
             var encodedFromDate = HttpUtility.UrlEncode(from.ToString(DateTimeFormat));
             var encodedToDate = HttpUtility.UrlEncode(to.ToString(DateTimeFormat));
@@ -176,14 +195,14 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="personId"></param>
         /// <param name="days"></param>
         /// <returns></returns>
-        public async Task<BloodPressureMeasurement> CalculateAverageBloodPressureAsync(int personId, int days)
+        public async Task<BloodPressureMeasurement> CalculateAverageAsync(int personId, int days)
         {
             // Calculate an inclusive date range that ensures the whole of the start and end days are covered
             var now = DateTime.Now;
             var from = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0).AddDays(-days + 1);
             var to = new DateTime(now.Year, now.Month, now.Day, 23, 59, 59);
 
-            return await CalculateAverageBloodPressureAsync(personId, from, to);
+            return await CalculateAverageAsync(personId, from, to);
         }
 
         /// <summary>
@@ -193,7 +212,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="from"></param>
         /// <param name="to"></param>
         /// <returns></returns>
-        public async Task<List<BloodPressureMeasurement>> CalculateDailyAverageBloodPressureAsync(int personId, DateTime from, DateTime to)
+        public async Task<List<BloodPressureMeasurement>> CalculateDailyAverageAsync(int personId, DateTime from, DateTime to)
         {
             var encodedFromDate = HttpUtility.UrlEncode(from.ToString(DateTimeFormat));
             var encodedToDate = HttpUtility.UrlEncode(to.ToString(DateTimeFormat));
@@ -214,7 +233,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="to"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public async Task ExportDailyAverageBloodPressureAsync(int personId, DateTime from, DateTime to, string fileName)
+        public async Task ExportDailyAverageAsync(int personId, DateTime from, DateTime to, string fileName)
         {
             dynamic data = new { PersonId = personId, From = from, To = to, FileName = fileName };
             var json = Serialize(data);

@@ -27,7 +27,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="minimumHeartRate"></param>
         /// <param name="maximumHeartRate"></param>
         /// <returns></returns>
-        public async Task<ExerciseMeasurement> AddExerciseMeasurementAsync(
+        public async Task<ExerciseMeasurement> AddAsync(
             int personId,
             int activityTypeId,
             DateTime? date,
@@ -73,7 +73,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="minimumHeartRate"></param>
         /// <param name="maximumHeartRate"></param>
         /// <returns></returns>
-        public async Task<ExerciseMeasurement> UpdateExerciseMeasurementAsync(
+        public async Task<ExerciseMeasurement> UpdateAsync(
             int id,
             int personId,
             int activityTypeId,
@@ -113,7 +113,7 @@ namespace HealthTracker.Client.ApiClient
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public async Task ImportExerciseMeasurementsAsync(string filePath)
+        public async Task ImportAsync(string filePath)
         {
             dynamic data = new{ Content = File.ReadAllText(filePath) };
             var json = Serialize(data);
@@ -128,11 +128,28 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="to"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public async Task ExportExerciseMeasurementsAsync(int personId, DateTime? from, DateTime? to, string fileName)
+        public async Task ExportAsync(int personId, DateTime? from, DateTime? to, string fileName)
         {
             dynamic data = new { PersonId = personId, From = from, To = to, FileName = fileName };
             var json = Serialize(data);
             await SendIndirectAsync(ExportRouteKey, json, HttpMethod.Post);
+        }
+        
+        /// <summary>
+        /// Retrieve a single measurement given its ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<ExerciseMeasurement> GetAsync(int id)
+        {
+            // Request the measurement with the specified ID
+            string baseRoute = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
+            string route = $"{baseRoute}/{id}";
+            string json = await SendDirectAsync(route, null, HttpMethod.Get);
+
+            // Extract the measurement from the response
+            var measurement = Deserialize<ExerciseMeasurement>(json);
+            return measurement;
         }
 
         /// <summary>
@@ -140,7 +157,7 @@ namespace HealthTracker.Client.ApiClient
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task DeleteExerciseMeasurementAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
             var route = $"{baseRoute}/{id}";
@@ -153,15 +170,17 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="personId"></param>
         /// <param name="from"></param>
         /// <param name="to"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<List<ExerciseMeasurement>> ListExerciseMeasurementsAsync(int personId, DateTime? from, DateTime? to)
+        public async Task<List<ExerciseMeasurement>> ListAsync(int personId, DateTime? from, DateTime? to, int pageNumber, int pageSize)
         {
             // Determine the encoded date range
             (var encodedFromDate, var encodedToDate) = CalculateEncodedDateRange(from, to);
 
             // Request a list of exercise measurements
             string baseRoute = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
-            string route = $"{baseRoute}/{personId}/{encodedFromDate}/{encodedToDate}";
+            string route = $"{baseRoute}/{personId}/{encodedFromDate}/{encodedToDate}/{pageNumber}/{pageSize}";
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no people in the database

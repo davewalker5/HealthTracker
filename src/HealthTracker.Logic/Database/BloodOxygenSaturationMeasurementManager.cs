@@ -16,8 +16,10 @@ namespace HealthTracker.Logic.Database
         /// Return all measurements matching the specified criteria
         /// </summary>
         /// <param name="predicate"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<List<BloodOxygenSaturationMeasurement>> ListAsync(Expression<Func<BloodOxygenSaturationMeasurement, bool>> predicate)
+        public async Task<List<BloodOxygenSaturationMeasurement>> ListAsync(Expression<Func<BloodOxygenSaturationMeasurement, bool>> predicate, int pageNumber, int pageSize)
             => await Context.BloodOxygenSaturationMeasurements
                             .Where(predicate)
                             .OrderBy(x => x.Date)

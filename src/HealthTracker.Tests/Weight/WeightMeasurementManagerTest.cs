@@ -1,6 +1,6 @@
 using HealthTracker.Data;
 using HealthTracker.Entities.Exceptions;
-using HealthTracker.Entities.Identity;
+using HealthTracker.Enumerations.Enumerations;
 using HealthTracker.Entities.Interfaces;
 using HealthTracker.Logic.Factory;
 using HealthTracker.Tests.Mocks;
@@ -34,7 +34,7 @@ namespace HealthTracker.Tests.Weight
         [TestMethod]
         public async Task AddAndListTest()
         {
-            var measurements = await _factory.WeightMeasurements.ListAsync(x => x.PersonId == _personId);
+            var measurements = await _factory.WeightMeasurements.ListAsync(x => x.PersonId == _personId, 1, int.MaxValue);
             Assert.AreEqual(1, measurements.Count);
             Assert.AreEqual(_measurementId, measurements.First().Id);
             Assert.AreEqual(_personId, measurements.First().PersonId);
@@ -46,7 +46,7 @@ namespace HealthTracker.Tests.Weight
         public async Task UpdateTest()
         {
             await _factory.WeightMeasurements.UpdateAsync(_measurementId, _personId, UpdatedMeasurementDate, UpdatedWeight);
-            var measurements = await _factory.WeightMeasurements.ListAsync(x => x.PersonId == _personId);
+            var measurements = await _factory.WeightMeasurements.ListAsync(x => x.PersonId == _personId, 1, int.MaxValue);
             Assert.AreEqual(1, measurements.Count);
             Assert.AreEqual(_measurementId, measurements.First().Id);
             Assert.AreEqual(_personId, measurements.First().PersonId);
@@ -58,7 +58,7 @@ namespace HealthTracker.Tests.Weight
         public async Task DeleteTest()
         {
             await _factory.WeightMeasurements.DeleteAsync(_measurementId);
-            var measurements = await _factory.WeightMeasurements.ListAsync(a => true);
+            var measurements = await _factory.WeightMeasurements.ListAsync(a => true, 1, int.MaxValue);
             Assert.AreEqual(0, measurements.Count);
         }
 

@@ -27,5 +27,6 @@ namespace HealthTracker.Configuration.Entities
         public decimal SmallGlassSize { get; set; }
         public decimal MediumGlassSize { get; set; }
         public decimal LargeGlassSize { get; set; }
+        public int ResultsPageSize { get; set; }
     }
 }

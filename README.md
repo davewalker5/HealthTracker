@@ -10,7 +10,7 @@
 # Health Tracker
 
 > [!IMPORTANT]  
-> This project is under development and currently lacks a UI for accessing the API. A UI and more extensive Wiki documentation will be added in due course.
+> This project is under development. More extensive Wiki documentation will be added in due course.
 
 Health Tracker is an application for recording health metrics, maintaining details of:
 

@@ -20,19 +20,36 @@ namespace HealthTracker.Api.Controllers
             => _factory = factory;
 
         /// <summary>
+        /// Return a single measurement given its ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<ActionResult<BloodPressureMeasurement>> Get(int id)
+        {
+            var measurements = await _factory.BloodPressureMeasurements.ListAsync(x => x.Id == id, 1, int.MaxValue);
+            await _factory.BloodPressureAssessor.Assess(measurements);
+            return measurements.First();
+        }
+
+        /// <summary>
         /// Return a list of all blood pressure measurements for a person
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("{personId}/{from}/{to}")]
-        public async Task<ActionResult<IEnumerable<BloodPressureMeasurement>>> ListBloodPressureMeasurementsForPersonAsync(int personId, string from, string to)
+        [Route("{personId}/{from}/{to}/{pageNumber}/{pageSize}")]
+        public async Task<ActionResult<IEnumerable<BloodPressureMeasurement>>> ListBloodPressureMeasurementsForPersonAsync(int personId, string from, string to, int pageNumber, int pageSize)
         {
             // Decode the start and end date and convert them to dates
             DateTime fromDate = DateTime.ParseExact(HttpUtility.UrlDecode(from), DateTimeFormat, null);
             DateTime toDate = DateTime.ParseExact(HttpUtility.UrlDecode(to), DateTimeFormat, null);
 
             // Retrieve matching results
-            var measurements = await _factory.BloodPressureMeasurements.ListAsync(x => (x.PersonId == personId) && (x.Date >= fromDate) && (x.Date <= toDate));
+            var measurements = await _factory.BloodPressureMeasurements.ListAsync(
+                x => (x.PersonId == personId) && (x.Date >= fromDate) && (x.Date <= toDate),
+                pageNumber,
+                pageSize);
 
             if (measurements == null)
             {
@@ -100,7 +117,7 @@ namespace HealthTracker.Api.Controllers
         public async Task<IActionResult> DeleteBloodPressureMeasurements(int id)
         {
             // Check the measurement exists, first
-            var measurements = await _factory.BloodPressureMeasurements.ListAsync(x => x.Id == id);
+            var measurements = await _factory.BloodPressureMeasurements.ListAsync(x => x.Id == id, 1, int.MaxValue);
             if (!measurements.Any())
             {
                 return NotFound();

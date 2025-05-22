@@ -1,0 +1,94 @@
+@using HealthTracker.Mvc.Entities
+@model HealthTracker.Mvc.Models.PersonMedicationViewModel
+
+@{
+    var lastTaken = Model.Association.LastTaken ?? DateTime.Now;
+}
+
+@Html.HiddenFor(m => m.PersonName)
+@Html.HiddenFor(m => m.From)
+@Html.HiddenFor(m => m.To)
+@Html.HiddenFor(m => m.Association.Id)
+@Html.HiddenFor(m => m.Association.PersonId)
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <strong>@Html.Label("Name")</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.PersonName, new { @class = "form-control", disabled = "disabled" })
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Association.MedicationId)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.DropDownListFor(m => m.Association.MedicationId, Model.Medications, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Association.MedicationId, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Association.Stock)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Association.Stock, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Association.Stock, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Association.DailyDose)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Association.DailyDose, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Association.DailyDose, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Association.LastTaken)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Association.LastTaken, null, new { @class = "form-control" })
+                <script type="text/javascript">
+                    new GijgoDatePicker(document.getElementById("Association_LastTaken"), {
+                        calendarWeeks: false,
+                        uiLibrary: "bootstrap4",
+                        format: "@DateFormats.DateJavascript",
+                        value: "@lastTaken.ToString(DateFormats.Date)"
+                    });
+                </script>
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Association.LastTaken, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Association.Active)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.CheckBoxFor(m => m.Association.Active, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Association.Active, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+</div>
+

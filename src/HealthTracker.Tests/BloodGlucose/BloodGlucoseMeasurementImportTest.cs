@@ -77,7 +77,7 @@ namespace HealthTracker.Tests.BloodGlucose
             Assert.AreEqual(info.FullName, _filePath);
             Assert.IsTrue(info.Length > 0);
 
-            var measurements = await _factory.BloodGlucoseMeasurements.ListAsync(x => true);
+            var measurements = await _factory.BloodGlucoseMeasurements.ListAsync(x => true, 1, int.MaxValue);
             Assert.AreEqual(1, measurements.Count);
             Assert.AreEqual(_measurement.PersonId, measurements.First().PersonId);
             Assert.AreEqual(_measurement.Date, measurements.First().Date);

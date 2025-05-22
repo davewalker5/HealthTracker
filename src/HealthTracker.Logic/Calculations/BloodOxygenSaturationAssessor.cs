@@ -62,7 +62,7 @@ namespace HealthTracker.Logic.Calculations
             Dictionary<int, int> mapping = [];
 
             // Retrieve a list of all people in the database
-            var people = await _factory.People.ListAsync(x => true);
+            var people = await _factory.People.ListAsync(x => true, 1, int.MaxValue);
 
             // Iterate over them and, for each, add a mapping between their ID and age in years, with the ID
             // as the key

@@ -49,7 +49,7 @@ namespace HealthTracker.Tests.People
             var json = JsonSerializer.Serialize(person);
             _httpClient.AddResponse(json);
 
-            var added = await _client.AddPersonAsync(person.FirstNames, person.Surname, person.DateOfBirth, person.Height, person.Gender);
+            var added = await _client.AddAsync(person.FirstNames, person.Surname, person.DateOfBirth, person.Height, person.Gender);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -72,7 +72,7 @@ namespace HealthTracker.Tests.People
             var json = JsonSerializer.Serialize(person);
             _httpClient.AddResponse(json);
 
-            var updated = await _client.UpdatePersonAsync(person.Id, person.FirstNames, person.Surname, person.DateOfBirth, person.Height, person.Gender);
+            var updated = await _client.UpdateAsync(person.Id, person.FirstNames, person.Surname, person.DateOfBirth, person.Height, person.Gender);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -92,7 +92,7 @@ namespace HealthTracker.Tests.People
         public async Task DeleteTest()
         {
             var id = DataGenerator.RandomId();
-            await _client.DeletePersonAsync(id);
+            await _client.DeleteAsync(id);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -109,13 +109,13 @@ namespace HealthTracker.Tests.People
             var json = JsonSerializer.Serialize(new List<dynamic> { person });
             _httpClient.AddResponse(json);
 
-
-            var people = await _client.ListPeopleAsync();
+            var people = await _client.ListAsync(1, int.MaxValue);
+            var expectedRoute = $"{_settings.ApiRoutes.First(x => x.Name == "Person").Route}/1/{int.MaxValue}";
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
             Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
-            Assert.AreEqual(_settings.ApiRoutes.First(x => x.Name == "Person").Route, _httpClient.Requests[0].Uri);
+            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
 
             Assert.IsNull(_httpClient.Requests[0].Content);
             Assert.IsNotNull(people);
@@ -139,7 +139,7 @@ namespace HealthTracker.Tests.People
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 
-            await _client.ImportPeopleAsync(_filePath);
+            await _client.ImportAsync(_filePath);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -153,7 +153,7 @@ namespace HealthTracker.Tests.People
             _httpClient.AddResponse("");
 
             _filePath = DataGenerator.TemporaryCsvFilePath();
-            await _client.ExportPeopleAsync(_filePath);
+            await _client.ExportAsync(_filePath);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());

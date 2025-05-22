@@ -35,10 +35,10 @@ namespace HealthTracker.Tests.ActivityTypes
         public async Task AddTest()
         {
             var activityType = DataGenerator.RandomActivityType();
-            var json = JsonSerializer.Serialize(new { activityType.Description });
+            var json = JsonSerializer.Serialize(new { activityType.Description, activityType.DistanceBased });
             _httpClient.AddResponse(json);
 
-            var added = await _client.AddActivityTypeAsync(activityType.Description);
+            var added = await _client.AddAsync(activityType.Description, activityType.DistanceBased);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -48,6 +48,7 @@ namespace HealthTracker.Tests.ActivityTypes
             Assert.AreEqual(json, await _httpClient.Requests[0].Content.ReadAsStringAsync());
             Assert.IsNotNull(added);
             Assert.AreEqual(activityType.Description, added.Description);
+            Assert.AreEqual(activityType.DistanceBased, added.DistanceBased);
         }
 
         [TestMethod]
@@ -57,7 +58,7 @@ namespace HealthTracker.Tests.ActivityTypes
             var json = JsonSerializer.Serialize(activityType);
             _httpClient.AddResponse(json);
 
-            var updated = await _client.UpdateActivityTypeAsync(activityType.Id, activityType.Description);
+            var updated = await _client.UpdateAsync(activityType.Id, activityType.Description, activityType.DistanceBased);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -68,13 +69,14 @@ namespace HealthTracker.Tests.ActivityTypes
             Assert.IsNotNull(updated);
             Assert.AreEqual(activityType.Id, updated.Id);
             Assert.AreEqual(activityType.Description, updated.Description);
+            Assert.AreEqual(activityType.DistanceBased, updated.DistanceBased);
         }
 
         [TestMethod]
         public async Task DeleteTest()
         {
             var id = DataGenerator.RandomId();
-            await _client.DeleteActivityTypeAsync(id);
+            await _client.DeleteAsync(id);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -91,18 +93,20 @@ namespace HealthTracker.Tests.ActivityTypes
             var json = JsonSerializer.Serialize<List<ActivityType>>([activityType]);
             _httpClient.AddResponse(json);
 
-            var activities = await _client.ListActivityTypesAsync();
+            var activities = await _client.ListAsync(1, int.MaxValue);
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/1/{int.MaxValue}";
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
             Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
-            Assert.AreEqual(_settings.ApiRoutes[0].Route, _httpClient.Requests[0].Uri);
+            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
 
             Assert.IsNull(_httpClient.Requests[0].Content);
             Assert.IsNotNull(activities);
             Assert.AreEqual(1, activities.Count);
             Assert.AreEqual(activityType.Id, activities[0].Id);
             Assert.AreEqual(activityType.Description, activities[0].Description);
+            Assert.AreEqual(activityType.DistanceBased, activities[0].DistanceBased);
         }
     }
 }

@@ -52,7 +52,7 @@ namespace HealthTracker.Tests.Cholesterol
             var json = JsonSerializer.Serialize(measurement);
             _httpClient.AddResponse(json);
 
-            var added = await _client.AddCholesterolMeasurementAsync(personId, measurement.Date, measurement.Total, measurement.HDL, measurement.LDL, measurement.Triglycerides);
+            var added = await _client.AddAsync(personId, measurement.Date, measurement.Total, measurement.HDL, measurement.LDL, measurement.Triglycerides);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -77,7 +77,7 @@ namespace HealthTracker.Tests.Cholesterol
             var json = JsonSerializer.Serialize(measurement);
             _httpClient.AddResponse(json);
 
-            var updated = await _client.UpdateCholesterolMeasurementAsync(measurement.Id, personId, measurement.Date, measurement.Total, measurement.HDL, measurement.LDL, measurement.Triglycerides);
+            var updated = await _client.UpdateAsync(measurement.Id, personId, measurement.Date, measurement.Total, measurement.HDL, measurement.LDL, measurement.Triglycerides);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -98,7 +98,7 @@ namespace HealthTracker.Tests.Cholesterol
         public async Task DeleteTest()
         {
             var id = DataGenerator.RandomId();
-            await _client.DeleteCholesterolMeasurementAsync(id);
+            await _client.DeleteAsync(id);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -116,7 +116,7 @@ namespace HealthTracker.Tests.Cholesterol
             var json = JsonSerializer.Serialize(new List<dynamic> { measurement });
             _httpClient.AddResponse(json);
 
-            var measurements = await _client.ListCholesterolMeasurementsAsync(personId, null, null);
+            var measurements = await _client.ListAsync(personId, null, null);
 
             var expectedTo = DateTime.Now;
             var expectedFrom = expectedTo.AddDays(-_settings.DefaultTimePeriodDays);
@@ -150,7 +150,7 @@ namespace HealthTracker.Tests.Cholesterol
             _httpClient.AddResponse(json);
 
             var from = measurement.Date.AddDays(-DataGenerator.RandomInt(30,90));
-            var measurements = await _client.ListCholesterolMeasurementsAsync(personId, from, null);
+            var measurements = await _client.ListAsync(personId, from, null);
 
             var expectedTo = DateTime.Now;
             var encodedFrom = HttpUtility.UrlEncode(from.ToString("yyyy-MM-dd H:mm:ss"));
@@ -183,7 +183,7 @@ namespace HealthTracker.Tests.Cholesterol
             _httpClient.AddResponse(json);
 
             var to = measurement.Date.AddDays(DataGenerator.RandomInt(30,90));
-            var measurements = await _client.ListCholesterolMeasurementsAsync(personId, null, to);
+            var measurements = await _client.ListAsync(personId, null, to);
 
             var expectedFrom = to.AddDays(-_settings.DefaultTimePeriodDays);
             var encodedFrom = HttpUtility.UrlEncode(expectedFrom.ToString("yyyy-MM-dd H:mm:ss"));
@@ -217,7 +217,7 @@ namespace HealthTracker.Tests.Cholesterol
 
             var from = measurement.Date.AddDays(-DataGenerator.RandomInt(30,90));
             var to = measurement.Date.AddDays(DataGenerator.RandomInt(30,90));
-            var measurements = await _client.ListCholesterolMeasurementsAsync(personId, from, to);
+            var measurements = await _client.ListAsync(personId, from, to);
 
             var encodedFrom = HttpUtility.UrlEncode(from.ToString("yyyy-MM-dd H:mm:ss"));
             var encodedTo = HttpUtility.UrlEncode(to.ToString("yyyy-MM-dd H:mm:ss"));
@@ -247,12 +247,12 @@ namespace HealthTracker.Tests.Cholesterol
 
             var person = DataGenerator.RandomPerson(16, 90);
             var measurement = DataGenerator.RandomCholesterolMeasurement(person.Id, 2024);
-            var record = $"""{person.Id}"",""{person.Name()}"",""{measurement.Date:dd/MM/yyyy}"",""{measurement.Total}"",""{measurement.HDL}"",""{measurement.LDL}"",""{measurement.Triglycerides}""";
+            var record = $"""{person.Id}"",""{person.Name}"",""{measurement.Date:dd/MM/yyyy}"",""{measurement.Total}"",""{measurement.HDL}"",""{measurement.LDL}"",""{measurement.Triglycerides}""";
     
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 
-            await _client.ImportCholesterolMeasurementsAsync(_filePath);
+            await _client.ImportAsync(_filePath);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -266,7 +266,7 @@ namespace HealthTracker.Tests.Cholesterol
             _httpClient.AddResponse("");
 
             _filePath = DataGenerator.TemporaryCsvFilePath();
-            await _client.ExportCholesterolMeasurementsAsync(DataGenerator.RandomId(), null, null, _filePath);
+            await _client.ExportAsync(DataGenerator.RandomId(), null, null, _filePath);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());

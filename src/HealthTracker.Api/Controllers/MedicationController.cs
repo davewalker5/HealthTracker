@@ -40,10 +40,10 @@ namespace HealthTracker.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("")]
-        public async Task<ActionResult<IEnumerable<Medication>>> ListAllMedicationsAsync()
+        [Route("{pageNumber}/{pageSize}")]
+        public async Task<ActionResult<IEnumerable<Medication>>> ListAllMedicationsAsync(int pageNumber, int pageSize)
         {
-            var medications = await _factory.Medications.ListAsync(x => true);
+            var medications = await _factory.Medications.ListAsync(x => true, pageNumber, pageSize);
 
             if (medications == null)
             {
