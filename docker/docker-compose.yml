@@ -19,7 +19,9 @@ services:
     ports:
       - "8099:80"
     volumes:
-      - C:\MyDatabases\HealthTracker:/var/opt/healthtracker.api/
+      - /MyDatabases/HealthTracker:/var/opt/healthtracker.api/
+    networks:
+      - healthtracker-network
 
 networks:
   healthtracker-network:
