@@ -19,7 +19,7 @@
     </tr>
     @foreach (var measurement in Model.Measurements)
     {
-        var distance = (measurement.Distance ?? 0M) > 0 ? measurement.Distance.Value.ToString(".##") : "-";
+        var distance = (measurement.Distance ?? 0M) > 0 ? measurement.Distance.Value.ToString("0.00") : "-";
         <tr>
             <td valign="center">@Model.Filters.SelectedPerson.Name</td>
             <td valign="center">@measurement.Date.ToString("dd-MMM-yyyy")</td>

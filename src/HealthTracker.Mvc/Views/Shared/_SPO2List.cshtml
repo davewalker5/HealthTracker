@@ -18,7 +18,7 @@
         <tr>
             <td valign="center">@Model.Filters.SelectedPerson.Name</td>
             <td valign="center">@measurement.Date.ToString("dd-MMM-yyyy")</td>
-            <td valign="center"><span>@measurement.Percentage.ToString(".##")</span></td>
+            <td valign="center"><span>@measurement.Percentage.ToString("0.00")</span></td>
             <td valign="center">@measurement.Assessment</td>
             @if (Model.Editable)
             {

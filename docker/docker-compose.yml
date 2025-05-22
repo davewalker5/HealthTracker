@@ -19,7 +19,7 @@ services:
     ports:
       - "8099:80"
     volumes:
-      - C:\Dropbox\Databases\HealthTracker:/var/opt/healthtracker.api/
+      - C:\MyDatabases\HealthTracker:/var/opt/healthtracker.api/
 
 networks:
   healthtracker-network:

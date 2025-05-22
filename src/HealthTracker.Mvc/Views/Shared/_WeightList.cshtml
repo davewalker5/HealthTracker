@@ -20,10 +20,10 @@
         <tr>
             <td valign="center">@Model.Filters.SelectedPerson.Name</td>
             <td valign="center">@measurement.Date.ToString("dd-MMM-yyyy")</td>
-            <td valign="center">@measurement.Weight.ToString(".##")</td>
-            <td valign="center">@measurement.BMI.ToString(".##")</td>
+            <td valign="center">@measurement.Weight.ToString("0.00")</td>
+            <td valign="center">@measurement.BMI.ToString("0.00")</td>
             <td valign="center">@measurement.BMIAssessment</td>
-            <td valign="center">@measurement.BMR.ToString(".##")</td>
+            <td valign="center">@measurement.BMR.ToString("0.00")</td>
             @if (Model.Editable)
             {
                 <td valign="center">

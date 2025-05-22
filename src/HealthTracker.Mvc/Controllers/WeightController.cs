@@ -147,7 +147,7 @@ namespace HealthTracker.Mvc.Controllers
                 var measurement = await _measurementClient.AddAsync(personId, DateTime.Now, model.Measurement.Weight);
 
                 // Return the measurement list view containing only the new measurement and a confirmation message
-                var message = $"Weight measurement of {model.Measurement.Weight:.##} for {personName} added successfully";
+                var message = $"Weight measurement of {model.Measurement.Weight:0.00} for {personName} added successfully";
                 var listModel = await CreateListViewModel(
                     measurement.PersonId,
                     measurement.Id,

@@ -143,11 +143,11 @@ namespace HealthTracker.Mvc.Controllers
                 var personName = model.PersonName;
 
                 // Add the measurement
-                _logger.LogDebug($"Adding % SPO2 measurement: Person = {personName}, Date = {model.Measurement.Date}, Percentage = {model.Measurement.Percentage:.##}");
+                _logger.LogDebug($"Adding % SPO2 measurement: Person = {personName}, Date = {model.Measurement.Date}, Percentage = {model.Measurement.Percentage:0.00}");
                 var measurement = await _measurementClient.AddAsync(personId, DateTime.Now, model.Measurement.Percentage);
 
                 // Return the measurement list view containing only the new measurement and a confirmation message
-                var message = $"% SPO2 measurement of {model.Measurement.Percentage:.##} for {personName} added successfully";
+                var message = $"% SPO2 measurement of {model.Measurement.Percentage:0.00} for {personName} added successfully";
                 var listModel = await CreateListViewModel(
                     measurement.PersonId,
                     measurement.Id,
