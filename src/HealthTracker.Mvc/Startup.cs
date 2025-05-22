@@ -9,6 +9,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using HealthTracker.Mvc.Interfaces;
 using HealthTracker.Mvc.Helpers;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
 
 namespace HealthTracker.Mvc
 {
@@ -126,6 +128,23 @@ namespace HealthTracker.Mvc
                     context.Response.Redirect(LoginController.LoginPath);
                 }
             });
+
+            // In the first release,the UI is only supporting a single culture - this will change
+            // in future releases!
+            var supportedCultures = new List<CultureInfo>
+            {
+                new("en-GB")
+            };
+
+            // Set up localization options
+            var localizationOptions = new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("en-GB"),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            };
+
+            app.UseRequestLocalization(localizationOptions);
 
             app.UseRouting();
             app.UseAuthentication();
