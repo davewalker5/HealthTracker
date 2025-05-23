@@ -2,12 +2,11 @@ using HealthTracker.Entities.Measurements;
 
 namespace HealthTracker.Client.Interfaces
 {
-    public interface IBloodOxygenSaturationMeasurementClient : IDateBasedEntityRetriever<BloodOxygenSaturationMeasurement>
+    public interface IBloodOxygenSaturationMeasurementClient : IDateBasedEntityRetriever<BloodOxygenSaturationMeasurement>, IDataExporter
     {
         Task<BloodOxygenSaturationMeasurement> AddAsync(int personId, DateTime? date, decimal percentage);
         Task<BloodOxygenSaturationMeasurement> UpdateAsync(int id, int personId, DateTime? date, decimal percentage);
         Task ImportAsync(string filePath);
-        Task ExportAsync(int personId, DateTime? from, DateTime? to, string fileName);
         Task DeleteAsync(int id);
         Task<BloodOxygenSaturationMeasurement> CalculateAverageAsync(int personId, DateTime from, DateTime to);
         Task<BloodOxygenSaturationMeasurement> CalculateAverageAsync(int personId, int days);

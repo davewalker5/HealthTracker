@@ -1,5 +1,6 @@
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
+using HealthTracker.Mvc.Entities;
 using HealthTracker.Mvc.Interfaces;
 using HealthTracker.Mvc.Models;
 
@@ -62,15 +63,15 @@ namespace HealthTracker.Mvc.Controllers
         /// <param name="from"></param>
         /// <param name="to"></param>
         /// <param name="message"></param>
-        /// <param name="showAddButton"></param>
+        /// <param name="flags"></param>
         /// <returns></returns>
-        protected async Task<L> CreateListViewModel(int personId, int measurementId, string message, bool showAddButton)
+        protected async Task<L> CreateListViewModel(int personId, int measurementId, string message, ViewFlags flags)
         {
             // Create the model
             L model = new()
             {
                 PageNumber = 1,
-                Filters = await _filterGenerator.Create(personId, showAddButton)
+                Filters = await _filterGenerator.Create(personId, flags)
             };
 
             // Populate the list of people and select the person associated with this measurement

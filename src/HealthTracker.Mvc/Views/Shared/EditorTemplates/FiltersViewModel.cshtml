@@ -46,7 +46,11 @@
                 <button type="submit" name="Action" value="@ControllerActions.ActionSearch" class="btn btn-primary" style="margin-right: 10px">Search</button>
                 @if (Model.ShowAddButton)
                 {
-                    <button type="submit" name="Action" value="@ControllerActions.ActionAdd" class="btn btn-primary">Add</button>
+                    <button type="submit" name="Action" value="@ControllerActions.ActionAdd" class="btn btn-primary" style="margin-right: 10px">Add</button>
+                }
+                @if (Model.ShowExportButton)
+                {
+                    <button type="submit" name="Action" value="@ControllerActions.ActionExport" class="btn btn-primary">Export</button>
                 }
             </div>
         </div>

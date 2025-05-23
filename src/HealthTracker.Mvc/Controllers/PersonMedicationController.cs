@@ -40,7 +40,7 @@ namespace HealthTracker.Mvc.Controllers
         public async Task<IActionResult> Index(int personId = 0)
         {
             _logger.LogDebug($"Rendering index view: Person ID = {personId}");
-            var model = await _builder.CreatePersonMedicationListViewModel(personId, "", true, true);
+            var model = await _builder.CreatePersonMedicationListViewModel(personId, "", ViewFlags.Editable | ViewFlags.IncludeInactive);
             return View(model);
         }
 
@@ -83,7 +83,7 @@ namespace HealthTracker.Mvc.Controllers
                 }
 
                 // Generate a model containing the associations for the selected person
-                model = await _builder.CreatePersonMedicationListViewModel(model.Filters.PersonId, "", true, true);
+                model = await _builder.CreatePersonMedicationListViewModel(model.Filters.PersonId, "", ViewFlags.Editable | ViewFlags.IncludeInactive);
             }
             else
             {
@@ -149,7 +149,7 @@ namespace HealthTracker.Mvc.Controllers
                     model.Association.LastTaken);
 
                 // Return the measurement list view with a confirmation message
-                var listModel = await _builder.CreatePersonMedicationListViewModel(model.Association.PersonId, "Association successfully added", true, true);
+                var listModel = await _builder.CreatePersonMedicationListViewModel(model.Association.PersonId, "Association successfully added", ViewFlags.Editable | ViewFlags.IncludeInactive);
                 return View("Index", listModel);
             }
             else
@@ -222,7 +222,7 @@ namespace HealthTracker.Mvc.Controllers
                     model.Association.LastTaken);
 
                 // Return the measurement list view with a confirmation message
-                var listModel = await _builder.CreatePersonMedicationListViewModel(model.Association.PersonId, "Association successfully updated", true, true);
+                var listModel = await _builder.CreatePersonMedicationListViewModel(model.Association.PersonId, "Association successfully updated", ViewFlags.Editable | ViewFlags.IncludeInactive);
                 return View("Index", listModel);
             }
             else
@@ -253,7 +253,7 @@ namespace HealthTracker.Mvc.Controllers
             await _measurementClient.DeleteAsync(id);
 
             // Return the list view with an empty list of measurements
-            var model = await _builder.CreatePersonMedicationListViewModel(personId, "Association successfully deleted", true, true);
+            var model = await _builder.CreatePersonMedicationListViewModel(personId, "Association successfully deleted", ViewFlags.Editable | ViewFlags.IncludeInactive);
             return View("Index", model);
         }
     }

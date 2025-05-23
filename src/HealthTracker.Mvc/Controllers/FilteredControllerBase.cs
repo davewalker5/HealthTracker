@@ -81,11 +81,10 @@ namespace HealthTracker.Mvc.Controllers
         /// <param name="from"></param>
         /// <param name="to"></param>
         /// <param name="message"></param>
-        /// <param name="editable"></param>
-        /// <param name="showAddButton"></param>
+        /// <param name="flags"></param>
         /// <returns></returns>
-        protected async Task<L> CreateListViewModel(int personId, int measurementId, DateTime from, DateTime to, string message,bool editable, bool showAddButton)
-            => await _builder.CreateFilteredListViewModel<C, L, M>(_measurementClient, personId, measurementId, null, from, to, message, editable, showAddButton);
+        protected async Task<L> CreateListViewModel(int personId, int measurementId, DateTime from, DateTime to, string message, ViewFlags flags)
+            => await _builder.CreateFilteredListViewModel<C, L, M>(_measurementClient, personId, measurementId, null, from, to, message, flags);
 
         /// <summary>
         /// Convert a "to" date supplied by the date pickers, and therefore have a time of 00:00:00, to
