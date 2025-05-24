@@ -9,6 +9,7 @@ namespace HealthTracker.Mvc.Models
     {
         public IList<SelectListItem> People { get; set; } = [];
         public bool ShowAddButton { get; set; }
+        public bool ShowExportButton { get; set; }
 
         [DisplayName("Person")]
         [Required(ErrorMessage = "You must select a person")]

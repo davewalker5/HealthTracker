@@ -1,6 +1,7 @@
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
 using HealthTracker.Entities.Measurements;
+using HealthTracker.Mvc.Entities;
 using HealthTracker.Mvc.Interfaces;
 using HealthTracker.Mvc.Models;
 
@@ -40,8 +41,7 @@ namespace HealthTracker.Mvc.Helpers
         /// <param name="from"></param>
         /// <param name="to"></param>
         /// <param name="message"></param>
-        /// <param name="editable"></param>
-        /// <param name="showAddButton"></param>
+        /// <param name="flags"></param>
         /// <returns></returns>
         public async Task<L> CreateFilteredListViewModel<C, L, M>(
             C client,
@@ -51,8 +51,7 @@ namespace HealthTracker.Mvc.Helpers
             DateTime from,
             DateTime to,
             string message,
-            bool editable,
-            bool showAddButton)
+            ViewFlags flags)
 
             where C : IDateBasedEntityRetriever<M>
             where L: FilteredViewModelBase<M>, new()
@@ -62,8 +61,8 @@ namespace HealthTracker.Mvc.Helpers
             L model = new()
             {
                 PageNumber = 1,
-                Editable = editable,
-                Filters = await _filterGenerator.Create(personId, from, to, showAddButton)
+                Editable = flags.HasFlag(ViewFlags.Editable),
+                Filters = await _filterGenerator.Create(personId, from, to, flags)
             };
 
             // Populate the list of people and select the person associated with this measurement
@@ -97,15 +96,14 @@ namespace HealthTracker.Mvc.Helpers
         }
 
         /// <summary>
-        /// Convenient wrapper to create a weight list view model
+        /// Helper method to create a weight list view model
         /// </summary>
         /// <param name="personId"></param>
         /// <param name="measurementId"></param>
         /// <param name="from"></param>
         /// <param name="to"></param>
         /// <param name="message"></param>
-        /// <param name="editable"></param>
-        /// <param name="showAddButton"></param>
+        /// <param name="flags"></param>
         /// <returns></returns>
         public async Task<WeightListViewModel> CreateWeightListViewModel(
             int personId,
@@ -114,8 +112,7 @@ namespace HealthTracker.Mvc.Helpers
             DateTime from,
             DateTime to,
             string message,
-            bool editable,
-            bool showAddButton)
+            ViewFlags flags)
             => await CreateFilteredListViewModel<IWeightMeasurementClient, WeightListViewModel, WeightMeasurement>(
                 _weightMeasurementClient,
                 personId,
@@ -124,63 +121,28 @@ namespace HealthTracker.Mvc.Helpers
                 from,
                 to,
                 message,
-                editable,
-                showAddButton);
-
-        /// <summary>
-        /// Convenient wrapper to create an exercise list view model
-        /// </summary>
-        /// <param name="personId"></param>
-        /// <param name="measurementId"></param>
-        /// <param name="from"></param>
-        /// <param name="to"></param>
-        /// <param name="message"></param>
-        /// <param name="editable"></param>
-        /// <param name="showAddButton"></param>
-        /// <returns></returns>
-        public async Task<ExerciseListViewModel> CreateExerciseListViewModel(
-            int personId,
-            int measurementId,
-            IEnumerable<ExerciseMeasurement> measurements,
-            DateTime from,
-            DateTime to,
-            string message,
-            bool editable,
-            bool showAddButton)
-            => await CreateFilteredListViewModel<IExerciseMeasurementClient, ExerciseListViewModel, ExerciseMeasurement>(
-                _exerciseMeasurementClient,
-                personId,
-                measurementId,
-                measurements,
-                from,
-                to,
-                message,
-                editable,
-                showAddButton);
+                flags);
 
         /// <summary>
         /// Helper method to create a list view result when editing or deleting an association
         /// </summary>
         /// <param name="personId"></param>
         /// <param name="message"></param>
-        /// <param name="includeInactive"></param>
-        /// <param name="editable"></param>
+        /// <param name="flags"></param>
         /// <returns></returns>
         public async Task<PersonMedicationListViewModel> CreatePersonMedicationListViewModel(
             int personId,
             string message,
-            bool
-            includeInactive,
-            bool editable)
+            ViewFlags flags)
         {
             // Create the model
             var model = new PersonMedicationListViewModel
             {
-                Filters = await _filterGenerator.Create(personId, true),
+                Filters = await _filterGenerator.Create(personId, flags),
                 Settings = _settings,
                 SelectedAssociationIds = "",
                 Message = message,
-                Editable = editable
+                Editable = flags.HasFlag(ViewFlags.Editable)
             };
 
             // Retrieve and set the medication associations for the specified person, if specified
@@ -191,7 +153,7 @@ namespace HealthTracker.Mvc.Helpers
                 var associations = await _personMedicationClient.ListAsync(personId, 1, int.MaxValue);
 
                 // Remove inactive ones, if required
-                if (!includeInactive)
+                if (!flags.HasFlag(ViewFlags.IncludeInactive))
                 {
                     associations.RemoveAll(x => !x.Active);
                 }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
 using HealthTracker.Mvc.Interfaces;
+using HealthTracker.Mvc.Entities;
 
 namespace HealthTracker.Mvc.Controllers
 {
@@ -43,7 +44,7 @@ namespace HealthTracker.Mvc.Controllers
         {
             var model = new HomeViewModel()
             {
-                Filters = await _filterGenerator.Create(personId, false),
+                Filters = await _filterGenerator.Create(personId, ViewFlags.None),
             };
             return View(model);
         }
@@ -67,7 +68,7 @@ namespace HealthTracker.Mvc.Controllers
             var rollingAverageWeight = await _weightClient.CalculateAverageAsync(model.Filters.PersonId, _settings.DefaultTimePeriodDays);
             if (rollingAverageWeight != null)
             {
-                model.WeightMeasurements = await _builder.CreateWeightListViewModel(model.Filters.PersonId, 0, [rollingAverageWeight], from, to, "", false, false);
+                model.WeightMeasurements = await _builder.CreateWeightListViewModel(model.Filters.PersonId, 0, [rollingAverageWeight], from, to, "", ViewFlags.None);
             }
 
             // Retrieve the exercise summary for the period
@@ -77,7 +78,7 @@ namespace HealthTracker.Mvc.Controllers
             };
             
             // Retrieve current medication details
-            model.PersonMedications = await _builder.CreatePersonMedicationListViewModel(model.Filters.PersonId, "", false, false);
+            model.PersonMedications = await _builder.CreatePersonMedicationListViewModel(model.Filters.PersonId, "", ViewFlags.None);
 
             // Populate the list of people and render the view
             await _filterGenerator.PopulatePersonList(model.Filters);

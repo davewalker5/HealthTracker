@@ -46,7 +46,7 @@ namespace HealthTracker.Mvc.Controllers
             var model = new ExerciseListViewModel
             {
                 PageNumber = 1,
-                Filters = await _filterGenerator.Create(personId, start, end, true)
+                Filters = await _filterGenerator.Create(personId, start, end, ViewFlags.Add)
             };
 
             return View(model);
@@ -79,6 +79,14 @@ namespace HealthTracker.Mvc.Controllers
                             start = model.Filters.From,
                             end = model.Filters.To
                         });
+                    case ControllerActions.ActionExport:
+                        return RedirectToAction("Index", "Export", new
+                        {
+                            personId = model.Filters.PersonId,
+                            start = model.Filters.From,
+                            end = model.Filters.To,
+                            exportType = DataExchangeType.Exercise
+                        });
                     default:
                         break;
                 }
@@ -97,6 +105,11 @@ namespace HealthTracker.Mvc.Controllers
                 var measurements = await _measurementClient.ListAsync(
                     model.Filters.PersonId, model.Filters.From, ToDate(model.Filters.To), page, _settings.ResultsPageSize);
                 model.SetEntities(measurements, page, _settings.ResultsPageSize);
+
+                if (measurements.Count > 0)
+                {
+                    model.Filters.ShowExportButton = true;
+                }
 
                 _logger.LogDebug($"{measurements.Count} matching exercise measurements retrieved");
             }
@@ -182,8 +195,7 @@ namespace HealthTracker.Mvc.Controllers
                     measurement.Date,
                     measurement.Date,
                     message,
-                    true,
-                    true);
+                    ViewFlags.ListView);
 
                 return View("Index", listModel);
             }
@@ -272,8 +284,7 @@ namespace HealthTracker.Mvc.Controllers
                     model.Measurement.Date,
                     model.Measurement.Date,
                     "Measurement successfully updated",
-                    true,
-                    true);
+                    ViewFlags.ListView);
 
                 return View("Index", listModel);
             }
@@ -330,7 +341,7 @@ namespace HealthTracker.Mvc.Controllers
             await _measurementClient.DeleteAsync(id);
 
             // Return the list view with an empty list of measurements
-            var model = await CreateListViewModel(personId, 0, date, date, "Measurement successfully deleted", true, true);
+            var model = await CreateListViewModel(personId, 0, date, date, "Measurement successfully deleted", ViewFlags.ListView);
             return View("Index", model);
         }
     }

@@ -1,5 +1,6 @@
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
+using HealthTracker.Mvc.Entities;
 using HealthTracker.Mvc.Interfaces;
 using HealthTracker.Mvc.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -25,15 +26,16 @@ namespace HealthTracker.Mvc.Helpers
         /// <param name="personId"></param>
         /// <param name="from"></param>
         /// <param name="to"></param>
-        /// <param name="showAddButton"></param>
+        /// <param name="flags"></param>
         /// <returns></returns>
-        public async Task<FiltersViewModel> Create(int personId, DateTime? from, DateTime? to, bool showAddButton)
+        public async Task<FiltersViewModel> Create(int personId, DateTime? from, DateTime? to, ViewFlags flags)
         {
             // Create a new model and populate the list of people
             var model = new FiltersViewModel()
             {
                 PersonId = personId,
-                ShowAddButton = showAddButton
+                ShowAddButton = flags.HasFlag(ViewFlags.Add),
+                ShowExportButton = flags.HasFlag(ViewFlags.Export)
             };
             await PopulatePersonList(model);
 
@@ -50,15 +52,16 @@ namespace HealthTracker.Mvc.Helpers
         /// <param name="personId"></param>
         /// <param name="from"></param>
         /// <param name="to"></param>
-        /// <param name="showAddButton"></param>
+        /// <param name="flags"></param>
         /// <returns></returns>
-        public async Task<PersonFilterViewModel> Create(int personId, bool showAddButton)
+        public async Task<PersonFilterViewModel> Create(int personId, ViewFlags flags)
         {
             // Create a new model and populate the list of people
             var model = new PersonFilterViewModel()
             {
                 PersonId = personId,
-                ShowAddButton = showAddButton
+                ShowAddButton = flags.HasFlag(ViewFlags.Add),
+                ShowExportButton = flags.HasFlag(ViewFlags.Export)
             };
             await PopulatePersonList(model);
 
