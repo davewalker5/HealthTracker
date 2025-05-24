@@ -66,16 +66,24 @@ namespace HealthTracker.Client.ApiClient
         }
 
         /// <summary>
-        /// Request an import of blood glucose measurements from the content of a file
+        /// Request an import of measurements from the content of a file
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public async Task ImportAsync(string filePath)
+        public async Task ImportFromFileContentAsync(string content)
         {
-            dynamic data = new{ Content = File.ReadAllText(filePath) };
+            dynamic data = new{ Content = content };
             var json = Serialize(data);
             await SendIndirectAsync(ImportRouteKey, json, HttpMethod.Post);
         }
+
+        /// <summary>
+        /// Request an import of  measurements given the path to a file
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public async Task ImportFromFileAsync(string filePath)
+            => await ImportFromFileContentAsync(File.ReadAllText(filePath));
 
         /// <summary>
         /// Request an export of blood glucose measurements to a named file in the API export folder

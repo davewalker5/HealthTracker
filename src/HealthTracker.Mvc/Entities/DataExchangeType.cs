@@ -1,7 +1,8 @@
 namespace HealthTracker.Mvc.Entities
 {
-    public enum ExportType
+    public enum DataExchangeType
     {
+        None,
         SPO2,
         BloodPressure,
         Exercise,

@@ -36,7 +36,7 @@
     @Html.HiddenFor(m => m.PersonId)
     @Html.HiddenFor(m => m.From)
     @Html.HiddenFor(m => m.To)
-    @Html.HiddenFor(m => m.ExportType)
+    @Html.HiddenFor(m => m.DataExchangeType)
 
     <div class="container-fluid">
         <div class="row">
@@ -74,11 +74,11 @@
         <br/>
         <div class="row">
             <div class="col">
-                <strong>@Html.LabelFor(m => m.ExportType)</strong>
+                <strong>@Html.LabelFor(m => m.DataExchangeType)</strong>
             </div>
             <div class="col">
                 <div class="input-group">
-                    @Html.TextBoxFor(m => m.ExportTypeName, new { @class = "form-control", disabled = "disabled" })
+                    @Html.TextBoxFor(m => m.DataExchangeTypeName, new { @class = "form-control", disabled = "disabled" })
                 </div>
             </div>
         </div>

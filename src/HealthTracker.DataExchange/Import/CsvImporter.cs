@@ -105,7 +105,7 @@ namespace HealthTracker.DataExchange.Import
         {
             if (!predicate(value))
             {
-                var message = $"Invalid value for '{fieldName}' at record {recordCount}";
+                var message = $"Invalid value for '{fieldName}' at record {recordCount} : {value}";
                 throw new InvalidFieldValueException(message);
             }
         }

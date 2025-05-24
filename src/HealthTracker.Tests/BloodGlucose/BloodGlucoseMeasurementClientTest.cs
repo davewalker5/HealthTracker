@@ -309,7 +309,7 @@ namespace HealthTracker.Tests.BloodGlucose
 
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
-            await _client.ImportAsync(_filePath);
+            await _client.ImportFromFileAsync(_filePath);
 
             Assert.AreEqual($"Bearer {_apiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());

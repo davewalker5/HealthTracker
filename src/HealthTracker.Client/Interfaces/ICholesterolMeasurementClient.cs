@@ -2,7 +2,7 @@ using HealthTracker.Entities.Measurements;
 
 namespace HealthTracker.Client.Interfaces
 {
-    public interface ICholesterolMeasurementClient : IDataExporter
+    public interface ICholesterolMeasurementClient : IImporterExporter
     {
         Task<CholesterolMeasurement> AddAsync(
             int personId,
@@ -13,7 +13,7 @@ namespace HealthTracker.Client.Interfaces
             decimal triglycerides);
 
         Task DeleteAsync(int id);
-        Task ImportAsync(string filePath);
+
         Task<List<CholesterolMeasurement>> ListAsync(int personId, DateTime? from, DateTime? to);
 
         Task<CholesterolMeasurement> UpdateAsync(

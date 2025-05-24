@@ -79,7 +79,7 @@ namespace HealthTracker.Mvc.Controllers
                             personId = model.Filters.PersonId,
                             start = model.Filters.From,
                             end = model.Filters.To,
-                            exportType = ExportType.Weight
+                            exportType = DataExchangeType.Weight
                         });
                     default:
                         break;

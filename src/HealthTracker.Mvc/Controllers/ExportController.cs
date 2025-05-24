@@ -7,21 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace HealthTracker.Mvc.Controllers
 {
     [Authorize]
-    public class ExportController : HealthTrackerControllerBase
+    public class ExportController : DataExchangeControllerBase
     {
-        private readonly Dictionary<ExportType, string> _controllerMap = new()
-        {
-            { ExportType.SPO2, "BloodOxygenSaturation" },
-            { ExportType.BloodPressure, "BloodPressure" },
-            { ExportType.Exercise, "Exercise" },
-            { ExportType.Glucose, "BloodGlucose" },
-            { ExportType.Weight, "Weight" }
-        };
-
-        private readonly Dictionary<ExportType, IDataExporter> _exporters = new();
-
         private readonly IPersonClient _personClient;
-        private readonly ILogger<WeightController> _logger;
 
         public ExportController(
             IPersonClient personClient,
@@ -30,19 +18,20 @@ namespace HealthTracker.Mvc.Controllers
             IBloodPressureMeasurementClient bloodPressurementMeasurementClient,
             IExerciseMeasurementClient exerciseMeasurementClient,
             IWeightMeasurementClient weightMeasurementClient,
-            ILogger<WeightController> logger)
+            ILogger<WeightController> logger) : base(
+                bloodGlucoseMeasurementClient,
+                bloodOxygenSaturationMeasurementClient,
+                bloodPressurementMeasurementClient,
+                exerciseMeasurementClient,
+                weightMeasurementClient,
+                logger
+            )
         {
             _personClient = personClient;
-            _exporters.Add(ExportType.Glucose, bloodGlucoseMeasurementClient);
-            _exporters.Add(ExportType.SPO2, bloodOxygenSaturationMeasurementClient);
-            _exporters.Add(ExportType.BloodPressure, bloodPressurementMeasurementClient);
-            _exporters.Add(ExportType.Exercise, exerciseMeasurementClient);
-            _exporters.Add(ExportType.Weight, weightMeasurementClient);
-            _logger = logger;
         }
 
         /// <summary>
-        /// Serve the weight measurements page
+        /// Serve the data export page
         /// </summary>
         /// <param name="personId"></param>
         /// <param name="start"></param>
@@ -50,7 +39,7 @@ namespace HealthTracker.Mvc.Controllers
         /// <param name="exportType"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> Index(int personId, DateTime start, DateTime end, ExportType exportType)
+        public async Task<IActionResult> Index(int personId, DateTime start, DateTime end, DataExchangeType exportType)
         {
             _logger.LogDebug($"Rendering export view: Person ID = {personId}, From = {start}, To = {end}, Type = {exportType}");
 
@@ -61,7 +50,7 @@ namespace HealthTracker.Mvc.Controllers
                 PersonId = personId,
                 From = FromDate(start),
                 To = ToDate(end),
-                ExportType = exportType,
+                DataExchangeType = exportType,
                 Message = "",
                 PersonName = people.First(x => x.Id == personId).Name
             };
@@ -80,7 +69,7 @@ namespace HealthTracker.Mvc.Controllers
         {
             if (model.Action == ControllerActions.ActionCancel)
             {
-                var controllerName = _controllerMap[model.ExportType];
+                var controllerName = ControllerName(model.DataExchangeType);
                 _logger.LogDebug($"Cancelling export and returning to the {controllerName} Index action");
                 return RedirectToAction("Index", controllerName, new
                     {
@@ -96,9 +85,9 @@ namespace HealthTracker.Mvc.Controllers
                     $"Requesting export of data: Person ID = {model.PersonId}, " +
                     $"From = {model.From}, " +
                     $"To = {model.To}, " +
-                    $"Type = {model.ExportType}, " +
+                    $"Type = {model.DataExchangeType}, " +
                     $"File Name = {model.FileName}");
-                await _exporters[model.ExportType].ExportAsync(model.PersonId, model.From, model.To, model.FileName);
+                await Client(model.DataExchangeType).ExportAsync(model.PersonId, model.From, model.To, model.FileName);
                 model.Message = $"Data export to {model.FileName} has been requested";
                 model.FileName = "";
                 model.BackButtonLabel = "< Back";

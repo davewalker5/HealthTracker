@@ -3,7 +3,7 @@ using HealthTracker.Entities.Measurements;
 
 namespace HealthTracker.Client.Interfaces
 {
-    public interface IExerciseMeasurementClient : IDateBasedEntityRetriever<ExerciseMeasurement>, IDataExporter
+    public interface IExerciseMeasurementClient : IDateBasedEntityRetriever<ExerciseMeasurement>, IImporterExporter
     {
         Task<ExerciseMeasurement> AddAsync(
             int personId,
@@ -16,7 +16,6 @@ namespace HealthTracker.Client.Interfaces
             int maximumHeartRate);
 
         Task DeleteAsync(int id);
-        Task ImportAsync(string filePath);
 
         Task<ExerciseMeasurement> UpdateAsync(
             int id,
