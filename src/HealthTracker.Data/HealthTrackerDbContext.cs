@@ -3,6 +3,7 @@ using HealthTracker.Entities.Measurements;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using HealthTracker.Entities.Medications;
+using HealthTracker.Entities.Logging;
 
 namespace HealthTracker.Data
 {
@@ -23,6 +24,7 @@ namespace HealthTracker.Data
         public virtual DbSet<Medication> Medications { get; set; }
         public virtual DbSet<PersonMedication> PersonMedications { get; set; }
         public virtual DbSet<BloodGlucoseMeasurement> BloodGlucoseMeasurements { get; set; }
+        public virtual DbSet<JobStatus> JobStatuses { get; set; }
 
 
         public HealthTrackerDbContext(DbContextOptions<HealthTrackerDbContext> options) : base(options)
@@ -175,6 +177,17 @@ namespace HealthTracker.Data
                 entity.Property(e => e.PersonId).HasColumnName("person_id");
                 entity.Property(e => e.Date).IsRequired().HasColumnName("date").HasColumnType("DATETIME");
                 entity.Property(e => e.Level).HasColumnName("level");
+            });
+
+            modelBuilder.Entity<JobStatus>(entity =>
+            {
+                entity.ToTable("JOB_STATUS");
+                entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
+                entity.Property(e => e.Name).IsRequired().HasColumnName("name");
+                entity.Property(e => e.Parameters).HasColumnName("parameters");
+                entity.Property(e => e.Start).IsRequired().HasColumnName("start").HasColumnType("DATETIME");
+                entity.Property(e => e.End).HasColumnName("end").HasColumnType("DATETIME");
+                entity.Property(e => e.Error).HasColumnName("error");
             });
         }
     }

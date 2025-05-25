@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Text;
 using HealthTracker.Entities.Identity;
+using HealthTracker.Entities.Logging;
 using HealthTracker.Entities.Measurements;
 using HealthTracker.Entities.Medications;
 using HealthTracker.Enumerations.Enumerations;
@@ -655,6 +656,21 @@ namespace HealthTracker.Tests.Mocks
                 MinimumBMI = RandomInt(15, 25),
                 MaximumBMI = RandomInt(25, 30),
                 Order = RandomInt(10, 20)
+            };
+
+        /// <summary>
+        /// Generate a random job status
+        /// </summary>
+        /// <returns></returns>
+        public static JobStatus RandomJobStatus()
+            => new()
+            {
+                Id = RandomId(),
+                Name = RandomWord(10, 20),
+                Parameters = $"{RandomWord(10, 20)}.csv",
+                Start = RandomDateInYear(2025, true),
+                End = RandomDateInYear(2025, true),
+                Error = RandomPhrase(5, 5, 10)
             };
     }
 }
