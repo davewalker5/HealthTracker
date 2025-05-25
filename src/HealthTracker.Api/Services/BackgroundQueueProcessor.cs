@@ -51,7 +51,7 @@ namespace HealthTracker.Api.Services
                         var factory = scope.ServiceProvider.GetService<IHealthTrackerFactory>();
 
                         // Create the job status record
-                        // var status = await factory.JobStatuses.AddAsync(item.JobName, item.ToString());
+                        var status = await factory.JobStatuses.AddAsync(item.JobName, item.ToString());
 
                         try
                         {
@@ -59,14 +59,14 @@ namespace HealthTracker.Api.Services
                             // no error
                             MessageLogger.LogInformation($"Processing work item {item.ToString()}");
                             await ProcessWorkItemAsync(item, factory);
-                            // await factory.JobStatuses.UpdateAsync(status.Id, null);
+                            await factory.JobStatuses.UpdateAsync(status.Id, null);
                             MessageLogger.LogInformation($"Finished processing work item {item.ToString()}");
                         }
                         catch (Exception ex)
                         {
                             // Got an error during processing, so complete the job status record with the
                             // exception details
-                            // await factory.JobStatuses.UpdateAsync(status.Id, ex.ToString());
+                            await factory.JobStatuses.UpdateAsync(status.Id, ex.ToString());
                             MessageLogger.LogInformation($"Error processing work item {item.ToString()} : {ex.Message}");
                         }
                     }

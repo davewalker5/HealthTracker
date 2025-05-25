@@ -18,17 +18,18 @@ namespace HealthTracker.Mvc.Models
         /// <param name="pageSize"></param>
         public void SetEntities(IEnumerable<T> entities, int pageNumber, int pageSize)
         {
+            var count = entities?.Count() ?? 0;
             Entities = entities;
             PageNumber = pageNumber;
-            HasNoMatchingResults = !entities?.Any() ?? true;
-            SetPreviousNextEnabled(entities.Count(), pageNumber, pageSize);
+            HasNoMatchingResults = count == 0;
+            SetPreviousNextEnabled(count, pageNumber, pageSize);
         }
 
         /// <summary>
         /// Set the "previous/next" button enabled flags according to the
         /// following logic, where SZ is the page size:
         ///
-        /// Flight  Page    Previous    Next
+        ///         Page    Previous    Next
         /// Count   Number  Enabled     Enabled
         ///
         /// 0       -       No          No
