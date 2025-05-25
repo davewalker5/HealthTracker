@@ -31,7 +31,7 @@ namespace HealthTracker.Client.ApiClient
             string route = $"{baseRoute}/{encodedFromDate}/{encodedToDate}/{pageNumber}/{pageSize}";
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
-            // The returned JSON will be empty if there are no people in the database
+            // The returned JSON will be empty if there are no records in the database
             List<JobStatus> records = !string.IsNullOrEmpty(json) ? Deserialize<List<JobStatus>>(json) : null;
             return records;
         }
