@@ -21,7 +21,7 @@ namespace HealthTracker.Mvc.Models
             Entities = entities;
             PageNumber = pageNumber;
             HasNoMatchingResults = !entities?.Any() ?? true;
-            SetPreviousNextEnabled(entities.Count(), pageNumber, pageSize);
+            SetPreviousNextEnabled(entities?.Count() ?? 0, pageNumber, pageSize);
         }
 
         /// <summary>
