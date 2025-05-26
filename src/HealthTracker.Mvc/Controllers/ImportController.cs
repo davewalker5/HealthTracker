@@ -41,6 +41,11 @@ namespace HealthTracker.Mvc.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Handle POST events to request an import
+        /// </summary>
+        /// <param name="importType"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(ImportViewModel model)

@@ -25,7 +25,7 @@ namespace HealthTracker.Mvc.Controllers
         }
 
         /// <summary>
-        /// Serve the current list of activity type
+        /// Serve the current list of activity types
         /// </summary>
         /// <returns></returns>
         [HttpGet]

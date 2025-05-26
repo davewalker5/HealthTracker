@@ -1,0 +1,81 @@
+@using HealthTracker.Mvc.Entities
+@using Microsoft.AspNetCore.Mvc.ModelBinding
+@model HealthTracker.Mvc.Models.AlcoholCalculationViewModel
+
+@{
+    ViewData["Title"] = "Units of Alcohol Calculation";
+}
+
+<p class="text-center font-weight-bold">
+    <span style="font-size: 1.2rem">
+        Alcohol
+    </span>
+    <br />
+    <small class="text-muted">
+        <em>
+            Units of alcohol calculation
+        </em>
+    </small>
+    <hr/>
+</p>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <strong>@Html.LabelFor(m => m.Portion)</strong>
+            </div>
+            <div class="col">
+                <div class="input-group">
+                    @Html.DropDownListFor(m => m.Portion, Model.PortionSizes, new { @class = "form-control" })
+                </div>
+                <span>@Html.ValidationMessageFor(m => m.Portion, "", new { @class = "text-danger" })</span>
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <div class="col">
+                <strong>@Html.LabelFor(m => m.Quantity)</strong>
+            </div>
+            <div class="col">
+                <div class="input-group">
+                    @Html.TextBoxFor(m => m.Quantity)
+                </div>
+                <span>@Html.ValidationMessageFor(m => m.Quantity, "", new { @class = "text-danger" })</span>
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <div class="col">
+                <strong>@Html.LabelFor(m => m.ABV)</strong>
+            </div>
+            <div class="col">
+                <div class="input-group">
+                    @Html.TextBoxFor(m => m.ABV)
+                </div>
+                <span>@Html.ValidationMessageFor(m => m.ABV, "", new { @class = "text-danger" })</span>
+            </div>
+        </div>
+        <br/>
+        <hr />
+
+        @if (!string.IsNullOrEmpty(Model.Result))
+        {
+            <div class="row">
+                <div class="col-md-12" style="text-align: center">
+                    <div class="rounded p-3" style="background-color: #fff9c4;">
+                        <strong><span>@Html.Raw(Model.Result)</span></strong>
+                    </div>
+                </div>
+            </div>
+            <hr />
+        }
+
+        <p class="text-right">
+            <button type="submit" class="btn btn-primary">Calculate</button>
+        </p>
+    </div>
+}
