@@ -3,11 +3,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace HealthTracker.Mvc.Models
 {
-    public class ExerciseViewModel : SelectedFiltersViewModel
+    public class ExerciseViewModel : TimestampViewModel
     {
         public IList<SelectListItem> ActivityTypes { get; set; } = [];
         public ExerciseMeasurement Measurement { get; set; } = new();
-        public string Action { get; set; }
 
         public ExerciseViewModel()
         {

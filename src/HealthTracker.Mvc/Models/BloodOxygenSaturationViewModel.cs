@@ -2,10 +2,9 @@ using HealthTracker.Entities.Measurements;
 
 namespace HealthTracker.Mvc.Models
 {
-    public class BloodOxygenSaturationViewModel : SelectedFiltersViewModel
+    public class BloodOxygenSaturationViewModel : TimestampViewModel
     {
         public BloodOxygenSaturationMeasurement Measurement { get; set; } = new();
-        public string Action { get; set; }
 
         public BloodOxygenSaturationViewModel()
         {

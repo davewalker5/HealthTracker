@@ -37,7 +37,6 @@ namespace HealthTracker.Client.ApiClient
             int minimumHeartRate,
             int maximumHeartRate)
         {
-            var measurementDate = date ?? DateTime.Now;
             var measurementDistance = distance ?? 0;
             if (measurementDistance < 0) measurementDistance = 0;
 
@@ -45,7 +44,7 @@ namespace HealthTracker.Client.ApiClient
             {
                 PersonId = personId,
                 ActivityTypeId = activityTypeId,
-                Date = new DateTime(measurementDate.Year, measurementDate.Month, measurementDate.Day, 0, 0, 0),
+                Date = date ?? DateTime.Now,
                 Duration = duration,
                 Distance = measurementDistance,
                 Calories = calories,
@@ -84,7 +83,6 @@ namespace HealthTracker.Client.ApiClient
             int minimumHeartRate,
             int maximumHeartRate)
         {
-            var measurementDate = date ?? DateTime.Now;
             var measurementDistance = distance ?? 0;
             if (measurementDistance < 0) measurementDistance = 0;
 
@@ -93,7 +91,7 @@ namespace HealthTracker.Client.ApiClient
                 Id = id,
                 PersonId = personId,
                 ActivityTypeId = activityTypeId,
-                Date = new DateTime(measurementDate.Year, measurementDate.Month, measurementDate.Day, 0, 0, 0),
+                Date = date ?? DateTime.Now,
                 Duration = duration,
                 Distance = measurementDistance,
                 Calories = calories,

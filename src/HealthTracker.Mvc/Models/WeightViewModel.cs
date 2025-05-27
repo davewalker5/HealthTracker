@@ -2,10 +2,9 @@ using HealthTracker.Entities.Measurements;
 
 namespace HealthTracker.Mvc.Models
 {
-    public class WeightViewModel : SelectedFiltersViewModel
+    public class WeightViewModel : TimestampViewModel
     {
         public WeightMeasurement Measurement { get; set; } = new();
-        public string Action { get; set; }
 
         public WeightViewModel()
         {

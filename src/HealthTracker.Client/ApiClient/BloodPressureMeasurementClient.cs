@@ -28,11 +28,10 @@ namespace HealthTracker.Client.ApiClient
         /// <returns></returns>
         public async Task<BloodPressureMeasurement> AddAsync(int personId, DateTime? date, int systolic, int diastolic)
         {
-            var measurementDate = date ?? DateTime.Now;
             dynamic template = new
             {
                 PersonId = personId,
-                Date = new DateTime(measurementDate.Year, measurementDate.Month, measurementDate.Day, 0, 0, 0),
+                Date = date ?? DateTime.Now,
                 Systolic = systolic,
                 Diastolic = diastolic
             };
@@ -55,12 +54,11 @@ namespace HealthTracker.Client.ApiClient
         /// <returns></returns>
         public async Task<BloodPressureMeasurement> UpdateAsync(int id, int personId, DateTime? date, int systolic, int diastolic)
         {
-            var measurementDate = date ?? DateTime.Now;
             dynamic template = new
             {
                 Id = id,
                 PersonId = personId,
-                Date = new DateTime(measurementDate.Year, measurementDate.Month, measurementDate.Day, 0, 0, 0),
+                Date = date ?? DateTime.Now,
                 Systolic = systolic,
                 Diastolic = diastolic
             };

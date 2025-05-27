@@ -2,10 +2,9 @@ using HealthTracker.Entities.Measurements;
 
 namespace HealthTracker.Mvc.Models
 {
-    public class BloodPressureViewModel : SelectedFiltersViewModel
+    public class BloodPressureViewModel : TimestampViewModel
     {
         public BloodPressureMeasurement Measurement { get; set; } = new();
-        public string Action { get; set; }
 
         public BloodPressureViewModel()
         {

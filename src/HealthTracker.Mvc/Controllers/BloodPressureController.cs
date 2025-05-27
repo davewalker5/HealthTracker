@@ -155,17 +155,20 @@ namespace HealthTracker.Mvc.Controllers
                 var personId = model.Measurement.PersonId;
                 var personName = model.PersonName;
 
+                // Combine the date and time strings to produce a timestamp
+                var timestamp = model.Timestamp();
+
                 // Add the measurement
-                _logger.LogDebug($"Adding blood pressure measurement: Person = {personName}, Date = {model.Measurement.Date}, Blood Pressure = {model.Measurement.Systolic}/{model.Measurement.Diastolic}");
-                var measurement = await _measurementClient.AddAsync(personId, DateTime.Now, model.Measurement.Systolic, model.Measurement.Diastolic);
+                _logger.LogDebug($"Adding blood pressure measurement: Person = {personName}, Timestamp = {timestamp}, Blood Pressure = {model.Measurement.Systolic}/{model.Measurement.Diastolic}");
+                var measurement = await _measurementClient.AddAsync(personId, timestamp, model.Measurement.Systolic, model.Measurement.Diastolic);
 
                 // Return the measurement list view containing only the new measurement and a confirmation message
                 var message = $"Blood pressure measurement of {model.Measurement.Systolic}/{model.Measurement.Diastolic} for {personName} added successfully";
                 var listModel = await CreateListViewModel(
                     measurement.PersonId,
                     measurement.Id,
-                    measurement.Date,
-                    measurement.Date,
+                    timestamp,
+                    timestamp,
                     message,
                     ViewFlags.ListView);
 
@@ -219,12 +222,15 @@ namespace HealthTracker.Mvc.Controllers
 
             if (ModelState.IsValid)
             {
+                // Combine the date and time strings to produce a timestamp
+                var timestamp = model.Timestamp();
+
                 // Update the measurement
-                _logger.LogDebug($"Updating blood pressure measurement: ID = {model.Measurement.Id}, Person ID = {model.Measurement.PersonId}, Date = {model.Measurement.Date}, BloodPressure = {model.Measurement.Systolic}/{model.Measurement.Diastolic}");
+                _logger.LogDebug($"Updating blood pressure measurement: ID = {model.Measurement.Id}, Person ID = {model.Measurement.PersonId}, Timestamp = {timestamp}, BloodPressure = {model.Measurement.Systolic}/{model.Measurement.Diastolic}");
                 await _measurementClient.UpdateAsync(
                     model.Measurement.Id,
                     model.Measurement.PersonId,
-                    model.Measurement.Date,
+                    timestamp,
                     model.Measurement.Systolic,
                     model.Measurement.Diastolic);
 
@@ -232,8 +238,8 @@ namespace HealthTracker.Mvc.Controllers
                 var listModel = await CreateListViewModel(
                     model.Measurement.PersonId,
                     model.Measurement.Id,
-                    model.Measurement.Date,
-                    model.Measurement.Date,
+                    timestamp,
+                    timestamp,
                     "Measurement successfully updated",
                     ViewFlags.ListView);
 

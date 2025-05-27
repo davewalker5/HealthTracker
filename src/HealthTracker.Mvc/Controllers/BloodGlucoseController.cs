@@ -161,7 +161,7 @@ namespace HealthTracker.Mvc.Controllers
 
                 // Add the measurement
                 _logger.LogDebug($"Adding blood glucose measurement: Person = {personName}, Timestamp = {timestamp}, Level = {model.Measurement.Level}");
-                var measurement = await _measurementClient.AddAsync(personId, DateTime.Now, model.Measurement.Level);
+                var measurement = await _measurementClient.AddAsync(personId, timestamp, model.Measurement.Level);
 
                 // Return the measurement list view containing only the new measurement and a confirmation message
                 var message = $"Blood glucose measurement of {model.Measurement.Level} for {personName} added successfully";
@@ -231,7 +231,7 @@ namespace HealthTracker.Mvc.Controllers
                 var measurement = await _measurementClient.UpdateAsync(
                     model.Measurement.Id,
                     model.Measurement.PersonId,
-                    model.Measurement.Date,
+                    timestamp,
                     model.Measurement.Level);
 
                 // Return the measurement list view containing only the updated measurement and a confirmation message

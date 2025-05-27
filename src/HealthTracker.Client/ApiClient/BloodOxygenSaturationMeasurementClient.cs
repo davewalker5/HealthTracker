@@ -26,11 +26,10 @@ namespace HealthTracker.Client.ApiClient
         /// <returns></returns>
         public async Task<BloodOxygenSaturationMeasurement> AddAsync(int personId, DateTime? date, decimal percentage)
         {
-            var measurementDate = date ?? DateTime.Now;
             dynamic template = new
             {
                 PersonId = personId,
-                Date = new DateTime(measurementDate.Year, measurementDate.Month, measurementDate.Day, 0, 0, 0),
+                Date = date ?? DateTime.Now,
                 Percentage = percentage
             };
 
@@ -51,12 +50,11 @@ namespace HealthTracker.Client.ApiClient
         /// <returns></returns>
         public async Task<BloodOxygenSaturationMeasurement> UpdateAsync(int id, int personId, DateTime? date, decimal percentage)
         {
-            var measurementDate = date ?? DateTime.Now;
             dynamic template = new
             {
                 Id = id,
                 PersonId = personId,
-                Date = new DateTime(measurementDate.Year, measurementDate.Month, measurementDate.Day, 0, 0, 0),
+                Date = date ?? DateTime.Now,
                 Percentage = percentage
             };
 

@@ -166,11 +166,14 @@ namespace HealthTracker.Mvc.Controllers
 
             if (ModelState.IsValid)
             {
+                // Combine the date and time strings to produce a timestamp
+                var timestamp = model.Timestamp();
+
                 // Add the measurement
                 _logger.LogDebug(
                     $"Adding new exercise measurement: Person ID = {model.Measurement.PersonId}, " +
                     $"Activity ID = {model.Measurement.ActivityTypeId}, " +
-                    $"Date = {model.Measurement.Date}, " +
+                    $"Timestamp = {timestamp}, " +
                     $"Duration = {model.Measurement.FormattedDuration}, " +
                     $"Distance = {model.Measurement.Distance ?? 0}, " +
                     $"Calories = {model.Measurement.Calories}, " +
@@ -180,7 +183,7 @@ namespace HealthTracker.Mvc.Controllers
                 var measurement = await _measurementClient.AddAsync(
                     model.Measurement.PersonId,
                     model.Measurement.ActivityTypeId,
-                    model.Measurement.Date,
+                    timestamp,
                     duration,
                     model.Measurement.Distance,
                     model.Measurement.Calories,
@@ -192,8 +195,8 @@ namespace HealthTracker.Mvc.Controllers
                 var listModel = await CreateListViewModel(
                     measurement.PersonId,
                     measurement.Id,
-                    measurement.Date,
-                    measurement.Date,
+                    timestamp,
+                    timestamp,
                     message,
                     ViewFlags.ListView);
 
@@ -251,6 +254,9 @@ namespace HealthTracker.Mvc.Controllers
 
             if (ModelState.IsValid)
             {
+                // Combine the date and time strings to produce a timestamp
+                var timestamp = model.Timestamp();
+
                 // Extract the duration from the formatted duration
                 var duration = SecondsFromFormattedDuration(model.Measurement.FormattedDuration);
 
@@ -259,7 +265,7 @@ namespace HealthTracker.Mvc.Controllers
                     $"Updating exercise measurement: ID = {model.Measurement.Id}, " +
                     $"Person ID = {model.Measurement.PersonId}, " +
                     $"Activity ID = {model.Measurement.ActivityTypeId}, " +
-                    $"Date = {model.Measurement.Date}, " +
+                    $"Timestamp = {timestamp}, " +
                     $"Duration = {model.Measurement.FormattedDuration}, " +
                     $"Distance = {model.Measurement.Distance ?? 0}, " +
                     $"Calories = {model.Measurement.Calories}, " +
@@ -270,7 +276,7 @@ namespace HealthTracker.Mvc.Controllers
                     model.Measurement.Id,
                     model.Measurement.PersonId,
                     model.Measurement.ActivityTypeId,
-                    model.Measurement.Date,
+                    timestamp,
                     duration,
                     model.Measurement.Distance,
                     model.Measurement.Calories,
@@ -281,8 +287,8 @@ namespace HealthTracker.Mvc.Controllers
                 var listModel = await CreateListViewModel(
                     model.Measurement.PersonId,
                     model.Measurement.Id,
-                    model.Measurement.Date,
-                    model.Measurement.Date,
+                    timestamp,
+                    timestamp,
                     "Measurement successfully updated",
                     ViewFlags.ListView);
 
