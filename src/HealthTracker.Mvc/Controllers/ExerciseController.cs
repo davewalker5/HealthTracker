@@ -136,9 +136,8 @@ namespace HealthTracker.Mvc.Controllers
         {
             _logger.LogDebug($"Rendering add view: Person ID = {personId}, From = {start}, To = {end}");
 
-            var model = new AddExerciseViewModel();
-            model.Measurement.PersonId = personId;
-            model.ActivityTypes = await _activityTypeListGenerator.Create();
+            var model = new AddExerciseViewModel() { ActivityTypes = await _activityTypeListGenerator.Create() };
+            model.CreateMeasurement(personId);
             await SetFilterDetails(model, personId, start, end);
             return View(model);
         }
@@ -226,12 +225,8 @@ namespace HealthTracker.Mvc.Controllers
             var measurement = await _measurementClient.GetAsync(id);
 
             // Construct the view model
-            var model = new EditExerciseViewModel
-            {
-                Measurement = measurement,
-                ActivityTypes = await _activityTypeListGenerator.Create()
-            };
-
+            var model = new EditExerciseViewModel() { ActivityTypes = await _activityTypeListGenerator.Create() };
+            model.SetMeasurement(measurement);
             await SetFilterDetails(model, measurement.PersonId, start, end);
             return View(model);
         }

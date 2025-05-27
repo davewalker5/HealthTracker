@@ -6,19 +6,28 @@ namespace HealthTracker.Mvc.Models
     public class ExerciseViewModel : TimestampViewModel
     {
         public IList<SelectListItem> ActivityTypes { get; set; } = [];
-        public ExerciseMeasurement Measurement { get; set; } = new();
+        public ExerciseMeasurement Measurement { get; set; }
 
-        public ExerciseViewModel()
+        /// <summary>
+        /// Create a new, empty measurement for the specified person
+        /// </summary>
+        /// <param name="personId"></param>
+        public void CreateMeasurement(int personId)
+            => SetMeasurement(
+                new ExerciseMeasurement()
+                {
+                    PersonId = personId,
+                    Date = DateTime.Now
+                });
+
+        /// <summary>
+        /// Set the measurement and the date and time strings
+        /// </summary>
+        /// <param name="measurement"></param>
+        public void SetMeasurement(ExerciseMeasurement measurement)
         {
-            Measurement.Id = 0;
-            Measurement.PersonId = 0;
-            Measurement.ActivityTypeId = 0;
-            Measurement.Date = DateTime.Now;
-            Measurement.Duration = 0;
-            Measurement.Distance = null;
-            Measurement.Calories = 0;
-            Measurement.MinimumHeartRate = 0;
-            Measurement.MaximumHeartRate = 0;
+            Measurement = measurement;
+            SetTimestamp(Measurement.Date);
         }
     }
 }

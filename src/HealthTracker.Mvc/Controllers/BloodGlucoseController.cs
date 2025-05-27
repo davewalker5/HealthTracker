@@ -95,7 +95,6 @@ namespace HealthTracker.Mvc.Controllers
                     $"Retrieving page {page} of blood glucose measurements for person with ID {model.Filters.PersonId}" +
                     $" in the date range {model.Filters.From:dd-MMM-yyyy} to {model.Filters.To:dd-MMM-yyyy}");
 
-                // 
                 var measurements = await _measurementClient.ListAsync(
                     model.Filters.PersonId, model.Filters.From, ToDate(model.Filters.To), page, _settings.ResultsPageSize);
                 model.SetEntities(measurements, page, _settings.ResultsPageSize);
@@ -131,7 +130,7 @@ namespace HealthTracker.Mvc.Controllers
             _logger.LogDebug($"Rendering add view: Person ID = {personId}, From = {start}, To = {end}");
 
             var model = new AddBloodGlucoseViewModel();
-            model.Measurement.PersonId = personId;
+            model.CreateMeasurement(personId);
             await SetFilterDetails(model, personId, start, end);
             return View(model);
         }
@@ -200,7 +199,7 @@ namespace HealthTracker.Mvc.Controllers
 
             // Construct the view model
             var model = new EditBloodGlucoseViewModel();
-            model.Measurement = measurement;
+            model.SetMeasurement(measurement);
             await SetFilterDetails(model, measurement.PersonId, start, end);
             return View(model);
         }

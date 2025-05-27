@@ -5,6 +5,7 @@
     <tr>
         <th>Person</th>
         <th>Date</th>
+        <th>Time</th>
         <th>% SPO2</th>
         <th>Assessment</th>
         @if (Model.Editable)
@@ -18,6 +19,7 @@
         <tr>
             <td valign="center">@Model.Filters.SelectedPerson.Name</td>
             <td valign="center">@measurement.Date.ToString("dd-MMM-yyyy")</td>
+            <td valign="center">@measurement.Date.ToString("HH:mm")</td>
             <td valign="center"><span>@measurement.Percentage.ToString("0.00")</span></td>
             <td valign="center">@measurement.Assessment</td>
             @if (Model.Editable)

@@ -19,7 +19,7 @@
         </div>
     </div>
     <br/>
-    @await Html.PartialAsync("_DateAndTime.cshtml", Model)
+    @await Html.PartialAsync("_DateAndTime", Model)
     <div class="row">
         <div class="col">
             <strong>@Html.LabelFor(m => m.Measurement.Percentage)</strong>

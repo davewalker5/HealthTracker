@@ -5,6 +5,7 @@
     <tr>
         <th>Person</th>
         <th>Date</th>
+        <th>Time</th>
         <th>Activity</th>
         <th>Duration</th>
         <th>Distance</th>
@@ -23,6 +24,7 @@
         <tr>
             <td valign="center">@Model.Filters.SelectedPerson.Name</td>
             <td valign="center">@measurement.Date.ToString("dd-MMM-yyyy")</td>
+            <td valign="center">@measurement.Date.ToString("HH:mm")</td>
             <td valign="center">@measurement.ActivityType</td>
             <td valign="center">@measurement.FormattedDuration</td>
             <td valign="center">@distance</td>

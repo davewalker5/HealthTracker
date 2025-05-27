@@ -130,7 +130,7 @@ namespace HealthTracker.Mvc.Controllers
             _logger.LogDebug($"Rendering add view: Person ID = {personId}, From = {start}, To = {end}");
 
             var model = new AddBloodOxygenSaturationViewModel();
-            model.Measurement.PersonId = personId;
+            model.CreateMeasurement(personId);
             await SetFilterDetails(model, personId, start, end);
             return View(model);
         }
@@ -199,7 +199,7 @@ namespace HealthTracker.Mvc.Controllers
 
             // Construct the view model
             var model = new EditBloodOxygenSaturationViewModel();
-            model.Measurement = measurement;
+            model.SetMeasurement(measurement);
             await SetFilterDetails(model, measurement.PersonId, start, end);
             return View(model);
         }
