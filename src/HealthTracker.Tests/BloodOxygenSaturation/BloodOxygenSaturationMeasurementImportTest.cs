@@ -69,7 +69,7 @@ namespace HealthTracker.Tests.BloodOxygenSaturation
         [TestMethod]
         public async Task ImportMeasurementsTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.FirstNames} {_person.Surname}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Percentage}"",""{_measurement.Assessment}""";
+            var record = $@"""{_person.Id}"",""{_person.FirstNames} {_person.Surname}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_measurement.Percentage}"",""{_measurement.Assessment}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 

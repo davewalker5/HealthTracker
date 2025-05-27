@@ -305,7 +305,7 @@ namespace HealthTracker.Tests.BloodGlucose
             var surname = DataGenerator.RandomSurname();
             var date = DataGenerator.RandomDateInYear(2024, true);
             var percentage = DataGenerator.RandomSPO2Value();
-            var record = $"""{personId}"",""{firstNames} {surname}"",""{date.ToString("yyyy-MM-dd HH:mm:ss")}"","{percentage}",""Normal""";
+            var record = $"""{personId}"",""{firstNames} {surname}"",""{date.ToString("dd-MMM-yyyy HH:mm:ss")}"","{percentage}",""Normal""";
 
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);

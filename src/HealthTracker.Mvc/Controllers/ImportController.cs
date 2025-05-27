@@ -109,7 +109,7 @@ namespace HealthTracker.Mvc.Controllers
                 ModelState.Clear();
                 model.Message = $"Import of {model.DataExchangeTypeName} data from {fileName} has been requested";
                 model.DataExchangeType = DataExchangeType.None;
-                model.ImportFile = default;
+                model.ImportFile = null;
             }
             else
             {

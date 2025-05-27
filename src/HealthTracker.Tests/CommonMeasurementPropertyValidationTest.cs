@@ -39,7 +39,7 @@ namespace HealthTracker.Tests
         [ExpectedException(typeof(InvalidFieldValueException))]
         public async Task InvalidPersonIdTest()
         {
-            var record = $@"""{0}"",""{_person.Name}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Systolic}"",""{_measurement.Diastolic}"",""{Assessment}""";
+            var record = $@"""{0}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_measurement.Systolic}"",""{_measurement.Diastolic}"",""{Assessment}""";
             var filePath = Path.ChangeExtension(Path.GetTempFileName(), "csv");
             File.WriteAllLines(filePath, ["", record]);
 
@@ -50,7 +50,7 @@ namespace HealthTracker.Tests
         [ExpectedException(typeof(InvalidFieldValueException))]
         public async Task InvalidNameTest()
         {
-            var record = $@"""{_person.Id}"","""",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Systolic}"",""{_measurement.Diastolic}"",""{Assessment}""";
+            var record = $@"""{_person.Id}"","""",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_measurement.Systolic}"",""{_measurement.Diastolic}"",""{Assessment}""";
             var filePath = Path.ChangeExtension(Path.GetTempFileName(), "csv");
             File.WriteAllLines(filePath, ["", record]);
 
@@ -62,7 +62,7 @@ namespace HealthTracker.Tests
         public async Task InvalidDateTest()
         {
             var date = DateTime.Now.AddDays(1);
-            var record = $@"""{_person.Id}"",""{_person.Name}"",""{date:dd/MM/yyyy}"",""{_measurement.Systolic}"",""{_measurement.Diastolic}"",""{Assessment}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{date:dd-MMM-yyyy HH:mm:ss}"",""{_measurement.Systolic}"",""{_measurement.Diastolic}"",""{Assessment}""";
             var filePath = Path.ChangeExtension(Path.GetTempFileName(), "csv");
             File.WriteAllLines(filePath, ["", record]);
 

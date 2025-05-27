@@ -247,7 +247,7 @@ namespace HealthTracker.Tests.Cholesterol
 
             var person = DataGenerator.RandomPerson(16, 90);
             var measurement = DataGenerator.RandomCholesterolMeasurement(person.Id, 2024);
-            var record = $"""{person.Id}"",""{person.Name}"",""{measurement.Date:dd/MM/yyyy}"",""{measurement.Total}"",""{measurement.HDL}"",""{measurement.LDL}"",""{measurement.Triglycerides}""";
+            var record = $"""{person.Id}"",""{person.Name}"",""{measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{measurement.Total}"",""{measurement.HDL}"",""{measurement.LDL}"",""{measurement.Triglycerides}""";
     
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);

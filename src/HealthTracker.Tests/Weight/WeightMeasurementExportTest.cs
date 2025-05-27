@@ -81,7 +81,7 @@ namespace HealthTracker.Tests.Weight
         [TestMethod]
         public void FromCsvRecordTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Weight}"",""{_measurement.BMI}"",""{_measurement.BMIAssessment}"",""{_measurement.BMR}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_measurement.Weight}"",""{_measurement.BMI}"",""{_measurement.BMIAssessment}"",""{_measurement.BMR}""";
             var exportable = ExportableWeightMeasurement.FromCsv(record);
             Assert.AreEqual(_person.Id, exportable.PersonId);
             Assert.AreEqual(_person.Name, exportable.Name);

@@ -57,7 +57,7 @@ namespace HealthTracker.DataExchange.Export
             var exportable = measurements.ToExportable(people);
 
             // Configure an exporter to export them
-            var exporter = new CsvExporter<ExportableBloodOxygenSaturationMeasurement>(ExportableEntityBase.DateTimeFormat);
+            var exporter = new CsvExporter<ExportableBloodOxygenSaturationMeasurement>(ExportableEntityBase.TimestampFormat);
             exporter.RecordExport += OnRecordExported;
 
             // Export the records

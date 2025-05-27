@@ -7,13 +7,10 @@ namespace HealthTracker.DataExchange.Entities
     [ExcludeFromCodeCoverage]
     public class ExportableBloodGlucoseMeasurement : ExportableMeasurementBase
     {
-        public const string CsvRecordPattern = @"^""[0-9]+"","".*"",""[0-9]+-[0-9]+-[0-9]+ [0-9]+:[0-9]+:[0-9]+"",""[0-9\.]+"".?$";
+        public const string CsvRecordPattern = @"^""[0-9]+"","".*"",""[0-9]+-[A-Za-z]+-[0-9]+ [0-9]+:[0-9]+:[0-9]+"",""[0-9\.]+"".?$";
 
         [Export("Level", 4)]
         public decimal Level { get; set; }
-
-        [Export("Assessment", 5)]
-        public string Assessment { get; set; }
 
         public static ExportableBloodGlucoseMeasurement FromCsv(string record)
         {

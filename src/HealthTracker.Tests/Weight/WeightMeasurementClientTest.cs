@@ -246,7 +246,7 @@ namespace HealthTracker.Tests.Weight
 
             var person = DataGenerator.RandomPerson(16, 90);
             var measurement = DataGenerator.RandomWeightMeasurement(person.Id, 2024, 50, 100);
-            var record = $@"""{person.Id}"",""{person.Name}"",""{measurement.Date:dd/MM/yyyy}"",""{measurement.Weight}";
+            var record = $@"""{person.Id}"",""{person.Name}"",""{measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{measurement.Weight}";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 

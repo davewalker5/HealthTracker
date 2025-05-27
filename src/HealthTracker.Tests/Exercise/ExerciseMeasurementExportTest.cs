@@ -69,7 +69,7 @@ namespace HealthTracker.Tests.Exercise
         [TestMethod]
         public void FromCsvRecordTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd/MM/yyyy}"",""{_activityType.Description}"",""{_measurement.Duration.ToFormattedDuration()}"",""{_measurement.Distance}"",""{_measurement.Calories}"",""{_measurement.MinimumHeartRate}"",""{_measurement.MaximumHeartRate}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_activityType.Description}"",""{_measurement.Duration.ToFormattedDuration()}"",""{_measurement.Distance}"",""{_measurement.Calories}"",""{_measurement.MinimumHeartRate}"",""{_measurement.MaximumHeartRate}""";
             var exportable = ExportableExerciseMeasurement.FromCsv(record);
             Assert.AreEqual(_person.Id, exportable.PersonId);
             Assert.AreEqual($"{_person.Name}", exportable.Name);
