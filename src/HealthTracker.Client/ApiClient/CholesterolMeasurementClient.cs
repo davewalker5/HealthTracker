@@ -33,11 +33,10 @@ namespace HealthTracker.Client.ApiClient
             decimal ldl,
             decimal triglycerides)
         {
-            var measurementDate = date ?? DateTime.Now;
             dynamic template = new
             {
                 PersonId = personId,
-                Date = new DateTime(measurementDate.Year, measurementDate.Month, measurementDate.Day, 0, 0, 0),
+                Date = date ?? DateTime.Now,
                 Total = total,
                 HDL = hdl,
                 LDL = ldl,
@@ -71,12 +70,11 @@ namespace HealthTracker.Client.ApiClient
             decimal ldl,
             decimal triglycerides)
         {
-            var measurementDate = date ?? DateTime.Now;
             dynamic template = new
             {
                 Id = id,
                 PersonId = personId,
-                Date = new DateTime(measurementDate.Year, measurementDate.Month, measurementDate.Day, 0, 0, 0),
+                Date = date ?? DateTime.Now,
                 Total = total,
                 HDL = hdl,
                 LDL = ldl,

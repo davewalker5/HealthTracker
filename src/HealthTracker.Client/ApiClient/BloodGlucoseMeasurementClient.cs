@@ -24,11 +24,10 @@ namespace HealthTracker.Client.ApiClient
         /// <returns></returns>
         public async Task<BloodGlucoseMeasurement> AddAsync(int personId, DateTime? date, decimal level)
         {
-            var measurementDate = date ?? DateTime.Now;
             dynamic template = new
             {
                 PersonId = personId,
-                Date = date,
+                Date = date ?? DateTime.Now,
                 Level = level
             };
 
@@ -49,12 +48,11 @@ namespace HealthTracker.Client.ApiClient
         /// <returns></returns>
         public async Task<BloodGlucoseMeasurement> UpdateAsync(int id, int personId, DateTime? date, decimal level)
         {
-            var measurementDate = date ?? DateTime.Now;
             dynamic template = new
             {
                 Id = id,
                 PersonId = personId,
-                Date = date,
+                Date = date ?? DateTime.Now,
                 Level = level
             };
 

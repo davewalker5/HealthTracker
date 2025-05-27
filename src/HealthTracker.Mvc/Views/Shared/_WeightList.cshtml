@@ -5,6 +5,7 @@
     <tr>
         <th>Person</th>
         <th>Date</th>
+        <th>Time</th>
         <th>Weight</th>
         <th>BMI</th>
         <th>Assessment</th>
@@ -20,6 +21,7 @@
         <tr>
             <td valign="center">@Model.Filters.SelectedPerson.Name</td>
             <td valign="center">@measurement.Date.ToString("dd-MMM-yyyy")</td>
+            <td valign="center">@measurement.Date.ToString("HH:mm")</td>
             <td valign="center">@measurement.Weight.ToString("0.00")</td>
             <td valign="center">@measurement.BMI.ToString("0.00")</td>
             <td valign="center">@measurement.BMIAssessment</td>

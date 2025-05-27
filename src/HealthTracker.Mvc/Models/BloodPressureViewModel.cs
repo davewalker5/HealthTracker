@@ -2,18 +2,30 @@ using HealthTracker.Entities.Measurements;
 
 namespace HealthTracker.Mvc.Models
 {
-    public class BloodPressureViewModel : SelectedFiltersViewModel
+    public class BloodPressureViewModel : TimestampViewModel
     {
-        public BloodPressureMeasurement Measurement { get; set; } = new();
-        public string Action { get; set; }
+        public BloodPressureMeasurement Measurement { get; set; }
 
-        public BloodPressureViewModel()
+        /// <summary>
+        /// Create a new, empty measurement for the specified person
+        /// </summary>
+        /// <param name="personId"></param>
+        public void CreateMeasurement(int personId)
+            => SetMeasurement(
+                new BloodPressureMeasurement()
+                {
+                    PersonId = personId,
+                    Date = DateTime.Now
+                });
+
+        /// <summary>
+        /// Set the measurement and the date and time strings
+        /// </summary>
+        /// <param name="measurement"></param>
+        public void SetMeasurement(BloodPressureMeasurement measurement)
         {
-            Measurement.Id = 0;
-            Measurement.PersonId = 0;
-            Measurement.Date = DateTime.Now;
-            Measurement.Systolic = 0;
-            Measurement.Diastolic = 0;
+            Measurement = measurement;
+            SetTimestamp(Measurement.Date);
         }
     }
 }

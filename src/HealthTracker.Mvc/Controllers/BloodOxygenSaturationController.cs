@@ -130,7 +130,7 @@ namespace HealthTracker.Mvc.Controllers
             _logger.LogDebug($"Rendering add view: Person ID = {personId}, From = {start}, To = {end}");
 
             var model = new AddBloodOxygenSaturationViewModel();
-            model.Measurement.PersonId = personId;
+            model.CreateMeasurement(personId);
             await SetFilterDetails(model, personId, start, end);
             return View(model);
         }
@@ -155,17 +155,20 @@ namespace HealthTracker.Mvc.Controllers
                 var personId = model.Measurement.PersonId;
                 var personName = model.PersonName;
 
+                // Combine the date and time strings to produce a timestamp
+                var timestamp = model.Timestamp();
+
                 // Add the measurement
-                _logger.LogDebug($"Adding % SPO2 measurement: Person = {personName}, Date = {model.Measurement.Date}, Percentage = {model.Measurement.Percentage:0.00}");
-                var measurement = await _measurementClient.AddAsync(personId, DateTime.Now, model.Measurement.Percentage);
+                _logger.LogDebug($"Adding % SPO2 measurement: Person = {personName}, Timestamp = {timestamp}, Percentage = {model.Measurement.Percentage:0.00}");
+                var measurement = await _measurementClient.AddAsync(personId, timestamp, model.Measurement.Percentage);
 
                 // Return the measurement list view containing only the new measurement and a confirmation message
                 var message = $"% SPO2 measurement of {model.Measurement.Percentage:0.00} for {personName} added successfully";
                 var listModel = await CreateListViewModel(
                     measurement.PersonId,
                     measurement.Id,
-                    measurement.Date,
-                    measurement.Date,
+                    timestamp,
+                    timestamp,
                     message,
                     ViewFlags.ListView);
 
@@ -196,7 +199,7 @@ namespace HealthTracker.Mvc.Controllers
 
             // Construct the view model
             var model = new EditBloodOxygenSaturationViewModel();
-            model.Measurement = measurement;
+            model.SetMeasurement(measurement);
             await SetFilterDetails(model, measurement.PersonId, start, end);
             return View(model);
         }
@@ -219,20 +222,23 @@ namespace HealthTracker.Mvc.Controllers
 
             if (ModelState.IsValid)
             {
+                // Combine the date and time strings to produce a timestamp
+                var timestamp = model.Timestamp();
+
                 // Update the measurement
-                _logger.LogDebug($"Updating % SPO2 measurement: ID = {model.Measurement.Id}, Person ID = {model.Measurement.PersonId}, Date = {model.Measurement.Date}, Percentage = {model.Measurement.Percentage}");
+                _logger.LogDebug($"Updating % SPO2 measurement: ID = {model.Measurement.Id}, Person ID = {model.Measurement.PersonId}, Timestamp = {timestamp}, Percentage = {model.Measurement.Percentage}");
                 await _measurementClient.UpdateAsync(
                     model.Measurement.Id,
                     model.Measurement.PersonId,
-                    model.Measurement.Date,
+                    timestamp,
                     model.Measurement.Percentage);
 
                 // Return the measurement list view containing only the updated measurement and a confirmation message
                 var listModel = await CreateListViewModel(
                     model.Measurement.PersonId,
                     model.Measurement.Id,
-                    model.Measurement.Date,
-                    model.Measurement.Date,
+                    timestamp,
+                    timestamp,
                     "Measurement successfully updated",
                     ViewFlags.ListView);
 

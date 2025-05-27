@@ -2,17 +2,30 @@ using HealthTracker.Entities.Measurements;
 
 namespace HealthTracker.Mvc.Models
 {
-    public class WeightViewModel : SelectedFiltersViewModel
+    public class WeightViewModel : TimestampViewModel
     {
-        public WeightMeasurement Measurement { get; set; } = new();
-        public string Action { get; set; }
+        public WeightMeasurement Measurement { get; set; }
 
-        public WeightViewModel()
+        /// <summary>
+        /// Create a new, empty measurement for the specified person
+        /// </summary>
+        /// <param name="personId"></param>
+        public void CreateMeasurement(int personId)
+            => SetMeasurement(
+                new WeightMeasurement()
+                {
+                    PersonId = personId,
+                    Date = DateTime.Now
+                });
+
+        /// <summary>
+        /// Set the measurement and the date and time strings
+        /// </summary>
+        /// <param name="measurement"></param>
+        public void SetMeasurement(WeightMeasurement measurement)
         {
-            Measurement.Id = 0;
-            Measurement.PersonId = 0;
-            Measurement.Date = DateTime.Now;
-            Measurement.Weight = 0;
+            Measurement = measurement;
+            SetTimestamp(Measurement.Date);
         }
     }
 }
