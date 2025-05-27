@@ -124,7 +124,7 @@ namespace HealthTracker.DataExchange.Import
             var diastolic = values[diastolicIndex];
 
             // Return a CSV-format record with all fields quoted
-            return $"\"{person.Id}\",\"{person.FirstNames} {person.Surname}\",\"{date:dd/MM/yyyy}\",\"{systolic}\",\"{diastolic}\",\"\"";
+            return $"\"{person.Id}\",\"{person.FirstNames} {person.Surname}\",\"{date:dd-MMM-yyyy HH:mm:ss}\",\"{systolic}\",\"{diastolic}\",\"\"";
         }
 
         /// <summary>

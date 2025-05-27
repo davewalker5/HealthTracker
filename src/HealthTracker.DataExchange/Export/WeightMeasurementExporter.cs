@@ -48,7 +48,7 @@ namespace HealthTracker.DataExchange.Export
             IEnumerable<ExportableWeightMeasurement> exportable = measurements.ToExportable(people);
 
             // Configure an exporter to export them
-            var exporter = new CsvExporter<ExportableWeightMeasurement>(ExportableEntityBase.DateTimeFormat);
+            var exporter = new CsvExporter<ExportableWeightMeasurement>(ExportableEntityBase.TimestampFormat);
             exporter.RecordExport += OnRecordExported;
 
             // Export the records

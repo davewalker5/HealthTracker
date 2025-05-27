@@ -82,7 +82,7 @@ namespace HealthTracker.Tests.Weight
         [TestMethod]
         public async Task ImportMeasurementsTest()
         {
-            var record = $@"""{_measurement.PersonId}"",""{_person.Name}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Weight}"",""{_measurement.BMI}"",""{_measurement.BMIAssessment}"",""{_measurement.BMR}""";
+            var record = $@"""{_measurement.PersonId}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_measurement.Weight}"",""{_measurement.BMI}"",""{_measurement.BMIAssessment}"",""{_measurement.BMR}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
             await _importer.ImportAsync(_filePath);
@@ -114,7 +114,7 @@ namespace HealthTracker.Tests.Weight
         [ExpectedException(typeof(InvalidFieldValueException))]
         public async Task InvalidWeightTest()
         {
-            var record = $@"""{_measurement.PersonId}"",""{_person.Name}"",""{_measurement.Date:dd/MM/yyyy}"",""{0}"",""{_measurement.BMI}"",""{_measurement.BMIAssessment}"",""{_measurement.BMR}""";
+            var record = $@"""{_measurement.PersonId}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{0}"",""{_measurement.BMI}"",""{_measurement.BMIAssessment}"",""{_measurement.BMR}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 

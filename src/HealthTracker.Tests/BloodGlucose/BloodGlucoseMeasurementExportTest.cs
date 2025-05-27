@@ -58,7 +58,7 @@ namespace HealthTracker.Tests.BloodGlucose
         [TestMethod]
         public void FromCsvRecordTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.FirstNames} {_person.Surname}"",""{_measurement.Date:yyyy-MM-dd HH:mm:ss}"",""{_measurement.Level}""";
+            var record = $@"""{_person.Id}"",""{_person.FirstNames} {_person.Surname}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_measurement.Level}""";
             var exportable = ExportableBloodGlucoseMeasurement.FromCsv(record);
             Assert.AreEqual(_measurement.PersonId, exportable.PersonId);
             Assert.AreEqual($"{_person.FirstNames} {_person.Surname}", exportable.Name);

@@ -1,13 +1,14 @@
 using HealthTracker.DataExchange.Attributes;
 using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
+using DocumentFormat.OpenXml.InkML;
 
 namespace HealthTracker.DataExchange.Entities
 {
     [ExcludeFromCodeCoverage]
     public class ExportableWeightMeasurement : ExportableMeasurementBase
     {
-        public const string CsvRecordPattern = @"^""[0-9]+"","".*"",""[0-9]+\/[0-9]+\/[0-9]+"",""[0-9.]+"",""[0-9.]+"","".*"",""[0-9.]+"".?$";
+        public const string CsvRecordPattern = @"^""[0-9]+"","".*"",""[0-9]+-[A-Za-z]+-[0-9]+ [0-9]+:[0-9]+:[0-9]+"",""[0-9.]+"",""[0-9.]+"","".*"",""[0-9.]+"".?$";
 
         [Export("Weight", 4)]
         public decimal Weight { get; set; }
@@ -28,7 +29,7 @@ namespace HealthTracker.DataExchange.Entities
             {
                 PersonId = int.Parse(words[0].Replace("\"", "").Trim()),
                 Name = words[1].Replace("\"", "").Trim(),
-                Date = DateTime.ParseExact(words[2].Replace("\"", "").Trim(), DateTimeFormat, CultureInfo.CurrentCulture),
+                Date = DateTime.ParseExact(words[2].Replace("\"", "").Trim(), TimestampFormat, CultureInfo.CurrentCulture),
                 Weight = decimal.Parse(words[3].Replace("\"", "").Trim()),
                 BMI = decimal.Parse(words[4].Replace("\"", "").Trim()),
                 BMIAssessment = words[5].Replace("\"", "").Trim(),

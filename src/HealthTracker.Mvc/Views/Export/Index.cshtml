@@ -97,7 +97,18 @@
         <hr />
         <p class="text-right">
             <button type="submit" name="Action" value="@ControllerActions.ActionCancel" class="btn btn-secondary">@Model.BackButtonLabel</button>
-            <button type="submit" name="Action" value="@ControllerActions.ActionExport" class="btn btn-primary">Export</button>
+            <button type="submit" name="Action" id="Export" value="@ControllerActions.ActionExport" class="btn btn-primary">Export</button>
         </p>
     </div>
 }
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $(document).on('keydown', function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                $('#Export').click();
+            }
+        });
+    });
+</script>

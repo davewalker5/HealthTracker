@@ -45,7 +45,7 @@ namespace HealthTracker.DataExchange.Export
             var exportable = measurements.ToExportable(people);
 
             // Configure an exporter to export them
-            var exporter = new CsvExporter<ExportableCholesterolMeasurement>(ExportableEntityBase.DateTimeFormat);
+            var exporter = new CsvExporter<ExportableCholesterolMeasurement>(ExportableEntityBase.TimestampFormat);
             exporter.RecordExport += OnRecordExported;
 
             // Export the records

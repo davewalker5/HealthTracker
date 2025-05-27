@@ -58,7 +58,7 @@ namespace HealthTracker.Tests.BloodOxygenSaturation
         [TestMethod]
         public void FromCsvRecordTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.FirstNames} {_person.Surname}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Percentage}"",""{_measurement.Assessment}""";
+            var record = $@"""{_person.Id}"",""{_person.FirstNames} {_person.Surname}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_measurement.Percentage}"",""{_measurement.Assessment}""";
             var exportable = ExportableBloodOxygenSaturationMeasurement.FromCsv(record);
             Assert.AreEqual(_measurement.PersonId, exportable.PersonId);
             Assert.AreEqual($"{_person.FirstNames} {_person.Surname}", exportable.Name);

@@ -2,13 +2,14 @@ using HealthTracker.DataExchange.Attributes;
 using System;
 using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
+using DocumentFormat.OpenXml.InkML;
 
 namespace HealthTracker.DataExchange.Entities
 {
     [ExcludeFromCodeCoverage]
     public class ExportableCholesterolMeasurement : ExportableMeasurementBase
     {
-        public const string CsvRecordPattern = @"^""[0-9]+"","".*"",""[0-9]+\/[0-9]+\/[0-9]+"",""[0-9.]+"",""[0-9.]+"",""[0-9.]+"",""[0-9.]+"".?$";
+        public const string CsvRecordPattern = @"^""[0-9]+"","".*"",""[0-9]+-[A-Za-z]+-[0-9]+ [0-9]+:[0-9]+:[0-9]+"",""[0-9.]+"",""[0-9.]+"",""[0-9.]+"",""[0-9.]+"".?$";
 
         [Export("Total", 4)]
         public decimal Total { get; set; }
@@ -29,7 +30,7 @@ namespace HealthTracker.DataExchange.Entities
             {
                 PersonId = int.Parse(words[0].Replace("\"", "").Trim()),
                 Name = words[1].Replace("\"", "").Trim(),
-                Date = DateTime.ParseExact(words[2].Replace("\"", "").Trim(), DateTimeFormat, CultureInfo.CurrentCulture),
+                Date = DateTime.ParseExact(words[2].Replace("\"", "").Trim(), TimestampFormat, CultureInfo.CurrentCulture),
                 Total = decimal.Parse(words[3].Replace("\"", "").Trim()),
                 HDL = decimal.Parse(words[4].Replace("\"", "").Trim()),
                 LDL = decimal.Parse(words[5].Replace("\"", "").Trim()),

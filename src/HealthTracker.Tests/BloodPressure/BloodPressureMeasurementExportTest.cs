@@ -60,7 +60,7 @@ namespace HealthTracker.Tests.BloodPressure
         [TestMethod]
         public void FromCsvRecordTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Systolic}"",""{_measurement.Diastolic}"",""Optimal""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_measurement.Systolic}"",""{_measurement.Diastolic}"",""Optimal""";
             var exportable = ExportableBloodPressureMeasurement.FromCsv(record);
             Assert.AreEqual(_person.Id, exportable.PersonId);
             Assert.AreEqual(_person.Name, exportable.Name);

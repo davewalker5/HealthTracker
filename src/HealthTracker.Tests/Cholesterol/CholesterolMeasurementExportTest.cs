@@ -64,7 +64,7 @@ namespace HealthTracker.Tests.Cholesterol
         [TestMethod]
         public void FromCsvRecordTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd/MM/yyyy}"",""{_measurement.Total}"",""{_measurement.HDL}"",""{_measurement.LDL}"",""{_measurement.Triglycerides}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_measurement.Total}"",""{_measurement.HDL}"",""{_measurement.LDL}"",""{_measurement.Triglycerides}""";
             var exportable = ExportableCholesterolMeasurement.FromCsv(record);
             Assert.AreEqual(_person.Id, exportable.PersonId);
             Assert.AreEqual(_person.Name, exportable.Name);

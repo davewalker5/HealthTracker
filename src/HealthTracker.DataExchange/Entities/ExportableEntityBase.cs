@@ -6,6 +6,6 @@ namespace HealthTracker.DataExchange.Entities
     public class ExportableEntityBase
     {
         public const string DateTimeFormat = "dd/MM/yyyy";
-        public const string TimestampFormat = "yyyy-MM-dd HH:mm:ss";
+        public const string TimestampFormat = "dd-MMM-yyyy HH:mm:ss";
     }
 }

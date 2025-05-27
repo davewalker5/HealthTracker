@@ -67,7 +67,7 @@ namespace HealthTracker.Tests.BloodGlucose
         [TestMethod]
         public async Task ImportMeasurementsTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.FirstNames} {_person.Surname}"",""{_measurement.Date:yyyy-MM-dd HH:mm:ss}"",""{_measurement.Level}""";
+            var record = $@"""{_person.Id}"",""{_person.FirstNames} {_person.Surname}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_measurement.Level}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 
