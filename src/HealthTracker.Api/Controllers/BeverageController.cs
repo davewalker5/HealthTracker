@@ -62,7 +62,7 @@ namespace HealthTracker.Api.Controllers
         [Route("")]
         public async Task<ActionResult<Beverage>> AddBeverageAsync([FromBody] Beverage template)
         {
-            var beverage = await _factory.Beverages.AddAsync(template.Description, template.DistanceBased);
+            var beverage = await _factory.Beverages.AddAsync(template.Name, template.TypicalABV);
             return beverage;
         }
 
@@ -75,7 +75,7 @@ namespace HealthTracker.Api.Controllers
         [Route("")]
         public async Task<ActionResult<Beverage>> UpdateBeverageAsync([FromBody] Beverage template)
         {
-            var beverage = await _factory.Beverages.UpdateAsync(template.Id, template.Description, template.DistanceBased);
+            var beverage = await _factory.Beverages.UpdateAsync(template.Id, template.Name, template.TypicalABV);
             return beverage;
         }
 

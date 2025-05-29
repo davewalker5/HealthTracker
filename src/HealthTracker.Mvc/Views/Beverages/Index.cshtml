@@ -1,21 +1,21 @@
 @using HealthTracker.Mvc.Entities
 @using Microsoft.AspNetCore.Mvc.ModelBinding
-@model HealthTracker.Mvc.Models.ActivityTypeListViewModel
+@model HealthTracker.Mvc.Models.BeverageListViewModel
 
 @{
-    ViewData["Title"] = "Activity Types";
+    ViewData["Title"] = "Beverages";
     var previousDisabled = (Model.PreviousEnabled) ? "" : "disabled";
     var nextDisabled = (Model.NextEnabled) ? "" : "disabled";
 }
 
 <p class="text-center font-weight-bold">
     <span style="font-size: 1.2rem">
-        Activity Types
+        Beverages
     </span>
     <br />
     <small class="text-muted">
         <em>
-            View and manage activity types
+            View and manage beverages
         </em>
     </small>
 </p>
@@ -32,27 +32,26 @@
         <hr />
     }
 
-    @using (Html.BeginForm("Index", "ActivityType", FormMethod.Post))
+    @using (Html.BeginForm("Index", "Beverage", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
         @Html.HiddenFor(m => m.PageNumber)
 
-        @if ((Model.ActivityTypes != null) && (Model.ActivityTypes.Count() > 0))
+        @if ((Model.Beverages != null) && (Model.Beverages.Count() > 0))
         {
             <table class="table">
                 <tr>
-                    <th>Description</th>
-                    <th>Distance Based</th>
+                    <th>Name</th>
+                    <th>Typical ABV %</th>
                     <th />
                 </tr>
-                @foreach (var activityType in Model.ActivityTypes)
+                @foreach (var beverage in Model.Beverages)
                 {
-                    var distanceBased = activityType.DistanceBased ? "Yes" : "No";
                     <tr>
-                        <td valign="center">@activityType.Description</td>
-                        <td valign="center">@distanceBased</td>
+                        <td valign="center">@beverage.Name</td>
+                        <td valign="center">@beverage.TypicalABV.ToString("0.00")</td>
                         <td valign="center">
-                            <a class="btn btn-lg" asp-area="" asp-controller="ActivityType" asp-action="Edit" asp-route-id="@activityType.Id">
+                            <a class="btn btn-lg" asp-area="" asp-controller="Beverage" asp-action="Edit" asp-route-id="@beverage.Id">
                                 <i class="fas fa-edit"></i>
                             </a>
                         </td>
@@ -63,13 +62,13 @@
             <p class="text-right">
                 <button type="submit" name="Action" value="@ControllerActions.ActionPreviousPage" class="btn btn-secondary" @previousDisabled>Previous</button>
                 <button type="submit" name="Action" value="@ControllerActions.ActionNextPage" class="btn btn-primary" @nextDisabled>Next</button>
-                <a class="btn btn-primary" href="/ActivityType/Add" role="button">Add</a>
+                <a class="btn btn-primary" href="/Beverage/Add" role="button">Add</a>
             </p>
         }
         else if (Model.HasNoMatchingResults)
         {
             <hr />
-            @Html.Raw("No matching activity types")
+            @Html.Raw("No matching beverages")
         }
     }
 

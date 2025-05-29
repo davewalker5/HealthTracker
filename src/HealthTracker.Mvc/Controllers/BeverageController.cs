@@ -9,36 +9,36 @@ using Microsoft.AspNetCore.Mvc;
 namespace HealthTracker.Mvc.Controllers
 {
     [Authorize]
-    public class ActivityTypeController : ReferenceDataControllerBase<ActivityTypeListViewModel, ActivityType>
+    public class BeverageController : ReferenceDataControllerBase<BeverageListViewModel, Beverage>
     {
-        private readonly IActivityTypeClient _client;
+        private readonly IBeverageClient _client;
 
-        private readonly ILogger<ActivityTypeController> _logger;
+        private readonly ILogger<BeverageController> _logger;
 
-        public ActivityTypeController(
-            IActivityTypeClient client,
+        public BeverageController(
+            IBeverageClient client,
             IHealthTrackerApplicationSettings settings,
-            ILogger<ActivityTypeController> logger) : base(settings)
+            ILogger<BeverageController> logger) : base(settings)
         {
             _client = client;
             _logger = logger;
         }
 
         /// <summary>
-        /// Serve the current list of activity types
+        /// Serve the current list of beverages
         /// </summary>
         /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            // Get the list of current activity types
-            var activityTypes = await _client.ListAsync(1, _settings.ResultsPageSize);
-            var plural = activityTypes.Count == 1 ? "" : "s";
-            _logger.LogDebug($"{activityTypes.Count} activity type{plural} loaded via the service");
+            // Get the list of current beverages
+            var beverages = await _client.ListAsync(1, _settings.ResultsPageSize);
+            var plural = beverages.Count == 1 ? "" : "s";
+            _logger.LogDebug($"{beverages.Count} beverage{plural} loaded via the service");
 
             // Construct the view model and serve the page
-            var model = new ActivityTypeListViewModel();
-            model.SetEntities(activityTypes, 1, _settings.ResultsPageSize);
+            var model = new BeverageListViewModel();
+            model.SetEntities(beverages, 1, _settings.ResultsPageSize);
             return View(model);
         }
 
@@ -49,7 +49,7 @@ namespace HealthTracker.Mvc.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(ActivityTypeListViewModel model)
+        public async Task<IActionResult> Index(BeverageListViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -72,8 +72,8 @@ namespace HealthTracker.Mvc.Controllers
                 ModelState.Clear();
 
                 // Retrieve the matching records
-                var activityTypes = await _client.ListAsync(page, _settings.ResultsPageSize);
-                model.SetEntities(activityTypes, page, _settings.ResultsPageSize);
+                var beverages = await _client.ListAsync(page, _settings.ResultsPageSize);
+                model.SetEntities(beverages, page, _settings.ResultsPageSize);
             }
             else
             {
@@ -84,24 +84,24 @@ namespace HealthTracker.Mvc.Controllers
         }
         
         /// <summary>
-        /// Serve the page to add a new activity type
+        /// Serve the page to add a new beverage
         /// </summary>
         /// <returns></returns>
         [HttpGet]
         public IActionResult Add()
         {
-            var model = new AddActivityTypeViewModel();
+            var model = new AddBeverageViewModel();
             return View(model);
         }
 
         /// <summary>
-        /// Handle POST events to save new activity types
+        /// Handle POST events to save new beverages
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add(AddActivityTypeViewModel model)
+        public async Task<IActionResult> Add(AddBeverageViewModel model)
         {
             IActionResult result;
 
@@ -112,10 +112,10 @@ namespace HealthTracker.Mvc.Controllers
 
             if (ModelState.IsValid)
             {
-                _logger.LogDebug($"Adding activity type: Description = {model.ActivityType.Description}, Distance Based = {model.ActivityType.DistanceBased}");
-                var activityType = await _client.AddAsync(model.ActivityType.Description, model.ActivityType.DistanceBased);
+                _logger.LogDebug($"Adding beverage: Name = {model.Beverage.Name}, Typical ABV % = {model.Beverage.TypicalABV}");
+                var beverage = await _client.AddAsync(model.Beverage.Name, model.Beverage.TypicalABV);
 
-                result = CreateListResult(activityType, $"{activityType.Description} successfully added");
+                result = CreateListResult(beverage, $"{beverage.Name} successfully added");
             }
             else
             {
@@ -127,33 +127,33 @@ namespace HealthTracker.Mvc.Controllers
         }
         
         /// <summary>
-        /// Serve the page to edit an existing activity type
+        /// Serve the page to edit an existing beverage
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var activityTypes = await _client.ListAsync(1, int.MaxValue);
-            var plural = activityTypes.Count == 1 ? "" : "s";
-            _logger.LogDebug($"{activityTypes.Count} activity type{plural} loaded via the service");
+            var beverages = await _client.ListAsync(1, int.MaxValue);
+            var plural = beverages.Count == 1 ? "" : "s";
+            _logger.LogDebug($"{beverages.Count} beverage{plural} loaded via the service");
 
-            var activityType = activityTypes.First(x => x.Id == id);
-            _logger.LogDebug($"Activity type with ID {id} identified for editing");
+            var beverage = beverages.First(x => x.Id == id);
+            _logger.LogDebug($"Beverage with ID {id} identified for editing");
 
-            var model = new EditActivityTypeViewModel();
-            model.ActivityType = activityType;
+            var model = new EditBeverageViewModel();
+            model.Beverage = beverage;
             return View(model);
         }
 
         /// <summary>
-        /// Handle POST events to update an existing activity type
+        /// Handle POST events to update an existing beverage
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EditActivityTypeViewModel model)
+        public async Task<IActionResult> Edit(EditBeverageViewModel model)
         {
             IActionResult result;
 
@@ -164,10 +164,10 @@ namespace HealthTracker.Mvc.Controllers
 
             if (ModelState.IsValid)
             {
-                _logger.LogDebug($"Updating activity type: Id = {model.ActivityType.Id}, Description = {model.ActivityType.Description}, Distance Based = {model.ActivityType.DistanceBased}");
-                var activityType = await _client.UpdateAsync(model.ActivityType.Id, model.ActivityType.Description, model.ActivityType.DistanceBased);
+                _logger.LogDebug($"Updating beverage: Id = {model.Beverage.Id}, Name = {model.Beverage.Name}, Typical ABV % = {model.Beverage.TypicalABV}");
+                var beverage = await _client.UpdateAsync(model.Beverage.Id, model.Beverage.Name, model.Beverage.TypicalABV);
 
-                result = CreateListResult(activityType, $"{activityType.Description} successfully added");
+                result = CreateListResult(beverage, $"{beverage.Name} successfully added");
             }
             else
             {
