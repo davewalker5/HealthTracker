@@ -1,6 +1,6 @@
 namespace HealthTracker.Mvc.Models
 {
-    public class AddBloodPressureViewModel : BloodPressureViewModel
+    public class AddAlcoholConsumptionViewModel : AlcoholConsumptionViewModel
     {
         public string Message { get; set; } = "";
     }

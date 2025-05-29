@@ -36,7 +36,7 @@ namespace HealthTracker.Mvc.Helpers
                 list.Add(new SelectListItem() { Text = "", Value = "0" });
             }
 
-            // Now add an entry for each person
+            // Now add an entry for each activity type
             foreach (var activityType in activityTypes)
             {
                 list.Add(new SelectListItem() { Text = activityType.Description, Value = activityType.Id.ToString() });

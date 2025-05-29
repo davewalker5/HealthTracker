@@ -7,6 +7,7 @@ namespace HealthTracker.Mvc.Entities
         BloodPressure,
         Exercise,
         Glucose,
-        Weight
+        Weight,
+        AlcoholConsumption
     }
 }
