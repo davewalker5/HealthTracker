@@ -25,6 +25,7 @@ namespace HealthTracker.Data
         public virtual DbSet<PersonMedication> PersonMedications { get; set; }
         public virtual DbSet<BloodGlucoseMeasurement> BloodGlucoseMeasurements { get; set; }
         public virtual DbSet<JobStatus> JobStatuses { get; set; }
+        public virtual DbSet<Beverage> Beverages { get; set; }
 
 
         public HealthTrackerDbContext(DbContextOptions<HealthTrackerDbContext> options) : base(options)
@@ -188,6 +189,14 @@ namespace HealthTracker.Data
                 entity.Property(e => e.Start).IsRequired().HasColumnName("start").HasColumnType("DATETIME");
                 entity.Property(e => e.End).HasColumnName("end").HasColumnType("DATETIME");
                 entity.Property(e => e.Error).HasColumnName("error");
+            });
+
+            modelBuilder.Entity<Beverage>(entity =>
+            {
+                entity.ToTable("BEVERAGES");
+                entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
+                entity.Property(e => e.Name).IsRequired().HasColumnName("name").HasColumnType("VARCHAR(100)");
+                entity.Property(e => e.TypicalABV).HasColumnName("typical_abv");
             });
         }
     }
