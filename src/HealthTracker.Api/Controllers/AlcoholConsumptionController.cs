@@ -10,13 +10,13 @@ namespace HealthTracker.Api.Controllers
     [ApiController]
     [ApiConventionType(typeof(DefaultApiConventions))]
     [Route("[controller]")]
-    public class BloodGlucoseMeasurementController : Controller
+    public class AlcoholConsumptionController : Controller
     {
         private const string DateTimeFormat = "yyyy-MM-dd H:mm:ss";
 
         private readonly IHealthTrackerFactory _factory;
 
-        public BloodGlucoseMeasurementController(IHealthTrackerFactory factory)
+        public AlcoholConsumptionController(IHealthTrackerFactory factory)
             => _factory = factory;
 
         /// <summary>
@@ -26,9 +26,10 @@ namespace HealthTracker.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("{id}")]
-        public async Task<ActionResult<BloodGlucoseMeasurement>> Get(int id)
+        public async Task<ActionResult<AlcoholConsumptionMeasurement>> Get(int id)
         {
-            var measurements = await _factory.BloodGlucoseMeasurements.ListAsync(x => x.Id == id, 1, int.MaxValue);
+            var measurements = await _factory.AlcoholConsumption.ListAsync(x => x.Id == id, 1, int.MaxValue);
+            await PopulateAncillaryProperties(measurements);
             return measurements.First();
         }
 
@@ -38,14 +39,14 @@ namespace HealthTracker.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("{personId}/{from}/{to}/{pageNumber}/{pageSize}")]
-        public async Task<ActionResult<IEnumerable<BloodGlucoseMeasurement>>> ListBloodGlucoseMeasurementsForPersonAsync(int personId, string from, string to, int pageNumber, int pageSize)
+        public async Task<ActionResult<IEnumerable<AlcoholConsumptionMeasurement>>> ListAlcoholConsumptionMeasurementsForPersonAsync(int personId, string from, string to, int pageNumber, int pageSize)
         {
             // Decode the start and end date and convert them to dates
             DateTime fromDate = DateTime.ParseExact(HttpUtility.UrlDecode(from), DateTimeFormat, null);
             DateTime toDate = DateTime.ParseExact(HttpUtility.UrlDecode(to), DateTimeFormat, null);
 
             // Retrieve matching results
-            var measurements = await _factory.BloodGlucoseMeasurements.ListAsync(
+            var measurements = await _factory.AlcoholConsumption.ListAsync(
                 x => (x.PersonId == personId) && (x.Date >= fromDate) && (x.Date <= toDate),
                 pageNumber,
                 pageSize);
@@ -55,6 +56,8 @@ namespace HealthTracker.Api.Controllers
                 return NoContent();
             }
 
+            // Populate ancillary properties on each measurement
+            await PopulateAncillaryProperties(measurements);
             return measurements;
         }
 
@@ -65,15 +68,20 @@ namespace HealthTracker.Api.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult<BloodGlucoseMeasurement>> AddBloodGlucoseMeasurementAsync([FromBody] BloodGlucoseMeasurement template)
+        public async Task<ActionResult<AlcoholConsumptionMeasurement>> AddAlcoholConsumptionMeasurementAsync([FromBody] AlcoholConsumptionMeasurement template)
         {
             // Add the measurement
-            var measurement = await _factory.BloodGlucoseMeasurements.AddAsync(
+            var measurement = await _factory.AlcoholConsumption.AddAsync(
                 template.PersonId,
+                template.BeverageId,
                 template.Date,
-                template.Level
+                template.Measure,
+                template.Quantity,
+                template.ABV
             );
 
+            // Populate ancillary properties on the measurement
+            await PopulateAncillaryProperties([measurement]);
             return measurement;
         }
 
@@ -84,16 +92,21 @@ namespace HealthTracker.Api.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("")]
-        public async Task<ActionResult<BloodGlucoseMeasurement>> UpdateBloodGlucoseMeasurementAsync([FromBody] BloodGlucoseMeasurement template)
+        public async Task<ActionResult<AlcoholConsumptionMeasurement>> UpdateAlcoholConsumptionMeasurementAsync([FromBody] AlcoholConsumptionMeasurement template)
         {
             // Update the measurement
-            var measurement = await _factory.BloodGlucoseMeasurements.UpdateAsync(
-                template.Id, 
+            var measurement = await _factory.AlcoholConsumption.UpdateAsync(
+                template.Id,
                 template.PersonId,
+                template.BeverageId,
                 template.Date,
-                template.Level
+                template.Measure,
+                template.Quantity,
+                template.ABV
             );
 
+            // Populate ancillary properties on the measurement
+            await PopulateAncillaryProperties([measurement]);
             return measurement;
         }
 
@@ -104,18 +117,35 @@ namespace HealthTracker.Api.Controllers
         /// <returns></returns>
         [HttpDelete]
         [Route("{id}")]
-        public async Task<IActionResult> DeleteBloodGlucoseMeasurements(int id)
+        public async Task<IActionResult> DeleteAlcoholConsumptionMeasurements(int id)
         {
             // Check the measurement exists, first
-            var measurements = await _factory.BloodGlucoseMeasurements.ListAsync(x => x.Id == id, 1, int.MaxValue);
+            var measurements = await _factory.AlcoholConsumption.ListAsync(x => x.Id == id, 1, int.MaxValue);
             if (!measurements.Any())
             {
                 return NotFound();
             }
 
             // It does, so delete it
-            await _factory.BloodGlucoseMeasurements.DeleteAsync(id);
+            await _factory.AlcoholConsumption.DeleteAsync(id);
             return Ok();
+        }
+
+        /// <summary>
+        /// Populate ancillary properties on a set of measurements
+        /// </summary>
+        /// <param name="id"></param>
+        private async Task PopulateAncillaryProperties(IEnumerable<AlcoholConsumptionMeasurement> measurements)
+        {
+            // Calculate the units of alcohol for each record
+            _factory.AlcoholUnitsCalculator.CalculateUnits(measurements);
+
+            // Retrieve a list of beverages and populate the beverage name for each record
+            var beverages = await _factory.Beverages.ListAsync(x => true, 1, int.MaxValue);
+            foreach (var measurement in measurements)
+            {
+                measurement.Beverage = beverages.FirstOrDefault(x => x.Id == measurement.Id)?.Name ?? "";
+            }
         }
     }
 }

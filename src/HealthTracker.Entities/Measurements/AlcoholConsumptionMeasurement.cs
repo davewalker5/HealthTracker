@@ -28,5 +28,8 @@ namespace HealthTracker.Entities.Measurements
 
         [NotMapped]
         public string Beverage { get; set; }
+
+        [NotMapped]
+        public decimal Units { get; set; }
     }
 }
