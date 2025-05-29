@@ -20,6 +20,7 @@ namespace HealthTracker.Api.Controllers
         private readonly IBackgroundQueue<ExerciseMeasurementExportWorkItem> _exerciseMeasurementQueue;
         private readonly IBackgroundQueue<BloodOxygenSaturationMeasurementExportWorkItem> _spo2MeasurementQueue;
         private readonly IBackgroundQueue<DailyAverageBloodOxygenSaturationExportWorkItem> _dailyAverageSPO2Queue;
+        private readonly IBackgroundQueue<AlcoholConsumptionMeasurementExportWorkItem> _alcoholConsumptionMeasurementQueue;
 
         public ExportController(
             IBackgroundQueue<PersonExportWorkItem> personQueue,
@@ -30,7 +31,8 @@ namespace HealthTracker.Api.Controllers
             IBackgroundQueue<ExerciseMeasurementExportWorkItem> exerciseMeasurementQueue,
             IBackgroundQueue<BloodOxygenSaturationMeasurementExportWorkItem> spo2MeasurementQueue,
             IBackgroundQueue<DailyAverageBloodOxygenSaturationExportWorkItem> dailyAverageSPO2Queue,
-            IBackgroundQueue<BloodGlucoseMeasurementExportWorkItem> bloodGlucoseMeasurementQueue)
+            IBackgroundQueue<BloodGlucoseMeasurementExportWorkItem> bloodGlucoseMeasurementQueue,
+            IBackgroundQueue<AlcoholConsumptionMeasurementExportWorkItem> alcoholConsumptionMeasurementQueue)
         {
             _personQueue = personQueue;
             _weightMeasurementQueue = weightMeasurementQueue;
@@ -41,6 +43,7 @@ namespace HealthTracker.Api.Controllers
             _spo2MeasurementQueue = spo2MeasurementQueue;
             _dailyAverageSPO2Queue = dailyAverageSPO2Queue;
             _bloodGlucoseMeasurementQueue = bloodGlucoseMeasurementQueue;
+            _alcoholConsumptionMeasurementQueue = alcoholConsumptionMeasurementQueue;
         }
 
         [HttpPost]
@@ -148,6 +151,18 @@ namespace HealthTracker.Api.Controllers
 
             // Queue the work item
             _bloodGlucoseMeasurementQueue.Enqueue(item);
+            return Accepted();
+        }
+
+        [HttpPost]
+        [Route("alcoholconsumptionmeasurement")]
+        public IActionResult ExportAlcoholConsumptionMeasurements([FromBody] AlcoholConsumptionMeasurementExportWorkItem item)
+        {
+            // Set the job name used in the job status record
+            item.JobName = "Alcohol Consumption Measurement Export";
+
+            // Queue the work item
+            _alcoholConsumptionMeasurementQueue.Enqueue(item);
             return Accepted();
         }
     }

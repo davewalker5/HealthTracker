@@ -683,5 +683,32 @@ namespace HealthTracker.Tests.Mocks
                 Name = RandomTitleCasePhrase(2, 5, 10),
                 TypicalABV = RandomDecimal(0, 40)
             };
+
+        /// <summary>
+        /// Generate a random alcohol consumption measurement for a specified person, beverage and year
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="beverageId"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public static AlcoholConsumptionMeasurement RandomAlcoholConsumptionMeasurement(int personId, int beverageId, int year)
+            => new()
+            {
+                Id = RandomId(),
+                PersonId = personId,
+                BeverageId = beverageId,
+                Date = RandomDateInYear(year),
+                Measure = (AlcoholMeasure)RandomInt(1, 5),
+                Quantity = RandomInt(1, 5),
+                ABV = RandomDecimal(0, 100)
+            };
+
+        /// <summary>
+        /// Generate a random alcohol consumption measurement
+        /// </summary>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public static AlcoholConsumptionMeasurement RandomAlcoholConsumptionMeasurement(int year)
+            => RandomAlcoholConsumptionMeasurement(RandomId(), RandomId(), year);
     }
 }

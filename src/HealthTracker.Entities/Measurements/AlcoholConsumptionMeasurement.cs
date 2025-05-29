@@ -18,7 +18,7 @@ namespace HealthTracker.Entities.Measurements
         [Required(ErrorMessage = "You must select a measure")]
         public AlcoholMeasure Measure { get; set; }
 
-        [DisplayName("ABV")]
+        [DisplayName("Quantity")]
         [Range(1, int.MaxValue, ErrorMessage = "{0} must be >= {1}")]
         public int Quantity { get; set; }
 
