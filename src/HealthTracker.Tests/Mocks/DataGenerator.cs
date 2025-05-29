@@ -672,5 +672,16 @@ namespace HealthTracker.Tests.Mocks
                 End = RandomDateInYear(2025, true),
                 Error = RandomPhrase(5, 5, 10)
             };
+
+        /// <summary>
+        /// Generate a random beverage
+        /// </summary>
+        /// <returns></returns>
+        public static Beverage RandomBeverage()
+            => new()
+            {
+                Name = RandomTitleCasePhrase(2, 5, 10),
+                TypicalABV = RandomDecimal(0, 40)
+            };
     }
 }
