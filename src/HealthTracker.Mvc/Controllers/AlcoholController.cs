@@ -5,6 +5,7 @@ using HealthTracker.Mvc.Entities;
 using HealthTracker.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using HealthTracker.Enumerations.Enumerations;
 
 namespace HealthTracker.Mvc.Controllers
 {
@@ -13,7 +14,7 @@ namespace HealthTracker.Mvc.Controllers
     {
         public delegate Task<decimal> UnitCalculator(decimal abv);
 
-        protected readonly Dictionary<AlcoholPortionSize, UnitCalculator> _calculators = new();
+        protected readonly Dictionary<AlcoholMeasure, UnitCalculator> _calculators = new();
 
         private readonly ILogger<AlcoholController> _logger;
 
@@ -21,11 +22,11 @@ namespace HealthTracker.Mvc.Controllers
             IAlcoholUnitCalculationsClient client,
             ILogger<AlcoholController> logger)
         {
-            _calculators.Add(AlcoholPortionSize.Pint, client.UnitsPerPint);
-            _calculators.Add(AlcoholPortionSize.LargeGlass, client.UnitsPerLargeGlass);
-            _calculators.Add(AlcoholPortionSize.MediumGlass, client.UnitsPerMediumGlass);
-            _calculators.Add(AlcoholPortionSize.SmallGlass, client.UnitsPerSmallGlass);
-            _calculators.Add(AlcoholPortionSize.Shot, client.UnitsPerShot);
+            _calculators.Add(AlcoholMeasure.Pint, client.UnitsPerPint);
+            _calculators.Add(AlcoholMeasure.LargeGlass, client.UnitsPerLargeGlass);
+            _calculators.Add(AlcoholMeasure.MediumGlass, client.UnitsPerMediumGlass);
+            _calculators.Add(AlcoholMeasure.SmallGlass, client.UnitsPerSmallGlass);
+            _calculators.Add(AlcoholMeasure.Shot, client.UnitsPerShot);
             _logger = logger;
         }
 
@@ -56,11 +57,11 @@ namespace HealthTracker.Mvc.Controllers
             // If the model's nominally valid, perform some additional checks
             if (ModelState.IsValid)
             {
-                // Check the portion size isn't the default selection, "None"
-                _logger.LogDebug($"Portion size = {model.Portion}");
-                if (model.Portion == AlcoholPortionSize.None)
+                // Check the measure isn't the default selection, "None"
+                _logger.LogDebug($"Measure = {model.Measure}");
+                if (model.Measure == AlcoholMeasure.None)
                 {
-                    ModelState.AddModelError("Portion", "You must select a portion size");
+                    ModelState.AddModelError("Measure", "You must select a measure");
                 }
             }
 
@@ -68,15 +69,15 @@ namespace HealthTracker.Mvc.Controllers
             if (ModelState.IsValid)
             {
                 // Request the import
-                _logger.LogDebug($"Calculating the alcohol content of {model.Quantity} x {model.PortionSizeName} at {model.ABV} % ABV");
-                var unitsPerPortion = await _calculators[model.Portion](model.ABV);
-                var units = model.Quantity * unitsPerPortion;
+                _logger.LogDebug($"Calculating the alcohol content of {model.Quantity} x {model.MeasureName} at {model.ABV} % ABV");
+                var unitsPerMeasure = await _calculators[model.Measure](model.ABV);
+                var units = model.Quantity * unitsPerMeasure;
                 _logger.LogDebug($"Calculated units of alcohol = {units}");
 
                 // Reset the model and set the result message
                 ModelState.Clear();
-                model.Result = $"{model.Quantity} x {model.PortionSizeName} at {model.ABV} % ABV contains {units} unit(s) of alcohol";
-                model.Portion = AlcoholPortionSize.None;
+                model.Result = $"{model.Quantity} x {model.MeasureName} at {model.ABV} % ABV contains {units} unit(s) of alcohol";
+                model.Measure = AlcoholMeasure.None;
                 model.Quantity = 1;
                 model.ABV = 0;
             }

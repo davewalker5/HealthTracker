@@ -24,6 +24,7 @@ namespace HealthTracker.Entities.Interfaces
         IUserManager Users { get; }
         IJobStatusManager JobStatuses { get; }
         IBeverageManager Beverages { get; }
+        IAlcoholConsumptionMeasurementManager AlcoholConsumption { get; }
 
         IMedicationManager Medications { get; }
         IPersonMedicationManager PersonMedications { get; }

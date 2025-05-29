@@ -87,17 +87,17 @@ namespace HealthTracker.Tests.Alcohol
         public async Task CannotAddDuplicateBeverageTest()
             => _ = await _factory.Beverages.AddAsync(Name, 0M);
 
-        // TODO: Implement this once alcohol consumption records are in
-        // [TestMethod]
-        // [ExpectedException(typeof(BeverageInUseException))]
-        // public async Task CannotDeleteWithExerciseMeasurementTest()
-        // {
-        //     var context = _factory.Context as HealthTrackerDbContext;
-        //     await context.AlcoholConsumptionMeasurements.AddAsync(new AlcoholConsumptionMeasurement
-        //     {
-        //     });
-        //     await context.SaveChangesAsync();
-        //     await _factory.Beverages.DeleteAsync(_beverageId);
-        // }
+        [TestMethod]
+        [ExpectedException(typeof(BeverageInUseException))]
+        public async Task CannotDeleteWithAlcoholConsumptionMeasurementTest()
+        {
+            var context = _factory.Context as HealthTrackerDbContext;
+            await context.AlcoholConsumptionMeasurements.AddAsync(new AlcoholConsumptionMeasurement
+            {
+                BeverageId = _beverageId
+            });
+            await context.SaveChangesAsync();
+            await _factory.Beverages.DeleteAsync(_beverageId);
+        }
     }
 }
