@@ -11,5 +11,6 @@ namespace HealthTracker.Entities.Interfaces
         decimal UnitsPerSmallGlass(decimal abv);
         decimal UnitsPerMediumGlass(decimal abv);
         decimal UnitsPerLargeGlass(decimal abv);
+        void CalculateUnits(IEnumerable<BeverageConsumptionMeasurement> measurements);
     }
 }

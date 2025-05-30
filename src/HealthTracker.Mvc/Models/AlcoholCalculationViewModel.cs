@@ -4,27 +4,19 @@ using System.Globalization;
 using HealthTracker.Entities.Measurements;
 using HealthTracker.Mvc.Entities;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using HealthTracker.Enumerations.Enumerations;
+using HealthTracker.Enumerations.Extensions;
 
 namespace HealthTracker.Mvc.Models
 {
     public class AlcoholCalculationViewModel : SelectedFiltersViewModel
     {
-        protected readonly Dictionary<AlcoholPortionSize, string> _typeNameMap = new()
-        {
-            { AlcoholPortionSize.None, "" },
-            { AlcoholPortionSize.Pint, "Pint" },
-            { AlcoholPortionSize.LargeGlass, "Large Glass" },
-            { AlcoholPortionSize.MediumGlass, "Medium Glass" },
-            { AlcoholPortionSize.SmallGlass, "Small Glass" },
-            { AlcoholPortionSize.Shot, "Shot" }
-        };
-
-        public List<SelectListItem> PortionSizes { get; private set; } = [];
-        public string PortionSizeName { get { return _typeNameMap[Portion]; } }
+        public List<SelectListItem> Measures { get; private set; } = [];
+        public string MeasureName { get { return Measure.ToName(); } }
         public string Result { get; set; }
 
-        [DisplayName("Portion")]
-        public AlcoholPortionSize Portion { get; set; }
+        [DisplayName("Measure")]
+        public BeverageMeasure Measure { get; set; }
 
         [DisplayName("Quantity")]
         [Required(ErrorMessage = "You must enter a quantity")]
@@ -36,10 +28,9 @@ namespace HealthTracker.Mvc.Models
 
         public AlcoholCalculationViewModel()
         {
-            foreach (var portionSize in Enum.GetValues<AlcoholPortionSize>())
+            foreach (var measure in Enum.GetValues<BeverageMeasure>())
             {
-                var portionSizeName = _typeNameMap[portionSize];
-                PortionSizes.Add(new SelectListItem() { Text = $"{portionSizeName}", Value = portionSize.ToString() });
+                Measures.Add(new SelectListItem() { Text = $"{measure.ToName()}", Value = measure.ToString() });
             }
         }
     }

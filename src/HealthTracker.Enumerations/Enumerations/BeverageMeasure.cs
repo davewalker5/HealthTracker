@@ -1,6 +1,6 @@
-namespace HealthTracker.Mvc.Entities
+namespace HealthTracker.Enumerations.Enumerations
 {
-    public enum AlcoholPortionSize
+    public enum BeverageMeasure
     {
         None,
         Pint,

@@ -25,6 +25,8 @@ namespace HealthTracker.Data
         public virtual DbSet<PersonMedication> PersonMedications { get; set; }
         public virtual DbSet<BloodGlucoseMeasurement> BloodGlucoseMeasurements { get; set; }
         public virtual DbSet<JobStatus> JobStatuses { get; set; }
+        public virtual DbSet<Beverage> Beverages { get; set; }
+        public virtual DbSet<BeverageConsumptionMeasurement> BeverageConsumptionMeasurements { get; set; }
 
 
         public HealthTrackerDbContext(DbContextOptions<HealthTrackerDbContext> options) : base(options)
@@ -188,6 +190,26 @@ namespace HealthTracker.Data
                 entity.Property(e => e.Start).IsRequired().HasColumnName("start").HasColumnType("DATETIME");
                 entity.Property(e => e.End).HasColumnName("end").HasColumnType("DATETIME");
                 entity.Property(e => e.Error).HasColumnName("error");
+            });
+
+            modelBuilder.Entity<Beverage>(entity =>
+            {
+                entity.ToTable("BEVERAGES");
+                entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
+                entity.Property(e => e.Name).IsRequired().HasColumnName("name").HasColumnType("VARCHAR(100)");
+                entity.Property(e => e.TypicalABV).HasColumnName("typical_abv");
+            });
+
+            modelBuilder.Entity<BeverageConsumptionMeasurement>(entity =>
+            {
+                entity.ToTable("BEVERAGE_CONSUMPTION");
+                entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
+                entity.Property(e => e.PersonId).HasColumnName("person_id");
+                entity.Property(e => e.Date).IsRequired().HasColumnName("date").HasColumnType("DATETIME");
+                entity.Property(e => e.BeverageId).HasColumnName("beverage_id");
+                entity.Property(e => e.Measure).IsRequired().HasColumnName("measure");
+                entity.Property(e => e.Quantity).IsRequired().HasColumnName("quantity");
+                entity.Property(e => e.ABV).IsRequired().HasColumnName("abv");
             });
         }
     }

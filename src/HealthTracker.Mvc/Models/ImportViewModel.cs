@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using HealthTracker.Mvc.Entities;
+using HealthTracker.Enumerations.Enumerations;
+using HealthTracker.Enumerations.Extensions;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace HealthTracker.Mvc.Models
@@ -19,7 +20,7 @@ namespace HealthTracker.Mvc.Models
         {
             foreach (var importType in Enum.GetValues<DataExchangeType>())
             {
-                var importTypeName = _typeNameMap[importType];
+                var importTypeName = importType.ToName();
                 ImportTypes.Add(new SelectListItem() { Text = $"{importTypeName}", Value = importType.ToString() });
             }
         }

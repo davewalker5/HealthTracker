@@ -19,6 +19,7 @@ namespace HealthTracker.Api.Controllers
         private readonly IBackgroundQueue<CholesterolMeasurementImportWorkItem> _cholesterolMeasurementQueue;
         private readonly IBackgroundQueue<ExerciseMeasurementImportWorkItem> _exerciseMeasurementQueue;
         private readonly IBackgroundQueue<BloodOxygenSaturationMeasurementImportWorkItem> _spo2MeasurementQueue;
+        private readonly IBackgroundQueue<BeverageConsumptionMeasurementImportWorkItem> _beverageConsumptionMeasurementQueue;
 
 
         public ImportController(
@@ -29,7 +30,8 @@ namespace HealthTracker.Api.Controllers
             IBackgroundQueue<CholesterolMeasurementImportWorkItem> cholesterolMeasurementQueue,
             IBackgroundQueue<ExerciseMeasurementImportWorkItem> exerciseMeasurementQueue,
             IBackgroundQueue<BloodOxygenSaturationMeasurementImportWorkItem> spo2MeasurementQueue,
-            IBackgroundQueue<BloodGlucoseMeasurementImportWorkItem> bloodGlucoseMeasurementQueue)
+            IBackgroundQueue<BloodGlucoseMeasurementImportWorkItem> bloodGlucoseMeasurementQueue,
+            IBackgroundQueue<BeverageConsumptionMeasurementImportWorkItem> beverageConsumptionMeasurementQueue)
         {
             _personQueue = personQueue;
             _weightMeasurementQueue = weightMeasurementQueue;
@@ -39,6 +41,7 @@ namespace HealthTracker.Api.Controllers
             _exerciseMeasurementQueue = exerciseMeasurementQueue;
             _spo2MeasurementQueue = spo2MeasurementQueue;
             _bloodGlucoseMeasurementQueue = bloodGlucoseMeasurementQueue;
+            _beverageConsumptionMeasurementQueue = beverageConsumptionMeasurementQueue;
         }
 
         [HttpPost]
@@ -134,6 +137,18 @@ namespace HealthTracker.Api.Controllers
 
             // Queue the work item
             _bloodGlucoseMeasurementQueue.Enqueue(item);
+            return Accepted();
+        }
+
+        [HttpPost]
+        [Route("beverageconsumptionmeasurement")]
+        public IActionResult ImportBeverageConsumptionMeasurements([FromBody] BeverageConsumptionMeasurementImportWorkItem item)
+        {
+            // Set the job name used in the job status record
+            item.JobName = "Beverage Consumption Measurement Import";
+
+            // Queue the work item
+            _beverageConsumptionMeasurementQueue.Enqueue(item);
             return Accepted();
         }
     }

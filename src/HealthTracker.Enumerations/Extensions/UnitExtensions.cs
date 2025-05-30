@@ -1,93 +1,96 @@
 using HealthTracker.Enumerations.Enumerations;
 
-public static class UnitExtensions
+namespace HealthTracker.Enumerations.Extensions
 {
-    /// <summary>
-    /// Convert blood presure measurement units to a descriptive string
-    /// </summary>
-    /// <param name="units"></param>
-    /// <returns></returns>
-    public static string ToDescription(this BloodPressureUnit units)
+    public static class UnitExtensions
     {
-        return units switch
+        /// <summary>
+        /// Convert blood presure measurement units to a descriptive string
+        /// </summary>
+        /// <param name="units"></param>
+        /// <returns></returns>
+        public static string ToDescription(this BloodPressureUnit units)
         {
-            BloodPressureUnit.MillimetresOfMercury => "mmHg",
-            _ => "",
-        };
-    }
+            return units switch
+            {
+                BloodPressureUnit.MillimetresOfMercury => "mmHg",
+                _ => "",
+            };
+        }
 
-    /// <summary>
-    /// Convert cholesterol measurement units to a descriptive string
-    /// </summary>
-    /// <param name="units"></param>
-    /// <returns></returns>
-    public static string ToDescription(this CholesterolUnit units)
-    {
-        return units switch
+        /// <summary>
+        /// Convert cholesterol measurement units to a descriptive string
+        /// </summary>
+        /// <param name="units"></param>
+        /// <returns></returns>
+        public static string ToDescription(this CholesterolUnit units)
         {
-            CholesterolUnit.MillimolesPerLitre => "mmol/L",
-            _ => "",
-        };
-    }
+            return units switch
+            {
+                CholesterolUnit.MillimolesPerLitre => "mmol/L",
+                _ => "",
+            };
+        }
 
-    /// <summary>
-    /// Convert distance measurement units to a descriptive string
-    /// </summary>
-    /// <param name="units"></param>
-    /// <returns></returns>
-    public static string ToDescription(this DistanceUnit units)
-    {
-        return units switch
+        /// <summary>
+        /// Convert distance measurement units to a descriptive string
+        /// </summary>
+        /// <param name="units"></param>
+        /// <returns></returns>
+        public static string ToDescription(this DistanceUnit units)
         {
-            DistanceUnit.Metres => "m",
-            DistanceUnit.Kilometres => "km",
-            DistanceUnit.Miles => "miles",
-            _ => "",
-        };
-    }
+            return units switch
+            {
+                DistanceUnit.Metres => "m",
+                DistanceUnit.Kilometres => "km",
+                DistanceUnit.Miles => "miles",
+                _ => "",
+            };
+        }
 
-    /// <summary>
-    /// Convert HR measurement units to a descriptive string
-    /// </summary>
-    /// <param name="units"></param>
-    /// <returns></returns>
-    public static string ToDescription(this HeartRateUnit units)
-    {
-        return units switch
+        /// <summary>
+        /// Convert HR measurement units to a descriptive string
+        /// </summary>
+        /// <param name="units"></param>
+        /// <returns></returns>
+        public static string ToDescription(this HeartRateUnit units)
         {
-            HeartRateUnit.BeatsPerMinute => "bpm",
-            _ => "",
-        };
-    }
+            return units switch
+            {
+                HeartRateUnit.BeatsPerMinute => "bpm",
+                _ => "",
+            };
+        }
 
-    /// <summary>
-    /// Convert height measurement units to a descriptive string
-    /// </summary>
-    /// <param name="units"></param>
-    /// <returns></returns>
-    public static string ToDescription(this HeightUnit units)
-    {
-        return units switch
+        /// <summary>
+        /// Convert height measurement units to a descriptive string
+        /// </summary>
+        /// <param name="units"></param>
+        /// <returns></returns>
+        public static string ToDescription(this HeightUnit units)
         {
-            HeightUnit.Centimetres => "cm",
-            HeightUnit.Metres => "m",
-            HeightUnit.Feet => "feet",
-            _ => "",
-        };
-    }
+            return units switch
+            {
+                HeightUnit.Centimetres => "cm",
+                HeightUnit.Metres => "m",
+                HeightUnit.Feet => "feet",
+                _ => "",
+            };
+        }
 
-    /// <summary>
-    /// Convert weight measurement units to a descriptive string
-    /// </summary>
-    /// <param name="units"></param>
-    /// <returns></returns>
-    public static string ToDescription(this WeightUnit units)
-    {
-        return units switch
+        /// <summary>
+        /// Convert weight measurement units to a descriptive string
+        /// </summary>
+        /// <param name="units"></param>
+        /// <returns></returns>
+        public static string ToDescription(this WeightUnit units)
         {
-            WeightUnit.Kilograms => "kg",
-            WeightUnit.Pounds => "lbs",
-            _ => "",
-        };
+            return units switch
+            {
+                WeightUnit.Kilograms => "kg",
+                WeightUnit.Pounds => "lbs",
+                _ => "",
+            };
+        }
     }
 }

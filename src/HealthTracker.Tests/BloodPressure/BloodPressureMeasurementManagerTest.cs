@@ -16,7 +16,7 @@ namespace HealthTracker.Tests.BloodPressure
 
         private readonly int Diastolic = DataGenerator.RandomInt(0, 79);
 
-        private readonly DateTime UpdatedMeasurementDate = DataGenerator.RandomDateInYear(2025);
+        private readonly DateTime UpdatedMeasurementDate = DataGenerator.RandomDateInYear(2024);
         private readonly int UpdatedSystolic = DataGenerator.RandomInt(0, 119);
         private readonly int UpdatedDiastolic = DataGenerator.RandomInt(0, 79);
 

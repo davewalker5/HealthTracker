@@ -17,7 +17,7 @@ namespace HealthTracker.Tests.Cholesterol
         private readonly decimal LDL = DataGenerator.RandomLDL();
         private readonly decimal Triglycerides = DataGenerator.RandomTriglycerides();
 
-        private readonly DateTime UpdatedMeasurementDate = DataGenerator.RandomDateInYear(2025);
+        private readonly DateTime UpdatedMeasurementDate = DataGenerator.RandomDateInYear(2024);
         private readonly decimal UpdatedTotal = DataGenerator.RandomTotalLipids();
         private readonly decimal UpdatedHDL = DataGenerator.RandomHDL();
         private readonly decimal UpdatedLDL = DataGenerator.RandomLDL();

@@ -40,7 +40,7 @@ namespace HealthTracker.Tests.Exercise
         {
             var personId = DataGenerator.RandomId();
             var activityTypeId = DataGenerator.RandomId();
-            var first = DataGenerator.RandomExerciseMeasurement(personId, activityTypeId, DataGenerator.RandomDateInYear(2024));
+            var first = DataGenerator.RandomExerciseMeasurement(personId, activityTypeId, DataGenerator.RandomDateInYear(2023));
             var second = DataGenerator.RandomExerciseMeasurement(personId, activityTypeId, DataGenerator.RandomDateInYear(2024));
 
             List<ExerciseMeasurement> measurements = [first, second];
@@ -64,7 +64,7 @@ namespace HealthTracker.Tests.Exercise
         {
             var personId = DataGenerator.RandomId();
             var activityTypeId = DataGenerator.RandomId();
-            var first = DataGenerator.RandomExerciseMeasurement(personId, activityTypeId, DataGenerator.RandomDateInYear(2024));
+            var first = DataGenerator.RandomExerciseMeasurement(personId, activityTypeId, DataGenerator.RandomDateInYear(2023));
             var second = DataGenerator.RandomExerciseMeasurement(personId, activityTypeId, DataGenerator.RandomDateInYear(2024));
             second.MinimumHeartRate = 0;
 
@@ -78,7 +78,7 @@ namespace HealthTracker.Tests.Exercise
         {
             var personId = DataGenerator.RandomId();
             var activityTypeId = DataGenerator.RandomId();
-            var first = DataGenerator.RandomExerciseMeasurement(personId, activityTypeId, DataGenerator.RandomDateInYear(2024));
+            var first = DataGenerator.RandomExerciseMeasurement(personId, activityTypeId, DataGenerator.RandomDateInYear(2023));
             var second = DataGenerator.RandomExerciseMeasurement(personId, activityTypeId, DataGenerator.RandomDateInYear(2024));
             second.MaximumHeartRate = 0;
 
@@ -93,8 +93,8 @@ namespace HealthTracker.Tests.Exercise
             var personId = DataGenerator.RandomId();
             var firstActivityTypeId =  DataGenerator.RandomId();
             var secondActivityTypeId = firstActivityTypeId + DataGenerator.RandomInt(1, 100);
-            var first = DataGenerator.RandomExerciseMeasurement(personId, firstActivityTypeId, DataGenerator.RandomDateInYear(2024));
-            var second = DataGenerator.RandomExerciseMeasurement(personId, secondActivityTypeId, DataGenerator.RandomDateInYear(2025));
+            var first = DataGenerator.RandomExerciseMeasurement(personId, firstActivityTypeId, DataGenerator.RandomDateInYear(2023));
+            var second = DataGenerator.RandomExerciseMeasurement(personId, secondActivityTypeId, DataGenerator.RandomDateInYear(2024));
 
             List<ExerciseMeasurement> measurements = [first, second];
             var summaries = await _factory.ExerciseCalculator.Summarise(measurements);
@@ -141,8 +141,8 @@ namespace HealthTracker.Tests.Exercise
             var personId = DataGenerator.RandomId();
             var firstActivityTypeId =  DataGenerator.RandomId();
             var secondActivityTypeId = firstActivityTypeId + DataGenerator.RandomInt(1, 100);
-            var first = DataGenerator.RandomExerciseMeasurement(personId, firstActivityTypeId, DataGenerator.RandomDateInYear(2024));
-            var second = DataGenerator.RandomExerciseMeasurement(personId, secondActivityTypeId, DataGenerator.RandomDateInYear(2025));
+            var first = DataGenerator.RandomExerciseMeasurement(personId, firstActivityTypeId, DataGenerator.RandomDateInYear(2023));
+            var second = DataGenerator.RandomExerciseMeasurement(personId, secondActivityTypeId, DataGenerator.RandomDateInYear(2024));
 
             var context = _factory.Context as HealthTrackerDbContext;
             await context.ExerciseMeasurements.AddAsync(first);
@@ -192,8 +192,8 @@ namespace HealthTracker.Tests.Exercise
         {
             var personId = DataGenerator.RandomId();
             var activityTypeId = DataGenerator.RandomId();
-            var first = DataGenerator.RandomExerciseMeasurement(personId, activityTypeId, DataGenerator.RandomDateInYear(2024));
-            var second = DataGenerator.RandomExerciseMeasurement(personId, activityTypeId, DataGenerator.RandomDateInYear(2025));
+            var first = DataGenerator.RandomExerciseMeasurement(personId, activityTypeId, DataGenerator.RandomDateInYear(2023));
+            var second = DataGenerator.RandomExerciseMeasurement(personId, activityTypeId, DataGenerator.RandomDateInYear(2024));
 
             var context = _factory.Context as HealthTrackerDbContext;
             await context.ExerciseMeasurements.AddAsync(first);

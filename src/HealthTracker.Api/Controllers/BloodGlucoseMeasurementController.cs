@@ -33,7 +33,7 @@ namespace HealthTracker.Api.Controllers
         }
 
         /// <summary>
-        /// Return a list of all % SPO2 measurements for a person
+        /// Return a list of all measurements for a person
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -59,7 +59,7 @@ namespace HealthTracker.Api.Controllers
         }
 
         /// <summary>
-        /// Add a % SPO2 measurement from a template contained in the request body
+        /// Add a measurement from a template contained in the request body
         /// </summary>
         /// <param name="template"></param>
         /// <returns></returns>
@@ -78,7 +78,7 @@ namespace HealthTracker.Api.Controllers
         }
 
         /// <summary>
-        /// Update a % SPO2 measurement from a template contained in the request body
+        /// Update a measurement from a template contained in the request body
         /// </summary>
         /// <param name="template"></param>
         /// <returns></returns>
@@ -98,7 +98,7 @@ namespace HealthTracker.Api.Controllers
         }
 
         /// <summary>
-        /// Delete a % SPO2 measurement
+        /// Delete a measurement
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>

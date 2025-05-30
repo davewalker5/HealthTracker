@@ -1,6 +1,6 @@
 using System.Text;
 using HealthTracker.Client.Interfaces;
-using HealthTracker.Mvc.Entities;
+using HealthTracker.Enumerations.Enumerations;
 using HealthTracker.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,12 +18,14 @@ namespace HealthTracker.Mvc.Controllers
             IBloodPressureMeasurementClient bloodPressurementMeasurementClient,
             IExerciseMeasurementClient exerciseMeasurementClient,
             IWeightMeasurementClient weightMeasurementClient,
+            IBeverageConsumptionMeasurementClient beverageConsumptionMeasurementClient,
             ILogger<WeightController> logger) : base(
                 bloodGlucoseMeasurementClient,
                 bloodOxygenSaturationMeasurementClient,
                 bloodPressurementMeasurementClient,
                 exerciseMeasurementClient,
                 weightMeasurementClient,
+                beverageConsumptionMeasurementClient,
                 logger
             )
         {

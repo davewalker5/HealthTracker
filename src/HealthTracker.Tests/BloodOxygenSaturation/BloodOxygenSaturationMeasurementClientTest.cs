@@ -112,7 +112,7 @@ namespace HealthTracker.Tests.BloodOxygenSaturation
         public async Task GetTest()
         {
             var personId = DataGenerator.RandomId();
-            var measurement = DataGenerator.RandomSPO2Measurement(personId, 2025);
+            var measurement = DataGenerator.RandomSPO2Measurement(personId, 2024);
             var json = JsonSerializer.Serialize(measurement);
             _httpClient.AddResponse(json);
 

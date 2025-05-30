@@ -112,7 +112,6 @@ namespace HealthTracker.Mvc.Controllers
 
             if (ModelState.IsValid)
             {
-                var description = model.ActivityType.Description;
                 _logger.LogDebug($"Adding activity type: Description = {model.ActivityType.Description}, Distance Based = {model.ActivityType.DistanceBased}");
                 var activityType = await _client.AddAsync(model.ActivityType.Description, model.ActivityType.DistanceBased);
 

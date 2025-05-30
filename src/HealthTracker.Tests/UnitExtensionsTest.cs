@@ -1,4 +1,5 @@
 using HealthTracker.Enumerations.Enumerations;
+using HealthTracker.Enumerations.Extensions;
 
 namespace HealthTracker.Tests
 {

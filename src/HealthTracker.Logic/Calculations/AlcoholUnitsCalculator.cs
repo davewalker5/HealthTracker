@@ -1,5 +1,7 @@
 using HealthTracker.Configuration.Interfaces;
 using HealthTracker.Entities.Interfaces;
+using HealthTracker.Entities.Measurements;
+using HealthTracker.Enumerations.Enumerations;
 
 namespace HealthTracker.Logic.Calculations
 {
@@ -60,5 +62,33 @@ namespace HealthTracker.Logic.Calculations
         /// <returns></returns>
         public decimal UnitsPerLargeGlass(decimal abv)
             => CalculateUnits(abv, _settings.LargeGlassSize);
+
+        /// <summary>
+        /// Calculate the number of units for each measurement in a collection of measurements
+        /// </summary>
+        /// <param name="measurements"></param>
+        public void CalculateUnits(IEnumerable<BeverageConsumptionMeasurement> measurements)
+        {
+            // Iterate over the records
+            if (measurements?.Count() > 0)
+            {
+                foreach (var measurement in measurements)
+                {
+                    // Calculate the units for a single measure
+                    var unitsPerMeasure = measurement.Measure switch
+                    {
+                        BeverageMeasure.Pint => UnitsPerPint(measurement.ABV),
+                        BeverageMeasure.LargeGlass => UnitsPerLargeGlass(measurement.ABV),
+                        BeverageMeasure.MediumGlass => UnitsPerMediumGlass(measurement.ABV),
+                        BeverageMeasure.SmallGlass => UnitsPerSmallGlass(measurement.ABV),
+                        BeverageMeasure.Shot => UnitsPerShot(measurement.ABV),
+                        _ => 0M,
+                    };
+
+                    // Calculate the total units for the record
+                    measurement.Units = measurement.Quantity * unitsPerMeasure;
+                }
+            }
+        }
     }
 }

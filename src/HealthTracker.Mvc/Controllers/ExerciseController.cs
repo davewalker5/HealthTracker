@@ -5,6 +5,7 @@ using HealthTracker.Entities.Measurements;
 using HealthTracker.Mvc.Entities;
 using HealthTracker.Mvc.Interfaces;
 using HealthTracker.Mvc.Models;
+using HealthTracker.Enumerations.Enumerations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -206,6 +207,8 @@ namespace HealthTracker.Mvc.Controllers
                 LogModelStateErrors(_logger);
             }
 
+            // Populate the activity types and render the view
+            model.ActivityTypes = await _activityTypeListGenerator.Create();
             return View(model);
         }
 
@@ -295,6 +298,8 @@ namespace HealthTracker.Mvc.Controllers
                 result = View(model);
             }
 
+            // Populate the activity types and render the view
+            model.ActivityTypes = await _activityTypeListGenerator.Create();
             return result;
         }
 

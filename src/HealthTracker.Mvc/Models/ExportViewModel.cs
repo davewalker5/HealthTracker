@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using HealthTracker.Mvc.Entities;
 
 namespace HealthTracker.Mvc.Models
 {

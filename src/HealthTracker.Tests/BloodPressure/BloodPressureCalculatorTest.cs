@@ -23,8 +23,8 @@ namespace HealthTracker.Tests.BloodPressure
             var logger = new Mock<IHealthTrackerLogger>();
             _factory = new HealthTrackerFactory(context, null, logger.Object);
             _personId = Task.Run(() => _factory.People.AddAsync("", "", DateTime.Now, 0, Gender.Unspecified)).Result.Id;
-            _firstMeasurement = DataGenerator.RandomBloodPressureMeasurement(_personId, 2024, 0, 119, 0, 79);
-            _secondMeasurement = DataGenerator.RandomBloodPressureMeasurement(_personId, 2025, 0, 119, 0, 79);
+            _firstMeasurement = DataGenerator.RandomBloodPressureMeasurement(_personId, 2023, 0, 119, 0, 79);
+            _secondMeasurement = DataGenerator.RandomBloodPressureMeasurement(_personId, 2024, 0, 119, 0, 79);
         }
 
         [TestMethod]
