@@ -144,7 +144,7 @@ namespace HealthTracker.Api.Controllers
             var beverages = await _factory.Beverages.ListAsync(x => true, 1, int.MaxValue);
             foreach (var measurement in measurements)
             {
-                measurement.Beverage = beverages.FirstOrDefault(x => x.Id == measurement.Id)?.Name ?? "";
+                measurement.Beverage = beverages.FirstOrDefault(x => x.Id == measurement.BeverageId)?.Name ?? "";
             }
         }
     }
