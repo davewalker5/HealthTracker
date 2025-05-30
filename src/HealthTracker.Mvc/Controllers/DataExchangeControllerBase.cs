@@ -1,5 +1,5 @@
 using HealthTracker.Client.Interfaces;
-using HealthTracker.Mvc.Entities;
+using HealthTracker.Enumerations.Enumerations;
 
 namespace HealthTracker.Mvc.Controllers
 {

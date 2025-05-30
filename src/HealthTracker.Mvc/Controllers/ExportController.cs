@@ -3,6 +3,7 @@ using HealthTracker.Mvc.Entities;
 using HealthTracker.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using HealthTracker.Enumerations.Enumerations;
 
 namespace HealthTracker.Mvc.Controllers
 {

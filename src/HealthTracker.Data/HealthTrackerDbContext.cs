@@ -26,7 +26,7 @@ namespace HealthTracker.Data
         public virtual DbSet<BloodGlucoseMeasurement> BloodGlucoseMeasurements { get; set; }
         public virtual DbSet<JobStatus> JobStatuses { get; set; }
         public virtual DbSet<Beverage> Beverages { get; set; }
-        public virtual DbSet<AlcoholConsumptionMeasurement> AlcoholConsumptionMeasurements { get; set; }
+        public virtual DbSet<BeverageConsumptionMeasurement> BeverageConsumptionMeasurements { get; set; }
 
 
         public HealthTrackerDbContext(DbContextOptions<HealthTrackerDbContext> options) : base(options)
@@ -200,9 +200,9 @@ namespace HealthTracker.Data
                 entity.Property(e => e.TypicalABV).HasColumnName("typical_abv");
             });
 
-            modelBuilder.Entity<AlcoholConsumptionMeasurement>(entity =>
+            modelBuilder.Entity<BeverageConsumptionMeasurement>(entity =>
             {
-                entity.ToTable("ALCOHOL_CONSUMPTION");
+                entity.ToTable("BEVERAGE_CONSUMPTION");
                 entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
                 entity.Property(e => e.PersonId).HasColumnName("person_id");
                 entity.Property(e => e.Date).IsRequired().HasColumnName("date").HasColumnType("DATETIME");

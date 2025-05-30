@@ -104,10 +104,10 @@ namespace HealthTracker.Logic.Database
             if (beverage != null)
             {
                 // Check the beverage isn't in use
-                var measurement = Context.AlcoholConsumptionMeasurements.FirstOrDefault(x => x.BeverageId == id);
+                var measurement = Context.BeverageConsumptionMeasurements.FirstOrDefault(x => x.BeverageId == id);
                 if (measurement != null)
                 {
-                    var message = $"Beverage with Id {id} has alcohol consumption records associated with it and cannot be deleted";
+                    var message = $"Beverage with Id {id} has beverage consumption records associated with it and cannot be deleted";
                     throw new BeverageInUseException(message);
                 }
 

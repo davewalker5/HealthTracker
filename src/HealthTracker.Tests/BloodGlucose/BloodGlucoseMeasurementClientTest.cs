@@ -111,7 +111,7 @@ namespace HealthTracker.Tests.BloodGlucose
         public async Task GetTest()
         {
             var personId = DataGenerator.RandomId();
-            var measurement = DataGenerator.RandomBloodGlucoseMeasurement(personId, 2025);
+            var measurement = DataGenerator.RandomBloodGlucoseMeasurement(personId, 2024);
             var json = JsonSerializer.Serialize(measurement);
             _httpClient.AddResponse(json);
 

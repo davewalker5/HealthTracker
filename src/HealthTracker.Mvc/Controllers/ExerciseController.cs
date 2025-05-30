@@ -5,6 +5,7 @@ using HealthTracker.Entities.Measurements;
 using HealthTracker.Mvc.Entities;
 using HealthTracker.Mvc.Interfaces;
 using HealthTracker.Mvc.Models;
+using HealthTracker.Enumerations.Enumerations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

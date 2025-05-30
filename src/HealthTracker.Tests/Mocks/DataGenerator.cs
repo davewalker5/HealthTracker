@@ -605,7 +605,7 @@ namespace HealthTracker.Tests.Mocks
             => new ExerciseSummary()
             {
                 From = RandomDateInYear(2024),
-                To = RandomDateInYear(2025),
+                To = RandomDateInYear(2024),
                 Count = RandomInt(100, 1000),
                 TotalDuration = RandomInt(1000, 1000000),
                 TotalDistance = RandomDecimal(1000, 10000),
@@ -668,8 +668,8 @@ namespace HealthTracker.Tests.Mocks
                 Id = RandomId(),
                 Name = RandomWord(10, 20),
                 Parameters = $"{RandomWord(10, 20)}.csv",
-                Start = RandomDateInYear(2025, true),
-                End = RandomDateInYear(2025, true),
+                Start = RandomDateInYear(2024, true),
+                End = RandomDateInYear(2024, true),
                 Error = RandomPhrase(5, 5, 10)
             };
 
@@ -685,30 +685,41 @@ namespace HealthTracker.Tests.Mocks
             };
 
         /// <summary>
-        /// Generate a random alcohol consumption measurement for a specified person, beverage and year
+        /// Return a random beverage measure
+        /// </summary>
+        /// <returns></returns>
+        public static BeverageMeasure RandomBeverageMeasure()
+        {
+            var values = Enum.GetValues(typeof(BeverageMeasure));
+            var measure = (BeverageMeasure)values.GetValue(RandomInt(0, values.Length - 1));
+            return measure;
+        }
+
+        /// <summary>
+        /// Generate a random beverage consumption measurement for a specified person, beverage and year
         /// </summary>
         /// <param name="personId"></param>
         /// <param name="beverageId"></param>
         /// <param name="year"></param>
         /// <returns></returns>
-        public static AlcoholConsumptionMeasurement RandomAlcoholConsumptionMeasurement(int personId, int beverageId, int year)
+        public static BeverageConsumptionMeasurement RandomBeverageConsumptionMeasurement(int personId, int beverageId, int year)
             => new()
             {
                 Id = RandomId(),
                 PersonId = personId,
                 BeverageId = beverageId,
                 Date = RandomDateInYear(year),
-                Measure = (AlcoholMeasure)RandomInt(1, 5),
+                Measure = RandomBeverageMeasure(),
                 Quantity = RandomInt(1, 5),
                 ABV = RandomDecimal(0, 100)
             };
 
         /// <summary>
-        /// Generate a random alcohol consumption measurement
+        /// Generate a random beverage consumption measurement
         /// </summary>
         /// <param name="year"></param>
         /// <returns></returns>
-        public static AlcoholConsumptionMeasurement RandomAlcoholConsumptionMeasurement(int year)
-            => RandomAlcoholConsumptionMeasurement(RandomId(), RandomId(), year);
+        public static BeverageConsumptionMeasurement RandomBeverageConsumptionMeasurement(int year)
+            => RandomBeverageConsumptionMeasurement(RandomId(), RandomId(), year);
     }
 }

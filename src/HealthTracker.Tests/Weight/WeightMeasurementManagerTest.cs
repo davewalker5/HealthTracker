@@ -14,7 +14,7 @@ namespace HealthTracker.Tests.Weight
         private readonly DateTime MeasurementDate = DataGenerator.RandomDateInYear(2024);
         private readonly decimal Weight = DataGenerator.RandomDecimal(50, 100);
 
-        private readonly DateTime UpdatedMeasurementDate = DataGenerator.RandomDateInYear(2025);
+        private readonly DateTime UpdatedMeasurementDate = DataGenerator.RandomDateInYear(2024);
         private readonly decimal UpdatedWeight = DataGenerator.RandomDecimal(50, 100);
 
         private IHealthTrackerFactory _factory;

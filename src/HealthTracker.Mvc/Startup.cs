@@ -53,7 +53,7 @@ namespace HealthTracker.Mvc
             services.AddSingleton<IJobStatusClient, JobStatusClient>();
             services.AddSingleton<IAlcoholUnitCalculationsClient, AlcoholUnitCalculationsClient>();
             services.AddSingleton<IBeverageClient, BeverageClient>();
-            services.AddSingleton<IAlcoholConsumptionMeasurementClient, AlcoholConsumptionMeasurementClient>();
+            services.AddSingleton<IBeverageConsumptionMeasurementClient, BeverageConsumptionMeasurementClient>();
 
             // Configure the helpers used to build the filtering view model used on the measurements pages
             // and the activity type and medication select lists

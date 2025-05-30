@@ -16,7 +16,7 @@ namespace HealthTracker.Mvc.Models
         public string Result { get; set; }
 
         [DisplayName("Measure")]
-        public AlcoholMeasure Measure { get; set; }
+        public BeverageMeasure Measure { get; set; }
 
         [DisplayName("Quantity")]
         [Required(ErrorMessage = "You must enter a quantity")]
@@ -28,7 +28,7 @@ namespace HealthTracker.Mvc.Models
 
         public AlcoholCalculationViewModel()
         {
-            foreach (var measure in Enum.GetValues<AlcoholMeasure>())
+            foreach (var measure in Enum.GetValues<BeverageMeasure>())
             {
                 Measures.Add(new SelectListItem() { Text = $"{measure.ToName()}", Value = measure.ToString() });
             }

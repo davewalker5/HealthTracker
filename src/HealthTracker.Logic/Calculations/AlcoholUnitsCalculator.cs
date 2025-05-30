@@ -67,7 +67,7 @@ namespace HealthTracker.Logic.Calculations
         /// Calculate the number of units for each measurement in a collection of measurements
         /// </summary>
         /// <param name="measurements"></param>
-        public void CalculateUnits(IEnumerable<AlcoholConsumptionMeasurement> measurements)
+        public void CalculateUnits(IEnumerable<BeverageConsumptionMeasurement> measurements)
         {
             // Iterate over the records
             foreach (var measurement in measurements)
@@ -75,11 +75,11 @@ namespace HealthTracker.Logic.Calculations
                 // Calculate the units for a single measure
                 var unitsPerMeasure = measurement.Measure switch
                 {
-                    AlcoholMeasure.Pint => UnitsPerPint(measurement.ABV),
-                    AlcoholMeasure.LargeGlass => UnitsPerLargeGlass(measurement.ABV),
-                    AlcoholMeasure.MediumGlass => UnitsPerMediumGlass(measurement.ABV),
-                    AlcoholMeasure.SmallGlass => UnitsPerSmallGlass(measurement.ABV),
-                    AlcoholMeasure.Shot => UnitsPerShot(measurement.ABV),
+                    BeverageMeasure.Pint => UnitsPerPint(measurement.ABV),
+                    BeverageMeasure.LargeGlass => UnitsPerLargeGlass(measurement.ABV),
+                    BeverageMeasure.MediumGlass => UnitsPerMediumGlass(measurement.ABV),
+                    BeverageMeasure.SmallGlass => UnitsPerSmallGlass(measurement.ABV),
+                    BeverageMeasure.Shot => UnitsPerShot(measurement.ABV),
                     _ => 0M,
                 };
 

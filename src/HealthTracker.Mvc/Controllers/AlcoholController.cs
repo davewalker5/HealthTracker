@@ -1,7 +1,4 @@
 using HealthTracker.Client.Interfaces;
-using HealthTracker.Configuration.Interfaces;
-using HealthTracker.Entities.Measurements;
-using HealthTracker.Mvc.Entities;
 using HealthTracker.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +11,7 @@ namespace HealthTracker.Mvc.Controllers
     {
         public delegate Task<decimal> UnitCalculator(decimal abv);
 
-        protected readonly Dictionary<AlcoholMeasure, UnitCalculator> _calculators = new();
+        protected readonly Dictionary<BeverageMeasure, UnitCalculator> _calculators = new();
 
         private readonly ILogger<AlcoholController> _logger;
 
@@ -22,11 +19,11 @@ namespace HealthTracker.Mvc.Controllers
             IAlcoholUnitCalculationsClient client,
             ILogger<AlcoholController> logger)
         {
-            _calculators.Add(AlcoholMeasure.Pint, client.UnitsPerPint);
-            _calculators.Add(AlcoholMeasure.LargeGlass, client.UnitsPerLargeGlass);
-            _calculators.Add(AlcoholMeasure.MediumGlass, client.UnitsPerMediumGlass);
-            _calculators.Add(AlcoholMeasure.SmallGlass, client.UnitsPerSmallGlass);
-            _calculators.Add(AlcoholMeasure.Shot, client.UnitsPerShot);
+            _calculators.Add(BeverageMeasure.Pint, client.UnitsPerPint);
+            _calculators.Add(BeverageMeasure.LargeGlass, client.UnitsPerLargeGlass);
+            _calculators.Add(BeverageMeasure.MediumGlass, client.UnitsPerMediumGlass);
+            _calculators.Add(BeverageMeasure.SmallGlass, client.UnitsPerSmallGlass);
+            _calculators.Add(BeverageMeasure.Shot, client.UnitsPerShot);
             _logger = logger;
         }
 
@@ -59,7 +56,7 @@ namespace HealthTracker.Mvc.Controllers
             {
                 // Check the measure isn't the default selection, "None"
                 _logger.LogDebug($"Measure = {model.Measure}");
-                if (model.Measure == AlcoholMeasure.None)
+                if (model.Measure == BeverageMeasure.None)
                 {
                     ModelState.AddModelError("Measure", "You must select a measure");
                 }
@@ -77,7 +74,7 @@ namespace HealthTracker.Mvc.Controllers
                 // Reset the model and set the result message
                 ModelState.Clear();
                 model.Result = $"{model.Quantity} x {model.MeasureName} at {model.ABV} % ABV contains {units} unit(s) of alcohol";
-                model.Measure = AlcoholMeasure.None;
+                model.Measure = BeverageMeasure.None;
                 model.Quantity = 1;
                 model.ABV = 0;
             }

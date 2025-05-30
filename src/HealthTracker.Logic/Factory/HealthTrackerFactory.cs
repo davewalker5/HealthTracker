@@ -25,7 +25,7 @@ namespace HealthTracker.Logic.Factory
         private readonly Lazy<IUserManager> _users;
         private readonly Lazy<IJobStatusManager> _jobStatus;
         private readonly Lazy<IBeverageManager> _beverages;
-        private readonly Lazy<IAlcoholConsumptionMeasurementManager> _alcoholConsumption;
+        private readonly Lazy<IBeverageConsumptionMeasurementManager> _beverageConsumption;
 
         private readonly Lazy<IMedicationManager> _medications;
         private readonly Lazy<IPersonMedicationManager> _personMedications;
@@ -59,7 +59,7 @@ namespace HealthTracker.Logic.Factory
         public IUserManager Users { get { return _users.Value; } }
         public IJobStatusManager JobStatuses { get { return _jobStatus.Value; } }
         public IBeverageManager Beverages { get { return _beverages.Value; } }
-        public IAlcoholConsumptionMeasurementManager AlcoholConsumption { get { return _alcoholConsumption.Value; } }
+        public IBeverageConsumptionMeasurementManager BeverageConsumptionMeasurements { get { return _beverageConsumption.Value; } }
 
         public IMedicationManager Medications { get { return _medications.Value;} }
         public IPersonMedicationManager PersonMedications { get { return _personMedications.Value;} }
@@ -95,7 +95,7 @@ namespace HealthTracker.Logic.Factory
             _users = new Lazy<IUserManager>(() => new UserManager(this));
             _jobStatus = new Lazy<IJobStatusManager>(() => new JobStatusManager(this));
             _beverages = new Lazy<IBeverageManager>(() => new BeverageManager(this));
-            _alcoholConsumption = new Lazy<IAlcoholConsumptionMeasurementManager>(() => new AlcoholConsumptionMeasurementManager(this));
+            _beverageConsumption = new Lazy<IBeverageConsumptionMeasurementManager>(() => new BeverageConsumptionMeasurementManager(this));
 
             _medications = new Lazy<IMedicationManager>(() => new MedicationManager(this));
             _personMedications = new Lazy<IPersonMedicationManager>(() => new PersonMedicationManager(this));

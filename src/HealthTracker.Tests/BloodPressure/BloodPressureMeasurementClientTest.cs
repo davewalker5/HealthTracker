@@ -110,7 +110,7 @@ namespace HealthTracker.Tests.BloodPressure
         public async Task GetTest()
         {
             var personId = DataGenerator.RandomId();
-            var measurement = DataGenerator.RandomBloodPressureMeasurement(personId, 2025, 100, 130, 70, 80);
+            var measurement = DataGenerator.RandomBloodPressureMeasurement(personId, 2024, 100, 130, 70, 80);
             var json = JsonSerializer.Serialize(measurement);
             _httpClient.AddResponse(json);
 
