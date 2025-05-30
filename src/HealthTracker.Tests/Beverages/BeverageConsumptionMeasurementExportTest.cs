@@ -1,3 +1,4 @@
+using HealthTracker.Configuration.Entities;
 using HealthTracker.Data;
 using HealthTracker.DataExchange.Entities;
 using HealthTracker.DataExchange.Export;
@@ -19,6 +20,14 @@ namespace HealthTracker.Tests.Alcohol
         private readonly Beverage _beverage = DataGenerator.RandomBeverage();
         private BeverageConsumptionMeasurement _measurement;
         private string _filePath;
+
+        private readonly HealthTrackerApplicationSettings _settings = new()
+        {
+            ShotSize = 25,
+            SmallGlassSize = 125,
+            MediumGlassSize = 175,
+            LargeGlassSize = 250
+        };
 
         [TestInitialize]
         public void Initialize()
@@ -94,7 +103,7 @@ namespace HealthTracker.Tests.Alcohol
             await context.SaveChangesAsync();
 
             var logger = new Mock<IHealthTrackerLogger>();
-            var factory = new HealthTrackerFactory(context, null, logger.Object);
+            var factory = new HealthTrackerFactory(context, _settings, logger.Object);
             var exporter = new BeverageConsumptionMeasurementExporter(factory);
 
             _filePath = Path.ChangeExtension(Path.GetTempFileName(), "csv");
@@ -132,7 +141,7 @@ namespace HealthTracker.Tests.Alcohol
             await context.SaveChangesAsync();
 
             var logger = new Mock<IHealthTrackerLogger>();
-            var factory = new HealthTrackerFactory(context, null, logger.Object);
+            var factory = new HealthTrackerFactory(context, _settings, logger.Object);
             var exporter = new BeverageConsumptionMeasurementExporter(factory);
 
             _filePath = Path.ChangeExtension(Path.GetTempFileName(), "csv");
