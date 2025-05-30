@@ -105,7 +105,6 @@ namespace HealthTracker.Mvc.Controllers
                     $"Retrieving page {page} of alcohol consumption measurements for person with ID {model.Filters.PersonId}" +
                     $" in the date range {model.Filters.From:dd-MMM-yyyy} to {model.Filters.To:dd-MMM-yyyy}");
 
-                // 
                 var measurements = await _measurementClient.ListAsync(
                     model.Filters.PersonId, model.Filters.From, ToDate(model.Filters.To), page, _settings.ResultsPageSize);
                 model.SetEntities(measurements, page, _settings.ResultsPageSize);

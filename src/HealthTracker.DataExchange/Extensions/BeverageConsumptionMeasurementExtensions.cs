@@ -29,6 +29,7 @@ namespace HealthTracker.DataExchange.Extensions
                 Quantity = measurement.Quantity,
                 Measure = (int)measurement.Measure,
                 MeasureName = measurement.Measure.ToName(),
+                Volume = measurement.Volume,
                 ABV = measurement.ABV,
                 Units = measurement.Units
             };
@@ -72,6 +73,7 @@ namespace HealthTracker.DataExchange.Extensions
                 BeverageId = beverage.Id,
                 Measure = (BeverageMeasure)exportable.Measure,
                 Quantity = exportable.Quantity,
+                Volume = exportable.Volume,
                 ABV = exportable.ABV,
                 Units = exportable.Units
             };

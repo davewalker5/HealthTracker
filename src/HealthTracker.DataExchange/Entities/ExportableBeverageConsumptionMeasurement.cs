@@ -7,7 +7,7 @@ namespace HealthTracker.DataExchange.Entities
     [ExcludeFromCodeCoverage]
     public class ExportableBeverageConsumptionMeasurement : ExportableMeasurementBase
     {
-        public const string CsvRecordPattern = @"^""[0-9]+"","".*"",""[0-9]+-[A-Za-z]+-[0-9]+ [0-9]+:[0-9]+:[0-9]+"",""[0-9.]+"","".*"",""[0-9]+"","".*"",""[0-9]+"",""[0-9.]+"",""[0-9.]+"".?$";
+        public const string CsvRecordPattern = @"^""[0-9]+"","".*"",""[0-9]+-[A-Za-z]+-[0-9]+ [0-9]+:[0-9]+:[0-9]+"",""[0-9.]+"","".*"",""[0-9]+"","".*"",""[0-9]+"",""[0-9.]+"",""[0-9.]+"",""[0-9.]+"".?$";
 
         [Export("Beverage Id", 4)]
         public int BeverageId { get; set; }
@@ -24,10 +24,13 @@ namespace HealthTracker.DataExchange.Entities
         [Export("Quantity", 8)]
         public int Quantity { get; set; }
 
-        [Export("ABV", 9)]
+        [Export("Volume", 9)]
+        public decimal Volume { get; set; }
+
+        [Export("ABV", 10)]
         public decimal ABV { get; set; }
 
-        [Export("Units", 10)]
+        [Export("Units", 11)]
         public decimal Units { get; set; }
 
         public static ExportableBeverageConsumptionMeasurement FromCsv(string record)
@@ -43,8 +46,9 @@ namespace HealthTracker.DataExchange.Entities
                 Measure = int.Parse(words[5].Replace("\"", "").Trim()),
                 MeasureName = words[6].Replace("\"", "").Trim(),
                 Quantity = int.Parse(words[7].Replace("\"", "").Trim()),
-                ABV = decimal.Parse(words[8].Replace("\"", "").Trim()),
-                Units = decimal.Parse(words[9].Replace("\"", "").Trim())
+                Volume = decimal.Parse(words[8].Replace("\"", "").Trim()),
+                ABV = decimal.Parse(words[9].Replace("\"", "").Trim()),
+                Units = decimal.Parse(words[10].Replace("\"", "").Trim())
             };
         }
     }

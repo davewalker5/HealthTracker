@@ -77,7 +77,7 @@ namespace HealthTracker.Tests.BeverageConsumption
         [TestMethod]
         public async Task ImportMeasurementsTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_beverage.Id}"",""{_beverage.Name}"",""{(int)_measurement.Measure}"",""{_measurement.MeasureName}"",""{_measurement.Quantity}"",""{_measurement.ABV}"",""{_measurement.Units}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_beverage.Id}"",""{_beverage.Name}"",""{(int)_measurement.Measure}"",""{_measurement.MeasureName}"",""{_measurement.Quantity}"",""{_measurement.Volume}"",""{_measurement.ABV}"",""{_measurement.Units}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 
@@ -114,7 +114,7 @@ namespace HealthTracker.Tests.BeverageConsumption
         [ExpectedException(typeof(InvalidFieldValueException))]
         public async Task InvalidBeverageTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""0"",""Not Valid"",""{(int)_measurement.Measure}"",""{_measurement.MeasureName}"",""{_measurement.Quantity}"",""{_measurement.ABV}"",""{_measurement.Units}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""0"",""Not Valid"",""{(int)_measurement.Measure}"",""{_measurement.MeasureName}"",""{_measurement.Quantity}"",""{_measurement.Volume}"",""{_measurement.ABV}"",""{_measurement.Units}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 
@@ -125,7 +125,7 @@ namespace HealthTracker.Tests.BeverageConsumption
         [ExpectedException(typeof(InvalidFieldValueException))]
         public async Task InvalidMeasureTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_beverage.Id}"",""{_beverage.Name}"",""0"","""",""{_measurement.Quantity}"",""{_measurement.ABV}"",""{_measurement.Units}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_beverage.Id}"",""{_beverage.Name}"",""0"","""",""{_measurement.Quantity}"",""{_measurement.Volume}"",""{_measurement.ABV}"",""{_measurement.Units}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 
@@ -136,7 +136,18 @@ namespace HealthTracker.Tests.BeverageConsumption
         [ExpectedException(typeof(InvalidFieldValueException))]
         public async Task InvalidQuantityTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_beverage.Id}"",""{_beverage.Name}"",""{(int)_measurement.Measure}"",""{_measurement.MeasureName}"",""0"",""{_measurement.ABV}"",""{_measurement.Units}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_beverage.Id}"",""{_beverage.Name}"",""{(int)_measurement.Measure}"",""{_measurement.MeasureName}"",""0"",""{_measurement.Volume}"",""{_measurement.ABV}"",""{_measurement.Units}""";
+            _filePath = DataGenerator.TemporaryCsvFilePath();
+            File.WriteAllLines(_filePath, ["", record]);
+
+            await _importer.ImportAsync(_filePath);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidFieldValueException))]
+        public async Task InvalidVolumeTest()
+        {
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_beverage.Id}"",""{_beverage.Name}"",""{(int)_measurement.Measure}"",""{_measurement.MeasureName}"",""{_measurement.Quantity}"",""0"",""{_measurement.ABV}"",""{_measurement.Units}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 
@@ -147,7 +158,7 @@ namespace HealthTracker.Tests.BeverageConsumption
         [ExpectedException(typeof(InvalidFieldValueException))]
         public async Task InvalidABVTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_beverage.Id}"",""{_beverage.Name}"",""{(int)_measurement.Measure}"",""{_measurement.MeasureName}"",""{_measurement.Quantity}"",""1000"",""{_measurement.Units}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_beverage.Id}"",""{_beverage.Name}"",""{(int)_measurement.Measure}"",""{_measurement.MeasureName}"",""{_measurement.Quantity}"",""{_measurement.Volume}"",""1000"",""{_measurement.Units}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 

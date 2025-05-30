@@ -43,13 +43,16 @@
                 <tr>
                     <th>Name</th>
                     <th>Typical ABV %</th>
+                    <th>Is Hydrating</th>
                     <th />
                 </tr>
                 @foreach (var beverage in Model.Beverages)
                 {
+                    var isHydrating = beverage.IsHydrating ? "Yes" : "No";
                     <tr>
                         <td valign="center">@beverage.Name</td>
                         <td valign="center">@beverage.TypicalABV.ToString("0.00")</td>
+                        <td valign="center">@isHydrating</td>
                         <td valign="center">
                             <a class="btn btn-lg" asp-area="" asp-controller="Beverage" asp-action="Edit" asp-route-id="@beverage.Id">
                                 <i class="fas fa-edit"></i>

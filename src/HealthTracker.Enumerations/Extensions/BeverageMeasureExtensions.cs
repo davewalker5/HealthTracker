@@ -15,6 +15,7 @@ namespace HealthTracker.Enumerations.Extensions
             {
                 BeverageMeasure.None => "",
                 BeverageMeasure.Pint => "Pint",
+                BeverageMeasure.HalfPint => "Half Pint",
                 BeverageMeasure.LargeGlass => "Large Glass",
                 BeverageMeasure.MediumGlass => "Medium Glass",
                 BeverageMeasure.SmallGlass => "Small Glass",

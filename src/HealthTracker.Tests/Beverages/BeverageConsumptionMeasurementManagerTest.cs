@@ -15,12 +15,14 @@ namespace HealthTracker.Tests.Beverages
         private readonly DateTime ConsumptionDate = DataGenerator.RandomDateInYear(2024);
         private readonly BeverageMeasure Measure = DataGenerator.RandomBeverageMeasure();
         private readonly int Quantity = DataGenerator.RandomDuration().ToDuration();
+        private readonly decimal Volume = DataGenerator.RandomDecimal(25, 250);
         private readonly decimal ABV = DataGenerator.RandomDecimal(0, 20);
 
 
         private readonly DateTime UpdatedConsumptionDate = DataGenerator.RandomDateInYear(2024);
         private readonly BeverageMeasure UpdatedMeasure = DataGenerator.RandomBeverageMeasure();
         private readonly int UpdatedQuantity = DataGenerator.RandomDuration().ToDuration();
+        private readonly decimal UpdatedVolume = DataGenerator.RandomDecimal(25, 250);
         private readonly decimal UpdatedABV = DataGenerator.RandomDecimal(21, 40);
 
         private IHealthTrackerFactory _factory;
@@ -35,8 +37,8 @@ namespace HealthTracker.Tests.Beverages
             var logger = new Mock<IHealthTrackerLogger>();
             _factory = new HealthTrackerFactory(context, null, logger.Object);
             _personId = Task.Run(() => _factory.People.AddAsync("", "", DateTime.Now, 0, Gender.Unspecified)).Result.Id;
-            _beverageId = Task.Run(() => _factory.Beverages.AddAsync("White Wine", DataGenerator.RandomDecimal(0, 13))).Result.Id;
-            _measurementId = Task.Run(() => _factory.BeverageConsumptionMeasurements.AddAsync(_personId, _beverageId, ConsumptionDate, Measure, Quantity, ABV)).Result.Id;
+            _beverageId = Task.Run(() => _factory.Beverages.AddAsync("White Wine", DataGenerator.RandomDecimal(0, 13), false)).Result.Id;
+            _measurementId = Task.Run(() => _factory.BeverageConsumptionMeasurements.AddAsync(_personId, _beverageId, ConsumptionDate, Measure, Quantity, Volume, ABV)).Result.Id;
         }
 
         [TestMethod]
@@ -56,7 +58,7 @@ namespace HealthTracker.Tests.Beverages
         [TestMethod]
         public async Task UpdateTest()
         {
-            await _factory.BeverageConsumptionMeasurements.UpdateAsync(_measurementId, _personId, _beverageId, UpdatedConsumptionDate, UpdatedMeasure, UpdatedQuantity, UpdatedABV);
+            await _factory.BeverageConsumptionMeasurements.UpdateAsync(_measurementId, _personId, _beverageId, UpdatedConsumptionDate, UpdatedMeasure, UpdatedQuantity, UpdatedVolume, UpdatedABV);
             var measurements = await _factory.BeverageConsumptionMeasurements.ListAsync(x => x.PersonId == _personId, 1, int.MaxValue);
             Assert.AreEqual(1, measurements.Count);
             Assert.AreEqual(_measurementId, measurements.First().Id);
@@ -79,21 +81,21 @@ namespace HealthTracker.Tests.Beverages
         [TestMethod]
         [ExpectedException(typeof(PersonNotFoundException))]
         public async Task CannotAddMeasurementForMissingPersonTest()
-            => await _factory.BeverageConsumptionMeasurements.AddAsync(10 * _personId, _beverageId, ConsumptionDate, Measure, Quantity, ABV);
+            => await _factory.BeverageConsumptionMeasurements.AddAsync(10 * _personId, _beverageId, ConsumptionDate, Measure, Quantity, Volume, ABV);
 
         [TestMethod]
         [ExpectedException(typeof(PersonNotFoundException))]
         public async Task CannotUpdateMeasurementForMissingPersonTest()
-            => await _factory.BeverageConsumptionMeasurements.UpdateAsync(_measurementId, 10 * _personId, _beverageId, UpdatedConsumptionDate, UpdatedMeasure, UpdatedQuantity, UpdatedABV);
+            => await _factory.BeverageConsumptionMeasurements.UpdateAsync(_measurementId, 10 * _personId, _beverageId, UpdatedConsumptionDate, UpdatedMeasure, UpdatedQuantity, UpdatedVolume, UpdatedABV);
 
         [TestMethod]
         [ExpectedException(typeof(BeverageNotFoundException))]
         public async Task CannotAddMeasurementForMissingBeverageTest()
-            => await _factory.BeverageConsumptionMeasurements.AddAsync(_personId, 10 * _beverageId, ConsumptionDate, Measure, Quantity, ABV);
+            => await _factory.BeverageConsumptionMeasurements.AddAsync(_personId, 10 * _beverageId, ConsumptionDate, Measure, Quantity, Volume, ABV);
 
         [TestMethod]
         [ExpectedException(typeof(BeverageNotFoundException))]
         public async Task CannotUpdateMeasurementForMissingActivityTypeTest()
-            => await _factory.BeverageConsumptionMeasurements.UpdateAsync(_measurementId, _personId, 10 * _beverageId, UpdatedConsumptionDate, UpdatedMeasure, UpdatedQuantity, UpdatedABV);
+            => await _factory.BeverageConsumptionMeasurements.UpdateAsync(_measurementId, _personId, 10 * _beverageId, UpdatedConsumptionDate, UpdatedMeasure, UpdatedQuantity, UpdatedVolume, UpdatedABV);
     }
 }

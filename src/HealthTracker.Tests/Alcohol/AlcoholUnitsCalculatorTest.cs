@@ -3,6 +3,7 @@ using HealthTracker.Configuration.Interfaces;
 using HealthTracker.Entities.Interfaces;
 using HealthTracker.Logic.Factory;
 using HealthTracker.Tests.Mocks;
+using HealthTracker.Enumerations.Enumerations;
 
 namespace HealthTracker.Tests.Alcohol
 {
@@ -55,6 +56,15 @@ namespace HealthTracker.Tests.Alcohol
         }
 
         [TestMethod]
+        public void HalfPintTest()
+        {
+            var abv = DataGenerator.RandomDecimal(3, 8);
+            var actual = _factory.AlcoholUnitsCalculator.UnitsPerHalfPint(abv);
+            var expected = Math.Round(abv * 284M / 1000M, 2, MidpointRounding.AwayFromZero);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
         public void SmallGlassTest()
         {
             var abv = DataGenerator.RandomDecimal(10, 15);
@@ -78,6 +88,42 @@ namespace HealthTracker.Tests.Alcohol
             var abv = DataGenerator.RandomDecimal(10, 15);
             var actual = _factory.AlcoholUnitsCalculator.UnitsPerLargeGlass(abv);
             var expected = Math.Round(abv * _settings.LargeGlassSize / 1000M, 2, MidpointRounding.AwayFromZero);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void LargeGlassVolumeTest()
+        {
+            var quantity = DataGenerator.RandomInt(1, 10);
+            var actual = _factory.AlcoholUnitsCalculator.CalculateVolume(BeverageMeasure.LargeGlass, quantity);
+            var expected = quantity * _settings.LargeGlassSize;
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void MediumGlassVolumeTest()
+        {
+            var quantity = DataGenerator.RandomInt(1, 10);
+            var actual = _factory.AlcoholUnitsCalculator.CalculateVolume(BeverageMeasure.MediumGlass, quantity);
+            var expected = quantity * _settings.MediumGlassSize;
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void SmallGlassVolumeTest()
+        {
+            var quantity = DataGenerator.RandomInt(1, 10);
+            var actual = _factory.AlcoholUnitsCalculator.CalculateVolume(BeverageMeasure.SmallGlass, quantity);
+            var expected = quantity * _settings.SmallGlassSize;
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void ShotVolumeTest()
+        {
+            var quantity = DataGenerator.RandomInt(1, 10);
+            var actual = _factory.AlcoholUnitsCalculator.CalculateVolume(BeverageMeasure.Shot, quantity);
+            var expected = quantity * _settings.ShotSize;
             Assert.AreEqual(expected, actual);
         }
     }

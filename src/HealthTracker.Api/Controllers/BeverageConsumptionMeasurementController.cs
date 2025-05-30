@@ -13,11 +13,14 @@ namespace HealthTracker.Api.Controllers
     public class BeverageConsumptionMeasurementController : Controller
     {
         private const string DateTimeFormat = "yyyy-MM-dd H:mm:ss";
-
         private readonly IHealthTrackerFactory _factory;
+        private readonly ILogger<BeverageConsumptionMeasurementController> _logger;
 
-        public BeverageConsumptionMeasurementController(IHealthTrackerFactory factory)
-            => _factory = factory;
+        public BeverageConsumptionMeasurementController(IHealthTrackerFactory factory, ILogger<BeverageConsumptionMeasurementController> logger)
+        {
+            _factory = factory;
+            _logger = logger;
+        }
 
         /// <summary>
         /// Return a single measurement given its ID
@@ -70,6 +73,11 @@ namespace HealthTracker.Api.Controllers
         [Route("")]
         public async Task<ActionResult<BeverageConsumptionMeasurement>> AddBeverageConsumptionMeasurementAsync([FromBody] BeverageConsumptionMeasurement template)
         {
+            // Calculate the volume, if it's not specified
+            var volume = template.Volume <= 0 ?
+                _factory.AlcoholUnitsCalculator.CalculateVolume(template.Measure, template.Quantity) :
+                template.Volume;
+
             // Add the measurement
             var measurement = await _factory.BeverageConsumptionMeasurements.AddAsync(
                 template.PersonId,
@@ -77,6 +85,7 @@ namespace HealthTracker.Api.Controllers
                 template.Date,
                 template.Measure,
                 template.Quantity,
+                volume,
                 template.ABV
             );
 
@@ -94,6 +103,11 @@ namespace HealthTracker.Api.Controllers
         [Route("")]
         public async Task<ActionResult<BeverageConsumptionMeasurement>> UpdateBeverageConsumptionMeasurementAsync([FromBody] BeverageConsumptionMeasurement template)
         {
+            // Calculate the volume, if it's not specified
+            var volume = template.Volume <= 0 ?
+                _factory.AlcoholUnitsCalculator.CalculateVolume(template.Measure, template.Quantity) :
+                template.Volume;
+
             // Update the measurement
             var measurement = await _factory.BeverageConsumptionMeasurements.UpdateAsync(
                 template.Id,
@@ -102,6 +116,7 @@ namespace HealthTracker.Api.Controllers
                 template.Date,
                 template.Measure,
                 template.Quantity,
+                volume,
                 template.ABV
             );
 

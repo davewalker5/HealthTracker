@@ -46,6 +46,7 @@ namespace HealthTracker.DataExchange.Import
 
             ValidateField<int>(x => x != (int)BeverageMeasure.None, measurement.Measure, "Measure", recordCount);
             ValidateField<int>(x => x > 0, measurement.Quantity, "Quantity", recordCount);
+            ValidateField<decimal>(x => x > 0, measurement.Volume, "Volume", recordCount);
             ValidateField<decimal>(x => x >= 0 && x <= 100, measurement.ABV, "ABV", recordCount);
         }
 
@@ -63,6 +64,7 @@ namespace HealthTracker.DataExchange.Import
                 measurement.Date,
                 (BeverageMeasure)measurement.Measure,
                 measurement.Quantity,
+                measurement.Volume,
                 measurement.ABV);
         }
     }

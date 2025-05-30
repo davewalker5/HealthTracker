@@ -198,6 +198,7 @@ namespace HealthTracker.Data
                 entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
                 entity.Property(e => e.Name).IsRequired().HasColumnName("name").HasColumnType("VARCHAR(100)");
                 entity.Property(e => e.TypicalABV).HasColumnName("typical_abv");
+                entity.Property(e => e.IsHydrating).HasColumnName("is_hydrating");
             });
 
             modelBuilder.Entity<BeverageConsumptionMeasurement>(entity =>

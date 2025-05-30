@@ -9,6 +9,7 @@
         <th>Beverage</th>
         <th>Measure</th>
         <th>Quantity</th>
+        <th>Volume</th>
         <th>ABV</th>
         <th>Units</th>
         @if (Model.Editable)
@@ -26,6 +27,7 @@
             <td valign="center">@measurement.Beverage</td>
             <td valign="center">@measurement.MeasureName</td>
             <td valign="center">@measurement.Quantity</td>
+            <td valign="center">@measurement.Volume</td>
             <td valign="center">@measurement.ABV.ToString("0.00")</td>
             <td valign="center">@measurement.Units.ToString("0.00")</td>
             @if (Model.Editable)

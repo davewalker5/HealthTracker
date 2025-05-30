@@ -681,7 +681,8 @@ namespace HealthTracker.Tests.Mocks
             => new()
             {
                 Name = RandomTitleCasePhrase(2, 5, 10),
-                TypicalABV = RandomDecimal(0, 40)
+                TypicalABV = RandomDecimal(0, 40),
+                IsHydrating = true
             };
 
         /// <summary>
@@ -712,6 +713,7 @@ namespace HealthTracker.Tests.Mocks
                 Date = RandomDateInYear(year),
                 Measure = RandomBeverageMeasure(),
                 Quantity = RandomInt(1, 5),
+                Volume = RandomDecimal(25, 250),
                 ABV = RandomDecimal(0, 100)
             };
 

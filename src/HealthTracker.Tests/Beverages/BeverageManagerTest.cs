@@ -13,8 +13,10 @@ namespace HealthTracker.Tests.Beverages
     {
         private readonly string Name = DataGenerator.RandomTitleCasePhrase(2, 5, 10);
         private readonly decimal TypicalABV = DataGenerator.RandomDecimal(0, 40);
+        private readonly bool IsHydrating = true;
         private readonly string UpdatedName = DataGenerator.RandomTitleCasePhrase(2, 5, 10);
         private readonly decimal UpdatedTypicalABV = DataGenerator.RandomDecimal(0, 40);
+        private readonly bool UpdatedIsHydrating = false;
 
         private IHealthTrackerFactory _factory;
         private int _beverageId;
@@ -25,7 +27,7 @@ namespace HealthTracker.Tests.Beverages
             HealthTrackerDbContext context = HealthTrackerDbContextFactory.CreateInMemoryDbContext();
             var logger = new Mock<IHealthTrackerLogger>();
             _factory = new HealthTrackerFactory(context, null, logger.Object);
-            _beverageId = Task.Run(() => _factory.Beverages.AddAsync(Name, TypicalABV)).Result.Id;
+            _beverageId = Task.Run(() => _factory.Beverages.AddAsync(Name, TypicalABV, IsHydrating)).Result.Id;
         }
 
         [TestMethod]
@@ -36,6 +38,7 @@ namespace HealthTracker.Tests.Beverages
             Assert.AreEqual(_beverageId, beverage.Id);
             Assert.AreEqual(Name, beverage.Name);
             Assert.AreEqual(TypicalABV, beverage.TypicalABV);
+            Assert.AreEqual(IsHydrating, beverage.IsHydrating);
         }
 
         [TestMethod]
@@ -52,6 +55,7 @@ namespace HealthTracker.Tests.Beverages
             Assert.AreEqual(1, beverages.Count);
             Assert.AreEqual(Name, beverages.First().Name);
             Assert.AreEqual(TypicalABV, beverages.First().TypicalABV);
+            Assert.AreEqual(IsHydrating, beverages.First().IsHydrating);
         }
 
         [TestMethod]
@@ -64,7 +68,7 @@ namespace HealthTracker.Tests.Beverages
         [TestMethod]
         public async Task UpdateTest()
         {
-            await _factory.Beverages.UpdateAsync(_beverageId, UpdatedName, UpdatedTypicalABV);
+            await _factory.Beverages.UpdateAsync(_beverageId, UpdatedName, UpdatedTypicalABV, UpdatedIsHydrating);
             var beverage = await _factory.Beverages.GetAsync(a => a.Id == _beverageId);
             Assert.IsNotNull(beverage);
             Assert.AreEqual(_beverageId, beverage.Id);
@@ -72,6 +76,7 @@ namespace HealthTracker.Tests.Beverages
             Assert.AreEqual(UpdatedTypicalABV, beverage.TypicalABV);
             Assert.AreNotEqual(Name, UpdatedName);
             Assert.AreNotEqual(TypicalABV, UpdatedTypicalABV);
+            Assert.AreEqual(UpdatedIsHydrating, beverage.IsHydrating);
         }
 
         [TestMethod]
@@ -85,7 +90,7 @@ namespace HealthTracker.Tests.Beverages
         [TestMethod]
         [ExpectedException(typeof(BeverageExistsException))]
         public async Task CannotAddDuplicateBeverageTest()
-            => _ = await _factory.Beverages.AddAsync(Name, 0M);
+            => _ = await _factory.Beverages.AddAsync(Name, 0M, false);
 
         [TestMethod]
         [ExpectedException(typeof(BeverageInUseException))]

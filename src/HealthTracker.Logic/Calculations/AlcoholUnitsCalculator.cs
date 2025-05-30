@@ -15,6 +15,33 @@ namespace HealthTracker.Logic.Calculations
             => _settings = settings;
 
         /// <summary>
+        /// Calculate the volume of a quantity of a standard measure
+        /// </summary>
+        /// <param name="measure"></param>
+        /// <param name="quantity"></param>
+        /// <returns></returns>
+        public decimal CalculateVolume(BeverageMeasure measure, int quantity)
+            => quantity * GetVolume(measure);
+
+        /// <summary>
+        /// Return the volume associated with a specified measure
+        /// </summary>
+        /// <param name="measure"></param>
+        /// <returns></returns>
+        public decimal GetVolume(BeverageMeasure measure)
+            => measure switch
+            {
+                BeverageMeasure.None => 0M,
+                BeverageMeasure.Pint => MlPerPint,
+                BeverageMeasure.HalfPint => MlPerPint / 2M,
+                BeverageMeasure.LargeGlass => _settings.LargeGlassSize,
+                BeverageMeasure.MediumGlass => _settings.MediumGlassSize,
+                BeverageMeasure.SmallGlass => _settings.SmallGlassSize,
+                BeverageMeasure.Shot => _settings.ShotSize,
+                _ => 0M,
+            };
+
+        /// <summary>
         /// Given an ABV % and a volume, calculate the number of units
         /// </summary>
         /// <param name="abv"></param>
@@ -38,6 +65,14 @@ namespace HealthTracker.Logic.Calculations
         /// <returns></returns>
         public decimal UnitsPerPint(decimal abv)
             => CalculateUnits(abv, MlPerPint);
+
+        /// <summary>
+        /// Calculate the number of units in half a pint
+        /// </summary>
+        /// <param name="abv"></param>
+        /// <returns></returns>
+        public decimal UnitsPerHalfPint(decimal abv)
+            => CalculateUnits(abv, MlPerPint / 2M);
 
         /// <summary>
         /// Calculate the number of units in a small glass

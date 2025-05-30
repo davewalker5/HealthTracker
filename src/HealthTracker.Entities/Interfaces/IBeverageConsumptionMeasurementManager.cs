@@ -14,6 +14,7 @@ namespace HealthTracker.Entities.Interfaces
             DateTime date,
             BeverageMeasure measure,
             int quantity,
+            decimal volume,
             decimal abv);
 
         Task<BeverageConsumptionMeasurement> UpdateAsync(
@@ -23,6 +24,7 @@ namespace HealthTracker.Entities.Interfaces
             DateTime date,
             BeverageMeasure measure,
             int quantity,
+            decimal volume,
             decimal abv);
 
         Task DeleteAsync(int id);

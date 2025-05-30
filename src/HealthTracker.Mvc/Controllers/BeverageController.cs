@@ -112,8 +112,8 @@ namespace HealthTracker.Mvc.Controllers
 
             if (ModelState.IsValid)
             {
-                _logger.LogDebug($"Adding beverage: Name = {model.Beverage.Name}, Typical ABV % = {model.Beverage.TypicalABV}");
-                var beverage = await _client.AddAsync(model.Beverage.Name, model.Beverage.TypicalABV);
+                _logger.LogDebug($"Adding beverage: Name = {model.Beverage.Name}, Typical ABV % = {model.Beverage.TypicalABV}, Include In Water Calculations = {model.Beverage.IsHydrating}");
+                var beverage = await _client.AddAsync(model.Beverage.Name, model.Beverage.TypicalABV, model.Beverage.IsHydrating);
 
                 result = CreateListResult(beverage, $"{beverage.Name} successfully added");
             }
@@ -164,8 +164,8 @@ namespace HealthTracker.Mvc.Controllers
 
             if (ModelState.IsValid)
             {
-                _logger.LogDebug($"Updating beverage: Id = {model.Beverage.Id}, Name = {model.Beverage.Name}, Typical ABV % = {model.Beverage.TypicalABV}");
-                var beverage = await _client.UpdateAsync(model.Beverage.Id, model.Beverage.Name, model.Beverage.TypicalABV);
+                _logger.LogDebug($"Updating beverage: Id = {model.Beverage.Id}, Name = {model.Beverage.Name}, Typical ABV % = {model.Beverage.TypicalABV}, Include In Water Calculations = {model.Beverage.IsHydrating}");
+                var beverage = await _client.UpdateAsync(model.Beverage.Id, model.Beverage.Name, model.Beverage.TypicalABV, model.Beverage.IsHydrating);
 
                 result = CreateListResult(beverage, $"{beverage.Name} successfully added");
             }

@@ -23,6 +23,9 @@ namespace HealthTracker.Entities.Measurements
         [Range(1, int.MaxValue, ErrorMessage = "{0} must be >= {1}")]
         public int Quantity { get; set; }
 
+        [DisplayName("Volume")]
+        public decimal Volume { get; set; }
+
         [DisplayName("ABV")]
         [Range(0, 100, ErrorMessage = "{0} must be between {1} and {2}")]
         public decimal ABV { get; set; }

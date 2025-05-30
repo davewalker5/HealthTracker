@@ -17,5 +17,8 @@ namespace HealthTracker.Entities.Measurements
         [DisplayName("Typical ABV %")]
         [Range(0.0, double.MaxValue, ErrorMessage = "{0} must be between {1} and {2}")]
         public decimal TypicalABV { get; set; }
+
+        [DisplayName("Hydrating")]
+        public bool IsHydrating { get; set; }
     }
 }
