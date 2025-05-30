@@ -20,5 +20,8 @@ namespace HealthTracker.Entities.Measurements
 
         [DisplayName("Hydrating")]
         public bool IsHydrating { get; set; }
+
+        [DisplayName("Alcohol")]
+        public bool IsAlcohol { get; set; }
     }
 }

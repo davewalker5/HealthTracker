@@ -682,7 +682,8 @@ namespace HealthTracker.Tests.Mocks
             {
                 Name = RandomTitleCasePhrase(2, 5, 10),
                 TypicalABV = RandomDecimal(0, 40),
-                IsHydrating = true
+                IsHydrating = true,
+                IsAlcohol = true
             };
 
         /// <summary>

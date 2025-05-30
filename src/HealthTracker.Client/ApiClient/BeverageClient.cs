@@ -20,14 +20,16 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="name"></param>
         /// <param name="typicalABV"></param>
         /// <param name="isHydrating"></param>
+        /// <param name="isAlcohol"></param>
         /// <returns></returns>
-        public async Task<Beverage> AddAsync(string name, decimal typicalABV, bool isHydrating)
+        public async Task<Beverage> AddAsync(string name, decimal typicalABV, bool isHydrating, bool isAlcohol)
         {
             dynamic template = new
             {
                 Name = name,
                 TypicalABV = typicalABV,
-                IsHydrating = isHydrating
+                IsHydrating = isHydrating,
+                IsAlcohol = isAlcohol
             };
 
             var data = Serialize(template);
@@ -44,15 +46,17 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="name"></param>
         /// <param name="typicalABV"></param>
         /// <param name="isHydrating"></param>
+        /// <param name="isAlcohol"></param>
         /// <returns></returns>
-        public async Task<Beverage> UpdateAsync(int id, string name, decimal typicalABV, bool isHydrating)
+        public async Task<Beverage> UpdateAsync(int id, string name, decimal typicalABV, bool isHydrating, bool isAlcohol)
         {
             dynamic template = new
             {
                 Id = id,
                 Name = name,
                 TypicalABV = typicalABV,
-                IsHydrating = isHydrating
+                IsHydrating = isHydrating,
+                IsAlcohol = isAlcohol
             };
 
             var data = Serialize(template);

@@ -18,7 +18,6 @@ namespace HealthTracker.Tests.Beverages
         private readonly decimal Volume = DataGenerator.RandomDecimal(25, 250);
         private readonly decimal ABV = DataGenerator.RandomDecimal(0, 20);
 
-
         private readonly DateTime UpdatedConsumptionDate = DataGenerator.RandomDateInYear(2024);
         private readonly BeverageMeasure UpdatedMeasure = DataGenerator.RandomBeverageMeasure();
         private readonly int UpdatedQuantity = DataGenerator.RandomDuration().ToDuration();
@@ -37,7 +36,7 @@ namespace HealthTracker.Tests.Beverages
             var logger = new Mock<IHealthTrackerLogger>();
             _factory = new HealthTrackerFactory(context, null, logger.Object);
             _personId = Task.Run(() => _factory.People.AddAsync("", "", DateTime.Now, 0, Gender.Unspecified)).Result.Id;
-            _beverageId = Task.Run(() => _factory.Beverages.AddAsync("White Wine", DataGenerator.RandomDecimal(0, 13), false)).Result.Id;
+            _beverageId = Task.Run(() => _factory.Beverages.AddAsync("White Wine", DataGenerator.RandomDecimal(0, 13), false, false)).Result.Id;
             _measurementId = Task.Run(() => _factory.BeverageConsumptionMeasurements.AddAsync(_personId, _beverageId, ConsumptionDate, Measure, Quantity, Volume, ABV)).Result.Id;
         }
 
