@@ -690,8 +690,9 @@ namespace HealthTracker.Tests.Mocks
         /// <returns></returns>
         public static BeverageMeasure RandomBeverageMeasure()
         {
+            // Note the 1 to N-1 in the random selector : This avoids the "None" value
             var values = Enum.GetValues(typeof(BeverageMeasure));
-            var measure = (BeverageMeasure)values.GetValue(RandomInt(0, values.Length - 1));
+            var measure = (BeverageMeasure)values.GetValue(RandomInt(1, values.Length - 1));
             return measure;
         }
 

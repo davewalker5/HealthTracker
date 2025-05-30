@@ -45,8 +45,7 @@ namespace HealthTracker.Tests.BeverageConsumption
         {
             if (!string.IsNullOrEmpty(_filePath) && File.Exists(_filePath))
             {
-                // File.Delete(_filePath);
-                Console.WriteLine($">>>>> {_filePath}");
+                File.Delete(_filePath);
             }
         }
 
