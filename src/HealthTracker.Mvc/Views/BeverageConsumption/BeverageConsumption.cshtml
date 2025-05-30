@@ -68,3 +68,36 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    function GetABVForBeverage(beverageId) {
+        if (beverageId > 0) {
+            var route = "/BeverageConsumption/ABV?beverageId=" + beverageId;
+            $('html, body').css("cursor", "wait");
+            $.ajax({
+                url: route,
+                method: "GET",
+                dataType: "json",
+                cache: false,
+                success: function (result) {
+                    console.log(JSON.stringify(result));
+                    $("#Measurement_ABV").val(result.abv);
+                    $('html, body').css("cursor", "auto");
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                    $('html, body').css("cursor", "auto");
+                }
+            });
+        } else {
+            $("#Measurement_ABV").val("0");
+        }
+    }
+
+    $(document).ready(function () {
+        $("#Measurement_BeverageId").change(function () {
+            var beverageId = $("#Measurement_BeverageId").val();
+            GetABVForBeverage(beverageId);
+        });
+    });
+</script>

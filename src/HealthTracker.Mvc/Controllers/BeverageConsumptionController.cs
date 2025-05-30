@@ -17,10 +17,12 @@ namespace HealthTracker.Mvc.Controllers
         private const string DurationPattern = @"^\d{2}:\d{2}:\d{2}$";
         private readonly Regex _durationRegex = new(DurationPattern, RegexOptions.Compiled);
         private readonly ILogger<BeverageConsumptionController> _logger;
+        private readonly IBeverageClient _beverageClient;
         private readonly IBeverageListGenerator _beverageListGenerator;
 
         public BeverageConsumptionController(
             IPersonClient personClient,
+            IBeverageClient beverageClient,
             IBeverageConsumptionMeasurementClient measurementClient,
             IHealthTrackerApplicationSettings settings,
             IFilterGenerator filterGenerator,
@@ -29,6 +31,7 @@ namespace HealthTracker.Mvc.Controllers
             ILogger<BeverageConsumptionController> logger) : base(personClient, measurementClient, settings, filterGenerator, builder)
         {
             _logger = logger;
+            _beverageClient = beverageClient;
             _beverageListGenerator = beverageListGenerator;
         }
 
@@ -303,6 +306,26 @@ namespace HealthTracker.Mvc.Controllers
             // Return the list view with an empty list of measurements
             var model = await CreateListViewModel(personId, 0, date, date, "Measurement successfully deleted", ViewFlags.ListView);
             return View("Index", model);
+        }
+
+        /// <summary>
+        /// Return an ABV for a specified beverage
+        /// </summary>
+        /// <param name="beverageId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> ABV(int beverageId)
+        {
+            decimal abv = 0M;
+
+            var beverages = await _beverageClient.ListAsync(1, int.MaxValue);
+            if (beverages?.Count > 0)
+            {
+                var beverage = beverages.FirstOrDefault(x => x.Id == beverageId);
+                abv = beverage?.TypicalABV ?? 0M;
+            }
+
+            return new JsonResult(new { abv });
         }
     }
 }
