@@ -18,12 +18,14 @@ namespace HealthTracker.Mvc.Controllers
             IBloodPressureMeasurementClient bloodPressurementMeasurementClient,
             IExerciseMeasurementClient exerciseMeasurementClient,
             IWeightMeasurementClient weightMeasurementClient,
+            IBeverageConsumptionMeasurementClient beverageConsumptionMeasurementClient,
             ILogger<WeightController> logger) : base(
                 bloodGlucoseMeasurementClient,
                 bloodOxygenSaturationMeasurementClient,
                 bloodPressurementMeasurementClient,
                 exerciseMeasurementClient,
                 weightMeasurementClient,
+                beverageConsumptionMeasurementClient,
                 logger
             )
         {

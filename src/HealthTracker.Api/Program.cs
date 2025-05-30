@@ -142,6 +142,10 @@ namespace HealthTracker.Api
             builder.Services.AddSingleton<IBackgroundQueue<BeverageConsumptionMeasurementExportWorkItem>, BackgroundQueue<BeverageConsumptionMeasurementExportWorkItem>>();
             builder.Services.AddHostedService<BeverageConsumptionMeasurementExportService>();
 
+            // Add the beverage consumption measurement importer hosted service
+            builder.Services.AddSingleton<IBackgroundQueue<BeverageConsumptionMeasurementImportWorkItem>, BackgroundQueue<BeverageConsumptionMeasurementImportWorkItem>>();
+            builder.Services.AddHostedService<BeverageConsumptionMeasurementImportService>();
+
             // Configure JWT
             byte[] key = Encoding.ASCII.GetBytes(settings!.Secret);
             builder.Services.AddAuthentication(x =>

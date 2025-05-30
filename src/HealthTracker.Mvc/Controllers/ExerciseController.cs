@@ -207,6 +207,8 @@ namespace HealthTracker.Mvc.Controllers
                 LogModelStateErrors(_logger);
             }
 
+            // Populate the activity types and render the view
+            model.ActivityTypes = await _activityTypeListGenerator.Create();
             return View(model);
         }
 
@@ -296,6 +298,8 @@ namespace HealthTracker.Mvc.Controllers
                 result = View(model);
             }
 
+            // Populate the activity types and render the view
+            model.ActivityTypes = await _activityTypeListGenerator.Create();
             return result;
         }
 

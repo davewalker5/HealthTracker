@@ -1,0 +1,70 @@
+@using HealthTracker.Mvc.Entities
+@model HealthTracker.Mvc.Models.BeverageConsumptionViewModel
+
+@Html.HiddenFor(m => m.PersonName)
+@Html.HiddenFor(m => m.From)
+@Html.HiddenFor(m => m.To)
+@Html.HiddenFor(m => m.Measurement.Id)
+@Html.HiddenFor(m => m.Measurement.PersonId)
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <strong>@Html.Label("Name")</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.PersonName, new { @class = "form-control", disabled = "disabled" })
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Measurement.BeverageId)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.DropDownListFor(m => m.Measurement.BeverageId, Model.Beverages, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Measurement.BeverageId, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    @await Html.PartialAsync("_DateAndTime", Model)
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Measurement.Measure)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.DropDownListFor(m => m.Measurement.Measure, Model.Measures, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Measurement.Measure, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Measurement.Quantity)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Measurement.Quantity, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Measurement.Quantity, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Measurement.ABV)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Measurement.ABV, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Measurement.ABV, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+</div>

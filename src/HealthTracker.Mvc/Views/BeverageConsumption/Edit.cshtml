@@ -1,8 +1,8 @@
 @using HealthTracker.Mvc.Entities
-@model HealthTracker.Mvc.Models.EditActivityTypeViewModel
+@model HealthTracker.Mvc.Models.EditBeverageConsumptionViewModel
 
 @{
-    ViewData["Title"] = "Edit Beverage";
+    ViewData["Title"] = "Edit Beverage Consumption Record";
 }
 
 <div class="container-fluid">
@@ -12,12 +12,13 @@
 
         <div class="row">
             <div class="col-md">
-                <span style="font-size: 1.2rem"><strong>Edit Beverage</strong></span>
+                <span style="font-size: 1.2rem"><strong>Edit Beverage Consumption Record</strong></span>
             </div>
         </div>
         <hr />
 
-        @await Html.PartialAsync("Beverage", Model);
+        @await Html.PartialAsync("BeverageConsumption", Model)
+
         <br />
 
         <div class="row">

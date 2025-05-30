@@ -19,12 +19,14 @@ namespace HealthTracker.Mvc.Controllers
             IBloodPressureMeasurementClient bloodPressurementMeasurementClient,
             IExerciseMeasurementClient exerciseMeasurementClient,
             IWeightMeasurementClient weightMeasurementClient,
+            IBeverageConsumptionMeasurementClient beverageConsumptionMeasurementClient,
             ILogger<WeightController> logger) : base(
                 bloodGlucoseMeasurementClient,
                 bloodOxygenSaturationMeasurementClient,
                 bloodPressurementMeasurementClient,
                 exerciseMeasurementClient,
                 weightMeasurementClient,
+                beverageConsumptionMeasurementClient,
                 logger
             )
         {
@@ -89,6 +91,7 @@ namespace HealthTracker.Mvc.Controllers
                     $"Type = {model.DataExchangeType}, " +
                     $"File Name = {model.FileName}");
                 await Client(model.DataExchangeType).ExportAsync(model.PersonId, model.From, model.To, model.FileName);
+                ModelState.Clear();
                 model.Message = $"Data export to {model.FileName} has been requested";
                 model.FileName = "";
                 model.BackButtonLabel = "< Back";

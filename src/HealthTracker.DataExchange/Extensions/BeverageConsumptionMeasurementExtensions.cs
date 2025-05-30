@@ -72,7 +72,8 @@ namespace HealthTracker.DataExchange.Extensions
                 BeverageId = beverage.Id,
                 Measure = (BeverageMeasure)exportable.Measure,
                 Quantity = exportable.Quantity,
-                ABV = exportable.ABV
+                ABV = exportable.ABV,
+                Units = exportable.Units
             };
         }
 

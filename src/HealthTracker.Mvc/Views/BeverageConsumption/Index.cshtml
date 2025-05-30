@@ -1,21 +1,21 @@
 @using HealthTracker.Mvc.Entities
 @using Microsoft.AspNetCore.Mvc.ModelBinding
-@model HealthTracker.Mvc.Models.BeverageListViewModel
+@model HealthTracker.Mvc.Models.BeverageConsumptionListViewModel
 
 @{
-    ViewData["Title"] = "Beverages";
+    ViewData["Title"] = "Beverage Consumption Measurements";
     var previousDisabled = (Model.PreviousEnabled) ? "" : "disabled";
     var nextDisabled = (Model.NextEnabled) ? "" : "disabled";
 }
 
 <p class="text-center font-weight-bold">
     <span style="font-size: 1.2rem">
-        Beverages
+        Beverage Consumption Measurements
     </span>
     <br />
     <small class="text-muted">
         <em>
-            View and manage beverages
+            View and manage beverage consumption measurements
         </em>
     </small>
 </p>
@@ -32,44 +32,48 @@
         <hr />
     }
 
-    @using (Html.BeginForm("Index", "Beverage", FormMethod.Post))
+    @using (Html.BeginForm("Delete", "BeverageConsumption", FormMethod.Post, new { name = "delete-form", id = "delete-form" }))
     {
         @Html.AntiForgeryToken()
+        @Html.Hidden("id", 0)
+    }
+
+    @using (Html.BeginForm("Index", "BeverageConsumption", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.EditorFor(m => m.Filters)
         @Html.HiddenFor(m => m.PageNumber)
 
-        @if ((Model.Beverages != null) && (Model.Beverages.Count() > 0))
+        @if ((Model.Measurements != null) && (Model.Measurements.Count() > 0))
         {
-            <table class="table">
-                <tr>
-                    <th>Name</th>
-                    <th>Typical ABV %</th>
-                    <th />
-                </tr>
-                @foreach (var beverage in Model.Beverages)
-                {
-                    <tr>
-                        <td valign="center">@beverage.Name</td>
-                        <td valign="center">@beverage.TypicalABV.ToString("0.00")</td>
-                        <td valign="center">
-                            <a class="btn btn-lg" asp-area="" asp-controller="Beverage" asp-action="Edit" asp-route-id="@beverage.Id">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                        </td>
-                    </tr>
-                }
-            </table>
+            @await Html.PartialAsync("_BeverageConsumptionList", Model)
             <hr />
             <p class="text-right">
                 <button type="submit" name="Action" value="@ControllerActions.ActionPreviousPage" class="btn btn-secondary" @previousDisabled>Previous</button>
                 <button type="submit" name="Action" value="@ControllerActions.ActionNextPage" class="btn btn-primary" @nextDisabled>Next</button>
-                <a class="btn btn-primary" href="/Beverage/Add" role="button">Add</a>
             </p>
         }
         else if (Model.HasNoMatchingResults)
         {
             <hr />
-            @Html.Raw("No matching beverages")
+            @Html.Raw("No matching measurements")
         }
     }
 
 </div>
+
+<script type="text/javascript">
+    function submitDeleteForm(id) {
+        $.confirm({
+            text: "Are you sure?",
+            confirm: function(button) {
+                $("#delete-form #id").val(id);
+                $("#delete-form").submit()
+            },
+            cancel: function(button) {
+            },
+            confirmButton: "Yes",
+            cancelButton: "No"
+        });
+    }
+</script>

@@ -41,6 +41,9 @@ namespace HealthTracker.DataExchange.Export
         /// <param name="file"></param>
         public async Task ExportAsync(IEnumerable<BeverageConsumptionMeasurement> measurements, string file)
         {
+            // Calculate the units of alcohol for each measurement
+            _factory.AlcoholUnitsCalculator.CalculateUnits(measurements);
+
             // Get a list of beverages so we can map IDs to descriptions and convert the collection to "exportable" equivalents
             // with all properties at the same level
             var people = await _factory.People.ListAsync(x => true, 1, int.MaxValue);

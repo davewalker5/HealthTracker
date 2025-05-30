@@ -4,10 +4,10 @@ namespace HealthTracker.Enumerations.Enumerations
     {
         None,
         SPO2,
+        BeverageConsumption,
         BloodPressure,
         Exercise,
         Glucose,
-        Weight,
-        AlcoholConsumption
+        Weight
     }
 }

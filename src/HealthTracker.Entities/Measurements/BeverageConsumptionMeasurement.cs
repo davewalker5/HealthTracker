@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using HealthTracker.Enumerations.Enumerations;
+using HealthTracker.Enumerations.Extensions;
 
 namespace HealthTracker.Entities.Measurements
 {
@@ -28,6 +29,9 @@ namespace HealthTracker.Entities.Measurements
 
         [NotMapped]
         public string Beverage { get; set; }
+
+        [NotMapped]
+        public string MeasureName { get { return Measure.ToName(); }}
 
         [NotMapped]
         public decimal Units { get; set; }
