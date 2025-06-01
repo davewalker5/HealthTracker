@@ -3,27 +3,24 @@ using HealthTracker.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using HealthTracker.Enumerations.Enumerations;
+using HealthTracker.Mvc.Interfaces;
 
 namespace HealthTracker.Mvc.Controllers
 {
     [Authorize]
     public class AlcoholController : HealthTrackerControllerBase
     {
-        public delegate Task<decimal> UnitCalculator(decimal abv);
-
-        protected readonly Dictionary<TempBeverageMeasure, UnitCalculator> _calculators = new();
-
+        private readonly IAlcoholUnitCalculationsClient _client;
+        private readonly IBeverageMeasureListGenerator _listGenerator;
         private readonly ILogger<AlcoholController> _logger;
 
         public AlcoholController(
             IAlcoholUnitCalculationsClient client,
+            IBeverageMeasureListGenerator listGenerator,
             ILogger<AlcoholController> logger)
         {
-            _calculators.Add(TempBeverageMeasure.Pint, client.UnitsPerPint);
-            _calculators.Add(TempBeverageMeasure.LargeGlass, client.UnitsPerLargeGlass);
-            _calculators.Add(TempBeverageMeasure.MediumGlass, client.UnitsPerMediumGlass);
-            _calculators.Add(TempBeverageMeasure.SmallGlass, client.UnitsPerSmallGlass);
-            _calculators.Add(TempBeverageMeasure.Shot, client.UnitsPerShot);
+            _client = client;
+            _listGenerator = listGenerator;
             _logger = logger;
         }
 
@@ -32,10 +29,12 @@ namespace HealthTracker.Mvc.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var model = new AlcoholCalculationViewModel()
             {
+                Measures = await _listGenerator.Create(),
+                Volume = 1,
                 Quantity = 1,
                 ABV = 0
             };
@@ -51,38 +50,23 @@ namespace HealthTracker.Mvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(AlcoholCalculationViewModel model)
         {
-            // If the model's nominally valid, perform some additional checks
-            if (ModelState.IsValid)
-            {
-                // Check the measure isn't the default selection, "None"
-                _logger.LogDebug($"Measure = {model.Measure}");
-                if (model.Measure == TempBeverageMeasure.None)
-                {
-                    ModelState.AddModelError("Measure", "You must select a measure");
-                }
-            }
-
-            // If the model's still valid, proceed with the calculation
             if (ModelState.IsValid)
             {
                 // Request the import
-                _logger.LogDebug($"Calculating the alcohol content of {model.Quantity} x {model.MeasureName} at {model.ABV} % ABV");
-                var unitsPerMeasure = await _calculators[model.Measure](model.ABV);
-                var units = model.Quantity * unitsPerMeasure;
+                _logger.LogDebug($"Calculating the alcohol content of {model.Quantity} x {model.Volume} ml at {model.ABV} % ABV");
+                var units = await _client.CalculateUnitsAsync(model.ABV, model.Quantity * model.Volume);
                 _logger.LogDebug($"Calculated units of alcohol = {units}");
 
-                // Reset the model and set the result message
-                ModelState.Clear();
-                model.Result = $"{model.Quantity} x {model.MeasureName} at {model.ABV} % ABV contains {units} unit(s) of alcohol";
-                model.Measure = TempBeverageMeasure.None;
-                model.Quantity = 1;
-                model.ABV = 0;
+                // Set the result message
+                model.Result = $"{model.Quantity} x {model.Volume} ml at {model.ABV} % ABV contains {units} unit(s) of alcohol";
             }
             else
             {
                 LogModelStateErrors(_logger);
             }
 
+            // Populate the measures and render the view
+            model.Measures = await _listGenerator.Create();
             return View(model);
         }
     }

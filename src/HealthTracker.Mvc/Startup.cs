@@ -61,6 +61,7 @@ namespace HealthTracker.Mvc
             services.AddSingleton<IFilterGenerator, FilterGenerator>();
             services.AddSingleton<IActivityTypeListGenerator, ActivityTypeListGenerator>();
             services.AddSingleton<IBeverageListGenerator, BeverageListGenerator>();
+            services.AddSingleton<IBeverageMeasureListGenerator, BeverageMeasureListGenerator>();
             services.AddSingleton<IMedicationListGenerator, MedicationListGenerator>();
             services.AddSingleton<IViewModelBuilder, ViewModelBuilder>();
 
