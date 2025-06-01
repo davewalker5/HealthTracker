@@ -678,12 +678,19 @@ namespace HealthTracker.Tests.Mocks
         /// </summary>
         /// <returns></returns>
         public static Beverage RandomBeverage()
+            => RandomBeverage(true, true);
+
+        /// <summary>
+        /// Generate a random beverage
+        /// </summary>
+        /// <returns></returns>
+        public static Beverage RandomBeverage(bool hydrating, bool alcoholic)
             => new()
             {
                 Name = RandomTitleCasePhrase(2, 5, 10),
                 TypicalABV = RandomDecimal(0, 40),
-                IsHydrating = true,
-                IsAlcohol = true
+                IsHydrating = hydrating,
+                IsAlcohol = alcoholic
             };
 
         /// <summary>
@@ -725,5 +732,25 @@ namespace HealthTracker.Tests.Mocks
         /// <returns></returns>
         public static BeverageConsumptionMeasurement RandomBeverageConsumptionMeasurement(int year)
             => RandomBeverageConsumptionMeasurement(RandomId(), RandomId(), year);
+
+        /// <summary>
+        /// Generate a random beverage consumption summary for a specified person, beverage and year
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="beverageId"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public static BeverageConsumptionSummary RandomBeverageConsumptionSummary(int personId, int beverageId, int year)
+            => new()
+            {
+                PersonId = personId,
+                PersonName = RandomPhrase(2, 5, 15),
+                BeverageId = beverageId,
+                BeverageName = RandomPhrase(2, 5, 10),
+                From = RandomDateInYear(year),
+                To = RandomDateInYear(year + 1),
+                TotalVolume = RandomDecimal(100, 2000),
+                TotalUnits = RandomDecimal(0, 14)
+            };
     }
 }

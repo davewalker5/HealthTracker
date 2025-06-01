@@ -36,5 +36,6 @@ namespace HealthTracker.Entities.Interfaces
         IWeightCalculator WeightCalculator { get; }
 
         IAlcoholUnitsCalculator AlcoholUnitsCalculator { get; }
+        IBeverageConsumptionCalculator BeverageConsumptionCalculator { get; }
     }
 }

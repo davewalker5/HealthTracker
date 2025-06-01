@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Web;
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace HealthTracker.Client.ApiClient
 {
@@ -19,11 +20,17 @@ namespace HealthTracker.Client.ApiClient
         protected IHealthTrackerHttpClient Client { get; private set; }
         protected IHealthTrackerApplicationSettings Settings { get; private set; }
         protected IAuthenticationTokenProvider TokenProvider { get; private set; }
+        protected ILogger Logger { get; private set; }
 
-        public HealthTrackerClientBase(IHealthTrackerHttpClient client, IHealthTrackerApplicationSettings settings, IAuthenticationTokenProvider tokenProvider)
+        public HealthTrackerClientBase(
+            IHealthTrackerHttpClient client,
+            IHealthTrackerApplicationSettings settings,
+            IAuthenticationTokenProvider tokenProvider,
+            ILogger logger)
         {
             Settings = settings;
             TokenProvider = tokenProvider;
+            Logger = logger;
             Client = client;
             Client.BaseAddress = new Uri(Settings.ApiUrl);
 
@@ -69,6 +76,10 @@ namespace HealthTracker.Client.ApiClient
         {
             string json = null;
 
+            var body = !string.IsNullOrEmpty(data) ? data : "No Content";
+            Logger.LogDebug($"Sending {method} request to endpoint {route}");
+            Logger.LogDebug($"Request body = {body}");
+
             HttpResponseMessage response = null;
             if (method == HttpMethod.Get)
             {
@@ -89,9 +100,13 @@ namespace HealthTracker.Client.ApiClient
                 response = await Client.DeleteAsync(route);
             }
 
+            Logger.LogDebug($"HTTP Status Code = {response?.StatusCode}");
+
             if ((response != null) && response.IsSuccessStatusCode)
             {
                 json = await response.Content.ReadAsStringAsync();
+                var content = json ?? "No Content";
+                Logger.LogDebug($"Response content = '{content}'");
             }
 
             return json;

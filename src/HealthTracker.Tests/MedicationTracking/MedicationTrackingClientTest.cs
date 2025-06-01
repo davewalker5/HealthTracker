@@ -3,6 +3,7 @@ using HealthTracker.Client.ApiClient;
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Entities;
 using HealthTracker.Tests.Mocks;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace HealthTracker.Tests.MedicationTracking
@@ -27,7 +28,8 @@ namespace HealthTracker.Tests.MedicationTracking
         {
             var provider = new Mock<IAuthenticationTokenProvider>();
             provider.Setup(x => x.GetToken()).Returns(ApiToken);
-            _client = new MedicationTrackingClient(_httpClient, _settings, provider.Object);
+            var logger = new Mock<ILogger<MedicationTrackingClient>>();
+            _client = new MedicationTrackingClient(_httpClient, _settings, provider.Object, logger.Object);
         }
 
         [TestMethod]

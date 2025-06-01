@@ -5,6 +5,7 @@ using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Entities;
 using HealthTracker.Logic.Extensions;
 using HealthTracker.Tests.Mocks;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace HealthTracker.Tests.Exercise
@@ -33,7 +34,8 @@ namespace HealthTracker.Tests.Exercise
         {
             var provider = new Mock<IAuthenticationTokenProvider>();
             provider.Setup(x => x.GetToken()).Returns(ApiToken);
-            _client = new ExerciseMeasurementClient(_httpClient, _settings, provider.Object);
+            var logger = new Mock<ILogger<ExerciseMeasurementClient>>();
+            _client = new ExerciseMeasurementClient(_httpClient, _settings, provider.Object, logger.Object);
         }
 
         [TestCleanup]

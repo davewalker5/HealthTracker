@@ -15,6 +15,7 @@ namespace HealthTracker.Mvc.Helpers
         private readonly IPersonMedicationClient _personMedicationClient;
         private readonly IWeightMeasurementClient _weightMeasurementClient;
         private readonly IExerciseMeasurementClient _exerciseMeasurementClient;
+        private readonly IBeverageConsumptionMeasurementClient _beverageConsumptionMeasurementClient;
 
         public ViewModelBuilder(
             IFilterGenerator filterGenerator,
@@ -22,6 +23,7 @@ namespace HealthTracker.Mvc.Helpers
             IPersonMedicationClient personMedicationClient,
             IWeightMeasurementClient weightMeasurementClient,
             IExerciseMeasurementClient exerciseMeasurementClient,
+            IBeverageConsumptionMeasurementClient beverageConsumptionMeasurementClient,
             ILogger<ViewModelBuilder> logger)
         {
             _filterGenerator = filterGenerator;
@@ -29,6 +31,7 @@ namespace HealthTracker.Mvc.Helpers
             _personMedicationClient = personMedicationClient;
             _weightMeasurementClient = weightMeasurementClient;
             _exerciseMeasurementClient = exerciseMeasurementClient;
+            _beverageConsumptionMeasurementClient = beverageConsumptionMeasurementClient;
             _logger = logger;
         }
 
@@ -115,6 +118,34 @@ namespace HealthTracker.Mvc.Helpers
             ViewFlags flags)
             => await CreateFilteredListViewModel<IWeightMeasurementClient, WeightListViewModel, WeightMeasurement>(
                 _weightMeasurementClient,
+                personId,
+                measurementId,
+                measurements,
+                from,
+                to,
+                message,
+                flags);
+
+        /// <summary>
+        /// Helper method to create a beverage consumption list view model
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="measurementId"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <param name="message"></param>
+        /// <param name="flags"></param>
+        /// <returns></returns>
+        public async Task<BeverageConsumptionListViewModel> CreateBeverageConsumptionListViewModel(
+            int personId,
+            int measurementId,
+            IEnumerable<BeverageConsumptionMeasurement> measurements,
+            DateTime from,
+            DateTime to,
+            string message,
+            ViewFlags flags)
+            => await CreateFilteredListViewModel<IBeverageConsumptionMeasurementClient, BeverageConsumptionListViewModel, BeverageConsumptionMeasurement>(
+                _beverageConsumptionMeasurementClient,
                 personId,
                 measurementId,
                 measurements,

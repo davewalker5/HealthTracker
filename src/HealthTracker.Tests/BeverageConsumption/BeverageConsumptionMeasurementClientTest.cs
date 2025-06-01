@@ -3,7 +3,9 @@ using System.Web;
 using HealthTracker.Client.ApiClient;
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Entities;
+using HealthTracker.Entities.Measurements;
 using HealthTracker.Tests.Mocks;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace HealthTracker.Tests.BeverageConsumption
@@ -32,7 +34,8 @@ namespace HealthTracker.Tests.BeverageConsumption
         {
             var provider = new Mock<IAuthenticationTokenProvider>();
             provider.Setup(x => x.GetToken()).Returns(ApiToken);
-            _client = new BeverageConsumptionMeasurementClient(_httpClient, _settings, provider.Object);
+            var logger = new Mock<ILogger<BeverageConsumptionMeasurementClient>>();
+            _client = new BeverageConsumptionMeasurementClient(_httpClient, _settings, provider.Object, logger.Object);
         }
 
         [TestCleanup]
@@ -306,6 +309,142 @@ namespace HealthTracker.Tests.BeverageConsumption
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
             Assert.AreEqual(HttpMethod.Post, _httpClient.Requests[0].Method);
             Assert.AreEqual(_settings.ApiRoutes.First(x => x.Name == "ExportBeverageConsumptionMeasurement").Route, _httpClient.Requests[0].Uri);
+        }
+
+        [TestMethod]
+        public async Task CalculateTotalHydratingTest()
+        {
+            var person = DataGenerator.RandomPerson(16, 90);
+            var beverage = DataGenerator.RandomBeverage(true, false);
+            var summary = DataGenerator.RandomBeverageConsumptionSummary(person.Id, beverage.Id, 2024);
+            var json = JsonSerializer.Serialize(summary);
+            _httpClient.AddResponse(json);
+
+            var expectedTo = DateTime.Today.AddDays(1).AddSeconds(-1);
+            var total = await _client.CalculateTotalHydratingAsync(person.Id, _settings.DefaultTimePeriodDays);
+            var expectedFrom = DateTime.Today.AddDays(-_settings.DefaultTimePeriodDays + 1);
+            var encodedFrom = HttpUtility.UrlEncode(expectedFrom.ToString("yyyy-MM-dd H:mm:ss"));
+            var encodedTo = HttpUtility.UrlEncode(expectedTo.ToString("yyyy-MM-dd H:mm:ss"));
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/totalhydrating/{person.Id}/{encodedFrom}/{encodedTo}";
+
+            Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
+            Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
+            Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
+            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+
+            Assert.IsNull(_httpClient.Requests[0].Content);
+            Assert.IsNotNull(total);
+            Assert.AreEqual(summary.PersonId, total.PersonId);
+            Assert.AreEqual(summary.PersonName, total.PersonName);
+            Assert.AreEqual(summary.From, total.From);
+            Assert.AreEqual(summary.To, total.To);
+            Assert.AreEqual(summary.BeverageId, total.BeverageId);
+            Assert.AreEqual(summary.BeverageName, total.BeverageName);
+            Assert.AreEqual(summary.TotalVolume, total.TotalVolume);
+            Assert.AreEqual(summary.TotalUnits, total.TotalUnits);
+        }
+
+        [TestMethod]
+        public async Task CalculateDailyTotalHydratingTest()
+        {
+            var person = DataGenerator.RandomPerson(16, 90);
+            var beverage = DataGenerator.RandomBeverage(true, false);
+            var summary = DataGenerator.RandomBeverageConsumptionSummary(person.Id, beverage.Id, 2024);
+            var json = JsonSerializer.Serialize<List<BeverageConsumptionSummary>>([summary]);
+            _httpClient.AddResponse(json);
+
+            var from = DateTime.Today.AddDays(-DataGenerator.RandomInt(1, 10));
+            var to = DateTime.Today.AddDays(DataGenerator.RandomInt(1, 10));
+
+            var totals = await _client.CalculateDailyTotalHydratingAsync(person.Id, from, to);
+            var encodedFrom = HttpUtility.UrlEncode(from.ToString("yyyy-MM-dd H:mm:ss"));
+            var encodedTo = HttpUtility.UrlEncode(to.ToString("yyyy-MM-dd H:mm:ss"));
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/dailytotalhydrating/{person.Id}/{encodedFrom}/{encodedTo}";
+
+            Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
+            Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
+            Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
+            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+
+            Assert.IsNull(_httpClient.Requests[0].Content);
+            Assert.IsNotNull(totals);
+            Assert.AreEqual(1, totals.Count);
+            Assert.AreEqual(summary.PersonId, totals[0].PersonId);
+            Assert.AreEqual(summary.PersonName, totals[0].PersonName);
+            Assert.AreEqual(summary.From, totals[0].From);
+            Assert.AreEqual(summary.To, totals[0].To);
+            Assert.AreEqual(summary.BeverageId, totals[0].BeverageId);
+            Assert.AreEqual(summary.BeverageName, totals[0].BeverageName);
+            Assert.AreEqual(summary.TotalVolume, totals[0].TotalVolume);
+            Assert.AreEqual(summary.TotalUnits, totals[0].TotalUnits);
+        }
+
+        [TestMethod]
+        public async Task CalculateTotalAlcoholTest()
+        {
+            var person = DataGenerator.RandomPerson(16, 90);
+            var beverage = DataGenerator.RandomBeverage(false, true);
+            var summary = DataGenerator.RandomBeverageConsumptionSummary(person.Id, beverage.Id, 2024);
+            var json = JsonSerializer.Serialize(summary);
+            _httpClient.AddResponse(json);
+
+            var expectedTo = DateTime.Today.AddDays(1).AddSeconds(-1);
+            var total = await _client.CalculateTotalAlcoholicAsync(person.Id, _settings.DefaultTimePeriodDays);
+            var expectedFrom = DateTime.Today.AddDays(-_settings.DefaultTimePeriodDays + 1);
+            var encodedFrom = HttpUtility.UrlEncode(expectedFrom.ToString("yyyy-MM-dd H:mm:ss"));
+            var encodedTo = HttpUtility.UrlEncode(expectedTo.ToString("yyyy-MM-dd H:mm:ss"));
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/totalalcohol/{person.Id}/{encodedFrom}/{encodedTo}";
+
+            Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
+            Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
+            Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
+            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+
+            Assert.IsNull(_httpClient.Requests[0].Content);
+            Assert.IsNotNull(total);
+            Assert.AreEqual(summary.PersonId, total.PersonId);
+            Assert.AreEqual(summary.PersonName, total.PersonName);
+            Assert.AreEqual(summary.From, total.From);
+            Assert.AreEqual(summary.To, total.To);
+            Assert.AreEqual(summary.BeverageId, total.BeverageId);
+            Assert.AreEqual(summary.BeverageName, total.BeverageName);
+            Assert.AreEqual(summary.TotalVolume, total.TotalVolume);
+            Assert.AreEqual(summary.TotalUnits, total.TotalUnits);
+        }
+
+        [TestMethod]
+        public async Task CalculateDailyTotalAlcoholTest()
+        {
+            var person = DataGenerator.RandomPerson(16, 90);
+            var beverage = DataGenerator.RandomBeverage(true, false);
+            var summary = DataGenerator.RandomBeverageConsumptionSummary(person.Id, beverage.Id, 2024);
+            var json = JsonSerializer.Serialize<List<BeverageConsumptionSummary>>([summary]);
+            _httpClient.AddResponse(json);
+
+            var from = DateTime.Today.AddDays(-DataGenerator.RandomInt(1, 10));
+            var to = DateTime.Today.AddDays(DataGenerator.RandomInt(1, 10));
+
+            var totals = await _client.CalculateDailyTotalAlcoholicAsync(person.Id, from, to);
+            var encodedFrom = HttpUtility.UrlEncode(from.ToString("yyyy-MM-dd H:mm:ss"));
+            var encodedTo = HttpUtility.UrlEncode(to.ToString("yyyy-MM-dd H:mm:ss"));
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/dailytotalalcohol/{person.Id}/{encodedFrom}/{encodedTo}";
+
+            Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
+            Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
+            Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
+            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+
+            Assert.IsNull(_httpClient.Requests[0].Content);
+            Assert.IsNotNull(totals);
+            Assert.AreEqual(1, totals.Count);
+            Assert.AreEqual(summary.PersonId, totals[0].PersonId);
+            Assert.AreEqual(summary.PersonName, totals[0].PersonName);
+            Assert.AreEqual(summary.From, totals[0].From);
+            Assert.AreEqual(summary.To, totals[0].To);
+            Assert.AreEqual(summary.BeverageId, totals[0].BeverageId);
+            Assert.AreEqual(summary.BeverageName, totals[0].BeverageName);
+            Assert.AreEqual(summary.TotalVolume, totals[0].TotalVolume);
+            Assert.AreEqual(summary.TotalUnits, totals[0].TotalUnits);
         }
     }
 }

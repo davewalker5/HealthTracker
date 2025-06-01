@@ -24,7 +24,7 @@
     @Html.EditorFor(m => m.Filters)
     <hr/>
 
-    @if ((Model.WeightMeasurements != null) && (Model.WeightMeasurements.Measurements != null) && (Model.WeightMeasurements.Measurements.Count() > 0))
+    @if (Model.HasWeightMeasurements)
     {
         <div class="container-fluid">
             <p class="text-center font-weight-bold">
@@ -37,7 +37,7 @@
         <br/>
     }
 
-    @if ((Model.ExerciseSummaries != null) && (Model.ExerciseSummaries.Summaries != null) && (Model.ExerciseSummaries.Summaries.Count() > 0))
+    @if (Model.HasExerciseSummaries)
     {
         <div class="container-fluid">
             <p class="text-center font-weight-bold">
@@ -50,7 +50,33 @@
         <br/>
     }
 
-    @if ((Model.PersonMedications != null) && (Model.PersonMedications.Associations != null) && (Model.PersonMedications.Associations.Count() > 0))
+    @if (Model.HasTotalAlcoholConsumption)
+    {
+        <div class="container-fluid">
+            <p class="text-center font-weight-bold">
+                <span style="font-size: 1.2rem">
+                    Rolling Total Alcohol Consumption
+                </span>
+            </p>
+            @await Html.PartialAsync("_BeverageConsumptionSummaryList", Model.TotalAlcoholConsumption)
+        </div>
+        <br/>
+    }
+
+    @if (Model.HasHydratingBeverageConsumption)
+    {
+        <div class="container-fluid">
+            <p class="text-center font-weight-bold">
+                <span style="font-size: 1.2rem">
+                    Daily Total Hydrating Beverage Consumption
+                </span>
+            </p>
+            @await Html.PartialAsync("_BeverageConsumptionSummaryList", Model.HydratingBeverageConsumption)
+        </div>
+        <br/>
+    }
+
+    @if (Model.HasPersonMedications)
     {
         <div class="container-fluid">
             <p class="text-center font-weight-bold">

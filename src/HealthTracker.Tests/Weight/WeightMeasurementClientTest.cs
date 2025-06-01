@@ -4,6 +4,7 @@ using HealthTracker.Client.ApiClient;
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Entities;
 using HealthTracker.Tests.Mocks;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace HealthTracker.Tests.Weight
@@ -32,7 +33,8 @@ namespace HealthTracker.Tests.Weight
         {
             var provider = new Mock<IAuthenticationTokenProvider>();
             provider.Setup(x => x.GetToken()).Returns(ApiToken);
-            _client = new WeightMeasurementClient(_httpClient, _settings, provider.Object);
+            var logger = new Mock<ILogger<WeightMeasurementClient>>();
+            _client = new WeightMeasurementClient(_httpClient, _settings, provider.Object, logger.Object);
         }
 
         [TestCleanup]

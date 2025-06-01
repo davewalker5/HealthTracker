@@ -39,6 +39,7 @@ namespace HealthTracker.Logic.Factory
         private readonly Lazy<IMedicationActionGenerator> _actionGenerator;
 
         private readonly Lazy<IAlcoholUnitsCalculator> _alcoholUnitsCalculator;
+        private readonly Lazy<IBeverageConsumptionCalculator> _beverageConsumptionCalculator;
 
         public DbContext Context { get; private set; }
         public IHealthTrackerLogger Logger { get; private set; }
@@ -71,6 +72,7 @@ namespace HealthTracker.Logic.Factory
         public IWeightCalculator WeightCalculator { get { return _weightCalculator.Value; } }
 
         public IAlcoholUnitsCalculator AlcoholUnitsCalculator { get { return _alcoholUnitsCalculator.Value; } }
+        public IBeverageConsumptionCalculator BeverageConsumptionCalculator { get { return _beverageConsumptionCalculator.Value; } }
 
         public HealthTrackerFactory(
             HealthTrackerDbContext context,
@@ -109,6 +111,7 @@ namespace HealthTracker.Logic.Factory
             _weightCalculator = new Lazy<IWeightCalculator>(() => new WeightCalculator(this));
 
             _alcoholUnitsCalculator = new Lazy<IAlcoholUnitsCalculator>(() => new AlcoholUnitsCalculator(settings));
+            _beverageConsumptionCalculator = new Lazy<IBeverageConsumptionCalculator>(() => new BeverageConsumptionCalculator(this));
         }
     }
 }

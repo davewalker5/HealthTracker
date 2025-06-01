@@ -14,5 +14,6 @@ namespace HealthTracker.Mvc.Interfaces
 
         Task<PersonMedicationListViewModel> CreatePersonMedicationListViewModel(int personId, string message, ViewFlags flags);
         Task<WeightListViewModel> CreateWeightListViewModel(int personId, int measurementId, IEnumerable<WeightMeasurement> measurements, DateTime from, DateTime to, string message, ViewFlags flags);
+        Task<BeverageConsumptionListViewModel> CreateBeverageConsumptionListViewModel(int personId, int measurementId, IEnumerable<BeverageConsumptionMeasurement> measurements, DateTime from, DateTime to, string message, ViewFlags flags);
     }
 }

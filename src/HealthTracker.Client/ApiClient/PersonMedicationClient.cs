@@ -1,6 +1,7 @@
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
 using HealthTracker.Entities.Medications;
+using Microsoft.Extensions.Logging;
 
 namespace HealthTracker.Client.ApiClient
 {
@@ -8,8 +9,12 @@ namespace HealthTracker.Client.ApiClient
     {
         private const string RouteKey = "PersonMedication";
 
-        public PersonMedicationClient(IHealthTrackerHttpClient client, IHealthTrackerApplicationSettings settings, IAuthenticationTokenProvider tokenProvider)
-            : base(client, settings, tokenProvider)
+        public PersonMedicationClient(
+            IHealthTrackerHttpClient client,
+            IHealthTrackerApplicationSettings settings,
+            IAuthenticationTokenProvider tokenProvider,
+            ILogger<PersonMedicationClient> logger)
+            : base(client, settings, tokenProvider, logger)
         {
         }
 

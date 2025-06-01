@@ -23,5 +23,12 @@ namespace HealthTracker.Client.Interfaces
             BeverageMeasure measure,
             int quantity,
             decimal abv);
+
+        Task<BeverageConsumptionSummary> CalculateTotalHydratingAsync(int personId, int days);
+        Task<BeverageConsumptionSummary> CalculateTotalHydratingAsync(int personId, DateTime from, DateTime to);
+        Task<List<BeverageConsumptionSummary>> CalculateDailyTotalHydratingAsync(int personId, DateTime from, DateTime to);
+        Task<BeverageConsumptionSummary> CalculateTotalAlcoholicAsync(int personId, int days);
+        Task<BeverageConsumptionSummary> CalculateTotalAlcoholicAsync(int personId, DateTime from, DateTime to);
+        Task<List<BeverageConsumptionSummary>> CalculateDailyTotalAlcoholicAsync(int personId, DateTime from, DateTime to);
     }
 }
