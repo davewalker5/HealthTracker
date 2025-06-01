@@ -1,6 +1,5 @@
 using HealthTracker.Entities.Measurements;
 using System.Linq.Expressions;
-using HealthTracker.Enumerations.Enumerations;
 
 namespace HealthTracker.Entities.Interfaces
 {
@@ -12,7 +11,6 @@ namespace HealthTracker.Entities.Interfaces
             int personId,
             int beverageId,
             DateTime date,
-            TempBeverageMeasure measure,
             int quantity,
             decimal volume,
             decimal abv);
@@ -22,7 +20,6 @@ namespace HealthTracker.Entities.Interfaces
             int personId,
             int beverageId,
             DateTime date,
-            TempBeverageMeasure measure,
             int quantity,
             decimal volume,
             decimal abv);

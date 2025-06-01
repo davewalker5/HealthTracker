@@ -210,8 +210,8 @@ namespace HealthTracker.Data
                 entity.Property(e => e.PersonId).HasColumnName("person_id");
                 entity.Property(e => e.Date).IsRequired().HasColumnName("date").HasColumnType("DATETIME");
                 entity.Property(e => e.BeverageId).HasColumnName("beverage_id");
-                entity.Property(e => e.Measure).IsRequired().HasColumnName("measure");
                 entity.Property(e => e.Quantity).IsRequired().HasColumnName("quantity");
+                entity.Property(e => e.Volume).IsRequired().HasColumnName("volume");
                 entity.Property(e => e.ABV).IsRequired().HasColumnName("abv");
             });
 

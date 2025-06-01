@@ -69,19 +69,13 @@ namespace HealthTracker.Api.Controllers
         [Route("")]
         public async Task<ActionResult<BeverageConsumptionMeasurement>> AddBeverageConsumptionMeasurementAsync([FromBody] BeverageConsumptionMeasurement template)
         {
-            // Calculate the volume, if it's not specified
-            var volume = template.Volume <= 0 ?
-                _factory.AlcoholUnitsCalculator.CalculateVolume(template.Measure, template.Quantity) :
-                template.Volume;
-
             // Add the measurement
             var measurement = await _factory.BeverageConsumptionMeasurements.AddAsync(
                 template.PersonId,
                 template.BeverageId,
                 template.Date,
-                template.Measure,
                 template.Quantity,
-                volume,
+                template.Volume,
                 template.ABV
             );
 
@@ -99,20 +93,14 @@ namespace HealthTracker.Api.Controllers
         [Route("")]
         public async Task<ActionResult<BeverageConsumptionMeasurement>> UpdateBeverageConsumptionMeasurementAsync([FromBody] BeverageConsumptionMeasurement template)
         {
-            // Calculate the volume, if it's not specified
-            var volume = template.Volume <= 0 ?
-                _factory.AlcoholUnitsCalculator.CalculateVolume(template.Measure, template.Quantity) :
-                template.Volume;
-
             // Update the measurement
             var measurement = await _factory.BeverageConsumptionMeasurements.UpdateAsync(
                 template.Id,
                 template.PersonId,
                 template.BeverageId,
                 template.Date,
-                template.Measure,
                 template.Quantity,
-                volume,
+                template.Volume,
                 template.ABV
             );
 

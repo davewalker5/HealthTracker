@@ -6,7 +6,6 @@ using HealthTracker.DataExchange.Extensions;
 using HealthTracker.Entities.Identity;
 using HealthTracker.Entities.Interfaces;
 using HealthTracker.Entities.Measurements;
-using HealthTracker.Enumerations.Extensions;
 using HealthTracker.Logic.Factory;
 using HealthTracker.Tests.Mocks;
 using Moq;
@@ -53,8 +52,6 @@ namespace HealthTracker.Tests.Alcohol
             Assert.AreEqual(_beverage.Id, exportable.BeverageId);
             Assert.AreEqual(_beverage.Name, exportable.Beverage);
             Assert.AreEqual(_measurement.Date, exportable.Date);
-            Assert.AreEqual((int)_measurement.Measure, exportable.Measure);
-            Assert.AreEqual(_measurement.Measure.ToName(), exportable.MeasureName);
             Assert.AreEqual(_measurement.Quantity, exportable.Quantity);
             Assert.AreEqual(_measurement.Volume, exportable.Volume);
             Assert.AreEqual(_measurement.ABV, exportable.ABV);
@@ -70,8 +67,6 @@ namespace HealthTracker.Tests.Alcohol
             Assert.AreEqual(_beverage.Id, exportable.First().BeverageId);
             Assert.AreEqual(_beverage.Name, exportable.First().Beverage);
             Assert.AreEqual(_measurement.Date, exportable.First().Date);
-            Assert.AreEqual((int)_measurement.Measure, exportable.First().Measure);
-            Assert.AreEqual(_measurement.Measure.ToName(), exportable.First().MeasureName);
             Assert.AreEqual(_measurement.Quantity, exportable.First().Quantity);
             Assert.AreEqual(_measurement.Volume, exportable.First().Volume);
             Assert.AreEqual(_measurement.ABV, exportable.First().ABV);
@@ -80,7 +75,7 @@ namespace HealthTracker.Tests.Alcohol
         [TestMethod]
         public void FromCsvRecordTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_beverage.Id}"",""{_beverage.Name}"",""{(int)_measurement.Measure}"",""{_measurement.Measure.ToName()}"",""{_measurement.Quantity}"",""{_measurement.Volume}"",""{_measurement.ABV}"",""{_measurement.Units}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_beverage.Id}"",""{_beverage.Name}"",""{_measurement.Quantity}"",""{_measurement.Volume}"",""{_measurement.ABV}"",""{_measurement.Units}""";
             var exportable = ExportableBeverageConsumptionMeasurement.FromCsv(record);
             Assert.AreEqual(_person.Id, exportable.PersonId);
             Assert.AreEqual($"{_person.Name}", exportable.Name);
@@ -88,8 +83,6 @@ namespace HealthTracker.Tests.Alcohol
             Assert.AreEqual(_beverage.Id, exportable.BeverageId);
             Assert.AreEqual(_beverage.Name, exportable.Beverage);
             Assert.AreEqual(_measurement.Date, exportable.Date);
-            Assert.AreEqual((int)_measurement.Measure, exportable.Measure);
-            Assert.AreEqual(_measurement.Measure.ToName(), exportable.MeasureName);
             Assert.AreEqual(_measurement.Quantity, exportable.Quantity);
             Assert.AreEqual(_measurement.Volume, exportable.Volume);
             Assert.AreEqual(_measurement.ABV, exportable.ABV);
@@ -127,8 +120,6 @@ namespace HealthTracker.Tests.Alcohol
             Assert.AreEqual(_beverage.Id, exportable.BeverageId);
             Assert.AreEqual(_beverage.Name, exportable.Beverage);
             Assert.AreEqual(_measurement.Date, exportable.Date);
-            Assert.AreEqual((int)_measurement.Measure, exportable.Measure);
-            Assert.AreEqual(_measurement.Measure.ToName(), exportable.MeasureName);
             Assert.AreEqual(_measurement.Quantity, exportable.Quantity);
             Assert.AreEqual(_measurement.Volume, exportable.Volume);
             Assert.AreEqual(_measurement.ABV, exportable.ABV);
@@ -165,8 +156,6 @@ namespace HealthTracker.Tests.Alcohol
             Assert.AreEqual(_beverage.Id, exportable.BeverageId);
             Assert.AreEqual(_beverage.Name, exportable.Beverage);
             Assert.AreEqual(_measurement.Date, exportable.Date);
-            Assert.AreEqual((int)_measurement.Measure, exportable.Measure);
-            Assert.AreEqual(_measurement.Measure.ToName(), exportable.MeasureName);
             Assert.AreEqual(_measurement.Quantity, exportable.Quantity);
             Assert.AreEqual(_measurement.Volume, exportable.Volume);
             Assert.AreEqual(_measurement.ABV, exportable.ABV);

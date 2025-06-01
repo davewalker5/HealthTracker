@@ -19,6 +19,7 @@ namespace HealthTracker.Mvc.Controllers
         private readonly ILogger<BeverageConsumptionController> _logger;
         private readonly IBeverageClient _beverageClient;
         private readonly IBeverageListGenerator _beverageListGenerator;
+        private readonly IBeverageMeasureListGenerator _beverageMeasureListGenerator;
 
         public BeverageConsumptionController(
             IPersonClient personClient,
@@ -27,12 +28,14 @@ namespace HealthTracker.Mvc.Controllers
             IHealthTrackerApplicationSettings settings,
             IFilterGenerator filterGenerator,
             IBeverageListGenerator beverageListGenerator,
+            IBeverageMeasureListGenerator beverageMeasureListGenerator,
             IViewModelBuilder builder,
             ILogger<BeverageConsumptionController> logger) : base(personClient, measurementClient, settings, filterGenerator, builder)
         {
             _logger = logger;
             _beverageClient = beverageClient;
             _beverageListGenerator = beverageListGenerator;
+            _beverageMeasureListGenerator = beverageMeasureListGenerator;
         }
 
         /// <summary>
@@ -139,7 +142,11 @@ namespace HealthTracker.Mvc.Controllers
         {
             _logger.LogDebug($"Rendering add view: Person ID = {personId}, From = {start}, To = {end}");
 
-            var model = new AddBeverageConsumptionViewModel() { Beverages = await _beverageListGenerator.Create() };
+            var model = new AddBeverageConsumptionViewModel()
+            {
+                Beverages = await _beverageListGenerator.Create(),
+                Measures = await _beverageMeasureListGenerator.Create()
+            };
             model.CreateMeasurement(personId);
             await SetFilterDetails(model, personId, start, end);
             return View(model);
@@ -169,16 +176,16 @@ namespace HealthTracker.Mvc.Controllers
                     $"Adding new alcohol consumption measurement: Person ID = {model.Measurement.PersonId}, " +
                     $"Beverage ID = {model.Measurement.BeverageId}, " +
                     $"Timestamp = {timestamp}, " +
-                    $"Measure = {model.Measurement.Measure}, " +
                     $"Quantity = {model.Measurement.Quantity}, " +
+                    $"Volume = {model.Measurement.Volume}, " +
                     $"ABV = {model.Measurement.ABV}");
 
                 var measurement = await _measurementClient.AddAsync(
                     model.Measurement.PersonId,
                     model.Measurement.BeverageId,
                     timestamp,
-                    model.Measurement.Measure,
                     model.Measurement.Quantity,
+                    model.Measurement.Volume,
                     model.Measurement.ABV);
 
                 // Return the measurement list view containing only the new measurement and a confirmation message
@@ -198,6 +205,9 @@ namespace HealthTracker.Mvc.Controllers
                 LogModelStateErrors(_logger);
             }
 
+            // Re-populate the drop downs and render the view
+            model.Beverages = await _beverageListGenerator.Create();
+            model.Measures = await _beverageMeasureListGenerator.Create();
             return View(model);
         }
 
@@ -217,7 +227,11 @@ namespace HealthTracker.Mvc.Controllers
             var measurement = await _measurementClient.GetAsync(id);
 
             // Construct the view model
-            var model = new EditBeverageConsumptionViewModel() { Beverages = await _beverageListGenerator.Create() };
+            var model = new EditBeverageConsumptionViewModel()
+            {
+                Beverages = await _beverageListGenerator.Create(),
+                Measures = await _beverageMeasureListGenerator.Create()
+            };
             model.SetMeasurement(measurement);
             await SetFilterDetails(model, measurement.PersonId, start, end);
             return View(model);
@@ -250,8 +264,8 @@ namespace HealthTracker.Mvc.Controllers
                     $"Person ID = {model.Measurement.PersonId}, " +
                     $"Beverage ID = {model.Measurement.BeverageId}, " +
                     $"Timestamp = {timestamp}, " +
-                    $"Measure = {model.Measurement.Measure}, " +
                     $"Quantity = {model.Measurement.Quantity}, " +
+                    $"Volume = {model.Measurement.Volume}, " +
                     $"ABV = {model.Measurement.ABV}");
 
                 await _measurementClient.UpdateAsync(
@@ -259,8 +273,8 @@ namespace HealthTracker.Mvc.Controllers
                     model.Measurement.PersonId,
                     model.Measurement.BeverageId,
                     timestamp,
-                    model.Measurement.Measure,
                     model.Measurement.Quantity,
+                    model.Measurement.Volume,
                     model.Measurement.ABV);
 
                 // Return the measurement list view containing only the updated measurement and a confirmation message
@@ -280,6 +294,9 @@ namespace HealthTracker.Mvc.Controllers
                 result = View(model);
             }
 
+            // Re-populate the drop downs and render the view
+            model.Beverages = await _beverageListGenerator.Create();
+            model.Measures = await _beverageMeasureListGenerator.Create();
             return result;
         }
 

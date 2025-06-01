@@ -2,7 +2,6 @@ using HealthTracker.Entities.Exceptions;
 using HealthTracker.Entities.Interfaces;
 using HealthTracker.Entities.Logging;
 using HealthTracker.Entities.Measurements;
-using HealthTracker.Enumerations.Enumerations;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -35,7 +34,6 @@ namespace HealthTracker.Logic.Database
         /// <param name="personId"></param>
         /// <param name="beverageId"></param>
         /// <param name="date"></param>
-        /// <param name="measure"></param>
         /// <param name="quantity"></param>
         /// <param name="volume"></param>
         /// <param name="abv"></param>
@@ -44,12 +42,11 @@ namespace HealthTracker.Logic.Database
             int personId,
             int beverageId,
             DateTime date,
-            TempBeverageMeasure measure,
             int quantity,
             decimal volume,
             decimal abv)
         {
-            Factory.Logger.LogMessage(Severity.Info, $"Adding beverage consumption measurement: Person ID {personId}, {date.ToShortDateString()}, Beverage ID {beverageId}, Measure {measure}, Quantity {quantity}, Volume {volume}, ABV {abv}");
+            Factory.Logger.LogMessage(Severity.Info, $"Adding beverage consumption measurement: Person ID {personId}, {date.ToShortDateString()}, Beverage ID {beverageId}, Quantity {quantity}, Volume {volume}, ABV {abv}");
 
             CheckPersonExists(personId);
             CheckBeverageExists(beverageId);
@@ -59,7 +56,6 @@ namespace HealthTracker.Logic.Database
                 PersonId = personId,
                 BeverageId = beverageId,
                 Date = date,
-                Measure = measure,
                 Quantity = quantity,
                 Volume = volume,
                 ABV = abv
@@ -78,7 +74,6 @@ namespace HealthTracker.Logic.Database
         /// <param name="personId"></param>
         /// <param name="beverageId"></param>
         /// <param name="date"></param>
-        /// <param name="measure"></param>
         /// <param name="quantity"></param>
         /// <param name="volume"></param>
         /// <param name="abv"></param>
@@ -88,12 +83,11 @@ namespace HealthTracker.Logic.Database
             int personId,
             int beverageId,
             DateTime date,
-            TempBeverageMeasure measure,
             int quantity,
             decimal volume,
             decimal abv)
         {
-            Factory.Logger.LogMessage(Severity.Info, $"Updating beverage consumption measurement with ID {id}: Person ID {personId}, {date.ToShortDateString()}, Beverage ID {beverageId}, Measure {measure}, Quantity {quantity}, Volume {volume}, ABV {abv}");
+            Factory.Logger.LogMessage(Severity.Info, $"Updating beverage consumption measurement with ID {id}: Person ID {personId}, {date.ToShortDateString()}, Beverage ID {beverageId}, Quantity {quantity}, Volume {volume}, ABV {abv}");
 
             var measurement = Context.BeverageConsumptionMeasurements.FirstOrDefault(x => x.Id == id);
             if (measurement != null)
@@ -105,7 +99,6 @@ namespace HealthTracker.Logic.Database
                 measurement.PersonId = personId;
                 measurement.BeverageId = beverageId;
                 measurement.Date = date;
-                measurement.Measure = measure;
                 measurement.Quantity = quantity;
                 measurement.Volume = volume;
                 measurement.ABV = abv;

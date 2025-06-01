@@ -34,13 +34,13 @@
     @await Html.PartialAsync("_DateAndTime", Model)
     <div class="row">
         <div class="col">
-            <strong>@Html.LabelFor(m => m.Measurement.Measure)</strong>
+            <strong>@Html.LabelFor(m => m.Measure)</strong>
         </div>
         <div class="col">
             <div class="input-group">
-                @Html.DropDownListFor(m => m.Measurement.Measure, Model.Measures, new { @class = "form-control" })
+                @Html.DropDownListFor(m => m.Measure, Model.Measures, new { @class = "form-control" })
             </div>
-            <span>@Html.ValidationMessageFor(m => m.Measurement.Measure, "", new { @class = "text-danger" })</span>
+            <span>@Html.ValidationMessageFor(m => m.Measure, "", new { @class = "text-danger" })</span>
         </div>
     </div>
     <br/>
@@ -53,6 +53,18 @@
                 @Html.TextBoxFor(m => m.Measurement.Quantity, new { @class = "form-control" })
             </div>
             <span>@Html.ValidationMessageFor(m => m.Measurement.Quantity, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Measurement.Volume)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Measurement.Volume, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Measurement.Volume, "", new { @class = "text-danger" })</span>
         </div>
     </div>
     <br/>
@@ -98,6 +110,15 @@
         $("#Measurement_BeverageId").change(function () {
             var beverageId = $("#Measurement_BeverageId").val();
             GetABVForBeverage(beverageId);
+        });
+
+        $("#Measure").on("change", function() {
+            var volume = $(this).val();
+            $("#Measurement_Volume").val(volume);
+        });
+
+        $("#Measurement_Volume").on("keydown", function() {
+            $("#Measure").val("0");
         });
     });
 </script>

@@ -694,18 +694,6 @@ namespace HealthTracker.Tests.Mocks
             };
 
         /// <summary>
-        /// Return a random beverage measure
-        /// </summary>
-        /// <returns></returns>
-        public static TempBeverageMeasure RandomTempBeverageMeasure()
-        {
-            // Note the 1 to N-1 in the random selector : This avoids the "None" value
-            var values = Enum.GetValues(typeof(TempBeverageMeasure));
-            var measure = (TempBeverageMeasure)values.GetValue(RandomInt(1, values.Length - 1));
-            return measure;
-        }
-
-        /// <summary>
         /// Generate a random beverage consumption measurement for a specified person, beverage and year
         /// </summary>
         /// <param name="personId"></param>
@@ -719,7 +707,6 @@ namespace HealthTracker.Tests.Mocks
                 PersonId = personId,
                 BeverageId = beverageId,
                 Date = RandomDateInYear(year),
-                Measure = RandomTempBeverageMeasure(),
                 Quantity = RandomInt(1, 5),
                 Volume = RandomDecimal(25, 250),
                 ABV = RandomDecimal(0, 100)

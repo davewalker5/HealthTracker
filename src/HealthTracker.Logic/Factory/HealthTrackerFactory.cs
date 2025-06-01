@@ -113,7 +113,7 @@ namespace HealthTracker.Logic.Factory
             _spo2Assessor = new Lazy<IBloodOxygenSaturationAssessor>(() => new BloodOxygenSaturationAssessor(this));
             _weightCalculator = new Lazy<IWeightCalculator>(() => new WeightCalculator(this));
 
-            _alcoholUnitsCalculator = new Lazy<IAlcoholUnitsCalculator>(() => new AlcoholUnitsCalculator(settings));
+            _alcoholUnitsCalculator = new Lazy<IAlcoholUnitsCalculator>(() => new AlcoholUnitsCalculator());
             _beverageConsumptionCalculator = new Lazy<IBeverageConsumptionCalculator>(() => new BeverageConsumptionCalculator(this));
         }
     }

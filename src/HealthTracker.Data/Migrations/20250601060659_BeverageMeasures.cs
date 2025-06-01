@@ -10,6 +10,7 @@ namespace HealthTracker.Data.Migrations
     public partial class BeverageMeasures : Migration
     {
         /// <inheritdoc />
+        [ExcludeFromCodeCoverage]
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql("PRAGMA foreign_keys = ON;");

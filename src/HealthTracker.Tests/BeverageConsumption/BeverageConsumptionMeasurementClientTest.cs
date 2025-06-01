@@ -58,8 +58,8 @@ namespace HealthTracker.Tests.BeverageConsumption
                 measurement.PersonId,
                 measurement.BeverageId,
                 measurement.Date,
-                measurement.Measure,
                 measurement.Quantity,
+                measurement.Volume,
                 measurement.ABV);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
@@ -72,7 +72,7 @@ namespace HealthTracker.Tests.BeverageConsumption
             Assert.AreEqual(measurement.PersonId, added.PersonId);
             Assert.AreEqual(measurement.Date, added.Date);
             Assert.AreEqual(measurement.BeverageId, added.BeverageId);
-            Assert.AreEqual(measurement.Measure, added.Measure);
+            Assert.AreEqual(measurement.Volume, added.Volume);
             Assert.AreEqual(measurement.Quantity, added.Quantity);
             Assert.AreEqual(measurement.ABV, added.ABV);
         }
@@ -89,8 +89,8 @@ namespace HealthTracker.Tests.BeverageConsumption
                 measurement.PersonId,
                 measurement.BeverageId,
                 measurement.Date,
-                measurement.Measure,
                 measurement.Quantity,
+                measurement.Volume,
                 measurement.ABV);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
@@ -103,7 +103,7 @@ namespace HealthTracker.Tests.BeverageConsumption
             Assert.AreEqual(measurement.PersonId, updated.PersonId);
             Assert.AreEqual(measurement.Date, updated.Date);
             Assert.AreEqual(measurement.BeverageId, updated.BeverageId);
-            Assert.AreEqual(measurement.Measure, updated.Measure);
+            Assert.AreEqual(measurement.Volume, updated.Volume);
             Assert.AreEqual(measurement.Quantity, updated.Quantity);
             Assert.AreEqual(measurement.ABV, updated.ABV);
         }
@@ -143,7 +143,7 @@ namespace HealthTracker.Tests.BeverageConsumption
             Assert.AreEqual(measurement.PersonId, retrieved.PersonId);
             Assert.AreEqual(measurement.Date, retrieved.Date);
             Assert.AreEqual(measurement.BeverageId, retrieved.BeverageId);
-            Assert.AreEqual(measurement.Measure, retrieved.Measure);
+            Assert.AreEqual(measurement.Volume, retrieved.Volume);
             Assert.AreEqual(measurement.Quantity, retrieved.Quantity);
             Assert.AreEqual(measurement.ABV, retrieved.ABV);
         }
@@ -175,7 +175,7 @@ namespace HealthTracker.Tests.BeverageConsumption
             Assert.AreEqual(measurement.PersonId, measurements[0].PersonId);
             Assert.AreEqual(measurement.Date, measurements[0].Date);
             Assert.AreEqual(measurement.BeverageId, measurements[0].BeverageId);
-            Assert.AreEqual(measurement.Measure, measurements[0].Measure);
+            Assert.AreEqual(measurement.Volume, measurements[0].Volume);
             Assert.AreEqual(measurement.Quantity, measurements[0].Quantity);
             Assert.AreEqual(measurement.ABV, measurements[0].ABV);
         }
@@ -207,7 +207,7 @@ namespace HealthTracker.Tests.BeverageConsumption
             Assert.AreEqual(measurement.PersonId, measurements[0].PersonId);
             Assert.AreEqual(measurement.Date, measurements[0].Date);
             Assert.AreEqual(measurement.BeverageId, measurements[0].BeverageId);
-            Assert.AreEqual(measurement.Measure, measurements[0].Measure);
+            Assert.AreEqual(measurement.Volume, measurements[0].Volume);
             Assert.AreEqual(measurement.Quantity, measurements[0].Quantity);
             Assert.AreEqual(measurement.ABV, measurements[0].ABV);
         }
@@ -239,7 +239,7 @@ namespace HealthTracker.Tests.BeverageConsumption
             Assert.AreEqual(measurement.PersonId, measurements[0].PersonId);
             Assert.AreEqual(measurement.Date, measurements[0].Date);
             Assert.AreEqual(measurement.BeverageId, measurements[0].BeverageId);
-            Assert.AreEqual(measurement.Measure, measurements[0].Measure);
+            Assert.AreEqual(measurement.Volume, measurements[0].Volume);
             Assert.AreEqual(measurement.Quantity, measurements[0].Quantity);
             Assert.AreEqual(measurement.ABV, measurements[0].ABV);
         }
@@ -271,7 +271,7 @@ namespace HealthTracker.Tests.BeverageConsumption
             Assert.AreEqual(measurement.PersonId, measurements[0].PersonId);
             Assert.AreEqual(measurement.Date, measurements[0].Date);
             Assert.AreEqual(measurement.BeverageId, measurements[0].BeverageId);
-            Assert.AreEqual(measurement.Measure, measurements[0].Measure);
+            Assert.AreEqual(measurement.Volume, measurements[0].Volume);
             Assert.AreEqual(measurement.Quantity, measurements[0].Quantity);
             Assert.AreEqual(measurement.ABV, measurements[0].ABV);
         }
@@ -284,7 +284,7 @@ namespace HealthTracker.Tests.BeverageConsumption
             var person = DataGenerator.RandomPerson(16, 90);
             var beverage = DataGenerator.RandomBeverage();
             var measurement = DataGenerator.RandomBeverageConsumptionMeasurement(person.Id, beverage.Id, 2024);
-            var record = $"""{measurement.PersonId}"",""{person.Name}"",""{measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{beverage.Name}"",""{measurement.Measure}"",""{measurement.Quantity}"",""{measurement.ABV}""";
+            var record = $"""{measurement.PersonId}"",""{person.Name}"",""{measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{beverage.Id}"",""{beverage.Name}"",""{measurement.Quantity}"",""{measurement.Volume}"",""{measurement.ABV}""";
 
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);

@@ -28,16 +28,16 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="personId"></param>
         /// <param name="beverageId"></param>
         /// <param name="date"></param>
-        /// <param name="measure"></param>
         /// <param name="quantity"></param>
+        /// <param name="volume"></param>
         /// <param name="abv"></param>
         /// <returns></returns>
         public async Task<BeverageConsumptionMeasurement> AddAsync(
             int personId,
             int beverageId,
             DateTime? date,
-            TempBeverageMeasure measure,
             int quantity,
+            decimal volume,
             decimal abv)
         {
             dynamic template = new
@@ -45,8 +45,8 @@ namespace HealthTracker.Client.ApiClient
                 PersonId = personId,
                 BeverageId = beverageId,
                 Date = date ?? DateTime.Now,
-                Measure = measure,
                 Quantity = quantity,
+                Volume = volume,
                 ABV = abv
             };
 
@@ -64,8 +64,8 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="personId"></param>
         /// <param name="beverageId"></param>
         /// <param name="date"></param>
-        /// <param name="measure"></param>
         /// <param name="quantity"></param>
+        /// <param name="volume"></param>
         /// <param name="abv"></param>
         /// <returns></returns>
         public async Task<BeverageConsumptionMeasurement> UpdateAsync(
@@ -73,8 +73,8 @@ namespace HealthTracker.Client.ApiClient
             int personId,
             int beverageId,
             DateTime? date,
-            TempBeverageMeasure measure,
             int quantity,
+            decimal volume,
             decimal abv)
         {
             dynamic template = new
@@ -83,8 +83,8 @@ namespace HealthTracker.Client.ApiClient
                 PersonId = personId,
                 BeverageId = beverageId,
                 Date = date ?? DateTime.Now,
-                Measure = measure,
                 Quantity = quantity,
+                Volume = volume,
                 ABV = abv
             };
 
