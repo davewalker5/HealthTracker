@@ -2,6 +2,7 @@ using System.Web;
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
 using HealthTracker.Entities.Measurements;
+using Microsoft.Extensions.Logging;
 
 namespace HealthTracker.Client.ApiClient
 {
@@ -13,8 +14,12 @@ namespace HealthTracker.Client.ApiClient
         private const string ImportOmronRouteKey = "ImportOmronBloodPressureMeasurement";
         private const string ExportDailyAverageRouteKey = "ExportDailyAverageBloodPressureRouteKey";
 
-        public BloodPressureMeasurementClient(IHealthTrackerHttpClient client, IHealthTrackerApplicationSettings settings, IAuthenticationTokenProvider tokenProvider)
-            : base(client, settings, tokenProvider)
+        public BloodPressureMeasurementClient(
+            IHealthTrackerHttpClient client,
+            IHealthTrackerApplicationSettings settings,
+            IAuthenticationTokenProvider tokenProvider,
+            ILogger<BloodPressureMeasurementClient> logger)
+            : base(client, settings, tokenProvider, logger)
         {
         }
 

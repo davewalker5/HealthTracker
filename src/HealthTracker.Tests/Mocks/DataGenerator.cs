@@ -678,23 +678,20 @@ namespace HealthTracker.Tests.Mocks
         /// </summary>
         /// <returns></returns>
         public static Beverage RandomBeverage()
+            => RandomBeverage(true, true);
+
+        /// <summary>
+        /// Generate a random beverage
+        /// </summary>
+        /// <returns></returns>
+        public static Beverage RandomBeverage(bool hydrating, bool alcoholic)
             => new()
             {
                 Name = RandomTitleCasePhrase(2, 5, 10),
-                TypicalABV = RandomDecimal(0, 40)
+                TypicalABV = RandomDecimal(0, 40),
+                IsHydrating = hydrating,
+                IsAlcohol = alcoholic
             };
-
-        /// <summary>
-        /// Return a random beverage measure
-        /// </summary>
-        /// <returns></returns>
-        public static BeverageMeasure RandomBeverageMeasure()
-        {
-            // Note the 1 to N-1 in the random selector : This avoids the "None" value
-            var values = Enum.GetValues(typeof(BeverageMeasure));
-            var measure = (BeverageMeasure)values.GetValue(RandomInt(1, values.Length - 1));
-            return measure;
-        }
 
         /// <summary>
         /// Generate a random beverage consumption measurement for a specified person, beverage and year
@@ -710,8 +707,8 @@ namespace HealthTracker.Tests.Mocks
                 PersonId = personId,
                 BeverageId = beverageId,
                 Date = RandomDateInYear(year),
-                Measure = RandomBeverageMeasure(),
                 Quantity = RandomInt(1, 5),
+                Volume = RandomDecimal(25, 250),
                 ABV = RandomDecimal(0, 100)
             };
 
@@ -722,5 +719,37 @@ namespace HealthTracker.Tests.Mocks
         /// <returns></returns>
         public static BeverageConsumptionMeasurement RandomBeverageConsumptionMeasurement(int year)
             => RandomBeverageConsumptionMeasurement(RandomId(), RandomId(), year);
+
+        /// <summary>
+        /// Generate a random beverage consumption summary for a specified person, beverage and year
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="beverageId"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public static BeverageConsumptionSummary RandomBeverageConsumptionSummary(int personId, int beverageId, int year)
+            => new()
+            {
+                PersonId = personId,
+                PersonName = RandomPhrase(2, 5, 15),
+                BeverageId = beverageId,
+                BeverageName = RandomPhrase(2, 5, 10),
+                From = RandomDateInYear(year),
+                To = RandomDateInYear(year + 1),
+                TotalVolume = RandomDecimal(100, 2000),
+                TotalUnits = RandomDecimal(0, 14)
+            };
+
+        /// <summary>
+        /// Return a random beverage measure
+        /// </summary>
+        /// <returns></returns>
+        public static BeverageMeasure RandomBeverageMeasure()
+            => new()
+            {
+                Id = RandomId(),
+                Name = RandomTitleCasePhrase(2, 5, 10),
+                Volume = RandomDecimal(25, 500)
+            };
     }
 }

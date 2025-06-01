@@ -14,6 +14,7 @@ namespace HealthTracker.Mvc.Controllers
     {
         private readonly IWeightMeasurementClient _weightClient;
         private readonly IExerciseMeasurementClient _exerciseClient;
+        private readonly IBeverageConsumptionMeasurementClient _beverageConsumptionMeasurementClient;
         private readonly IHealthTrackerApplicationSettings _settings;
         private readonly IFilterGenerator _filterGenerator;
         private readonly IViewModelBuilder _builder;
@@ -22,6 +23,7 @@ namespace HealthTracker.Mvc.Controllers
         public HomeController(
             IWeightMeasurementClient weightClient,
             IExerciseMeasurementClient exerciseClient,
+            IBeverageConsumptionMeasurementClient beverageConsumptionMeasurementClient,
             IHealthTrackerApplicationSettings settings,
             IFilterGenerator filterGenerator,
             IViewModelBuilder builder,
@@ -29,6 +31,7 @@ namespace HealthTracker.Mvc.Controllers
         {
             _weightClient = weightClient;
             _exerciseClient = exerciseClient;
+            _beverageConsumptionMeasurementClient = beverageConsumptionMeasurementClient;
             _settings = settings;
             _filterGenerator = filterGenerator;
             _builder = builder;
@@ -63,8 +66,7 @@ namespace HealthTracker.Mvc.Controllers
             var from = FromDate(to).AddDays(-_settings.DefaultTimePeriodDays);
             _logger.LogDebug($"Retrieving summary data for person with ID {model.Filters.PersonId} from {from} to {to}");
 
-            // Calculate a 7-day rolling average weight and use that as the list of measurements in the weight
-            // measurements view model
+            // Calculate the rolling average weight for the default period
             var rollingAverageWeight = await _weightClient.CalculateAverageAsync(model.Filters.PersonId, _settings.DefaultTimePeriodDays);
             if (rollingAverageWeight != null)
             {
@@ -76,7 +78,21 @@ namespace HealthTracker.Mvc.Controllers
             {
                 Summaries = await _exerciseClient.SummariseAsync(model.Filters.PersonId, 0, from, to)
             };
-            
+
+            // Calculate the rolling total alcohol consumption for the default period
+            var summary = await _beverageConsumptionMeasurementClient.CalculateTotalAlcoholicAsync(model.Filters.PersonId, from, to);
+            model.TotalAlcoholConsumption = new BeverageConsumptionSummaryListViewModel()
+            {
+                Summaries = summary != null ? [summary] : null
+            };
+
+            // Calculate the rolling total hydrating drink consumption for the default period
+            var measurements = await _beverageConsumptionMeasurementClient.CalculateDailyTotalHydratingAsync(model.Filters.PersonId, from, to);
+            if (measurements != null)
+            {
+                model.HydratingBeverageConsumption = await _builder.CreateBeverageConsumptionListViewModel(model.Filters.PersonId, 0, measurements, from, to, "", ViewFlags.None);
+            }
+
             // Retrieve current medication details
             model.PersonMedications = await _builder.CreatePersonMedicationListViewModel(model.Filters.PersonId, "", ViewFlags.None);
 

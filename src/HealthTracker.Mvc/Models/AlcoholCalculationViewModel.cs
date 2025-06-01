@@ -1,22 +1,21 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-using HealthTracker.Entities.Measurements;
-using HealthTracker.Mvc.Entities;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using HealthTracker.Enumerations.Enumerations;
-using HealthTracker.Enumerations.Extensions;
 
 namespace HealthTracker.Mvc.Models
 {
     public class AlcoholCalculationViewModel : SelectedFiltersViewModel
     {
-        public List<SelectListItem> Measures { get; private set; } = [];
-        public string MeasureName { get { return Measure.ToName(); } }
+        public IList<SelectListItem> Measures { get; set; } = [];
         public string Result { get; set; }
 
         [DisplayName("Measure")]
-        public BeverageMeasure Measure { get; set; }
+        public decimal Measure { get; set; }
+
+        [DisplayName("Volume")]
+        [Range(1.0, float.MaxValue, ErrorMessage = "{0} must be >= {1}")]
+        public decimal Volume { get; set; }
 
         [DisplayName("Quantity")]
         [Required(ErrorMessage = "You must enter a quantity")]
@@ -25,13 +24,5 @@ namespace HealthTracker.Mvc.Models
         [DisplayName("ABV %")]
         [Range(1.0, 100.0, ErrorMessage = "{0} must be between {1} and {2}")]
         public decimal ABV { get; set; }
-
-        public AlcoholCalculationViewModel()
-        {
-            foreach (var measure in Enum.GetValues<BeverageMeasure>())
-            {
-                Measures.Add(new SelectListItem() { Text = $"{measure.ToName()}", Value = measure.ToString() });
-            }
-        }
     }
 }

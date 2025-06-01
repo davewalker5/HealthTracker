@@ -1,6 +1,7 @@
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
 using HealthTracker.Entities.Measurements;
+using Microsoft.Extensions.Logging;
 
 namespace HealthTracker.Client.ApiClient
 {
@@ -8,8 +9,12 @@ namespace HealthTracker.Client.ApiClient
     {
         private const string RouteKey = "Beverage";
 
-        public BeverageClient(IHealthTrackerHttpClient client, IHealthTrackerApplicationSettings settings, IAuthenticationTokenProvider tokenProvider)
-            : base(client, settings, tokenProvider)
+        public BeverageClient(
+            IHealthTrackerHttpClient client,
+            IHealthTrackerApplicationSettings settings,
+            IAuthenticationTokenProvider tokenProvider,
+            ILogger<BeverageClient> logger)
+            : base(client, settings, tokenProvider, logger)
         {
         }
 
@@ -19,13 +24,17 @@ namespace HealthTracker.Client.ApiClient
         /// <param
         /// <param name="name"></param>
         /// <param name="typicalABV"></param>
+        /// <param name="isHydrating"></param>
+        /// <param name="isAlcohol"></param>
         /// <returns></returns>
-        public async Task<Beverage> AddAsync(string name, decimal typicalABV)
+        public async Task<Beverage> AddAsync(string name, decimal typicalABV, bool isHydrating, bool isAlcohol)
         {
             dynamic template = new
             {
                 Name = name,
-                TypicalABV = typicalABV
+                TypicalABV = typicalABV,
+                IsHydrating = isHydrating,
+                IsAlcohol = isAlcohol
             };
 
             var data = Serialize(template);
@@ -41,14 +50,18 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="id"></param>
         /// <param name="name"></param>
         /// <param name="typicalABV"></param>
+        /// <param name="isHydrating"></param>
+        /// <param name="isAlcohol"></param>
         /// <returns></returns>
-        public async Task<Beverage> UpdateAsync(int id, string name, decimal typicalABV)
+        public async Task<Beverage> UpdateAsync(int id, string name, decimal typicalABV, bool isHydrating, bool isAlcohol)
         {
             dynamic template = new
             {
                 Id = id,
                 Name = name,
-                TypicalABV = typicalABV
+                TypicalABV = typicalABV,
+                IsHydrating = isHydrating,
+                IsAlcohol = isAlcohol
             };
 
             var data = Serialize(template);

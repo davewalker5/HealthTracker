@@ -43,6 +43,7 @@ namespace HealthTracker.Mvc
             services.AddSingleton<IActivityTypeClient, ActivityTypeClient>();
             services.AddSingleton<IMedicationClient, MedicationClient>();
             services.AddSingleton<IPersonClient, PersonClient>();
+            services.AddSingleton<IBeverageMeasureClient, BeverageMeasureClient>();
             services.AddSingleton<IPersonMedicationClient, PersonMedicationClient>();
             services.AddSingleton<IMedicationTrackingClient, MedicationTrackingClient>();
             services.AddSingleton<IBloodGlucoseMeasurementClient, BloodGlucoseMeasurementClient>();
@@ -60,6 +61,7 @@ namespace HealthTracker.Mvc
             services.AddSingleton<IFilterGenerator, FilterGenerator>();
             services.AddSingleton<IActivityTypeListGenerator, ActivityTypeListGenerator>();
             services.AddSingleton<IBeverageListGenerator, BeverageListGenerator>();
+            services.AddSingleton<IBeverageMeasureListGenerator, BeverageMeasureListGenerator>();
             services.AddSingleton<IMedicationListGenerator, MedicationListGenerator>();
             services.AddSingleton<IViewModelBuilder, ViewModelBuilder>();
 

@@ -1,0 +1,28 @@
+@using HealthTracker.Mvc.Entities
+@model HealthTracker.Mvc.Models.BeverageConsumptionSummaryListViewModel
+
+<table class="table">
+    <tr>
+        <th>Person</th>
+        <th>From</th>
+        <th>To</th>
+        <th>Beverage</th>
+        <th>Volume</th>
+        <th>Units of Alcohol</th>
+    </tr>
+    @foreach (var summary in Model.Summaries)
+    {
+        var from = summary.From.HasValue ? summary.From.Value.ToString("dd-MMM-yyyy") : "-";
+        var to = summary.To.HasValue ? summary.To.Value.ToString("dd-MMM-yyyy") : "-";
+        var person = summary.PersonName ?? "-";
+        var beverage = summary.BeverageName ?? "Total";
+        <tr>
+            <td valign="center">@person</td>
+            <td valign="center">@from</td>
+            <td valign="center">@to</td>
+            <td valign="center">@beverage</td>
+            <td valign="center">@summary.TotalVolume.ToString("0.00")</td>
+            <td valign="center">@summary.TotalUnits.ToString("0.00")</td>
+        </tr>
+    }
+</table>

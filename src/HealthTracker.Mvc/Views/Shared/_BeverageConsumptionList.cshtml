@@ -7,8 +7,9 @@
         <th>Date</th>
         <th>Time</th>
         <th>Beverage</th>
-        <th>Measure</th>
         <th>Quantity</th>
+        <th>Volume</th>
+        <th>Total Volume</th>
         <th>ABV</th>
         <th>Units</th>
         @if (Model.Editable)
@@ -24,8 +25,9 @@
             <td valign="center">@measurement.Date.ToString("dd-MMM-yyyy")</td>
             <td valign="center">@measurement.Date.ToString("HH:mm")</td>
             <td valign="center">@measurement.Beverage</td>
-            <td valign="center">@measurement.MeasureName</td>
             <td valign="center">@measurement.Quantity</td>
+            <td valign="center">@measurement.Volume.ToString("0.00")</td>
+            <td valign="center">@measurement.TotalVolume.ToString("0.00")</td>
             <td valign="center">@measurement.ABV.ToString("0.00")</td>
             <td valign="center">@measurement.Units.ToString("0.00")</td>
             @if (Model.Editable)

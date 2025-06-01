@@ -2,6 +2,7 @@ using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
 using HealthTracker.Entities.Identity;
 using HealthTracker.Enumerations.Enumerations;
+using Microsoft.Extensions.Logging;
 
 namespace HealthTracker.Client.ApiClient
 {
@@ -11,8 +12,12 @@ namespace HealthTracker.Client.ApiClient
         private const string ExportRouteKey = "ExportPerson";
         private const string ImportRouteKey = "ImportPerson";
 
-        public PersonClient(IHealthTrackerHttpClient client, IHealthTrackerApplicationSettings settings, IAuthenticationTokenProvider tokenProvider)
-            : base(client, settings, tokenProvider)
+        public PersonClient(
+            IHealthTrackerHttpClient client,
+            IHealthTrackerApplicationSettings settings,
+            IAuthenticationTokenProvider tokenProvider,
+            ILogger<PersonClient> logger)
+            : base(client, settings, tokenProvider, logger)
         {
         }
 

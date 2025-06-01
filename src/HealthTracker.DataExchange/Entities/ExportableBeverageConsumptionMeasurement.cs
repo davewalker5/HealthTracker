@@ -7,7 +7,7 @@ namespace HealthTracker.DataExchange.Entities
     [ExcludeFromCodeCoverage]
     public class ExportableBeverageConsumptionMeasurement : ExportableMeasurementBase
     {
-        public const string CsvRecordPattern = @"^""[0-9]+"","".*"",""[0-9]+-[A-Za-z]+-[0-9]+ [0-9]+:[0-9]+:[0-9]+"",""[0-9.]+"","".*"",""[0-9]+"","".*"",""[0-9]+"",""[0-9.]+"",""[0-9.]+"".?$";
+        public const string CsvRecordPattern = @"^""[0-9]+"","".*"",""[0-9]+-[A-Za-z]+-[0-9]+ [0-9]+:[0-9]+:[0-9]+"",""[0-9]+"","".*"",""[0-9]+"",""[0-9.]+"",""[0-9.]+"",""[0-9.]+"".?$";
 
         [Export("Beverage Id", 4)]
         public int BeverageId { get; set; }
@@ -15,19 +15,16 @@ namespace HealthTracker.DataExchange.Entities
         [Export("Beverage", 5)]
         public string Beverage { get; set; }
 
-        [Export("Measure", 6)]
-        public int Measure { get; set; }
-
-        [Export("Measure Name", 7)]
-        public string MeasureName { get; set; }
-
-        [Export("Quantity", 8)]
+        [Export("Quantity", 6)]
         public int Quantity { get; set; }
 
-        [Export("ABV", 9)]
+        [Export("Volume", 7)]
+        public decimal Volume { get; set; }
+
+        [Export("ABV", 8)]
         public decimal ABV { get; set; }
 
-        [Export("Units", 10)]
+        [Export("Units", 9)]
         public decimal Units { get; set; }
 
         public static ExportableBeverageConsumptionMeasurement FromCsv(string record)
@@ -40,11 +37,10 @@ namespace HealthTracker.DataExchange.Entities
                 Date = DateTime.ParseExact(words[2].Replace("\"", "").Trim(), TimestampFormat, CultureInfo.CurrentCulture),
                 BeverageId = int.Parse(words[3].Replace("\"", "").Trim()),
                 Beverage = words[4].Replace("\"", "").Trim(),
-                Measure = int.Parse(words[5].Replace("\"", "").Trim()),
-                MeasureName = words[6].Replace("\"", "").Trim(),
-                Quantity = int.Parse(words[7].Replace("\"", "").Trim()),
-                ABV = decimal.Parse(words[8].Replace("\"", "").Trim()),
-                Units = decimal.Parse(words[9].Replace("\"", "").Trim())
+                Quantity = int.Parse(words[5].Replace("\"", "").Trim()),
+                Volume = decimal.Parse(words[6].Replace("\"", "").Trim()),
+                ABV = decimal.Parse(words[7].Replace("\"", "").Trim()),
+                Units = decimal.Parse(words[8].Replace("\"", "").Trim())
             };
         }
     }

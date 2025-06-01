@@ -1,5 +1,4 @@
 using HealthTracker.Entities.Measurements;
-using HealthTracker.Enumerations.Enumerations;
 
 namespace HealthTracker.Client.Interfaces
 {
@@ -9,8 +8,8 @@ namespace HealthTracker.Client.Interfaces
             int personId,
             int beverageId,
             DateTime? date,
-            BeverageMeasure measure,
             int quantity,
+            decimal volume,
             decimal abv);
 
         Task DeleteAsync(int id);
@@ -20,8 +19,15 @@ namespace HealthTracker.Client.Interfaces
             int personId,
             int beverageId,
             DateTime? date,
-            BeverageMeasure measure,
             int quantity,
+            decimal volume,
             decimal abv);
+
+        Task<BeverageConsumptionSummary> CalculateTotalHydratingAsync(int personId, int days);
+        Task<BeverageConsumptionSummary> CalculateTotalHydratingAsync(int personId, DateTime from, DateTime to);
+        Task<List<BeverageConsumptionMeasurement>> CalculateDailyTotalHydratingAsync(int personId, DateTime from, DateTime to);
+        Task<BeverageConsumptionSummary> CalculateTotalAlcoholicAsync(int personId, int days);
+        Task<BeverageConsumptionSummary> CalculateTotalAlcoholicAsync(int personId, DateTime from, DateTime to);
+        Task<List<BeverageConsumptionMeasurement>> CalculateDailyTotalAlcoholicAsync(int personId, DateTime from, DateTime to);
     }
 }

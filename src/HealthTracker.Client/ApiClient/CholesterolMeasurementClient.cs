@@ -1,6 +1,7 @@
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
 using HealthTracker.Entities.Measurements;
+using Microsoft.Extensions.Logging;
 
 namespace HealthTracker.Client.ApiClient
 {
@@ -10,8 +11,12 @@ namespace HealthTracker.Client.ApiClient
         private const string ExportRouteKey = "ExportCholesterolMeasurement";
         private const string ImportRouteKey = "ImportCholesterolMeasurement";
 
-        public CholesterolMeasurementClient(IHealthTrackerHttpClient client, IHealthTrackerApplicationSettings settings, IAuthenticationTokenProvider tokenProvider)
-            : base(client, settings, tokenProvider)
+        public CholesterolMeasurementClient(
+            IHealthTrackerHttpClient client,
+            IHealthTrackerApplicationSettings settings,
+            IAuthenticationTokenProvider tokenProvider,
+            ILogger<CholesterolMeasurementClient> logger)
+            : base(client, settings, tokenProvider, logger)
         {
         }
 

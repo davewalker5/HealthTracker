@@ -38,6 +38,18 @@
         <br/>
         <div class="row">
             <div class="col">
+                <strong>@Html.LabelFor(m => m.Volume)</strong>
+            </div>
+            <div class="col">
+                <div class="input-group">
+                    @Html.TextBoxFor(m => m.Volume)
+                </div>
+                <span>@Html.ValidationMessageFor(m => m.Volume, "", new { @class = "text-danger" })</span>
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <div class="col">
                 <strong>@Html.LabelFor(m => m.Quantity)</strong>
             </div>
             <div class="col">
@@ -79,3 +91,16 @@
         </p>
     </div>
 }
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#Measure").on("change", function() {
+            var volume = $(this).val();
+            $("#Volume").val(volume);
+        });
+
+        $("#Volume").on("keydown", function() {
+            $("#Measure").val("0");
+        });
+    });
+</script>

@@ -4,6 +4,7 @@ using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Entities;
 using HealthTracker.Entities.Measurements;
 using HealthTracker.Tests.Mocks;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace HealthTracker.Tests.Beverages
@@ -28,17 +29,18 @@ namespace HealthTracker.Tests.Beverages
         {
             var provider = new Mock<IAuthenticationTokenProvider>();
             provider.Setup(x => x.GetToken()).Returns(ApiToken);
-            _client = new BeverageClient(_httpClient, _settings, provider.Object);
+            var logger = new Mock<ILogger<BeverageClient>>();
+            _client = new BeverageClient(_httpClient, _settings, provider.Object, logger.Object);
         }
 
         [TestMethod]
         public async Task AddTest()
         {
             var beverage = DataGenerator.RandomBeverage();
-            var json = JsonSerializer.Serialize(new { beverage.Name, beverage.TypicalABV });
+            var json = JsonSerializer.Serialize(new { beverage.Name, beverage.TypicalABV, beverage.IsHydrating, beverage.IsAlcohol });
             _httpClient.AddResponse(json);
 
-            var added = await _client.AddAsync(beverage.Name, beverage.TypicalABV);
+            var added = await _client.AddAsync(beverage.Name, beverage.TypicalABV, beverage.IsHydrating, beverage.IsAlcohol);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -49,6 +51,8 @@ namespace HealthTracker.Tests.Beverages
             Assert.IsNotNull(added);
             Assert.AreEqual(beverage.Name, added.Name);
             Assert.AreEqual(beverage.TypicalABV, added.TypicalABV);
+            Assert.AreEqual(beverage.IsHydrating, added.IsHydrating);
+            Assert.AreEqual(beverage.IsAlcohol, added.IsAlcohol);
         }
 
         [TestMethod]
@@ -58,7 +62,7 @@ namespace HealthTracker.Tests.Beverages
             var json = JsonSerializer.Serialize(beverage);
             _httpClient.AddResponse(json);
 
-            var updated = await _client.UpdateAsync(beverage.Id, beverage.Name, beverage.TypicalABV);
+            var updated = await _client.UpdateAsync(beverage.Id, beverage.Name, beverage.TypicalABV, beverage.IsHydrating, beverage.IsAlcohol);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -70,6 +74,8 @@ namespace HealthTracker.Tests.Beverages
             Assert.AreEqual(beverage.Id, updated.Id);
             Assert.AreEqual(beverage.Name, updated.Name);
             Assert.AreEqual(beverage.TypicalABV, updated.TypicalABV);
+            Assert.AreEqual(beverage.IsHydrating, updated.IsHydrating);
+            Assert.AreEqual(beverage.IsAlcohol, updated.IsAlcohol);
         }
 
         [TestMethod]
@@ -107,6 +113,8 @@ namespace HealthTracker.Tests.Beverages
             Assert.AreEqual(beverage.Id, beverages[0].Id);
             Assert.AreEqual(beverage.Name, beverages[0].Name);
             Assert.AreEqual(beverage.TypicalABV, beverages[0].TypicalABV);
+            Assert.AreEqual(beverage.IsHydrating, beverages[0].IsHydrating);
+            Assert.AreEqual(beverage.IsAlcohol, beverages[0].IsAlcohol);
         }
     }
 }

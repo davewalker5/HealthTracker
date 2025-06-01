@@ -27,6 +27,7 @@ namespace HealthTracker.Data
         public virtual DbSet<JobStatus> JobStatuses { get; set; }
         public virtual DbSet<Beverage> Beverages { get; set; }
         public virtual DbSet<BeverageConsumptionMeasurement> BeverageConsumptionMeasurements { get; set; }
+        public virtual DbSet<BeverageMeasure> BeverageMeasures { get; set; }
 
 
         public HealthTrackerDbContext(DbContextOptions<HealthTrackerDbContext> options) : base(options)
@@ -198,6 +199,8 @@ namespace HealthTracker.Data
                 entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
                 entity.Property(e => e.Name).IsRequired().HasColumnName("name").HasColumnType("VARCHAR(100)");
                 entity.Property(e => e.TypicalABV).HasColumnName("typical_abv");
+                entity.Property(e => e.IsHydrating).HasColumnName("is_hydrating");
+                entity.Property(e => e.IsAlcohol).HasColumnName("is_alcohol");
             });
 
             modelBuilder.Entity<BeverageConsumptionMeasurement>(entity =>
@@ -207,9 +210,17 @@ namespace HealthTracker.Data
                 entity.Property(e => e.PersonId).HasColumnName("person_id");
                 entity.Property(e => e.Date).IsRequired().HasColumnName("date").HasColumnType("DATETIME");
                 entity.Property(e => e.BeverageId).HasColumnName("beverage_id");
-                entity.Property(e => e.Measure).IsRequired().HasColumnName("measure");
                 entity.Property(e => e.Quantity).IsRequired().HasColumnName("quantity");
+                entity.Property(e => e.Volume).IsRequired().HasColumnName("volume");
                 entity.Property(e => e.ABV).IsRequired().HasColumnName("abv");
+            });
+
+            modelBuilder.Entity<BeverageMeasure>(entity =>
+            {
+                entity.ToTable("BEVERAGE_MEASURES");
+                entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
+                entity.Property(e => e.Name).IsRequired().HasColumnName("name");
+                entity.Property(e => e.Volume).IsRequired().HasColumnName("volume");
             });
         }
     }

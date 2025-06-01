@@ -2,6 +2,7 @@ using HealthTracker.Client.ApiClient;
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Entities;
 using HealthTracker.Tests.Mocks;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace HealthTracker.Tests.Alcohol
@@ -30,7 +31,8 @@ namespace HealthTracker.Tests.Alcohol
         {
             var provider = new Mock<IAuthenticationTokenProvider>();
             provider.Setup(x => x.GetToken()).Returns(ApiToken);
-            _client = new AlcoholUnitCalculationsClient(_httpClient, _settings, provider.Object);
+            var logger = new Mock<ILogger<AlcoholUnitCalculationsClient>>();
+            _client = new AlcoholUnitCalculationsClient(_httpClient, _settings, provider.Object, logger.Object);
         }
 
         [TestMethod]

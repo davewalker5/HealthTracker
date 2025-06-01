@@ -92,7 +92,7 @@ namespace HealthTracker.Logic.Database
         }
 
         /// <summary>
-        /// Delete the person with the specified Id
+        /// Delete the activity type with the specified Id
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>

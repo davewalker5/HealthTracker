@@ -4,6 +4,7 @@ using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Entities;
 using HealthTracker.Entities.Measurements;
 using HealthTracker.Tests.Mocks;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace HealthTracker.Tests.ActivityTypes
@@ -28,7 +29,8 @@ namespace HealthTracker.Tests.ActivityTypes
         {
             var provider = new Mock<IAuthenticationTokenProvider>();
             provider.Setup(x => x.GetToken()).Returns(ApiToken);
-            _client = new ActivityTypeClient(_httpClient, _settings, provider.Object);
+            var logger = new Mock<ILogger<ActivityTypeClient>>();
+            _client = new ActivityTypeClient(_httpClient, _settings, provider.Object, logger.Object);
         }
 
         [TestMethod]

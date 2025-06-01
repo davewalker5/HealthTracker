@@ -4,13 +4,18 @@ using System.Diagnostics.CodeAnalysis;
 using System.Security.Authentication;
 using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
 
 namespace HealthTracker.Client.ApiClient
 {
     public class AuthenticationClient : HealthTrackerClientBase, IAuthenticationClient
     {
-        public AuthenticationClient(IHealthTrackerHttpClient client, IHealthTrackerApplicationSettings settings, IAuthenticationTokenProvider tokenProvider)
-            : base(client, settings, tokenProvider)
+        public AuthenticationClient(
+            IHealthTrackerHttpClient client,
+            IHealthTrackerApplicationSettings settings,
+            IAuthenticationTokenProvider tokenProvider,
+            ILogger<AuthenticationClient> logger)
+            : base(client, settings, tokenProvider, logger)
         {
         }
 

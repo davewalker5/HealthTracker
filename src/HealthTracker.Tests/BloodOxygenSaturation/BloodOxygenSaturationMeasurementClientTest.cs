@@ -4,6 +4,7 @@ using HealthTracker.Client.ApiClient;
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Entities;
 using HealthTracker.Tests.Mocks;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace HealthTracker.Tests.BloodOxygenSaturation
@@ -33,7 +34,8 @@ namespace HealthTracker.Tests.BloodOxygenSaturation
         {
             var provider = new Mock<IAuthenticationTokenProvider>();
             provider.Setup(x => x.GetToken()).Returns(_apiToken);
-            _client = new BloodOxygenSaturationMeasurementClient(_httpClient, _settings, provider.Object);
+            var logger = new Mock<ILogger<BloodOxygenSaturationMeasurementClient>>();
+            _client = new BloodOxygenSaturationMeasurementClient(_httpClient, _settings, provider.Object, logger.Object);
         }
 
         [TestCleanup]

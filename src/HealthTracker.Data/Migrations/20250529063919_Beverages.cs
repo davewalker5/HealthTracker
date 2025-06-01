@@ -28,30 +28,6 @@ namespace HealthTracker.Data.Migrations
                 {
                     table.PrimaryKey("PK_BEVERAGES", x => x.id);
                 });
-
-            // Populate the table with a default set of beverages. The typical ABV is based
-            // on the typical values in the UK, taking mid-range values
-            migrationBuilder.InsertData(
-                table: "BEVERAGES",
-                columns: new[] { "id", "name", "typical_abv" },
-                values: new object[,]
-                {
-                    { 1, "Water", 0.0 },
-                    { 2, "White Wine", 12.5 },
-                    { 3, "Red Wine", 13.5 },
-                    { 4, "Sparkling Wine", 11 },
-                    { 5, "Beer", 4.5 },
-                    { 6, "Lager", 4.0 },
-                    { 7, "Vodka", 40.0 },
-                    { 8, "Gin", 40.0 },
-                    { 9, "Whiskey", 40.0 },
-                    { 10, "Rum", 40.0 },
-                    { 11, "Fino Sherry", 15.0 },
-                    { 12, "Amontillado Sherry", 16.0 },
-                    { 13, "Oloroso Sherry", 20.0 },
-                    { 14, "Cream Sherry", 17.5 },
-                    { 15, "Port", 20.0 }
-                });
         }
 
         /// <inheritdoc />

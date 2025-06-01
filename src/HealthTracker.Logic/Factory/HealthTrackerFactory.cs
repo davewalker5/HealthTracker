@@ -26,6 +26,7 @@ namespace HealthTracker.Logic.Factory
         private readonly Lazy<IJobStatusManager> _jobStatus;
         private readonly Lazy<IBeverageManager> _beverages;
         private readonly Lazy<IBeverageConsumptionMeasurementManager> _beverageConsumption;
+        private readonly Lazy<IBeverageMeasureManager> _beverageMeasures;
 
         private readonly Lazy<IMedicationManager> _medications;
         private readonly Lazy<IPersonMedicationManager> _personMedications;
@@ -39,6 +40,7 @@ namespace HealthTracker.Logic.Factory
         private readonly Lazy<IMedicationActionGenerator> _actionGenerator;
 
         private readonly Lazy<IAlcoholUnitsCalculator> _alcoholUnitsCalculator;
+        private readonly Lazy<IBeverageConsumptionCalculator> _beverageConsumptionCalculator;
 
         public DbContext Context { get; private set; }
         public IHealthTrackerLogger Logger { get; private set; }
@@ -60,6 +62,7 @@ namespace HealthTracker.Logic.Factory
         public IJobStatusManager JobStatuses { get { return _jobStatus.Value; } }
         public IBeverageManager Beverages { get { return _beverages.Value; } }
         public IBeverageConsumptionMeasurementManager BeverageConsumptionMeasurements { get { return _beverageConsumption.Value; } }
+        public IBeverageMeasureManager BeverageMeasures { get { return _beverageMeasures.Value; } }
 
         public IMedicationManager Medications { get { return _medications.Value;} }
         public IPersonMedicationManager PersonMedications { get { return _personMedications.Value;} }
@@ -71,6 +74,7 @@ namespace HealthTracker.Logic.Factory
         public IWeightCalculator WeightCalculator { get { return _weightCalculator.Value; } }
 
         public IAlcoholUnitsCalculator AlcoholUnitsCalculator { get { return _alcoholUnitsCalculator.Value; } }
+        public IBeverageConsumptionCalculator BeverageConsumptionCalculator { get { return _beverageConsumptionCalculator.Value; } }
 
         public HealthTrackerFactory(
             HealthTrackerDbContext context,
@@ -96,6 +100,7 @@ namespace HealthTracker.Logic.Factory
             _jobStatus = new Lazy<IJobStatusManager>(() => new JobStatusManager(this));
             _beverages = new Lazy<IBeverageManager>(() => new BeverageManager(this));
             _beverageConsumption = new Lazy<IBeverageConsumptionMeasurementManager>(() => new BeverageConsumptionMeasurementManager(this));
+            _beverageMeasures = new Lazy<IBeverageMeasureManager>(() => new BeverageMeasureManager(this));
 
             _medications = new Lazy<IMedicationManager>(() => new MedicationManager(this));
             _personMedications = new Lazy<IPersonMedicationManager>(() => new PersonMedicationManager(this));
@@ -108,7 +113,8 @@ namespace HealthTracker.Logic.Factory
             _spo2Assessor = new Lazy<IBloodOxygenSaturationAssessor>(() => new BloodOxygenSaturationAssessor(this));
             _weightCalculator = new Lazy<IWeightCalculator>(() => new WeightCalculator(this));
 
-            _alcoholUnitsCalculator = new Lazy<IAlcoholUnitsCalculator>(() => new AlcoholUnitsCalculator(settings));
+            _alcoholUnitsCalculator = new Lazy<IAlcoholUnitsCalculator>(() => new AlcoholUnitsCalculator());
+            _beverageConsumptionCalculator = new Lazy<IBeverageConsumptionCalculator>(() => new BeverageConsumptionCalculator(this));
         }
     }
 }

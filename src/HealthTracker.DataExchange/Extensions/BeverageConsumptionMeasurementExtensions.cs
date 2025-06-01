@@ -1,8 +1,6 @@
 using HealthTracker.Entities.Identity;
 using HealthTracker.Entities.Measurements;
 using HealthTracker.DataExchange.Entities;
-using HealthTracker.Enumerations.Enumerations;
-using HealthTracker.Enumerations.Extensions;
 
 namespace HealthTracker.DataExchange.Extensions
 {
@@ -27,8 +25,7 @@ namespace HealthTracker.DataExchange.Extensions
                 BeverageId = measurement.BeverageId,
                 Beverage = beverage.Name,
                 Quantity = measurement.Quantity,
-                Measure = (int)measurement.Measure,
-                MeasureName = measurement.Measure.ToName(),
+                Volume = measurement.Volume,
                 ABV = measurement.ABV,
                 Units = measurement.Units
             };
@@ -70,8 +67,8 @@ namespace HealthTracker.DataExchange.Extensions
                 PersonId = exportable.PersonId,
                 Date = exportable.Date,
                 BeverageId = beverage.Id,
-                Measure = (BeverageMeasure)exportable.Measure,
                 Quantity = exportable.Quantity,
+                Volume = exportable.Volume,
                 ABV = exportable.ABV,
                 Units = exportable.Units
             };

@@ -43,10 +43,12 @@ namespace HealthTracker.Logic.Database
         /// </summary>
         /// <param name="name"></param>
         /// <param name="typicalABV"></param>
+        /// <param name="isHydrating"></param>
+        /// <param name="isAlcohol"></param>
         /// <returns></returns>
-        public async Task<Beverage> AddAsync(string name, decimal typicalABV)
+        public async Task<Beverage> AddAsync(string name, decimal typicalABV, bool isHydrating, bool isAlcohol)
         {
-            Factory.Logger.LogMessage(Severity.Info, $"Creating new beverage '{name}'");
+            Factory.Logger.LogMessage(Severity.Info, $"Creating new beverage '{name}' : ABV % = {typicalABV}, Hydrating = {isHydrating}, Alcohol = {isAlcohol}");
 
             var clean = StringCleaner.Clean(name);
             await CheckBeverageIsNotADuplicate(clean, 0);
@@ -54,7 +56,9 @@ namespace HealthTracker.Logic.Database
             var beverage = new Beverage
             {
                 Name = clean,
-                TypicalABV = typicalABV
+                TypicalABV = typicalABV,
+                IsHydrating = isHydrating,
+                IsAlcohol = isAlcohol
             };
 
             await Context.Beverages.AddAsync(beverage);
@@ -70,10 +74,12 @@ namespace HealthTracker.Logic.Database
         /// <param name="id"></param>
         /// <param name="name"></param>
         /// <param name="typicalABV"></param>
+        /// <param name="isHydrating"></param>
+        /// <param name="isAlcohol"></param>
         /// <returns></returns>
-        public async Task<Beverage> UpdateAsync(int id, string name, decimal typicalABV)
+        public async Task<Beverage> UpdateAsync(int id, string name, decimal typicalABV, bool isHydrating, bool isAlcohol)
         {
-            Factory.Logger.LogMessage(Severity.Info, $"Updating beverage with ID {id} to '{name}'");
+            Factory.Logger.LogMessage(Severity.Info, $"Updating beverage with ID {id} : Name = '{name}', ABV % = {typicalABV}, Hydrating = {isHydrating}, Alcohol = {isAlcohol}");
 
             var beverage = Context.Beverages.FirstOrDefault(x => x.Id == id);
             if (beverage != null)
@@ -85,6 +91,8 @@ namespace HealthTracker.Logic.Database
                 // Save the changes
                 beverage.Name = clean;
                 beverage.TypicalABV = typicalABV;
+                beverage.IsHydrating = isHydrating;
+                beverage.IsAlcohol = isAlcohol;
                 await Context.SaveChangesAsync();
             }
 

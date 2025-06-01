@@ -1,7 +1,8 @@
+using System.Web;
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
 using HealthTracker.Entities.Measurements;
-using HealthTracker.Enumerations.Enumerations;
+using Microsoft.Extensions.Logging;
 
 namespace HealthTracker.Client.ApiClient
 {
@@ -11,8 +12,12 @@ namespace HealthTracker.Client.ApiClient
         private const string ExportRouteKey = "ExportBeverageConsumptionMeasurement";
         private const string ImportRouteKey = "ImportBeverageConsumptionMeasurement";
 
-        public BeverageConsumptionMeasurementClient(IHealthTrackerHttpClient client, IHealthTrackerApplicationSettings settings, IAuthenticationTokenProvider tokenProvider)
-            : base(client, settings, tokenProvider)
+        public BeverageConsumptionMeasurementClient(
+            IHealthTrackerHttpClient client,
+            IHealthTrackerApplicationSettings settings,
+            IAuthenticationTokenProvider tokenProvider,
+            ILogger<BeverageConsumptionMeasurementClient> logger)
+            : base(client, settings, tokenProvider, logger)
         {
         }
 
@@ -22,16 +27,16 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="personId"></param>
         /// <param name="beverageId"></param>
         /// <param name="date"></param>
-        /// <param name="measure"></param>
         /// <param name="quantity"></param>
+        /// <param name="volume"></param>
         /// <param name="abv"></param>
         /// <returns></returns>
         public async Task<BeverageConsumptionMeasurement> AddAsync(
             int personId,
             int beverageId,
             DateTime? date,
-            BeverageMeasure measure,
             int quantity,
+            decimal volume,
             decimal abv)
         {
             dynamic template = new
@@ -39,8 +44,8 @@ namespace HealthTracker.Client.ApiClient
                 PersonId = personId,
                 BeverageId = beverageId,
                 Date = date ?? DateTime.Now,
-                Measure = measure,
                 Quantity = quantity,
+                Volume = volume,
                 ABV = abv
             };
 
@@ -58,8 +63,8 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="personId"></param>
         /// <param name="beverageId"></param>
         /// <param name="date"></param>
-        /// <param name="measure"></param>
         /// <param name="quantity"></param>
+        /// <param name="volume"></param>
         /// <param name="abv"></param>
         /// <returns></returns>
         public async Task<BeverageConsumptionMeasurement> UpdateAsync(
@@ -67,8 +72,8 @@ namespace HealthTracker.Client.ApiClient
             int personId,
             int beverageId,
             DateTime? date,
-            BeverageMeasure measure,
             int quantity,
+            decimal volume,
             decimal abv)
         {
             dynamic template = new
@@ -77,8 +82,8 @@ namespace HealthTracker.Client.ApiClient
                 PersonId = personId,
                 BeverageId = beverageId,
                 Date = date ?? DateTime.Now,
-                Measure = measure,
                 Quantity = quantity,
+                Volume = volume,
                 ABV = abv
             };
 
@@ -173,7 +178,119 @@ namespace HealthTracker.Client.ApiClient
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no people in the database
-            List<BeverageConsumptionMeasurement> measurements = !string.IsNullOrEmpty(json) ? Deserialize<List<BeverageConsumptionMeasurement>>(json) : null;
+            var measurements = !string.IsNullOrEmpty(json) ? Deserialize<List<BeverageConsumptionMeasurement>>(json) : null;
+            return measurements;
+        }
+
+        /// <summary>
+        /// Calculate total hydrating beverage consumption for a person for the last "n" days
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="days"></param>
+        /// <returns></returns>
+        public async Task<BeverageConsumptionSummary> CalculateTotalHydratingAsync(int personId, int days)
+        {
+            // Calculate an inclusive date range that ensures the whole of the start and end days are covered
+            var now = DateTime.Now;
+            var from = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0).AddDays(-days + 1);
+            var to = new DateTime(now.Year, now.Month, now.Day, 23, 59, 59);
+
+            return await CalculateTotalHydratingAsync(personId, from, to);
+        }
+
+        /// <summary>
+        /// Calculate total hydrating beverage consumption for a date range and person
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
+        public async Task<BeverageConsumptionSummary> CalculateTotalHydratingAsync(int personId, DateTime from, DateTime to)
+        {
+            var encodedFromDate = HttpUtility.UrlEncode(from.ToString(DateTimeFormat));
+            var encodedToDate = HttpUtility.UrlEncode(to.ToString(DateTimeFormat));
+
+            var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
+            var route = $"{baseRoute}/totalhydrating/{personId}/{encodedFromDate}/{encodedToDate}";
+            string json = await SendDirectAsync(route, null, HttpMethod.Get);
+            var measurement = !string.IsNullOrEmpty(json) ? Deserialize<BeverageConsumptionSummary>(json) : null;
+
+            return measurement;
+        }
+
+        /// <summary>
+        /// Calculate daily total hydrating beverage consumption for a date range and person
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
+        public async Task<List<BeverageConsumptionMeasurement>> CalculateDailyTotalHydratingAsync(int personId, DateTime from, DateTime to)
+        {
+            var encodedFromDate = HttpUtility.UrlEncode(from.ToString(DateTimeFormat));
+            var encodedToDate = HttpUtility.UrlEncode(to.ToString(DateTimeFormat));
+
+            var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
+            var route = $"{baseRoute}/dailytotalhydrating/{personId}/{encodedFromDate}/{encodedToDate}";
+            string json = await SendDirectAsync(route, null, HttpMethod.Get);
+            var measurements = !string.IsNullOrEmpty(json) ? Deserialize<List<BeverageConsumptionMeasurement>>(json) : null;
+
+            return measurements;
+        }
+
+        /// <summary>
+        /// Calculate total alcoholic beverage consumption for a person for the last "n" days
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="days"></param>
+        /// <returns></returns>
+        public async Task<BeverageConsumptionSummary> CalculateTotalAlcoholicAsync(int personId, int days)
+        {
+            // Calculate an inclusive date range that ensures the whole of the start and end days are covered
+            var now = DateTime.Now;
+            var from = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0).AddDays(-days + 1);
+            var to = new DateTime(now.Year, now.Month, now.Day, 23, 59, 59);
+
+            return await CalculateTotalAlcoholicAsync(personId, from, to);
+        }
+
+        /// <summary>
+        /// Calculate total acoholic beverage consumption for a date range and person
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
+        public async Task<BeverageConsumptionSummary> CalculateTotalAlcoholicAsync(int personId, DateTime from, DateTime to)
+        {
+            var encodedFromDate = HttpUtility.UrlEncode(from.ToString(DateTimeFormat));
+            var encodedToDate = HttpUtility.UrlEncode(to.ToString(DateTimeFormat));
+
+            var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
+            var route = $"{baseRoute}/totalalcohol/{personId}/{encodedFromDate}/{encodedToDate}";
+            string json = await SendDirectAsync(route, null, HttpMethod.Get);
+            var measurement = !string.IsNullOrEmpty(json) ? Deserialize<BeverageConsumptionSummary>(json) : null;
+
+            return measurement;
+        }
+
+        /// <summary>
+        /// Calculate daily total alcoholic beverage consumption for a date range and person
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
+        public async Task<List<BeverageConsumptionMeasurement>> CalculateDailyTotalAlcoholicAsync(int personId, DateTime from, DateTime to)
+        {
+            var encodedFromDate = HttpUtility.UrlEncode(from.ToString(DateTimeFormat));
+            var encodedToDate = HttpUtility.UrlEncode(to.ToString(DateTimeFormat));
+
+            var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
+            var route = $"{baseRoute}/dailytotalalcohol/{personId}/{encodedFromDate}/{encodedToDate}";
+            string json = await SendDirectAsync(route, null, HttpMethod.Get);
+            var measurements = !string.IsNullOrEmpty(json) ? Deserialize<List<BeverageConsumptionMeasurement>>(json) : null;
+
             return measurements;
         }
     }

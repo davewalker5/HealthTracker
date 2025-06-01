@@ -163,6 +163,14 @@ namespace HealthTracker.Data.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("id");
 
+                    b.Property<bool>("IsAlcohol")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("is_alcohol");
+
+                    b.Property<bool>("IsHydrating")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("is_hydrating");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("VARCHAR(100)")
@@ -196,10 +204,6 @@ namespace HealthTracker.Data.Migrations
                         .HasColumnType("DATETIME")
                         .HasColumnName("date");
 
-                    b.Property<int>("Measure")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("measure");
-
                     b.Property<int>("PersonId")
                         .HasColumnType("INTEGER")
                         .HasColumnName("person_id");
@@ -208,9 +212,34 @@ namespace HealthTracker.Data.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("quantity");
 
+                    b.Property<decimal>("Volume")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("volume");
+
                     b.HasKey("Id");
 
                     b.ToTable("BEVERAGE_CONSUMPTION", (string)null);
+                });
+
+            modelBuilder.Entity("HealthTracker.Entities.Measurements.BeverageMeasure", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("name");
+
+                    b.Property<decimal>("Volume")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("volume");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BEVERAGE_MEASURES", (string)null);
                 });
 
             modelBuilder.Entity("HealthTracker.Entities.Measurements.BloodGlucoseMeasurement", b =>
