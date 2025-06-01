@@ -349,8 +349,8 @@ namespace HealthTracker.Tests.BeverageConsumption
         {
             var person = DataGenerator.RandomPerson(16, 90);
             var beverage = DataGenerator.RandomBeverage(true, false);
-            var summary = DataGenerator.RandomBeverageConsumptionSummary(person.Id, beverage.Id, 2024);
-            var json = JsonSerializer.Serialize<List<BeverageConsumptionSummary>>([summary]);
+            var summary = DataGenerator.RandomBeverageConsumptionMeasurement(person.Id, beverage.Id, 2024);
+            var json = JsonSerializer.Serialize<List<BeverageConsumptionMeasurement>>([summary]);
             _httpClient.AddResponse(json);
 
             var from = DateTime.Today.AddDays(-DataGenerator.RandomInt(1, 10));
@@ -370,13 +370,12 @@ namespace HealthTracker.Tests.BeverageConsumption
             Assert.IsNotNull(totals);
             Assert.AreEqual(1, totals.Count);
             Assert.AreEqual(summary.PersonId, totals[0].PersonId);
-            Assert.AreEqual(summary.PersonName, totals[0].PersonName);
-            Assert.AreEqual(summary.From, totals[0].From);
-            Assert.AreEqual(summary.To, totals[0].To);
+            Assert.AreEqual(summary.Date, totals[0].Date);
             Assert.AreEqual(summary.BeverageId, totals[0].BeverageId);
-            Assert.AreEqual(summary.BeverageName, totals[0].BeverageName);
+            Assert.AreEqual(summary.Beverage, totals[0].Beverage);
+            Assert.AreEqual(summary.Quantity, totals[0].Quantity);
             Assert.AreEqual(summary.TotalVolume, totals[0].TotalVolume);
-            Assert.AreEqual(summary.TotalUnits, totals[0].TotalUnits);
+            Assert.AreEqual(summary.Units, totals[0].Units);
         }
 
         [TestMethod]
@@ -417,8 +416,8 @@ namespace HealthTracker.Tests.BeverageConsumption
         {
             var person = DataGenerator.RandomPerson(16, 90);
             var beverage = DataGenerator.RandomBeverage(true, false);
-            var summary = DataGenerator.RandomBeverageConsumptionSummary(person.Id, beverage.Id, 2024);
-            var json = JsonSerializer.Serialize<List<BeverageConsumptionSummary>>([summary]);
+            var summary = DataGenerator.RandomBeverageConsumptionMeasurement(person.Id, beverage.Id, 2024);
+            var json = JsonSerializer.Serialize<List<BeverageConsumptionMeasurement>>([summary]);
             _httpClient.AddResponse(json);
 
             var from = DateTime.Today.AddDays(-DataGenerator.RandomInt(1, 10));
@@ -438,13 +437,12 @@ namespace HealthTracker.Tests.BeverageConsumption
             Assert.IsNotNull(totals);
             Assert.AreEqual(1, totals.Count);
             Assert.AreEqual(summary.PersonId, totals[0].PersonId);
-            Assert.AreEqual(summary.PersonName, totals[0].PersonName);
-            Assert.AreEqual(summary.From, totals[0].From);
-            Assert.AreEqual(summary.To, totals[0].To);
+            Assert.AreEqual(summary.Date, totals[0].Date);
             Assert.AreEqual(summary.BeverageId, totals[0].BeverageId);
-            Assert.AreEqual(summary.BeverageName, totals[0].BeverageName);
+            Assert.AreEqual(summary.Beverage, totals[0].Beverage);
+            Assert.AreEqual(summary.Quantity, totals[0].Quantity);
             Assert.AreEqual(summary.TotalVolume, totals[0].TotalVolume);
-            Assert.AreEqual(summary.TotalUnits, totals[0].TotalUnits);
+            Assert.AreEqual(summary.Units, totals[0].Units);
         }
     }
 }

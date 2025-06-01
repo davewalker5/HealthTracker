@@ -26,6 +26,9 @@ namespace HealthTracker.Entities.Measurements
         public decimal ABV { get; set; }
 
         [NotMapped]
+        public decimal TotalVolume { get { return Quantity * Volume; }}
+
+        [NotMapped]
         public string Beverage { get; set; }
 
         [NotMapped]

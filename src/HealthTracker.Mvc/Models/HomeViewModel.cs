@@ -7,8 +7,8 @@ namespace HealthTracker.Mvc.Models
         public WeightListViewModel WeightMeasurements { get; set; }
         public bool HasWeightMeasurements { get { return WeightMeasurements?.Measurements?.Any() ?? false; } }
 
-        public BeverageConsumptionSummaryListViewModel HydratingBeverageConsumption { get; set; }
-        public bool HasHydratingBeverageConsumption { get { return HydratingBeverageConsumption?.Summaries?.Any() ?? false; } }
+        public BeverageConsumptionListViewModel HydratingBeverageConsumption { get; set; }
+        public bool HasHydratingBeverageConsumption { get { return HydratingBeverageConsumption?.Measurements?.Any() ?? false; } }
 
         public BeverageConsumptionSummaryListViewModel TotalAlcoholConsumption { get; set; }
         public bool HasTotalAlcoholConsumption { get { return (TotalAlcoholConsumption != null) && (TotalAlcoholConsumption.Summaries != null) && (TotalAlcoholConsumption.Summaries.Count() > 0); } }

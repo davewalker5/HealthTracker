@@ -87,10 +87,11 @@ namespace HealthTracker.Mvc.Controllers
             };
 
             // Calculate the rolling total hydrating drink consumption for the default period
-            model.HydratingBeverageConsumption = new BeverageConsumptionSummaryListViewModel()
+            var measurements = await _beverageConsumptionMeasurementClient.CalculateDailyTotalHydratingAsync(model.Filters.PersonId, from, to);
+            if (measurements != null)
             {
-                Summaries = await _beverageConsumptionMeasurementClient.CalculateDailyTotalHydratingAsync(model.Filters.PersonId, from, to)
-            };
+                model.HydratingBeverageConsumption = await _builder.CreateBeverageConsumptionListViewModel(model.Filters.PersonId, 0, measurements, from, to, "", ViewFlags.None);
+            }
 
             // Retrieve current medication details
             model.PersonMedications = await _builder.CreatePersonMedicationListViewModel(model.Filters.PersonId, "", ViewFlags.None);

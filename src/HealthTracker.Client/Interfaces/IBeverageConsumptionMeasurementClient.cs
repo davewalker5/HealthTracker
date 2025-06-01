@@ -25,9 +25,9 @@ namespace HealthTracker.Client.Interfaces
 
         Task<BeverageConsumptionSummary> CalculateTotalHydratingAsync(int personId, int days);
         Task<BeverageConsumptionSummary> CalculateTotalHydratingAsync(int personId, DateTime from, DateTime to);
-        Task<List<BeverageConsumptionSummary>> CalculateDailyTotalHydratingAsync(int personId, DateTime from, DateTime to);
+        Task<List<BeverageConsumptionMeasurement>> CalculateDailyTotalHydratingAsync(int personId, DateTime from, DateTime to);
         Task<BeverageConsumptionSummary> CalculateTotalAlcoholicAsync(int personId, int days);
         Task<BeverageConsumptionSummary> CalculateTotalAlcoholicAsync(int personId, DateTime from, DateTime to);
-        Task<List<BeverageConsumptionSummary>> CalculateDailyTotalAlcoholicAsync(int personId, DateTime from, DateTime to);
+        Task<List<BeverageConsumptionMeasurement>> CalculateDailyTotalAlcoholicAsync(int personId, DateTime from, DateTime to);
     }
 }

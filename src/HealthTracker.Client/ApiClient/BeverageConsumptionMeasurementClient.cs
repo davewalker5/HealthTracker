@@ -2,7 +2,6 @@ using System.Web;
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
 using HealthTracker.Entities.Measurements;
-using HealthTracker.Enumerations.Enumerations;
 using Microsoft.Extensions.Logging;
 
 namespace HealthTracker.Client.ApiClient
@@ -179,7 +178,7 @@ namespace HealthTracker.Client.ApiClient
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no people in the database
-            List<BeverageConsumptionMeasurement> measurements = !string.IsNullOrEmpty(json) ? Deserialize<List<BeverageConsumptionMeasurement>>(json) : null;
+            var measurements = !string.IsNullOrEmpty(json) ? Deserialize<List<BeverageConsumptionMeasurement>>(json) : null;
             return measurements;
         }
 
@@ -226,7 +225,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="from"></param>
         /// <param name="to"></param>
         /// <returns></returns>
-        public async Task<List<BeverageConsumptionSummary>> CalculateDailyTotalHydratingAsync(int personId, DateTime from, DateTime to)
+        public async Task<List<BeverageConsumptionMeasurement>> CalculateDailyTotalHydratingAsync(int personId, DateTime from, DateTime to)
         {
             var encodedFromDate = HttpUtility.UrlEncode(from.ToString(DateTimeFormat));
             var encodedToDate = HttpUtility.UrlEncode(to.ToString(DateTimeFormat));
@@ -234,7 +233,7 @@ namespace HealthTracker.Client.ApiClient
             var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
             var route = $"{baseRoute}/dailytotalhydrating/{personId}/{encodedFromDate}/{encodedToDate}";
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
-            var measurements = !string.IsNullOrEmpty(json) ? Deserialize<List<BeverageConsumptionSummary>>(json) : null;
+            var measurements = !string.IsNullOrEmpty(json) ? Deserialize<List<BeverageConsumptionMeasurement>>(json) : null;
 
             return measurements;
         }
@@ -282,7 +281,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="from"></param>
         /// <param name="to"></param>
         /// <returns></returns>
-        public async Task<List<BeverageConsumptionSummary>> CalculateDailyTotalAlcoholicAsync(int personId, DateTime from, DateTime to)
+        public async Task<List<BeverageConsumptionMeasurement>> CalculateDailyTotalAlcoholicAsync(int personId, DateTime from, DateTime to)
         {
             var encodedFromDate = HttpUtility.UrlEncode(from.ToString(DateTimeFormat));
             var encodedToDate = HttpUtility.UrlEncode(to.ToString(DateTimeFormat));
@@ -290,7 +289,7 @@ namespace HealthTracker.Client.ApiClient
             var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
             var route = $"{baseRoute}/dailytotalalcohol/{personId}/{encodedFromDate}/{encodedToDate}";
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
-            var measurements = !string.IsNullOrEmpty(json) ? Deserialize<List<BeverageConsumptionSummary>>(json) : null;
+            var measurements = !string.IsNullOrEmpty(json) ? Deserialize<List<BeverageConsumptionMeasurement>>(json) : null;
 
             return measurements;
         }

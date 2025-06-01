@@ -17,7 +17,7 @@ namespace HealthTracker.Logic.Calculations
         /// <param name="personId"></param>
         /// <param name="from"></param>
         /// <param name="to"></param>
-        public async Task<List<BeverageConsumptionSummary>> DailyTotalHydratingAsync(int personId, DateTime from, DateTime to)
+        public async Task<List<BeverageConsumptionMeasurement>> DailyTotalHydratingAsync(int personId, DateTime from, DateTime to)
             => await DailyConsumptionAsync(personId, from, to, true, false);
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace HealthTracker.Logic.Calculations
         /// <param name="personId"></param>
         /// <param name="from"></param>
         /// <param name="to"></param>
-        public async Task<List<BeverageConsumptionSummary>> DailyTotalAlcoholAsync(int personId, DateTime from, DateTime to)
+        public async Task<List<BeverageConsumptionMeasurement>> DailyTotalAlcoholAsync(int personId, DateTime from, DateTime to)
             => await DailyConsumptionAsync(personId, from, to, false, true);
 
         /// <summary>
@@ -56,9 +56,9 @@ namespace HealthTracker.Logic.Calculations
         /// <param name="hydrating"></param>
         /// <param name="alcohol"></param>
         /// <returns></returns>
-        private async Task<List<BeverageConsumptionSummary>> DailyConsumptionAsync(int personId, DateTime from, DateTime to, bool hydrating, bool alcohol)
+        private async Task<List<BeverageConsumptionMeasurement>> DailyConsumptionAsync(int personId, DateTime from, DateTime to, bool hydrating, bool alcohol)
         {
-            List<BeverageConsumptionSummary> totals = [];
+            List<BeverageConsumptionMeasurement> totals = [];
 
             // Retrieve matching measurements
             var measurements = await RetrieveMeasurements(personId, from, to, hydrating, alcohol);
@@ -75,20 +75,19 @@ namespace HealthTracker.Logic.Calculations
                     var endDate = new DateTime(date.Year, date.Month, date.Day, 23, 59, 59);
                     var dailyReadings = measurements.Where(x => (x.Date >= date) && (x.Date <= endDate));
 
-                    // Get the person and beverage details
+                    // Get the beverage details
                     (int? beverageId, string beverageName) = GetBeverage(dailyReadings);
 
                     // Calculate the daily total
-                    var dailyTotal = new BeverageConsumptionSummary
+                    var dailyTotal = new BeverageConsumptionMeasurement
                     {
                         PersonId = personId,
-                        PersonName = people.First(x => x.Id == personId).Name,
-                        From = from,
-                        To = to,
-                        BeverageId = beverageId,
-                        BeverageName = beverageName,
-                        TotalVolume = dailyReadings.Select(x => x.Volume).Sum(),
-                        TotalUnits = dailyReadings.Select(x => x.Units).Sum()
+                        Date = date,
+                        BeverageId = beverageId ?? 0,
+                        Beverage = beverageName ?? "",
+                        Quantity = dailyReadings.Sum(x => x.Quantity),
+                        Volume = dailyReadings.Average(x => x.Volume),
+                        ABV = GetVolumeWeightedABV(dailyReadings)
                     };
 
                     // Add the daily total to the collection
@@ -137,6 +136,19 @@ namespace HealthTracker.Logic.Calculations
             }
 
             return total;
+        }
+
+        /// <summary>
+        /// Determine the volume-weighted ABV for a collection of measurements
+        /// </summary>
+        /// <param name="measurements"></param>
+        /// <returns></returns>
+        private static decimal GetVolumeWeightedABV(IEnumerable<BeverageConsumptionMeasurement> measurements)
+        {
+            decimal totalAlcohol = measurements.Sum(x => x.Volume * x.Quantity * x.ABV);
+            decimal totalVolume = measurements.Sum(x => x.Volume * x.Quantity);
+            decimal averageABV = totalVolume > 0M ? totalAlcohol / totalVolume : 0M;
+            return averageABV;
         }
 
         /// <summary>
