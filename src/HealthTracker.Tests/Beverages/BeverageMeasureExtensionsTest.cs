@@ -8,26 +8,26 @@ namespace HealthTracker.Tests.Beverages
     {
         [TestMethod]
         public void NoneTest()
-            => Assert.AreEqual("", BeverageMeasure.None.ToName());
+            => Assert.AreEqual("", TempBeverageMeasure.None.ToName());
 
         [TestMethod]
         public void PintTest()
-            => Assert.AreEqual("Pint", BeverageMeasure.Pint.ToName());
+            => Assert.AreEqual("Pint", TempBeverageMeasure.Pint.ToName());
 
         [TestMethod]
         public void LargeGlassTest()
-            => Assert.AreEqual("Large Glass", BeverageMeasure.LargeGlass.ToName());
+            => Assert.AreEqual("Large Glass", TempBeverageMeasure.LargeGlass.ToName());
 
         [TestMethod]
         public void MediumGlassTest()
-            => Assert.AreEqual("Medium Glass", BeverageMeasure.MediumGlass.ToName());
+            => Assert.AreEqual("Medium Glass", TempBeverageMeasure.MediumGlass.ToName());
 
         [TestMethod]
         public void SmallGlassTest()
-            => Assert.AreEqual("Small Glass", BeverageMeasure.SmallGlass.ToName());
+            => Assert.AreEqual("Small Glass", TempBeverageMeasure.SmallGlass.ToName());
 
         [TestMethod]
         public void ShotTest()
-            => Assert.AreEqual("Shot", BeverageMeasure.Shot.ToName());
+            => Assert.AreEqual("Shot", TempBeverageMeasure.Shot.ToName());
     }
 }

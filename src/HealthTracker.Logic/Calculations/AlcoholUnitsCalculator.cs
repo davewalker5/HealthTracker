@@ -20,7 +20,7 @@ namespace HealthTracker.Logic.Calculations
         /// <param name="measure"></param>
         /// <param name="quantity"></param>
         /// <returns></returns>
-        public decimal CalculateVolume(BeverageMeasure measure, int quantity)
+        public decimal CalculateVolume(TempBeverageMeasure measure, int quantity)
             => quantity * GetVolume(measure);
 
         /// <summary>
@@ -28,16 +28,16 @@ namespace HealthTracker.Logic.Calculations
         /// </summary>
         /// <param name="measure"></param>
         /// <returns></returns>
-        public decimal GetVolume(BeverageMeasure measure)
+        public decimal GetVolume(TempBeverageMeasure measure)
             => measure switch
             {
-                BeverageMeasure.None => 0M,
-                BeverageMeasure.Pint => MlPerPint,
-                BeverageMeasure.HalfPint => MlPerPint / 2M,
-                BeverageMeasure.LargeGlass => _settings.LargeGlassSize,
-                BeverageMeasure.MediumGlass => _settings.MediumGlassSize,
-                BeverageMeasure.SmallGlass => _settings.SmallGlassSize,
-                BeverageMeasure.Shot => _settings.ShotSize,
+                TempBeverageMeasure.None => 0M,
+                TempBeverageMeasure.Pint => MlPerPint,
+                TempBeverageMeasure.HalfPint => MlPerPint / 2M,
+                TempBeverageMeasure.LargeGlass => _settings.LargeGlassSize,
+                TempBeverageMeasure.MediumGlass => _settings.MediumGlassSize,
+                TempBeverageMeasure.SmallGlass => _settings.SmallGlassSize,
+                TempBeverageMeasure.Shot => _settings.ShotSize,
                 _ => 0M,
             };
 
@@ -112,11 +112,11 @@ namespace HealthTracker.Logic.Calculations
                     // Calculate the units for a single measure
                     var unitsPerMeasure = measurement.Measure switch
                     {
-                        BeverageMeasure.Pint => UnitsPerPint(measurement.ABV),
-                        BeverageMeasure.LargeGlass => UnitsPerLargeGlass(measurement.ABV),
-                        BeverageMeasure.MediumGlass => UnitsPerMediumGlass(measurement.ABV),
-                        BeverageMeasure.SmallGlass => UnitsPerSmallGlass(measurement.ABV),
-                        BeverageMeasure.Shot => UnitsPerShot(measurement.ABV),
+                        TempBeverageMeasure.Pint => UnitsPerPint(measurement.ABV),
+                        TempBeverageMeasure.LargeGlass => UnitsPerLargeGlass(measurement.ABV),
+                        TempBeverageMeasure.MediumGlass => UnitsPerMediumGlass(measurement.ABV),
+                        TempBeverageMeasure.SmallGlass => UnitsPerSmallGlass(measurement.ABV),
+                        TempBeverageMeasure.Shot => UnitsPerShot(measurement.ABV),
                         _ => 0M,
                     };
 

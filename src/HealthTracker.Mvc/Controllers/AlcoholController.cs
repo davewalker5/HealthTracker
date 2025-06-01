@@ -11,7 +11,7 @@ namespace HealthTracker.Mvc.Controllers
     {
         public delegate Task<decimal> UnitCalculator(decimal abv);
 
-        protected readonly Dictionary<BeverageMeasure, UnitCalculator> _calculators = new();
+        protected readonly Dictionary<TempBeverageMeasure, UnitCalculator> _calculators = new();
 
         private readonly ILogger<AlcoholController> _logger;
 
@@ -19,11 +19,11 @@ namespace HealthTracker.Mvc.Controllers
             IAlcoholUnitCalculationsClient client,
             ILogger<AlcoholController> logger)
         {
-            _calculators.Add(BeverageMeasure.Pint, client.UnitsPerPint);
-            _calculators.Add(BeverageMeasure.LargeGlass, client.UnitsPerLargeGlass);
-            _calculators.Add(BeverageMeasure.MediumGlass, client.UnitsPerMediumGlass);
-            _calculators.Add(BeverageMeasure.SmallGlass, client.UnitsPerSmallGlass);
-            _calculators.Add(BeverageMeasure.Shot, client.UnitsPerShot);
+            _calculators.Add(TempBeverageMeasure.Pint, client.UnitsPerPint);
+            _calculators.Add(TempBeverageMeasure.LargeGlass, client.UnitsPerLargeGlass);
+            _calculators.Add(TempBeverageMeasure.MediumGlass, client.UnitsPerMediumGlass);
+            _calculators.Add(TempBeverageMeasure.SmallGlass, client.UnitsPerSmallGlass);
+            _calculators.Add(TempBeverageMeasure.Shot, client.UnitsPerShot);
             _logger = logger;
         }
 
@@ -56,7 +56,7 @@ namespace HealthTracker.Mvc.Controllers
             {
                 // Check the measure isn't the default selection, "None"
                 _logger.LogDebug($"Measure = {model.Measure}");
-                if (model.Measure == BeverageMeasure.None)
+                if (model.Measure == TempBeverageMeasure.None)
                 {
                     ModelState.AddModelError("Measure", "You must select a measure");
                 }
@@ -74,7 +74,7 @@ namespace HealthTracker.Mvc.Controllers
                 // Reset the model and set the result message
                 ModelState.Clear();
                 model.Result = $"{model.Quantity} x {model.MeasureName} at {model.ABV} % ABV contains {units} unit(s) of alcohol";
-                model.Measure = BeverageMeasure.None;
+                model.Measure = TempBeverageMeasure.None;
                 model.Quantity = 1;
                 model.ABV = 0;
             }

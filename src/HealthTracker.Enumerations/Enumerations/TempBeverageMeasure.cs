@@ -2,7 +2,7 @@ namespace HealthTracker.Enumerations.Enumerations
 {
     // The enum values are persisted to the database so it's essential their values
     // are fixed, even when new ones are added
-    public enum BeverageMeasure
+    public enum TempBeverageMeasure
     {
         None = 0,
         Pint = 1,

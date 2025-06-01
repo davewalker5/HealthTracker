@@ -14,7 +14,7 @@ namespace HealthTracker.Mvc.Models
         public BeverageConsumptionViewModel()
         {
             // Populate the list of measures
-            var measures = Enum.GetValues<BeverageMeasure>().OrderBy(x => x.ToName());
+            var measures = Enum.GetValues<TempBeverageMeasure>().OrderBy(x => x.ToName());
             foreach (var measure in measures)
             {
                 Measures.Add(new SelectListItem() { Text = measure.ToName(), Value = ((int)measure).ToString() });

@@ -95,7 +95,7 @@ namespace HealthTracker.Tests.Alcohol
         public void LargeGlassVolumeTest()
         {
             var quantity = DataGenerator.RandomInt(1, 10);
-            var actual = _factory.AlcoholUnitsCalculator.CalculateVolume(BeverageMeasure.LargeGlass, quantity);
+            var actual = _factory.AlcoholUnitsCalculator.CalculateVolume(TempBeverageMeasure.LargeGlass, quantity);
             var expected = quantity * _settings.LargeGlassSize;
             Assert.AreEqual(expected, actual);
         }
@@ -104,7 +104,7 @@ namespace HealthTracker.Tests.Alcohol
         public void MediumGlassVolumeTest()
         {
             var quantity = DataGenerator.RandomInt(1, 10);
-            var actual = _factory.AlcoholUnitsCalculator.CalculateVolume(BeverageMeasure.MediumGlass, quantity);
+            var actual = _factory.AlcoholUnitsCalculator.CalculateVolume(TempBeverageMeasure.MediumGlass, quantity);
             var expected = quantity * _settings.MediumGlassSize;
             Assert.AreEqual(expected, actual);
         }
@@ -113,7 +113,7 @@ namespace HealthTracker.Tests.Alcohol
         public void SmallGlassVolumeTest()
         {
             var quantity = DataGenerator.RandomInt(1, 10);
-            var actual = _factory.AlcoholUnitsCalculator.CalculateVolume(BeverageMeasure.SmallGlass, quantity);
+            var actual = _factory.AlcoholUnitsCalculator.CalculateVolume(TempBeverageMeasure.SmallGlass, quantity);
             var expected = quantity * _settings.SmallGlassSize;
             Assert.AreEqual(expected, actual);
         }
@@ -122,7 +122,7 @@ namespace HealthTracker.Tests.Alcohol
         public void ShotVolumeTest()
         {
             var quantity = DataGenerator.RandomInt(1, 10);
-            var actual = _factory.AlcoholUnitsCalculator.CalculateVolume(BeverageMeasure.Shot, quantity);
+            var actual = _factory.AlcoholUnitsCalculator.CalculateVolume(TempBeverageMeasure.Shot, quantity);
             var expected = quantity * _settings.ShotSize;
             Assert.AreEqual(expected, actual);
         }

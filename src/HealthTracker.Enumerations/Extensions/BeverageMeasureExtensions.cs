@@ -9,17 +9,17 @@ namespace HealthTracker.Enumerations.Extensions
         /// </summary>
         /// <param name="units"></param>
         /// <returns></returns>
-        public static string ToName(this BeverageMeasure measure)
+        public static string ToName(this TempBeverageMeasure measure)
         {
             return measure switch
             {
-                BeverageMeasure.None => "",
-                BeverageMeasure.Pint => "Pint",
-                BeverageMeasure.HalfPint => "Half Pint",
-                BeverageMeasure.LargeGlass => "Large Glass",
-                BeverageMeasure.MediumGlass => "Medium Glass",
-                BeverageMeasure.SmallGlass => "Small Glass",
-                BeverageMeasure.Shot => "Shot",
+                TempBeverageMeasure.None => "",
+                TempBeverageMeasure.Pint => "Pint",
+                TempBeverageMeasure.HalfPint => "Half Pint",
+                TempBeverageMeasure.LargeGlass => "Large Glass",
+                TempBeverageMeasure.MediumGlass => "Medium Glass",
+                TempBeverageMeasure.SmallGlass => "Small Glass",
+                TempBeverageMeasure.Shot => "Shot",
                 _ => "",
             };
         }

@@ -44,7 +44,7 @@ namespace HealthTracker.Logic.Database
             int personId,
             int beverageId,
             DateTime date,
-            BeverageMeasure measure,
+            TempBeverageMeasure measure,
             int quantity,
             decimal volume,
             decimal abv)
@@ -88,7 +88,7 @@ namespace HealthTracker.Logic.Database
             int personId,
             int beverageId,
             DateTime date,
-            BeverageMeasure measure,
+            TempBeverageMeasure measure,
             int quantity,
             decimal volume,
             decimal abv)

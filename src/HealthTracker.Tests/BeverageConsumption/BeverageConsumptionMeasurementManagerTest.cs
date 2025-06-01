@@ -13,13 +13,13 @@ namespace HealthTracker.Tests.Beverages
     public class BeverageConsumptionMeasurementManagerTest
     {
         private readonly DateTime ConsumptionDate = DataGenerator.RandomDateInYear(2024);
-        private readonly BeverageMeasure Measure = DataGenerator.RandomBeverageMeasure();
+        private readonly TempBeverageMeasure Measure = DataGenerator.RandomTempBeverageMeasure();
         private readonly int Quantity = DataGenerator.RandomDuration().ToDuration();
         private readonly decimal Volume = DataGenerator.RandomDecimal(25, 250);
         private readonly decimal ABV = DataGenerator.RandomDecimal(0, 20);
 
         private readonly DateTime UpdatedConsumptionDate = DataGenerator.RandomDateInYear(2024);
-        private readonly BeverageMeasure UpdatedMeasure = DataGenerator.RandomBeverageMeasure();
+        private readonly TempBeverageMeasure UpdatedMeasure = DataGenerator.RandomTempBeverageMeasure();
         private readonly int UpdatedQuantity = DataGenerator.RandomDuration().ToDuration();
         private readonly decimal UpdatedVolume = DataGenerator.RandomDecimal(25, 250);
         private readonly decimal UpdatedABV = DataGenerator.RandomDecimal(21, 40);

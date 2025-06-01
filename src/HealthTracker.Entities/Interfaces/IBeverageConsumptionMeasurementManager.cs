@@ -12,7 +12,7 @@ namespace HealthTracker.Entities.Interfaces
             int personId,
             int beverageId,
             DateTime date,
-            BeverageMeasure measure,
+            TempBeverageMeasure measure,
             int quantity,
             decimal volume,
             decimal abv);
@@ -22,7 +22,7 @@ namespace HealthTracker.Entities.Interfaces
             int personId,
             int beverageId,
             DateTime date,
-            BeverageMeasure measure,
+            TempBeverageMeasure measure,
             int quantity,
             decimal volume,
             decimal abv);

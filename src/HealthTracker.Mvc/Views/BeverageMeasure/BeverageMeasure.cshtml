@@ -1,0 +1,29 @@
+@model HealthTracker.Mvc.Models.BeverageMeasureViewModel
+
+@Html.HiddenFor(m => m.Measure.Id)
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Measure.Name)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Measure.Name, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Measure.Name, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Measure.Volume)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Measure.Volume, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Measure.Volume, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+</div>

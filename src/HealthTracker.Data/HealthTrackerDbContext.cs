@@ -27,6 +27,7 @@ namespace HealthTracker.Data
         public virtual DbSet<JobStatus> JobStatuses { get; set; }
         public virtual DbSet<Beverage> Beverages { get; set; }
         public virtual DbSet<BeverageConsumptionMeasurement> BeverageConsumptionMeasurements { get; set; }
+        public virtual DbSet<BeverageMeasure> BeverageMeasures { get; set; }
 
 
         public HealthTrackerDbContext(DbContextOptions<HealthTrackerDbContext> options) : base(options)
@@ -212,6 +213,14 @@ namespace HealthTracker.Data
                 entity.Property(e => e.Measure).IsRequired().HasColumnName("measure");
                 entity.Property(e => e.Quantity).IsRequired().HasColumnName("quantity");
                 entity.Property(e => e.ABV).IsRequired().HasColumnName("abv");
+            });
+
+            modelBuilder.Entity<BeverageMeasure>(entity =>
+            {
+                entity.ToTable("BEVERAGE_MEASURES");
+                entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
+                entity.Property(e => e.Name).IsRequired().HasColumnName("name");
+                entity.Property(e => e.Volume).IsRequired().HasColumnName("volume");
             });
         }
     }

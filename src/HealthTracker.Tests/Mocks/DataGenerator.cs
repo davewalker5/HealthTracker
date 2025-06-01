@@ -697,11 +697,11 @@ namespace HealthTracker.Tests.Mocks
         /// Return a random beverage measure
         /// </summary>
         /// <returns></returns>
-        public static BeverageMeasure RandomBeverageMeasure()
+        public static TempBeverageMeasure RandomTempBeverageMeasure()
         {
             // Note the 1 to N-1 in the random selector : This avoids the "None" value
-            var values = Enum.GetValues(typeof(BeverageMeasure));
-            var measure = (BeverageMeasure)values.GetValue(RandomInt(1, values.Length - 1));
+            var values = Enum.GetValues(typeof(TempBeverageMeasure));
+            var measure = (TempBeverageMeasure)values.GetValue(RandomInt(1, values.Length - 1));
             return measure;
         }
 
@@ -719,7 +719,7 @@ namespace HealthTracker.Tests.Mocks
                 PersonId = personId,
                 BeverageId = beverageId,
                 Date = RandomDateInYear(year),
-                Measure = RandomBeverageMeasure(),
+                Measure = RandomTempBeverageMeasure(),
                 Quantity = RandomInt(1, 5),
                 Volume = RandomDecimal(25, 250),
                 ABV = RandomDecimal(0, 100)
@@ -751,6 +751,18 @@ namespace HealthTracker.Tests.Mocks
                 To = RandomDateInYear(year + 1),
                 TotalVolume = RandomDecimal(100, 2000),
                 TotalUnits = RandomDecimal(0, 14)
+            };
+
+        /// <summary>
+        /// Return a random beverage measure
+        /// </summary>
+        /// <returns></returns>
+        public static BeverageMeasure RandomBeverageMeasure()
+            => new()
+            {
+                Id = RandomId(),
+                Name = RandomTitleCasePhrase(2, 5, 10),
+                Volume = RandomDecimal(25, 500)
             };
     }
 }

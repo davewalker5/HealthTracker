@@ -17,7 +17,7 @@ namespace HealthTracker.Entities.Measurements
 
         [DisplayName("Measure")]
         [Required(ErrorMessage = "You must select a measure")]
-        public BeverageMeasure Measure { get; set; }
+        public TempBeverageMeasure Measure { get; set; }
 
         [DisplayName("Quantity")]
         [Range(1, int.MaxValue, ErrorMessage = "{0} must be >= {1}")]

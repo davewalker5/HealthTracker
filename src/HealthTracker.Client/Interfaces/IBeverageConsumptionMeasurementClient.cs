@@ -9,7 +9,7 @@ namespace HealthTracker.Client.Interfaces
             int personId,
             int beverageId,
             DateTime? date,
-            BeverageMeasure measure,
+            TempBeverageMeasure measure,
             int quantity,
             decimal abv);
 
@@ -20,7 +20,7 @@ namespace HealthTracker.Client.Interfaces
             int personId,
             int beverageId,
             DateTime? date,
-            BeverageMeasure measure,
+            TempBeverageMeasure measure,
             int quantity,
             decimal abv);
 

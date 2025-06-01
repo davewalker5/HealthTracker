@@ -44,7 +44,7 @@ namespace HealthTracker.DataExchange.Import
             var beverage = _beverages.FirstOrDefault(x => x.Name.Equals(measurement.Beverage, StringComparison.OrdinalIgnoreCase));
             ValidateField<Beverage>(x => x != null, beverage, "Beverage", recordCount);
 
-            ValidateField<int>(x => x != (int)BeverageMeasure.None, measurement.Measure, "Measure", recordCount);
+            ValidateField<int>(x => x != (int)TempBeverageMeasure.None, measurement.Measure, "Measure", recordCount);
             ValidateField<int>(x => x > 0, measurement.Quantity, "Quantity", recordCount);
             ValidateField<decimal>(x => x > 0, measurement.Volume, "Volume", recordCount);
             ValidateField<decimal>(x => x >= 0 && x <= 100, measurement.ABV, "ABV", recordCount);
@@ -62,7 +62,7 @@ namespace HealthTracker.DataExchange.Import
                 measurement.PersonId,
                 beverage.Id,
                 measurement.Date,
-                (BeverageMeasure)measurement.Measure,
+                (TempBeverageMeasure)measurement.Measure,
                 measurement.Quantity,
                 measurement.Volume,
                 measurement.ABV);

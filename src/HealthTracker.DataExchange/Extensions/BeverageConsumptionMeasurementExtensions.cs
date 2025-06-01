@@ -71,7 +71,7 @@ namespace HealthTracker.DataExchange.Extensions
                 PersonId = exportable.PersonId,
                 Date = exportable.Date,
                 BeverageId = beverage.Id,
-                Measure = (BeverageMeasure)exportable.Measure,
+                Measure = (TempBeverageMeasure)exportable.Measure,
                 Quantity = exportable.Quantity,
                 Volume = exportable.Volume,
                 ABV = exportable.ABV,
