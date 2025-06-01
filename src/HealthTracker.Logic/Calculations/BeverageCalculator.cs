@@ -130,7 +130,7 @@ namespace HealthTracker.Logic.Calculations
                     To = to,
                     BeverageId = beverageId,
                     BeverageName = beverageName,
-                    TotalVolume = measurements.Select(x => x.Volume).Sum(),
+                    TotalVolume = measurements.Select(x => x.Volume * x.Quantity).Sum(),
                     TotalUnits = measurements.Select(x => x.Units).Sum()
                 };
             }
