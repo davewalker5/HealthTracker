@@ -131,10 +131,10 @@ namespace HealthTracker.Tests.Weight
             var measurement = DataGenerator.RandomWeightMeasurement(50, 100);
             var json = JsonSerializer.Serialize(new List<dynamic> { measurement });
             _httpClient.AddResponse(json);
-
+        
+            var expectedTo = DateTime.Now;
             var measurements = await _client.ListAsync(measurement.PersonId, null, null, 1, int.MaxValue);
 
-            var expectedTo = DateTime.Now;
             var expectedFrom = expectedTo.AddDays(-_settings.DefaultTimePeriodDays);
             var encodedFrom = HttpUtility.UrlEncode(expectedFrom.ToString("yyyy-MM-dd H:mm:ss"));
             var encodedTo = HttpUtility.UrlEncode(expectedTo.ToString("yyyy-MM-dd H:mm:ss"));
