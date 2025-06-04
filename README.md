@@ -9,9 +9,6 @@
 
 # Health Tracker
 
-> [!IMPORTANT]  
-> This project is under development. More extensive Wiki documentation will be added in due course.
-
 Health Tracker is an application for recording health metrics, maintaining details of:
 
 - Measurements
