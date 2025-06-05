@@ -43,7 +43,7 @@
         <div class="col">
             <strong><label>&nbsp;</label></strong>
             <div class="input-group">
-                <button type="submit" name="Action" value="@ControllerActions.ActionSearch" class="btn btn-primary" style="margin-right: 10px">Search</button>
+                <button type="submit" name="Action" id="Search" value="@ControllerActions.ActionSearch" class="btn btn-primary" style="margin-right: 10px">Search</button>
                 @if (Model.ShowAddButton)
                 {
                     <button type="submit" name="Action" value="@ControllerActions.ActionAdd" class="btn btn-primary" style="margin-right: 10px">Add</button>
@@ -57,3 +57,14 @@
     </div>
     <br/>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $(document).on("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                $('#Search').click();
+            }
+        });
+    });
+</script>

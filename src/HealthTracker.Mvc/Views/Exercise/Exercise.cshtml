@@ -107,5 +107,12 @@
         $("#Measurement_FormattedDuration").fxtime("seg", 0, hours)
         $("#Measurement_FormattedDuration").fxtime("seg", 1, minutes)
         $("#Measurement_FormattedDuration").fxtime("seg", 2, seconds)
+
+        $(document).on("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                $('#Save').click();
+            }
+        });
     })
 </script>

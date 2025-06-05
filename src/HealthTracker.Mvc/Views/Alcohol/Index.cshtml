@@ -87,7 +87,7 @@
         }
 
         <p class="text-right">
-            <button type="submit" class="btn btn-primary">Calculate</button>
+            <button type="submit" id="Calculate" class="btn btn-primary">Calculate</button>
         </p>
     </div>
 }
@@ -101,6 +101,13 @@
 
         $("#Volume").on("keydown", function() {
             $("#Measure").val("0");
+        });
+
+        $(document).on("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                $('#Calculate').click();
+            }
         });
     });
 </script>
