@@ -6,6 +6,7 @@ namespace HealthTracker.Mvc.Entities
         public const string ActionNextPage = "Next";
         public const string ActionSearch = "Search";
         public const string ActionAdd = "Add";
+        public const string ActionSave = "Save";
         public const string ActionCancel = "Cancel";
         public const string ActionTakeAll = "TakeAll";
         public const string ActionUnTakeAll = "UnTakeAll";

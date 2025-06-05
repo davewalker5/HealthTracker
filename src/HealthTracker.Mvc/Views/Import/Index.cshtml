@@ -60,7 +60,19 @@
         <br/>
         <hr />
         <p class="text-right">
-            <button type="submit" name="Action" value="@ControllerActions.ActionImport" class="btn btn-primary">Import</button>
+            <button type="submit" name="Action" id="Import" value="@ControllerActions.ActionImport" class="btn btn-primary">Import</button>
         </p>
     </div>
 }
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $(document).on("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                $('#Import').click();
+            }
+        });
+    });
+</script>
+

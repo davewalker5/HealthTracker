@@ -45,3 +45,13 @@
     </div>
 </div>
 
+<script type="text/javascript">
+    $(document).ready(function() {
+        $(document).on("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                $('#Save').click();
+            }
+        });
+    });
+</script>

@@ -120,5 +120,12 @@
         $("#Measurement_Volume").on("keydown", function() {
             $("#Measure").val("0");
         });
+
+        $(document).on("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                $('#Save').click();
+            }
+        });
     });
 </script>

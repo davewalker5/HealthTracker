@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-    <ReleaseVersion>1.32.0.0</ReleaseVersion>
-    <FileVersion>1.32.0.0</FileVersion>
-    <ProductVersion>1.32.0</ProductVersion>
+    <ReleaseVersion>1.33.0.0</ReleaseVersion>
+    <FileVersion>1.33.0.0</FileVersion>
+    <ProductVersion>1.33.0</ProductVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
