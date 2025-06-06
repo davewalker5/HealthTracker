@@ -1,21 +1,21 @@
 @using HealthTracker.Mvc.Entities
 @using Microsoft.AspNetCore.Mvc.ModelBinding
-@model HealthTracker.Mvc.Models.BeverageListViewModel
+@model HealthTracker.Mvc.Models.FoodSourceListViewModel
 
 @{
-    ViewData["Title"] = "Beverages";
+    ViewData["Title"] = "Food Sources";
     var previousDisabled = (Model.PreviousEnabled) ? "" : "disabled";
     var nextDisabled = (Model.NextEnabled) ? "" : "disabled";
 }
 
 <p class="text-center font-weight-bold">
     <span style="font-size: 1.2rem">
-        Beverages
+        Food Sources
     </span>
     <br />
     <small class="text-muted">
         <em>
-            View and manage beverages
+            View and manage food sources (restaurants, recipes etc.)
         </em>
     </small>
 </p>
@@ -32,32 +32,24 @@
         <hr />
     }
 
-    @using (Html.BeginForm("Index", "Beverage", FormMethod.Post))
+    @using (Html.BeginForm("Index", "FoodSource", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
         @Html.HiddenFor(m => m.PageNumber)
 
-        @if ((Model.Beverages != null) && (Model.Beverages.Count() > 0))
+        @if ((Model.FoodSources != null) && (Model.FoodSources.Count() > 0))
         {
             <table class="table">
                 <tr>
                     <th>Name</th>
-                    <th>Typical ABV %</th>
-                    <th>Is Hydrating</th>
-                    <th>Is Alcohol</th>
                     <th />
                 </tr>
-                @foreach (var beverage in Model.Beverages)
+                @foreach (var foodSource in Model.FoodSources)
                 {
-                    var isHydrating = beverage.IsHydrating ? "Yes" : "No";
-                    var isAlcohol = beverage.IsAlcohol ? "Yes" : "No";
                     <tr>
-                        <td valign="center">@beverage.Name</td>
-                        <td valign="center">@beverage.TypicalABV.ToString("0.00")</td>
-                        <td valign="center">@isHydrating</td>
-                        <td valign="center">@isAlcohol</td>
+                        <td valign="center">@foodSource.Name</td>
                         <td valign="center">
-                            <a class="btn btn-lg" asp-area="" asp-controller="Beverage" asp-action="Edit" asp-route-id="@beverage.Id">
+                            <a class="btn btn-lg" asp-area="" asp-controller="FoodSource" asp-action="Edit" asp-route-id="@foodSource.Id">
                                 <i class="fas fa-edit"></i>
                             </a>
                         </td>
@@ -68,14 +60,14 @@
         else if (Model.HasNoMatchingResults)
         {
             <hr />
-            @Html.Raw("No matching beverages")
+            @Html.Raw("No matching food sources")
         }
 
         <hr />
         <p class="text-right">
             <button type="submit" name="Action" value="@ControllerActions.ActionPreviousPage" class="btn btn-secondary" @previousDisabled>Previous</button>
             <button type="submit" name="Action" value="@ControllerActions.ActionNextPage" class="btn btn-primary" @nextDisabled>Next</button>
-            <a class="btn btn-primary" href="/Beverage/Add" role="button">Add</a>
+            <a class="btn btn-primary" href="/FoodSource/Add" role="button">Add</a>
         </p>
     }
 

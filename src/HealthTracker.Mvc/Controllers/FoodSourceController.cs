@@ -1,6 +1,6 @@
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
-using HealthTracker.Entities.Medications;
+using HealthTracker.Entities.Food;
 using HealthTracker.Mvc.Entities;
 using HealthTracker.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -9,36 +9,36 @@ using Microsoft.AspNetCore.Mvc;
 namespace HealthTracker.Mvc.Controllers
 {
     [Authorize]
-    public class MedicationController : ReferenceDataControllerBase<MedicationListViewModel, Medication>
+    public class FoodSourceController : ReferenceDataControllerBase<FoodSourceListViewModel, FoodSource>
     {
-        private readonly IMedicationClient _client;
+        private readonly IFoodSourceClient _client;
 
-        private readonly ILogger<MedicationController> _logger;
+        private readonly ILogger<FoodSourceController> _logger;
 
-        public MedicationController(
-            IMedicationClient client,
+        public FoodSourceController(
+            IFoodSourceClient client,
             IHealthTrackerApplicationSettings settings,
-            ILogger<MedicationController> logger) : base(settings)
+            ILogger<FoodSourceController> logger) : base(settings)
         {
             _client = client;
             _logger = logger;
         }
 
         /// <summary>
-        /// Serve the current list of medications
+        /// Serve the current list of food sources
         /// </summary>
         /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            // Get the list of current medications
-            var medications = await _client.ListAsync(1, _settings.ResultsPageSize);
-            var plural = medications.Count == 1 ? "" : "s";
-            _logger.LogDebug($"{medications.Count} medication{plural} loaded via the service");
+            // Get the list of current foodSources
+            var foodSources = await _client.ListAsync(1, _settings.ResultsPageSize);
+            var plural = foodSources.Count == 1 ? "" : "s";
+            _logger.LogDebug($"{foodSources.Count} foodSource{plural} loaded via the service");
 
             // Construct the view model and serve the page
-            var model = new MedicationListViewModel();
-            model.SetEntities(medications, 1, _settings.ResultsPageSize);
+            var model = new FoodSourceListViewModel();
+            model.SetEntities(foodSources, 1, _settings.ResultsPageSize);
             return View(model);
         }
 
@@ -49,7 +49,7 @@ namespace HealthTracker.Mvc.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(MedicationListViewModel model)
+        public async Task<IActionResult> Index(FoodSourceListViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -72,8 +72,8 @@ namespace HealthTracker.Mvc.Controllers
                 ModelState.Clear();
 
                 // Retrieve the matching records
-                var medications = await _client.ListAsync(page, _settings.ResultsPageSize);
-                model.SetEntities(medications, page, _settings.ResultsPageSize);
+                var foodSources = await _client.ListAsync(page, _settings.ResultsPageSize);
+                model.SetEntities(foodSources, page, _settings.ResultsPageSize);
             }
             else
             {
@@ -84,24 +84,24 @@ namespace HealthTracker.Mvc.Controllers
         }
         
         /// <summary>
-        /// Serve the page to add a new medication
+        /// Serve the page to add a new food source
         /// </summary>
         /// <returns></returns>
         [HttpGet]
         public IActionResult Add()
         {
-            var model = new AddMedicationViewModel();
+            var model = new AddFoodSourceViewModel();
             return View(model);
         }
 
         /// <summary>
-        /// Handle POST events to save new medications
+        /// Handle POST events to save new food sources
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add(AddMedicationViewModel model)
+        public async Task<IActionResult> Add(AddFoodSourceViewModel model)
         {
             IActionResult result;
 
@@ -112,10 +112,10 @@ namespace HealthTracker.Mvc.Controllers
 
             if (ModelState.IsValid)
             {
-                _logger.LogDebug($"Adding medication: Name = {model.Medication.Name}");
-                var medication = await _client.AddAsync(model.Medication.Name);
+                _logger.LogDebug($"Adding foodSource: Name = {model.FoodSource.Name}");
+                var foodSource = await _client.AddAsync(model.FoodSource.Name);
 
-                result = CreateListResult(medication, $"{medication.Name} successfully added");
+                result = CreateListResult(foodSource, $"{foodSource.Name} successfully added");
             }
             else
             {
@@ -127,33 +127,33 @@ namespace HealthTracker.Mvc.Controllers
         }
         
         /// <summary>
-        /// Serve the page to edit an existing medication
+        /// Serve the page to edit an existing food source
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var medications = await _client.ListAsync(1, int.MaxValue);
-            var plural = medications.Count == 1 ? "" : "s";
-            _logger.LogDebug($"{medications.Count} medication{plural} loaded via the service");
+            var foodSources = await _client.ListAsync(1, int.MaxValue);
+            var plural = foodSources.Count == 1 ? "" : "s";
+            _logger.LogDebug($"{foodSources.Count} foodSource{plural} loaded via the service");
 
-            var medication = medications.First(x => x.Id == id);
-            _logger.LogDebug($"Medication with ID {id} identified for editing");
+            var foodSource = foodSources.First(x => x.Id == id);
+            _logger.LogDebug($"FoodSource with ID {id} identified for editing");
 
-            var model = new EditMedicationViewModel();
-            model.Medication = medication;
+            var model = new EditFoodSourceViewModel();
+            model.FoodSource = foodSource;
             return View(model);
         }
 
         /// <summary>
-        /// Handle POST events to update an existing medication
+        /// Handle POST events to update an existing food source
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EditMedicationViewModel model)
+        public async Task<IActionResult> Edit(EditFoodSourceViewModel model)
         {
             IActionResult result;
 
@@ -164,10 +164,10 @@ namespace HealthTracker.Mvc.Controllers
 
             if (ModelState.IsValid)
             {
-                _logger.LogDebug($"Updating medication: Id = {model.Medication.Id}, Name = {model.Medication.Name}");
-                var medication = await _client.UpdateAsync(model.Medication.Id, model.Medication.Name);
+                _logger.LogDebug($"Updating foodSource: Id = {model.FoodSource.Id}, Name = {model.FoodSource.Name}");
+                var foodSource = await _client.UpdateAsync(model.FoodSource.Id, model.FoodSource.Name);
 
-                result = CreateListResult(medication, $"{medication.Name} successfully updated");
+                result = CreateListResult(foodSource, $"{foodSource.Name} successfully updated");
             }
             else
             {

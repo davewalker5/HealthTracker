@@ -752,5 +752,16 @@ namespace HealthTracker.Tests.Mocks
                 Name = RandomTitleCasePhrase(2, 5, 10),
                 Volume = RandomDecimal(25, 500)
             };
+
+        /// <summary>
+        /// Generate a random food source
+        /// </summary>
+        /// <returns></returns>
+        public static FoodSource RandomFoodSource()
+            => new()
+            {
+                Id = RandomId(),
+                Name = RandomTitleCasePhrase(3, 5, 15)
+            };
     }
 }

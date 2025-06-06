@@ -23,6 +23,8 @@ namespace HealthTracker.Entities.Interfaces
         IExerciseCalculator ExerciseCalculator { get; }
         IUserManager Users { get; }
         IJobStatusManager JobStatuses { get; }
+
+        IFoodSourceManager FoodSources { get; }
         IBeverageManager Beverages { get; }
         IBeverageConsumptionMeasurementManager BeverageConsumptionMeasurements { get; }
         IBeverageMeasureManager BeverageMeasures { get; }
