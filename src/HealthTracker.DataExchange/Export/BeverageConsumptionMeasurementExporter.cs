@@ -2,7 +2,7 @@ using HealthTracker.DataExchange.Entities;
 using HealthTracker.DataExchange.Interfaces;
 using HealthTracker.DataExchange.Extensions;
 using HealthTracker.Entities.Interfaces;
-using HealthTracker.Entities.Measurements;
+using HealthTracker.Entities.Food;
 using System.Diagnostics.CodeAnalysis;
 
 namespace HealthTracker.DataExchange.Export

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using HealthTracker.Entities.Identity;
 
-namespace HealthTracker.Entities.Measurements
+namespace HealthTracker.Entities
 {
     [ExcludeFromCodeCoverage]
     public class MeasurementBase

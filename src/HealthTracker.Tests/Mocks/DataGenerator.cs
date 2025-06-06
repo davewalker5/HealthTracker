@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Text;
 using HealthTracker.Entities.Identity;
+using HealthTracker.Entities.Food;
 using HealthTracker.Entities.Logging;
 using HealthTracker.Entities.Measurements;
 using HealthTracker.Entities.Medications;

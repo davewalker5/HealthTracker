@@ -6,7 +6,7 @@ using HealthTracker.DataExchange.Import;
 using HealthTracker.DataExchange.Interfaces;
 using HealthTracker.Entities.Identity;
 using HealthTracker.Entities.Interfaces;
-using HealthTracker.Entities.Measurements;
+using HealthTracker.Entities.Food;
 using HealthTracker.Logic.Extensions;
 using HealthTracker.Logic.Factory;
 using HealthTracker.Tests.Mocks;

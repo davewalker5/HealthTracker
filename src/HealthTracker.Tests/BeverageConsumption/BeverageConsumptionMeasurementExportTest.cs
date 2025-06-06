@@ -5,7 +5,7 @@ using HealthTracker.DataExchange.Export;
 using HealthTracker.DataExchange.Extensions;
 using HealthTracker.Entities.Identity;
 using HealthTracker.Entities.Interfaces;
-using HealthTracker.Entities.Measurements;
+using HealthTracker.Entities.Food;
 using HealthTracker.Logic.Factory;
 using HealthTracker.Tests.Mocks;
 using Moq;

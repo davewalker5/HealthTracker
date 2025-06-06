@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using HealthTracker.Entities;
 using HealthTracker.Entities.Exceptions;
 using HealthTracker.Entities.Interfaces;
 using HealthTracker.Entities.Identity;

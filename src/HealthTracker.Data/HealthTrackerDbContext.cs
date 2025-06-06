@@ -1,4 +1,5 @@
 using HealthTracker.Entities.Identity;
+using HealthTracker.Entities.Food;
 using HealthTracker.Entities.Measurements;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;

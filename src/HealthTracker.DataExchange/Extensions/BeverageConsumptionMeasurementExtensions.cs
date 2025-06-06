@@ -1,5 +1,5 @@
 using HealthTracker.Entities.Identity;
-using HealthTracker.Entities.Measurements;
+using HealthTracker.Entities.Food;
 using HealthTracker.DataExchange.Entities;
 
 namespace HealthTracker.DataExchange.Extensions
