@@ -763,5 +763,16 @@ namespace HealthTracker.Tests.Mocks
                 Id = RandomId(),
                 Name = RandomTitleCasePhrase(3, 5, 15)
             };
+
+        /// <summary>
+        /// Generate a random food category
+        /// </summary>
+        /// <returns></returns>
+        public static FoodCategory RandomFoodCategory()
+            => new()
+            {
+                Id = RandomId(),
+                Name = RandomTitleCasePhrase(3, 5, 15)
+            };
     }
 }

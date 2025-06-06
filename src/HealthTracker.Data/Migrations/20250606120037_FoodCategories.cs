@@ -7,7 +7,7 @@ namespace HealthTracker.Data.Migrations
 {
     /// <inheritdoc />
     [ExcludeFromCodeCoverage]
-    public partial class FoodSources : Migration
+    public partial class FoodCategories : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,7 +15,7 @@ namespace HealthTracker.Data.Migrations
             migrationBuilder.Sql("PRAGMA foreign_keys = ON;");
 
             migrationBuilder.CreateTable(
-                name: "FOOD_SOURCES",
+                name: "FOOD_CATEGORIES",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -24,7 +24,7 @@ namespace HealthTracker.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FOOD_SOURCES", x => x.id);
+                    table.PrimaryKey("PK_FOOD_CATEGORIES", x => x.id);
                 });
         }
 
@@ -32,7 +32,7 @@ namespace HealthTracker.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "FOOD_SOURCES");
+                name: "FOOD_CATEGORIES");
         }
     }
 }

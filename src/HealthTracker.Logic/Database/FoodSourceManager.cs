@@ -63,7 +63,7 @@ namespace HealthTracker.Logic.Database
 
 
         /// <summary>
-        /// Update the properties of the specified person
+        /// Update the properties of the specified food source
         /// </summary>
         /// <param name="id"></param>
         /// <param name="name"></param>
@@ -100,11 +100,11 @@ namespace HealthTracker.Logic.Database
             if (FoodSource != null)
             {
                 // Check the food source isn't in use
-                // TODO: Implement this once food consumption measurements are implemented
+                // TODO: Implement this once meals are implemented
                 object? measurement = null;
                 if (measurement != null)
                 {
-                    var message = $"Food source with Id {id} has consumption records associated with it and cannot be deleted";
+                    var message = $"Food source with Id {id} has meals associated with it and cannot be deleted";
                     throw new FoodSourceInUseException(message);
                 }
 

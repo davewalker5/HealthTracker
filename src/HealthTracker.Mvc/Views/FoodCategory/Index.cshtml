@@ -1,0 +1,74 @@
+@using HealthTracker.Mvc.Entities
+@using Microsoft.AspNetCore.Mvc.ModelBinding
+@model HealthTracker.Mvc.Models.FoodCategoryListViewModel
+
+@{
+    ViewData["Title"] = "Food Categories";
+    var previousDisabled = (Model.PreviousEnabled) ? "" : "disabled";
+    var nextDisabled = (Model.NextEnabled) ? "" : "disabled";
+}
+
+<p class="text-center font-weight-bold">
+    <span style="font-size: 1.2rem">
+        Food Categories
+    </span>
+    <br />
+    <small class="text-muted">
+        <em>
+            View and manage food categories (fruit, vegetables, seafood etc.)
+        </em>
+    </small>
+</p>
+
+
+<div class="container-fluid">
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="row">
+            <div class="col-md-12 message">
+                <span>@Html.Raw(Model.Message)</span>
+            </div>
+        </div>
+        <hr />
+    }
+
+    @using (Html.BeginForm("Index", "FoodCategory", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.PageNumber)
+
+        @if ((Model.FoodCategories != null) && (Model.FoodCategories.Count() > 0))
+        {
+            <table class="table">
+                <tr>
+                    <th>Name</th>
+                    <th />
+                </tr>
+                @foreach (var foodCategory in Model.FoodCategories)
+                {
+                    <tr>
+                        <td valign="center">@foodCategory.Name</td>
+                        <td valign="center">
+                            <a class="btn btn-lg" asp-area="" asp-controller="FoodCategory" asp-action="Edit" asp-route-id="@foodCategory.Id">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </table>
+        }
+        else if (Model.HasNoMatchingResults)
+        {
+            <hr />
+            @Html.Raw("No matching food categories")
+        }
+
+        <hr />
+        <p class="text-right">
+            <button type="submit" name="Action" value="@ControllerActions.ActionPreviousPage" class="btn btn-secondary" @previousDisabled>Previous</button>
+            <button type="submit" name="Action" value="@ControllerActions.ActionNextPage" class="btn btn-primary" @nextDisabled>Next</button>
+            <a class="btn btn-primary" href="/FoodCategory/Add" role="button">Add</a>
+        </p>
+    }
+
+</div>

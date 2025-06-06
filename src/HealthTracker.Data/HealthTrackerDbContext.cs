@@ -28,6 +28,7 @@ namespace HealthTracker.Data
         public virtual DbSet<JobStatus> JobStatuses { get; set; }
         public virtual DbSet<Beverage> Beverages { get; set; }
         public virtual DbSet<FoodSource> FoodSources { get; set; }
+        public virtual DbSet<FoodCategory> FoodCategories { get; set; }
         public virtual DbSet<BeverageConsumptionMeasurement> BeverageConsumptionMeasurements { get; set; }
         public virtual DbSet<BeverageMeasure> BeverageMeasures { get; set; }
 
@@ -228,6 +229,13 @@ namespace HealthTracker.Data
             modelBuilder.Entity<FoodSource>(entity =>
             {
                 entity.ToTable("FOOD_SOURCES");
+                entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
+                entity.Property(e => e.Name).IsRequired().HasColumnName("name").HasColumnType("VARCHAR(100)");
+            });
+
+            modelBuilder.Entity<FoodCategory>(entity =>
+            {
+                entity.ToTable("FOOD_CATEGORIES");
                 entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
                 entity.Property(e => e.Name).IsRequired().HasColumnName("name").HasColumnType("VARCHAR(100)");
             });

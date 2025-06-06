@@ -6,10 +6,10 @@ using HealthTracker.Logic.Factory;
 using HealthTracker.Tests.Mocks;
 using Moq;
 
-namespace HealthTracker.Tests.FoodSources
+namespace HealthTracker.Tests.FoodCategories
 {
     [TestClass]
-    public class FoodSourceManagerTest
+    public class FoodCategoryManagerTest
     {
         private readonly string Name = DataGenerator.RandomTitleCasePhrase(3, 5, 15);
         private readonly string UpdatedName = DataGenerator.RandomTitleCasePhrase(3, 5, 15);
@@ -23,13 +23,13 @@ namespace HealthTracker.Tests.FoodSources
             HealthTrackerDbContext context = HealthTrackerDbContextFactory.CreateInMemoryDbContext();
             var logger = new Mock<IHealthTrackerLogger>();
             _factory = new HealthTrackerFactory(context, null, logger.Object);
-            _foodSourceId = Task.Run(() => _factory.FoodSources.AddAsync(Name)).Result.Id;
+            _foodSourceId = Task.Run(() => _factory.FoodCategories.AddAsync(Name)).Result.Id;
         }
 
         [TestMethod]
         public async Task AddAndGetTest()
         {
-            var foodSource = await _factory.FoodSources.GetAsync(a => a.Id == _foodSourceId);
+            var foodSource = await _factory.FoodCategories.GetAsync(a => a.Id == _foodSourceId);
             Assert.IsNotNull(foodSource);
             Assert.AreEqual(_foodSourceId, foodSource.Id);
             Assert.AreEqual(Name, foodSource.Name);
@@ -38,14 +38,14 @@ namespace HealthTracker.Tests.FoodSources
         [TestMethod]
         public async Task GetMissingTest()
         {
-            var foodSource = await _factory.FoodSources.GetAsync(a => a.Id == (10 * _foodSourceId));
+            var foodSource = await _factory.FoodCategories.GetAsync(a => a.Id == (10 * _foodSourceId));
             Assert.IsNull(foodSource);
         }
 
         [TestMethod]
         public async Task ListAllTest()
         {
-            var foodSources = await _factory.FoodSources.ListAsync(x => true, 1, int.MaxValue);
+            var foodSources = await _factory.FoodCategories.ListAsync(x => true, 1, int.MaxValue);
             Assert.AreEqual(1, foodSources.Count);
             Assert.AreEqual(Name, foodSources.First().Name);
         }
@@ -53,15 +53,15 @@ namespace HealthTracker.Tests.FoodSources
         [TestMethod]
         public async Task ListMissingTest()
         {
-            var foodSources = await _factory.FoodSources.ListAsync(e => e.Name == "Missing", 1, int.MaxValue);
+            var foodSources = await _factory.FoodCategories.ListAsync(e => e.Name == "Missing", 1, int.MaxValue);
             Assert.AreEqual(0, foodSources.Count);
         }
 
         [TestMethod]
         public async Task UpdateTest()
         {
-            await _factory.FoodSources.UpdateAsync(_foodSourceId, UpdatedName);
-            var foodSource = await _factory.FoodSources.GetAsync(a => a.Id == _foodSourceId);
+            await _factory.FoodCategories.UpdateAsync(_foodSourceId, UpdatedName);
+            var foodSource = await _factory.FoodCategories.GetAsync(a => a.Id == _foodSourceId);
             Assert.IsNotNull(foodSource);
             Assert.AreEqual(_foodSourceId, foodSource.Id);
             Assert.AreEqual(UpdatedName, foodSource.Name);
@@ -71,22 +71,22 @@ namespace HealthTracker.Tests.FoodSources
         [TestMethod]
         public async Task DeleteTest()
         {
-            await _factory.FoodSources.DeleteAsync(_foodSourceId);
-            var foodSources = await _factory.FoodSources.ListAsync(a => true, 1, int.MaxValue);
+            await _factory.FoodCategories.DeleteAsync(_foodSourceId);
+            var foodSources = await _factory.FoodCategories.ListAsync(a => true, 1, int.MaxValue);
             Assert.AreEqual(0, foodSources.Count);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(FoodSourceExistsException))]
-        public async Task CannotAddDuplicateFoodSourceTest()
-            => _ = await _factory.FoodSources.AddAsync(Name);
+        [ExpectedException(typeof(FoodCategoryExistsException))]
+        public async Task CannotAddDuplicateFoodCategoryTest()
+            => _ = await _factory.FoodCategories.AddAsync(Name);
 
         [TestMethod]
-        [ExpectedException(typeof(FoodSourceInUseException))]
+        [ExpectedException(typeof(FoodCategoryInUseException))]
         public void CannotDeleteWithFoodConsumptionMeasurementTest()
         {
-            // TODO: Implement once meals are implemented
-            throw new FoodSourceInUseException();
+            // TODO: Implement once food items are implemented
+            throw new FoodCategoryInUseException();
         }
     }
 }

@@ -69,7 +69,7 @@ namespace HealthTracker.Logic.Database
 
 
         /// <summary>
-        /// Update the properties of the specified person
+        /// Update the properties of the specified beverage
         /// </summary>
         /// <param name="id"></param>
         /// <param name="name"></param>
