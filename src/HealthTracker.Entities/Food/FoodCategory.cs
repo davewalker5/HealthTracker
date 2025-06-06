@@ -5,13 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace HealthTracker.Entities.Food
 {
     [ExcludeFromCodeCoverage]
-    public class FoodCategory
+    public class FoodCategory : NamedEntity
     {
-        [Key]
-        public int Id { get ; set; }
-
-        [DisplayName("Name")]
-        [Required(ErrorMessage = "You must provide a name")]
-        public string Name { get; set; }
     }
 }

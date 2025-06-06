@@ -57,7 +57,12 @@ namespace HealthTracker.Tests.BeverageMeasures
         public async Task UpdateTest()
         {
             var measure = DataGenerator.RandomBeverageMeasure();
-            var json = JsonSerializer.Serialize(measure);
+            var json = JsonSerializer.Serialize(new
+            {
+                Id = measure.Id,
+                Name = measure.Name,
+                Volume = measure.Volume
+            });
             _httpClient.AddResponse(json);
 
             var updated = await _client.UpdateAsync(measure.Id, measure.Name, measure.Volume);
