@@ -29,6 +29,7 @@ namespace HealthTracker.Entities.Interfaces
         IFoodCategoryManager FoodCategories { get; }
         IBeverageConsumptionMeasurementManager BeverageConsumptionMeasurements { get; }
         IBeverageMeasureManager BeverageMeasures { get; }
+        INutritionalValueManager NutritionalValues { get; }
 
         IMedicationManager Medications { get; }
         IPersonMedicationManager PersonMedications { get; }

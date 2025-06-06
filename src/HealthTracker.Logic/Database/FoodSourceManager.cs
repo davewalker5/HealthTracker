@@ -96,8 +96,8 @@ namespace HealthTracker.Logic.Database
         {
             Factory.Logger.LogMessage(Severity.Info, $"Deleting food source with ID {id}");
 
-            var FoodSource = await GetAsync(x => x.Id == id);
-            if (FoodSource != null)
+            var foodSource = await GetAsync(x => x.Id == id);
+            if (foodSource != null)
             {
                 // Check the food source isn't in use
                 // TODO: Implement this once meals are implemented
@@ -109,7 +109,7 @@ namespace HealthTracker.Logic.Database
                 }
 
                 // Delete the food source record and save changes
-                Factory.Context.Remove(FoodSource);
+                Factory.Context.Remove(foodSource);
                 await Factory.Context.SaveChangesAsync();
             }
         }

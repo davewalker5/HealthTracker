@@ -31,6 +31,7 @@ namespace HealthTracker.Data
         public virtual DbSet<FoodCategory> FoodCategories { get; set; }
         public virtual DbSet<BeverageConsumptionMeasurement> BeverageConsumptionMeasurements { get; set; }
         public virtual DbSet<BeverageMeasure> BeverageMeasures { get; set; }
+        public virtual DbSet<NutritionalValue> NutritionalValues { get; set; }
 
 
         public HealthTrackerDbContext(DbContextOptions<HealthTrackerDbContext> options) : base(options)
@@ -238,6 +239,19 @@ namespace HealthTracker.Data
                 entity.ToTable("FOOD_CATEGORIES");
                 entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
                 entity.Property(e => e.Name).IsRequired().HasColumnName("name").HasColumnType("VARCHAR(100)");
+            });
+
+            modelBuilder.Entity<NutritionalValue>(entity =>
+            {
+                entity.ToTable("NUTRITIONAL_VALUES");
+                entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
+                entity.Property(e => e.Calories).HasColumnName("calories");
+                entity.Property(e => e.Fat).HasColumnName("fat");
+                entity.Property(e => e.SaturatedFat).HasColumnName("saturated_fat");
+                entity.Property(e => e.Protein).HasColumnName("protein");
+                entity.Property(e => e.Carbohydrates).HasColumnName("carbohydrates");
+                entity.Property(e => e.Sugar).HasColumnName("sugar");
+                entity.Property(e => e.Fibre).HasColumnName("fibre");
             });
         }
     }
