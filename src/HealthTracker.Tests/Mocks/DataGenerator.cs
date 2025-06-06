@@ -774,5 +774,22 @@ namespace HealthTracker.Tests.Mocks
                 Id = RandomId(),
                 Name = RandomTitleCasePhrase(3, 5, 15)
             };
+
+        /// <summary>
+        /// Generate a random nutritional value
+        /// </summary>
+        /// <returns></returns>
+        public static NutritionalValue RandomNutritionalValue()
+            => new()
+            {
+                Id = RandomId(),
+                Calories = RandomDecimal(10, 100),
+                Fat = RandomDecimal(0, 100),
+                SaturatedFat = RandomDecimal(0, 100),
+                Protein = RandomDecimal(0, 100),
+                Carbohydrates = RandomDecimal(0, 100),
+                Sugar = RandomDecimal(0, 100),
+                Fibre = RandomDecimal(0, 100)
+            };
     }
 }
