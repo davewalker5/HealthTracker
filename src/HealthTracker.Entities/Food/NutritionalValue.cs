@@ -30,5 +30,7 @@ namespace HealthTracker.Entities.Food
 
         [DisplayName("Fibre")]
         public decimal? Fibre { get; set; }
+
+        public FoodItem FoodItem { get; set; }
     }
 }
