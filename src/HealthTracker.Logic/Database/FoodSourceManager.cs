@@ -120,7 +120,7 @@ namespace HealthTracker.Logic.Database
         /// </summary>
         /// <param name="name"></param>
         /// <param name="id"></param>
-        /// <exception cref="FoodSourceInUseException"></exception>
+        /// <exception cref="FoodSourceExistsException"></exception>
         private async Task CheckFoodSourceIsNotADuplicate(string name, int id)
         {
             var foodSource = await Context.FoodSources.FirstOrDefaultAsync(x => x.Name == name);

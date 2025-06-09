@@ -78,7 +78,17 @@ namespace HealthTracker.Tests.NutritionalValues
         public async Task UpdateTest()
         {
             var nutritionalValue = DataGenerator.RandomNutritionalValue();
-            var json = JsonSerializer.Serialize(nutritionalValue);
+            var json = JsonSerializer.Serialize(new 
+            {
+                Id = nutritionalValue.Id,
+                Calories = nutritionalValue.Calories,
+                Fat = nutritionalValue.Fat,
+                SaturatedFat = nutritionalValue.SaturatedFat,
+                Protein = nutritionalValue.Protein,
+                Carbohydrates = nutritionalValue.Carbohydrates,
+                Sugar = nutritionalValue.Sugar,
+                Fibre = nutritionalValue.Fibre
+            });
             _httpClient.AddResponse(json);
 
             var updated = await _client.UpdateAsync(

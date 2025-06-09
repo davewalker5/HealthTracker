@@ -131,7 +131,7 @@ namespace HealthTracker.Logic.Database
         /// </summary>
         /// <param name="name"></param>
         /// <param name="id"></param>
-        /// <exception cref="BeverageInUseException"></exception>
+        /// <exception cref="BeverageExistsException"></exception>
         private async Task CheckBeverageIsNotADuplicate(string name, int id)
         {
             var beverage = await Context.Beverages.FirstOrDefaultAsync(x => x.Name == name);

@@ -99,16 +99,15 @@ namespace HealthTracker.Logic.Database
             var FoodCategory = await GetAsync(x => x.Id == id);
             if (FoodCategory != null)
             {
-                // Check the food source isn't in use
-                // TODO: Implement this once food items are implemented
-                object? measurement = null;
-                if (measurement != null)
+                // Check the food category isn't in use
+                var items = await Factory.FoodItems.ListAsync(x => x.FoodCategoryId == id, 1, int.MaxValue);
+                if (items.Any())
                 {
                     var message = $"Food category with Id {id} has food items associated with it and cannot be deleted";
                     throw new FoodCategoryInUseException(message);
                 }
 
-                // Delete the food source record and save changes
+                // Delete the food category record and save changes
                 Factory.Context.Remove(FoodCategory);
                 await Factory.Context.SaveChangesAsync();
             }
@@ -120,13 +119,13 @@ namespace HealthTracker.Logic.Database
         /// </summary>
         /// <param name="name"></param>
         /// <param name="id"></param>
-        /// <exception cref="FoodCategoryInUseException"></exception>
+        /// <exception cref="FoodCategoryExistsException"></exception>
         private async Task CheckFoodCategoryIsNotADuplicate(string name, int id)
         {
             var foodCategory = await Context.FoodCategories.FirstOrDefaultAsync(x => x.Name == name);
             if ((foodCategory != null) && (foodCategory.Id != id))
             {
-                var message = $"Food source {name} already exists";
+                var message = $"Food category {name} already exists";
                 throw new FoodCategoryExistsException(message);
             }
         }

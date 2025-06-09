@@ -36,7 +36,7 @@ namespace HealthTracker.DataExchange.Import
         /// <param name="measurement"></param>
         /// <param name="recordCount"></param>
         /// <returns></returns>
-        protected override void ValidateAsync(ExportableExerciseMeasurement measurement, int recordCount)
+        protected override void Validate(ExportableExerciseMeasurement measurement, int recordCount)
         {
             ValidateCommonFields(measurement, recordCount);
 

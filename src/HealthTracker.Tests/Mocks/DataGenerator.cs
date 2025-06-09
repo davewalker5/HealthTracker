@@ -791,5 +791,25 @@ namespace HealthTracker.Tests.Mocks
                 Sugar = RandomDecimal(0, 100),
                 Fibre = RandomDecimal(0, 100)
             };
+
+        /// <summary>
+        /// Generate a random food item
+        /// </summary>
+        /// <returns></returns>
+        public static FoodItem RandomFoodItem()
+        {
+            FoodItem item = new()
+            {
+                Id = RandomId(),
+                Name = RandomTitleCasePhrase(3, 5, 20),
+                Portion = RandomDecimal(1, 100),
+                FoodCategory = RandomFoodCategory(),
+                NutritionalValue = RandomNutritionalValue()
+            };
+
+            item.FoodCategoryId = item.FoodCategory.Id;
+            item.NutritionalValueId = item.NutritionalValue.Id;
+            return item;
+        }
     }
 }

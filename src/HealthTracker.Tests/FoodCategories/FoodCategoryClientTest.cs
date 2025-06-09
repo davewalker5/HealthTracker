@@ -56,7 +56,11 @@ namespace HealthTracker.Tests.FoodCategories
         public async Task UpdateTest()
         {
             var foodCategory = DataGenerator.RandomFoodCategory();
-            var json = JsonSerializer.Serialize(foodCategory);
+            var json = JsonSerializer.Serialize(new
+            {
+                Id = foodCategory.Id,
+                Name = foodCategory.Name
+            });
             _httpClient.AddResponse(json);
 
             var updated = await _client.UpdateAsync(foodCategory.Id, foodCategory.Name);

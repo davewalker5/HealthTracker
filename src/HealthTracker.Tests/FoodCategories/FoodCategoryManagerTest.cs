@@ -83,7 +83,7 @@ namespace HealthTracker.Tests.FoodCategories
 
         [TestMethod]
         [ExpectedException(typeof(FoodCategoryInUseException))]
-        public void CannotDeleteWithFoodConsumptionMeasurementTest()
+        public void CannotDeleteWithFoodItemsTest()
         {
             // TODO: Implement once food items are implemented
             throw new FoodCategoryInUseException();

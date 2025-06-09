@@ -83,7 +83,7 @@ namespace HealthTracker.DataExchange.Import
         /// <param name="entity"></param>
         /// <param name="recordCount"></param>
         /// <returns></returns>
-        protected abstract void ValidateAsync(T entity, int recordCount);
+        protected abstract void Validate(T entity, int recordCount);
 
         /// <summary>
         /// Method to store an object in the database
@@ -128,7 +128,7 @@ namespace HealthTracker.DataExchange.Import
 
             // Test inflation to an object and validation of the result
             var entity = Inflate(record);
-            ValidateAsync(entity, recordCount);
+            Validate(entity, recordCount);
         }
 
         /// <summary>
