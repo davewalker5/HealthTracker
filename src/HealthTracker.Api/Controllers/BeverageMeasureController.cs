@@ -88,7 +88,7 @@ namespace HealthTracker.Api.Controllers
         [Route("{id}")]
         public async Task<IActionResult> DeleteBeverageMeasures(int id)
         {
-            // Check the activity exists, first
+            // Check the measure exists, first
             var beverageMeasure = await _factory.BeverageMeasures.GetAsync(x => x.Id == id);
             if (beverageMeasure == null)
             {

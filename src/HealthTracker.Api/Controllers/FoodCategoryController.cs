@@ -36,7 +36,7 @@ namespace HealthTracker.Api.Controllers
         }
 
         /// <summary>
-        /// Return a list of all food categorys in the database
+        /// Return a list of all food categories in the database
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -54,7 +54,7 @@ namespace HealthTracker.Api.Controllers
         }
 
         /// <summary>
-        /// Add an food category from a template contained in the request body
+        /// Add a food category from a template contained in the request body
         /// </summary>
         /// <param name="template"></param>
         /// <returns></returns>
@@ -67,7 +67,7 @@ namespace HealthTracker.Api.Controllers
         }
 
         /// <summary>
-        /// Update an food category from a template contained in the request body
+        /// Update a food category from a template contained in the request body
         /// </summary>
         /// <param name="template"></param>
         /// <returns></returns>
@@ -80,7 +80,7 @@ namespace HealthTracker.Api.Controllers
         }
 
         /// <summary>
-        /// Delete an food category
+        /// Delete a food category
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -88,7 +88,7 @@ namespace HealthTracker.Api.Controllers
         [Route("{id}")]
         public async Task<IActionResult> DeleteFoodCategory(int id)
         {
-            // Check the activity exists, first
+            // Check the category exists, first
             var foodSource = await _factory.FoodCategories.GetAsync(x => x.Id == id);
             if (foodSource == null)
             {

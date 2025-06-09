@@ -88,7 +88,7 @@ namespace HealthTracker.Api.Controllers
         [Route("{id}")]
         public async Task<IActionResult> DeleteFoodSource(int id)
         {
-            // Check the activity exists, first
+            // Check the source exists, first
             var foodSource = await _factory.FoodSources.GetAsync(x => x.Id == id);
             if (foodSource == null)
             {
