@@ -2,7 +2,7 @@ using HealthTracker.Entities.Measurements;
 
 namespace HealthTracker.Client.Interfaces
 {
-    public interface IBloodPressureMeasurementClient : IDateBasedEntityRetriever<BloodPressureMeasurement>, IImporterExporter
+    public interface IBloodPressureMeasurementClient : IDateBasedEntityRetriever<BloodPressureMeasurement>, IMeasurementImporterExporter
     {
         Task<BloodPressureMeasurement> AddAsync(int personId, DateTime? date, int systolic, int diastolic);
         Task<BloodPressureMeasurement> CalculateAverageAsync(int personId, DateTime from, DateTime to);

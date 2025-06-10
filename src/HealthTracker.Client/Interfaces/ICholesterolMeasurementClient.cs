@@ -2,7 +2,7 @@ using HealthTracker.Entities.Measurements;
 
 namespace HealthTracker.Client.Interfaces
 {
-    public interface ICholesterolMeasurementClient : IImporterExporter
+    public interface ICholesterolMeasurementClient : IMeasurementImporterExporter
     {
         Task<CholesterolMeasurement> AddAsync(
             int personId,

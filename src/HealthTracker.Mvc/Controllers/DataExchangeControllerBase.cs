@@ -1,5 +1,6 @@
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Enumerations.Enumerations;
+using HealthTracker.Mvc.Models;
 
 namespace HealthTracker.Mvc.Controllers
 {
@@ -12,7 +13,8 @@ namespace HealthTracker.Mvc.Controllers
             { DataExchangeType.Exercise, "Exercise" },
             { DataExchangeType.Glucose, "BloodGlucose" },
             { DataExchangeType.Weight, "Weight" },
-            { DataExchangeType.BeverageConsumption, "BeverageConsumption" }
+            { DataExchangeType.BeverageConsumption, "BeverageConsumption" },
+            { DataExchangeType.FoodItems, "FoodItems" }
         };
 
         protected readonly Dictionary<DataExchangeType, IImporterExporter> _clients = new();
@@ -45,11 +47,49 @@ namespace HealthTracker.Mvc.Controllers
             => _controllerMap[type];
 
         /// <summary>
+        /// Export the data
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        protected async Task ExportAsync(ExportViewModel model)
+        {
+            if (_clients[model.DataExchangeType] is IMeasurementImporterExporter)
+            {
+                await ExportAsync(model.DataExchangeType, model.PersonId, model.From, model.To, model.FileName);
+            }
+            else
+            {
+                await ExportAsync(model.DataExchangeType, model.FileName);
+            }
+        }
+
+        /// <summary>
         /// Return the API client associated with a given data exchange type
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
         protected IImporterExporter Client(DataExchangeType type)
             => _clients[type];
+
+        /// <summary>
+        /// Export a set of measurements
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="personId"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        private async Task ExportAsync(DataExchangeType type, int personId, DateTime? from, DateTime? to, string fileName)
+            => await (_clients[type] as IMeasurementImporterExporter).ExportAsync(personId, from, to, fileName);
+
+        /// <summary>
+        /// Export a set of entities
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        private async Task ExportAsync(DataExchangeType type, string fileName)
+            => await (_clients[type] as IDataImporterExporter).ExportAsync(fileName);
     }
 }

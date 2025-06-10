@@ -175,7 +175,7 @@ namespace HealthTracker.Client.ApiClient
             string route = $"{baseRoute}/{personId}/{encodedFromDate}/{encodedToDate}/{pageNumber}/{pageSize}";
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
-            // The returned JSON will be empty if there are no people in the database
+            // The returned JSON will be empty if there are no measurements in the database
             List<BloodPressureMeasurement> measurements = !string.IsNullOrEmpty(json) ? Deserialize<List<BloodPressureMeasurement>>(json) : null;
             return measurements;
         }

@@ -90,7 +90,7 @@ namespace HealthTracker.Mvc.Controllers
                     $"To = {model.To}, " +
                     $"Type = {model.DataExchangeType}, " +
                     $"File Name = {model.FileName}");
-                await Client(model.DataExchangeType).ExportAsync(model.PersonId, model.From, model.To, model.FileName);
+                await ExportAsync(model);
                 ModelState.Clear();
                 model.Message = $"Data export to {model.FileName} has been requested";
                 model.FileName = "";

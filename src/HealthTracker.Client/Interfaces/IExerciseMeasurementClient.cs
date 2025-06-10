@@ -3,7 +3,7 @@ using HealthTracker.Entities.Measurements;
 
 namespace HealthTracker.Client.Interfaces
 {
-    public interface IExerciseMeasurementClient : IDateBasedEntityRetriever<ExerciseMeasurement>, IImporterExporter
+    public interface IExerciseMeasurementClient : IDateBasedEntityRetriever<ExerciseMeasurement>, IMeasurementImporterExporter
     {
         Task<ExerciseMeasurement> AddAsync(
             int personId,

@@ -8,6 +8,7 @@ namespace HealthTracker.Enumerations.Enumerations
         BloodPressure,
         Exercise,
         Glucose,
-        Weight
+        Weight,
+        FoodItems
     }
 }
