@@ -1,6 +1,5 @@
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Enumerations.Enumerations;
-using HealthTracker.Mvc.Models;
 
 namespace HealthTracker.Mvc.Controllers
 {
@@ -27,6 +26,7 @@ namespace HealthTracker.Mvc.Controllers
             IExerciseMeasurementClient exerciseMeasurementClient,
             IWeightMeasurementClient weightMeasurementClient,
             IBeverageConsumptionMeasurementClient beverageConsumptionMeasurementClient,
+            IFoodItemClient foodItemClient,
             ILogger logger)
         {
             _clients.Add(DataExchangeType.Glucose, bloodGlucoseMeasurementClient);
@@ -35,6 +35,7 @@ namespace HealthTracker.Mvc.Controllers
             _clients.Add(DataExchangeType.Exercise, exerciseMeasurementClient);
             _clients.Add(DataExchangeType.Weight, weightMeasurementClient);
             _clients.Add(DataExchangeType.BeverageConsumption, beverageConsumptionMeasurementClient);
+            _clients.Add(DataExchangeType.FoodItems, foodItemClient);
             _logger = logger;
         }
 
@@ -45,23 +46,6 @@ namespace HealthTracker.Mvc.Controllers
         /// <returns></returns>
         protected string ControllerName(DataExchangeType type)
             => _controllerMap[type];
-
-        /// <summary>
-        /// Export the data
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        protected async Task ExportAsync(ExportViewModel model)
-        {
-            if (_clients[model.DataExchangeType] is IMeasurementImporterExporter)
-            {
-                await ExportAsync(model.DataExchangeType, model.PersonId, model.From, model.To, model.FileName);
-            }
-            else
-            {
-                await ExportAsync(model.DataExchangeType, model.FileName);
-            }
-        }
 
         /// <summary>
         /// Return the API client associated with a given data exchange type
@@ -80,7 +64,7 @@ namespace HealthTracker.Mvc.Controllers
         /// <param name="to"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        private async Task ExportAsync(DataExchangeType type, int personId, DateTime? from, DateTime? to, string fileName)
+        protected async Task ExportAsync(DataExchangeType type, int personId, DateTime? from, DateTime? to, string fileName)
             => await (_clients[type] as IMeasurementImporterExporter).ExportAsync(personId, from, to, fileName);
 
         /// <summary>
@@ -89,7 +73,7 @@ namespace HealthTracker.Mvc.Controllers
         /// <param name="type"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        private async Task ExportAsync(DataExchangeType type, string fileName)
+        protected async Task ExportAsync(DataExchangeType type, string fileName)
             => await (_clients[type] as IDataImporterExporter).ExportAsync(fileName);
     }
 }

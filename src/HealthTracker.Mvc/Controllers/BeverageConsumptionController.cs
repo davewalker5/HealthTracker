@@ -87,7 +87,7 @@ namespace HealthTracker.Mvc.Controllers
                             end = model.Filters.To
                         });
                     case ControllerActions.ActionExport:
-                        return RedirectToAction("Index", "Export", new
+                        return RedirectToAction("ExportMeasurements", "Export", new
                         {
                             personId = model.Filters.PersonId,
                             start = model.Filters.From,

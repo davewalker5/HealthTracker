@@ -2,17 +2,16 @@ using HealthTracker.Entities.Interfaces;
 using HealthTracker.Entities.Food;
 using HealthTracker.DataExchange.Entities;
 using HealthTracker.DataExchange.Interfaces;
+using HealthTracker.Entities.Logging;
 
 namespace HealthTracker.DataExchange.Import
 {
     public sealed class FoodItemImporter : CsvImporter<ExportableFoodItem>, IFoodItemImporter 
     {
         private List<FoodCategory> _foodCategories = [];
-        private readonly IHealthTrackerFactory _factory;
 
-        public FoodItemImporter(IHealthTrackerFactory factory, string format) : base(format)
+        public FoodItemImporter(IHealthTrackerFactory factory, string format) : base(factory, format)
         {
-            _factory = factory;
         }
 
         /// <summary>

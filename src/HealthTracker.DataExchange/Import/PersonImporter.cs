@@ -13,10 +13,10 @@ namespace HealthTracker.DataExchange.Import
             Gender.Female.ToString()
         ];
 
-        private readonly IHealthTrackerFactory _factory;
+        public PersonImporter(IHealthTrackerFactory factory, string format) : base(factory, format)
+        {
 
-        public PersonImporter(IHealthTrackerFactory factory, string format) : base (format)
-            => _factory = factory;
+        }
 
         /// <summary>
         /// Inflate a record to an object

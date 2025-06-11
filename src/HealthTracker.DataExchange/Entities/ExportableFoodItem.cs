@@ -8,7 +8,7 @@ namespace HealthTracker.DataExchange.Entities
     [ExcludeFromCodeCoverage]
     public class ExportableFoodItem
     {
-        public const string CsvRecordPattern = @"^"".*"","".*""(,""[0-9.]+""){8}.?$";
+        public const string CsvRecordPattern = @"^"".*"","".*""(,""(?:[0-9.]+)?""){8}.?$";
 
         [Export("Name", 1)]
         public string Name { get; set; }
@@ -59,6 +59,9 @@ namespace HealthTracker.DataExchange.Entities
         }
 
         private static decimal? ExtractDecimalValue(string representation)
-            => string.IsNullOrEmpty(representation) ? null : decimal.Parse(representation.Replace("\"", "").Trim());
+        {
+            var trimmed = representation?.Replace("\"", "").Trim();
+            return string.IsNullOrEmpty(trimmed) ? null : decimal.Parse(trimmed);
+        }
     }
 }

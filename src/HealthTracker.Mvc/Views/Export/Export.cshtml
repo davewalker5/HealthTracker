@@ -3,7 +3,7 @@
 @model HealthTracker.Mvc.Models.ExportViewModel
 
 @{
-    ViewData["Title"] = "Export";
+    ViewData["Title"] = "Export Data";
 }
 
 <p class="text-center font-weight-bold">
@@ -30,48 +30,12 @@
     <hr />
 }
 
-@using (Html.BeginForm("Index", "Export", FormMethod.Post))
+@using (Html.BeginForm("Export", "Export", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
-    @Html.HiddenFor(m => m.PersonId)
-    @Html.HiddenFor(m => m.From)
-    @Html.HiddenFor(m => m.To)
     @Html.HiddenFor(m => m.DataExchangeType)
 
     <div class="container-fluid">
-        <div class="row">
-            <div class="col">
-                <strong>@Html.LabelFor(m => m.PersonName)</strong>
-            </div>
-            <div class="col">
-                <div class="input-group">
-                    @Html.TextBoxFor(m => m.PersonName, new { @class = "form-control", disabled = "disabled" })
-                </div>
-            </div>
-        </div>
-        <br/>
-        <div class="row">
-            <div class="col">
-                <strong>@Html.LabelFor(m => m.From)</strong>
-            </div>
-            <div class="col">
-                <div class="input-group">
-                    @Html.TextBoxFor(m => m.From, new { @class = "form-control", disabled = "disabled" })
-                </div>
-            </div>
-        </div>
-        <br/>
-        <div class="row">
-            <div class="col">
-                <strong>@Html.LabelFor(m => m.To)</strong>
-            </div>
-            <div class="col">
-                <div class="input-group">
-                    @Html.TextBoxFor(m => m.To, new { @class = "form-control", disabled = "disabled" })
-                </div>
-            </div>
-        </div>
-        <br/>
         <div class="row">
             <div class="col">
                 <strong>@Html.LabelFor(m => m.DataExchangeType)</strong>

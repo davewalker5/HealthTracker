@@ -8,12 +8,13 @@ namespace HealthTracker.Entities.Food
     [ExcludeFromCodeCoverage]
     public class FoodItem : NamedEntity
     {
-        [DisplayName("Name")]
+        [DisplayName("Portion")]
         [Range(1.0, double.MaxValue, ErrorMessage="{0} must be >= {1}")]
         public decimal Portion { get; set; }
 
+        [DisplayName("Food Category")]
         [ForeignKey(nameof(FoodCategory))]
-        [Required(ErrorMessage="You must select a food category")]
+        [Range(1, int.MaxValue, ErrorMessage = "You must select a food category")]
         public int FoodCategoryId { get; set; }
         public FoodCategory FoodCategory { get; set; }
 

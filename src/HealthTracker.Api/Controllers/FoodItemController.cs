@@ -2,6 +2,7 @@ using HealthTracker.Entities.Interfaces;
 using HealthTracker.Entities.Food;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
 
 namespace HealthTracker.Api.Controllers
 {
@@ -41,9 +42,11 @@ namespace HealthTracker.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("{foodCategoryId}/{pageNumber}/{pageSize}")]
-        public async Task<ActionResult<IEnumerable<FoodItem>>> ListAllFoodItemsAsync(int foodCategoryId, int pageNumber, int pageSize)
+        public async Task<ActionResult<IEnumerable<FoodItem>>> ListFoodItemsAsync(int foodCategoryId, int pageNumber, int pageSize)
         {
-            var foodItems = await _factory.FoodItems.ListAsync(x => x.FoodCategoryId == foodCategoryId, pageNumber, pageSize);
+            // If a food category is provided, return only items in that category. Otherwise, return all items.
+            Expression<Func<FoodItem, bool>> predicate = foodCategoryId > 0 ? x => x.FoodCategoryId == foodCategoryId : x => true;
+            var foodItems = await _factory.FoodItems.ListAsync(predicate, pageNumber, pageSize);
 
             if (foodItems == null)
             {
@@ -95,7 +98,7 @@ namespace HealthTracker.Api.Controllers
                 return NotFound();
             }
 
-            // It does, so delete any related nutritional value record
+            // It does, so delete any related nutritional value record first
             var nutritionalValueId = foodItems.First().NutritionalValueId ?? 0;
             if (nutritionalValueId > 0)
             {

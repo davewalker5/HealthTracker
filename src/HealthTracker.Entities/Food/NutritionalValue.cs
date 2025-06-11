@@ -8,7 +8,7 @@ namespace HealthTracker.Entities.Food
     public class NutritionalValue
     {
         [Key]
-        public int Id { get ; set; }
+        public int Id { get; set; }
 
         [DisplayName("Calories")]
         public decimal? Calories { get; set; }
@@ -31,6 +31,12 @@ namespace HealthTracker.Entities.Food
         [DisplayName("Fibre")]
         public decimal? Fibre { get; set; }
 
-        public FoodItem FoodItem { get; set; }
+        public bool HasValues
+        {
+            get
+            {
+                return Calories.HasValue || Fat.HasValue || SaturatedFat.HasValue || Protein.HasValue || Carbohydrates.HasValue || Sugar.HasValue || Fibre.HasValue;
+            }
+        }
     }
 }

@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using HealthTracker.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,10 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HealthTracker.Data.Migrations
 {
     [DbContext(typeof(HealthTrackerDbContext))]
-    [ExcludeFromCodeCoverage]
-    partial class HealthTrackerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250611083255_RestrictNutritionalValueDeletion")]
+    partial class RestrictNutritionalValueDeletion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");

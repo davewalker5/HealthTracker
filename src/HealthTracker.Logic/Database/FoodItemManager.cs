@@ -89,7 +89,7 @@ namespace HealthTracker.Logic.Database
                 var clean = StringCleaner.Clean(name);
                 CheckCategoryExists(foodCategoryId);
                 CheckNutritionalValueExists(nutritionalValueId);
-                await CheckFoodItemIsNotADuplicate(clean, 0);
+                await CheckFoodItemIsNotADuplicate(clean, id);
 
                 // Update the item
                 item.Name = clean;
@@ -97,6 +97,10 @@ namespace HealthTracker.Logic.Database
                 item.FoodCategoryId = foodCategoryId;
                 item.NutritionalValueId = nutritionalValueId;
                 await Context.SaveChangesAsync();
+
+                // Reload the associated food category and nutritional value
+                await Context.Entry(item).Reference(x => x.FoodCategory).LoadAsync();
+                await Context.Entry(item).Reference(x => x.NutritionalValue).LoadAsync();
             }
 
             return item;

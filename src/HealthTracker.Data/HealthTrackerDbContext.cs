@@ -264,15 +264,15 @@ namespace HealthTracker.Data
                 entity.Property(e => e.NutritionalValueId).HasColumnName("nutritional_value_id");
 
                 entity.HasOne(f => f.FoodCategory)
-                    .WithMany(c => c.FoodItems)
+                    .WithMany()
                     .HasForeignKey(f => f.FoodCategoryId)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(f => f.NutritionalValue)
-                    .WithOne(n => n.FoodItem)
+                    .WithOne()
                     .HasForeignKey<FoodItem>(f => f.NutritionalValueId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.Restrict);
             });
         }
     }

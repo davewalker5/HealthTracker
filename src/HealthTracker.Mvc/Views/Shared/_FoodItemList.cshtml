@@ -1,0 +1,63 @@
+@using HealthTracker.Mvc.Entities
+@model HealthTracker.Mvc.Models.FoodItemListViewModel
+
+@functions
+{
+    public string GetNutritonalValue(decimal? value)
+        => value != null ? value.Value.ToString("0.0") : "";
+}
+
+<table class="table">
+    <tr>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Portion</th>
+        <th>Calories</th>
+        <th>Fat</th>
+        <th>Saturated Fat</th>
+        <th>Protein</th>
+        <th>Carbohydrates</th>
+        <th>Sugar</th>
+        <th>Fibre</th>
+        @if (Model.Editable)
+        {
+            <th />
+            <th />
+        }
+    </tr>
+    @foreach (var item in Model.Items)
+    {
+        var calories = GetNutritonalValue(item.NutritionalValue?.Calories);
+        var fat = GetNutritonalValue(item.NutritionalValue?.Fat);
+        var saturated = GetNutritonalValue(item.NutritionalValue?.SaturatedFat);
+        var protein = GetNutritonalValue(item.NutritionalValue?.Protein);
+        var carbohydrates = GetNutritonalValue(item.NutritionalValue?.Carbohydrates);
+        var sugar = GetNutritonalValue(item.NutritionalValue?.Sugar);
+        var fibre = GetNutritonalValue(item.NutritionalValue?.Fibre);
+        <tr>
+            <td valign="center">@item.Name</td>
+            <td valign="center">@item.FoodCategory.Name</td>
+            <td valign="center">@item.Portion.ToString("0.0")</td>
+            <td valign="center">@calories</td>
+            <td valign="center">@fat</td>
+            <td valign="center">@saturated</td>
+            <td valign="center">@protein</td>
+            <td valign="center">@carbohydrates</td>
+            <td valign="center">@sugar</td>
+            <td valign="center">@fibre</td>
+            @if (Model.Editable)
+            {
+                <td valign="center">
+                    <a class="btn btn-lg" asp-area="" asp-controller="FoodItem" asp-action="Edit" asp-route-id="@item.Id" asp-route-start="@Model.Filters.FoodCategoryId">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                </td>
+                <td valign="center">
+                    <a class="btn btn-lg" href="javascript:submitDeleteForm(@item.Id)">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </td>
+            }
+        </tr>
+    }
+</table>
