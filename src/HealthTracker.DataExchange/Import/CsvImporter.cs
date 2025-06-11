@@ -1,21 +1,24 @@
-using HealthTracker.Logic.Factory;
 using HealthTracker.DataExchange.Interfaces;
 using HealthTracker.DataExchange.Entities;
 using HealthTracker.DataExchange.Exceptions;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using HealthTracker.Entities.Interfaces;
+using HealthTracker.Entities.Logging;
 
 namespace HealthTracker.DataExchange.Import
 {
     public abstract class CsvImporter<T> : ICsvImporter<T> where T : class
     {
         private readonly Regex _regex;
+        protected readonly IHealthTrackerFactory _factory;
 
         public event EventHandler<ImportEventArgs<T>> RecordImport;
 
-        public CsvImporter(string format)
-            => _regex = new Regex(format, RegexOptions.Compiled);
+        public CsvImporter(IHealthTrackerFactory factory, string format)
+        {
+            _factory = factory;
+            _regex = new Regex(format, RegexOptions.Compiled);
+        }
 
         /// <summary>
         /// Import a collection of CSV format records
@@ -83,7 +86,7 @@ namespace HealthTracker.DataExchange.Import
         /// <param name="entity"></param>
         /// <param name="recordCount"></param>
         /// <returns></returns>
-        protected abstract void ValidateAsync(T entity, int recordCount);
+        protected abstract void Validate(T entity, int recordCount);
 
         /// <summary>
         /// Method to store an object in the database
@@ -127,8 +130,8 @@ namespace HealthTracker.DataExchange.Import
             }
 
             // Test inflation to an object and validation of the result
-            var entity = Inflate(record);
-            ValidateAsync(entity, recordCount);
+            T entity = InflateRecord(record);
+            Validate(entity, recordCount);
         }
 
         /// <summary>
@@ -138,9 +141,29 @@ namespace HealthTracker.DataExchange.Import
         /// <param name="recordCount"></param>
         private async Task ImportRecordAsync(string record, int recordCount)
         {
-            T entity = Inflate(record);
+            T entity = InflateRecord(record);
             await AddAsync(entity);
             RecordImport?.Invoke(this, new ImportEventArgs<T> { RecordCount = recordCount - 1, Entity = entity });
+        }
+
+        /// <summary>
+        /// Inflate a CSV record to an entity of type T
+        /// </summary>
+        /// <param name="record"></param>
+        /// <returns></returns>
+        private T InflateRecord(string record)
+        {
+            try
+            {
+                _factory.Logger.LogMessage(Severity.Info, $"Inflating record {record}");
+                return Inflate(record);
+            }
+            catch (Exception ex)
+            {
+                _factory.Logger.LogMessage(Severity.Error, $"Error: {ex.Message}");
+                _factory.Logger.LogException(ex);
+                throw;
+            }
         }
     }
 }

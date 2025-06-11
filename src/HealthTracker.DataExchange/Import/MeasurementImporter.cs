@@ -9,10 +9,10 @@ namespace HealthTracker.DataExchange.Import
     {
         private List<Person> _people = [];
 
-        protected readonly IHealthTrackerFactory _factory;
-
-        public MeasurementImporter(IHealthTrackerFactory factory, string format) : base(format)
-            => _factory = factory;
+        public MeasurementImporter(IHealthTrackerFactory factory, string format) : base(factory, format)
+        {
+            
+        }
 
         /// <summary>
         /// Prepare for import

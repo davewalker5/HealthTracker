@@ -29,7 +29,7 @@ namespace HealthTracker.DataExchange.Import
         /// <param name="measurement"></param>
         /// <param name="recordCount"></param>
         /// <returns></returns>
-        protected override void ValidateAsync(ExportableBloodPressureMeasurement measurement, int recordCount)
+        protected override void Validate(ExportableBloodPressureMeasurement measurement, int recordCount)
         {
             ValidateCommonFields(measurement, recordCount);
             ValidateField<int>(x => x > 0, measurement.Systolic, "Systolic", recordCount);

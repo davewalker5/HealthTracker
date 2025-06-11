@@ -64,18 +64,19 @@
                     </tr>
                 }
             </table>
-            <hr />
-            <p class="text-right">
-                <button type="submit" name="Action" value="@ControllerActions.ActionPreviousPage" class="btn btn-secondary" @previousDisabled>Previous</button>
-                <button type="submit" name="Action" value="@ControllerActions.ActionNextPage" class="btn btn-primary" @nextDisabled>Next</button>
-                <a class="btn btn-primary" href="/Beverage/Add" role="button">Add</a>
-            </p>
         }
         else if (Model.HasNoMatchingResults)
         {
             <hr />
             @Html.Raw("No matching beverages")
         }
+
+        <hr />
+        <p class="text-right">
+            <button type="submit" name="Action" value="@ControllerActions.ActionPreviousPage" class="btn btn-secondary" @previousDisabled>Previous</button>
+            <button type="submit" name="Action" value="@ControllerActions.ActionNextPage" class="btn btn-primary" @nextDisabled>Next</button>
+            <a class="btn btn-primary" href="/Beverage/Add" role="button">Add</a>
+        </p>
     }
 
 </div>

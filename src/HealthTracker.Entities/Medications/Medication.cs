@@ -5,13 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace HealthTracker.Entities.Medications
 {
     [ExcludeFromCodeCoverage]
-    public class Medication
+    public class Medication : NamedEntity
     {
-        [Key]
-        public int Id { get ; set; }
-
-        [DisplayName("Name")]
-        [Required(ErrorMessage = "You must provide a name")]
-        public string Name { get; set; }
     }
 }

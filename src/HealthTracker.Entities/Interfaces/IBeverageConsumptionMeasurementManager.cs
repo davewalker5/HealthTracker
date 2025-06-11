@@ -1,4 +1,4 @@
-using HealthTracker.Entities.Measurements;
+using HealthTracker.Entities.Food;
 using System.Linq.Expressions;
 
 namespace HealthTracker.Entities.Interfaces

@@ -24,9 +24,14 @@ namespace HealthTracker.Logic.Factory
         private readonly Lazy<IExerciseCalculator> _exerciseCalculator;
         private readonly Lazy<IUserManager> _users;
         private readonly Lazy<IJobStatusManager> _jobStatus;
+
         private readonly Lazy<IBeverageManager> _beverages;
+        private readonly Lazy<IFoodSourceManager> _foodSources;
+        private readonly Lazy<IFoodCategoryManager> _foodCategories;
         private readonly Lazy<IBeverageConsumptionMeasurementManager> _beverageConsumption;
         private readonly Lazy<IBeverageMeasureManager> _beverageMeasures;
+        private readonly Lazy<INutritionalValueManager> _nutritionalValues;
+        private readonly Lazy<IFoodItemManager> _foodItems;
 
         private readonly Lazy<IMedicationManager> _medications;
         private readonly Lazy<IPersonMedicationManager> _personMedications;
@@ -60,9 +65,14 @@ namespace HealthTracker.Logic.Factory
         public IExerciseCalculator ExerciseCalculator { get { return _exerciseCalculator.Value; } }
         public IUserManager Users { get { return _users.Value; } }
         public IJobStatusManager JobStatuses { get { return _jobStatus.Value; } }
+
         public IBeverageManager Beverages { get { return _beverages.Value; } }
+        public IFoodSourceManager FoodSources { get { return _foodSources.Value; } }
+        public IFoodCategoryManager FoodCategories { get { return _foodCategories.Value; } }
         public IBeverageConsumptionMeasurementManager BeverageConsumptionMeasurements { get { return _beverageConsumption.Value; } }
         public IBeverageMeasureManager BeverageMeasures { get { return _beverageMeasures.Value; } }
+        public INutritionalValueManager NutritionalValues { get { return _nutritionalValues.Value; } }
+        public IFoodItemManager FoodItems { get { return _foodItems.Value; } }
 
         public IMedicationManager Medications { get { return _medications.Value;} }
         public IPersonMedicationManager PersonMedications { get { return _personMedications.Value;} }
@@ -98,9 +108,14 @@ namespace HealthTracker.Logic.Factory
             _exerciseCalculator =  new Lazy<IExerciseCalculator>(() => new ExerciseCalculator(this));
             _users = new Lazy<IUserManager>(() => new UserManager(this));
             _jobStatus = new Lazy<IJobStatusManager>(() => new JobStatusManager(this));
+
             _beverages = new Lazy<IBeverageManager>(() => new BeverageManager(this));
+            _foodSources = new Lazy<IFoodSourceManager>(() => new FoodSourceManager(this));
+            _foodCategories = new Lazy<IFoodCategoryManager>(() => new FoodCategoryManager(this));;
             _beverageConsumption = new Lazy<IBeverageConsumptionMeasurementManager>(() => new BeverageConsumptionMeasurementManager(this));
             _beverageMeasures = new Lazy<IBeverageMeasureManager>(() => new BeverageMeasureManager(this));
+            _nutritionalValues = new Lazy<INutritionalValueManager>(() => new NutritionalValueManager(this));
+            _foodItems = new Lazy<IFoodItemManager>(() => new FoodItemManager(this));
 
             _medications = new Lazy<IMedicationManager>(() => new MedicationManager(this));
             _personMedications = new Lazy<IPersonMedicationManager>(() => new PersonMedicationManager(this));

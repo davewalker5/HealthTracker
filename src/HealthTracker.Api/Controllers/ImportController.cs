@@ -20,6 +20,7 @@ namespace HealthTracker.Api.Controllers
         private readonly IBackgroundQueue<ExerciseMeasurementImportWorkItem> _exerciseMeasurementQueue;
         private readonly IBackgroundQueue<BloodOxygenSaturationMeasurementImportWorkItem> _spo2MeasurementQueue;
         private readonly IBackgroundQueue<BeverageConsumptionMeasurementImportWorkItem> _beverageConsumptionMeasurementQueue;
+        private readonly IBackgroundQueue<FoodItemImportWorkItem> _foodItemQueue;
 
 
         public ImportController(
@@ -31,7 +32,8 @@ namespace HealthTracker.Api.Controllers
             IBackgroundQueue<ExerciseMeasurementImportWorkItem> exerciseMeasurementQueue,
             IBackgroundQueue<BloodOxygenSaturationMeasurementImportWorkItem> spo2MeasurementQueue,
             IBackgroundQueue<BloodGlucoseMeasurementImportWorkItem> bloodGlucoseMeasurementQueue,
-            IBackgroundQueue<BeverageConsumptionMeasurementImportWorkItem> beverageConsumptionMeasurementQueue)
+            IBackgroundQueue<BeverageConsumptionMeasurementImportWorkItem> beverageConsumptionMeasurementQueue,
+            IBackgroundQueue<FoodItemImportWorkItem> foodItemQueue)
         {
             _personQueue = personQueue;
             _weightMeasurementQueue = weightMeasurementQueue;
@@ -42,6 +44,7 @@ namespace HealthTracker.Api.Controllers
             _spo2MeasurementQueue = spo2MeasurementQueue;
             _bloodGlucoseMeasurementQueue = bloodGlucoseMeasurementQueue;
             _beverageConsumptionMeasurementQueue = beverageConsumptionMeasurementQueue;
+            _foodItemQueue = foodItemQueue;
         }
 
         [HttpPost]
@@ -149,6 +152,18 @@ namespace HealthTracker.Api.Controllers
 
             // Queue the work item
             _beverageConsumptionMeasurementQueue.Enqueue(item);
+            return Accepted();
+        }
+
+        [HttpPost]
+        [Route("fooditem")]
+        public IActionResult ImportBeverageConsumptionMeasurements([FromBody] FoodItemImportWorkItem item)
+        {
+            // Set the job name used in the job status record
+            item.JobName = "Food Item Import";
+
+            // Queue the work item
+            _foodItemQueue.Enqueue(item);
             return Accepted();
         }
     }

@@ -1,6 +1,6 @@
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
-using HealthTracker.Entities.Measurements;
+using HealthTracker.Entities.Food;
 using Microsoft.Extensions.Logging;
 
 namespace HealthTracker.Client.ApiClient

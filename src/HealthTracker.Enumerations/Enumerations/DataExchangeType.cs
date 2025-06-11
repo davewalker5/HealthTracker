@@ -7,6 +7,7 @@ namespace HealthTracker.Enumerations.Enumerations
         BeverageConsumption,
         BloodPressure,
         Exercise,
+        FoodItems,
         Glucose,
         Weight
     }

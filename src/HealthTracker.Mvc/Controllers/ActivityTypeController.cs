@@ -167,7 +167,7 @@ namespace HealthTracker.Mvc.Controllers
                 _logger.LogDebug($"Updating activity type: Id = {model.ActivityType.Id}, Description = {model.ActivityType.Description}, Distance Based = {model.ActivityType.DistanceBased}");
                 var activityType = await _client.UpdateAsync(model.ActivityType.Id, model.ActivityType.Description, model.ActivityType.DistanceBased);
 
-                result = CreateListResult(activityType, $"{activityType.Description} successfully added");
+                result = CreateListResult(activityType, $"{activityType.Description} successfully updated");
             }
             else
             {

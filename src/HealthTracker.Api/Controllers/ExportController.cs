@@ -21,6 +21,7 @@ namespace HealthTracker.Api.Controllers
         private readonly IBackgroundQueue<BloodOxygenSaturationMeasurementExportWorkItem> _spo2MeasurementQueue;
         private readonly IBackgroundQueue<DailyAverageBloodOxygenSaturationExportWorkItem> _dailyAverageSPO2Queue;
         private readonly IBackgroundQueue<BeverageConsumptionMeasurementExportWorkItem> _beverageConsumptionMeasurementQueue;
+        private readonly IBackgroundQueue<FoodItemExportWorkItem> _foodItemQueue;
 
         public ExportController(
             IBackgroundQueue<PersonExportWorkItem> personQueue,
@@ -32,7 +33,8 @@ namespace HealthTracker.Api.Controllers
             IBackgroundQueue<BloodOxygenSaturationMeasurementExportWorkItem> spo2MeasurementQueue,
             IBackgroundQueue<DailyAverageBloodOxygenSaturationExportWorkItem> dailyAverageSPO2Queue,
             IBackgroundQueue<BloodGlucoseMeasurementExportWorkItem> bloodGlucoseMeasurementQueue,
-            IBackgroundQueue<BeverageConsumptionMeasurementExportWorkItem> beverageConsumptionMeasurementQueue)
+            IBackgroundQueue<BeverageConsumptionMeasurementExportWorkItem> beverageConsumptionMeasurementQueue,
+            IBackgroundQueue<FoodItemExportWorkItem> foodItemQueue)
         {
             _personQueue = personQueue;
             _weightMeasurementQueue = weightMeasurementQueue;
@@ -44,6 +46,7 @@ namespace HealthTracker.Api.Controllers
             _dailyAverageSPO2Queue = dailyAverageSPO2Queue;
             _bloodGlucoseMeasurementQueue = bloodGlucoseMeasurementQueue;
             _beverageConsumptionMeasurementQueue = beverageConsumptionMeasurementQueue;
+            _foodItemQueue = foodItemQueue;
         }
 
         [HttpPost]
@@ -163,6 +166,18 @@ namespace HealthTracker.Api.Controllers
 
             // Queue the work item
             _beverageConsumptionMeasurementQueue.Enqueue(item);
+            return Accepted();
+        }
+
+        [HttpPost]
+        [Route("fooditem")]
+        public IActionResult ExportBeverageConsumptionMeasurements([FromBody] FoodItemExportWorkItem item)
+        {
+            // Set the job name used in the job status record
+            item.JobName = "Food Item Export";
+
+            // Queue the work item
+            _foodItemQueue.Enqueue(item);
             return Accepted();
         }
     }

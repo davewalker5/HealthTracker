@@ -1,7 +1,7 @@
 using HealthTracker.Entities.Exceptions;
 using HealthTracker.Entities.Interfaces;
 using HealthTracker.Entities.Logging;
-using HealthTracker.Entities.Measurements;
+using HealthTracker.Entities.Food;
 using HealthTracker.Logic.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -69,7 +69,7 @@ namespace HealthTracker.Logic.Database
 
 
         /// <summary>
-        /// Update the properties of the specified person
+        /// Update the properties of the specified beverage
         /// </summary>
         /// <param name="id"></param>
         /// <param name="name"></param>
@@ -131,7 +131,7 @@ namespace HealthTracker.Logic.Database
         /// </summary>
         /// <param name="name"></param>
         /// <param name="id"></param>
-        /// <exception cref="BeverageInUseException"></exception>
+        /// <exception cref="BeverageExistsException"></exception>
         private async Task CheckBeverageIsNotADuplicate(string name, int id)
         {
             var beverage = await Context.Beverages.FirstOrDefaultAsync(x => x.Name == name);

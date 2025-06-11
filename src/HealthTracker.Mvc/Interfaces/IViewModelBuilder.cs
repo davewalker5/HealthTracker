@@ -1,4 +1,5 @@
 using HealthTracker.Client.Interfaces;
+using HealthTracker.Entities.Food;
 using HealthTracker.Entities.Measurements;
 using HealthTracker.Mvc.Entities;
 using HealthTracker.Mvc.Models;

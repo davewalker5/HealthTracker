@@ -1,0 +1,28 @@
+@model HealthTracker.Mvc.Models.FoodCategoryViewModel
+
+@Html.HiddenFor(m => m.FoodCategory.Id)
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.FoodCategory.Name)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.FoodCategory.Name, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.FoodCategory.Name, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $(document).on("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                $('#Save').click();
+            }
+        });
+    });
+</script>

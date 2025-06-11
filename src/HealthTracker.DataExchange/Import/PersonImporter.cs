@@ -13,10 +13,10 @@ namespace HealthTracker.DataExchange.Import
             Gender.Female.ToString()
         ];
 
-        private readonly IHealthTrackerFactory _factory;
+        public PersonImporter(IHealthTrackerFactory factory, string format) : base(factory, format)
+        {
 
-        public PersonImporter(IHealthTrackerFactory factory, string format) : base (format)
-            => _factory = factory;
+        }
 
         /// <summary>
         /// Inflate a record to an object
@@ -33,7 +33,7 @@ namespace HealthTracker.DataExchange.Import
         /// <param name="recordCount"></param>
         /// <returns></returns>
 #pragma warning disable CS1998
-        protected override void ValidateAsync(ExportablePerson person, int recordCount)
+        protected override void Validate(ExportablePerson person, int recordCount)
         {
             ValidateField<string>(x => !string.IsNullOrEmpty(x), person.FirstNames,  "FirstNames", recordCount);
             ValidateField<string>(x => !string.IsNullOrEmpty(x), person.Surname, "Surname", recordCount);

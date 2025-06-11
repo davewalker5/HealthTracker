@@ -20,6 +20,7 @@ namespace HealthTracker.Mvc.Controllers
             IExerciseMeasurementClient exerciseMeasurementClient,
             IWeightMeasurementClient weightMeasurementClient,
             IBeverageConsumptionMeasurementClient beverageConsumptionMeasurementClient,
+            IFoodItemClient foodItemClient,
             ILogger<WeightController> logger) : base(
                 bloodGlucoseMeasurementClient,
                 bloodOxygenSaturationMeasurementClient,
@@ -27,6 +28,7 @@ namespace HealthTracker.Mvc.Controllers
                 exerciseMeasurementClient,
                 weightMeasurementClient,
                 beverageConsumptionMeasurementClient,
+                foodItemClient,
                 logger
             )
         {
@@ -34,7 +36,7 @@ namespace HealthTracker.Mvc.Controllers
         }
 
         /// <summary>
-        /// Serve the data export page
+        /// Serve the measurements export page
         /// </summary>
         /// <param name="personId"></param>
         /// <param name="start"></param>
@@ -42,13 +44,13 @@ namespace HealthTracker.Mvc.Controllers
         /// <param name="exportType"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> Index(int personId, DateTime start, DateTime end, DataExchangeType exportType)
+        public async Task<IActionResult> ExportMeasurements(int personId, DateTime start, DateTime end, DataExchangeType exportType)
         {
             _logger.LogDebug($"Rendering export view: Person ID = {personId}, From = {start}, To = {end}, Type = {exportType}");
 
             var people = await _personClient.ListAsync(1, int.MaxValue);
 
-            var model = new ExportViewModel
+            var model = new ExportMeasurementsViewModel
             {
                 PersonId = personId,
                 From = FromDate(start),
@@ -62,13 +64,13 @@ namespace HealthTracker.Mvc.Controllers
         }
 
         /// <summary>
-        /// Handle POST events
+        /// Handle POST events on the measurements export page
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(ExportViewModel model)
+        public async Task<IActionResult> ExportMeasurements(ExportMeasurementsViewModel model)
         {
             if (model.Action == ControllerActions.ActionCancel)
             {
@@ -90,7 +92,7 @@ namespace HealthTracker.Mvc.Controllers
                     $"To = {model.To}, " +
                     $"Type = {model.DataExchangeType}, " +
                     $"File Name = {model.FileName}");
-                await Client(model.DataExchangeType).ExportAsync(model.PersonId, model.From, model.To, model.FileName);
+                await ExportAsync(model.DataExchangeType, model.PersonId, model.From, model.To, model.FileName);
                 ModelState.Clear();
                 model.Message = $"Data export to {model.FileName} has been requested";
                 model.FileName = "";
@@ -104,6 +106,62 @@ namespace HealthTracker.Mvc.Controllers
             // Populate the person name and render the view
             var people = await _personClient.ListAsync(1, int.MaxValue);
             model.PersonName = people.First(x => x.Id == model.PersonId).Name;
+            return View(model);
+        }
+
+        /// <summary>
+        /// Serve the generic data export page
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <param name="exportType"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult Export(DataExchangeType exportType)
+        {
+            _logger.LogDebug($"Rendering export view: Export Type = {exportType}");
+
+            var model = new ExportViewModel
+            {
+                DataExchangeType = exportType,
+                Message = ""
+            };
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// Handle POST events on the generic data export page
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Export(ExportViewModel model)
+        {
+            if (model.Action == ControllerActions.ActionCancel)
+            {
+                var controllerName = ControllerName(model.DataExchangeType);
+                _logger.LogDebug($"Cancelling export and returning to the {controllerName} Index action");
+                return RedirectToAction("Index", controllerName);
+            }
+
+            if (ModelState.IsValid)
+            {
+                _logger.LogDebug(
+                    $"Requesting export of data: Type = {model.DataExchangeType}, File Name = {model.FileName}");
+                await ExportAsync(model.DataExchangeType, model.FileName);
+                ModelState.Clear();
+                model.Message = $"Data export to {model.FileName} has been requested";
+                model.FileName = "";
+                model.BackButtonLabel = "< Back";
+            }
+            else
+            {
+                LogModelStateErrors(_logger);
+            }
+
             return View(model);
         }
 

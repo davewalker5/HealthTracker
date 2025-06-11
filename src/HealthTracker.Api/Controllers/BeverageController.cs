@@ -1,5 +1,5 @@
 using HealthTracker.Entities.Interfaces;
-using HealthTracker.Entities.Measurements;
+using HealthTracker.Entities.Food;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -97,7 +97,7 @@ namespace HealthTracker.Api.Controllers
         [Route("{id}")]
         public async Task<IActionResult> DeleteBeverages(int id)
         {
-            // Check the activity exists, first
+            // Check the beverage exists, first
             var beverage = await _factory.Beverages.GetAsync(x => x.Id == id);
             if (beverage == null)
             {

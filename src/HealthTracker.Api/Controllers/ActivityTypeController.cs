@@ -86,7 +86,7 @@ namespace HealthTracker.Api.Controllers
         /// <returns></returns>
         [HttpDelete]
         [Route("{id}")]
-        public async Task<IActionResult> DeleteActivityTypes(int id)
+        public async Task<IActionResult> DeleteActivityType(int id)
         {
             // Check the activity exists, first
             var activityType = await _factory.ActivityTypes.GetAsync(x => x.Id == id);

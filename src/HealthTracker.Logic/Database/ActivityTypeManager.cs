@@ -65,7 +65,7 @@ namespace HealthTracker.Logic.Database
 
 
         /// <summary>
-        /// Update the properties of the specified person
+        /// Update the properties of the specified activity type
         /// </summary>
         /// <param name="id"></param>
         /// <param name="description"></param>
@@ -123,7 +123,7 @@ namespace HealthTracker.Logic.Database
         /// </summary>
         /// <param name="description"></param>
         /// <param name="id"></param>
-        /// <exception cref="ActivityTypeInUseException"></exception>
+        /// <exception cref="ActivityTypeExistsException"></exception>
         private async Task CheckActivityTypeIsNotADuplicate(string description, int id)
         {
             var activityType = await Context.ActivityTypes.FirstOrDefaultAsync(x => x.Description == description);

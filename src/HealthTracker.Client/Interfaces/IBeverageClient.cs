@@ -1,4 +1,4 @@
-using HealthTracker.Entities.Measurements;
+using HealthTracker.Entities.Food;
 
 namespace HealthTracker.Client.Interfaces
 {

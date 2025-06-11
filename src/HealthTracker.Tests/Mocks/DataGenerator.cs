@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Text;
 using HealthTracker.Entities.Identity;
+using HealthTracker.Entities.Food;
 using HealthTracker.Entities.Logging;
 using HealthTracker.Entities.Measurements;
 using HealthTracker.Entities.Medications;
@@ -751,5 +752,64 @@ namespace HealthTracker.Tests.Mocks
                 Name = RandomTitleCasePhrase(2, 5, 10),
                 Volume = RandomDecimal(25, 500)
             };
+
+        /// <summary>
+        /// Generate a random food source
+        /// </summary>
+        /// <returns></returns>
+        public static FoodSource RandomFoodSource()
+            => new()
+            {
+                Id = RandomId(),
+                Name = RandomTitleCasePhrase(3, 5, 15)
+            };
+
+        /// <summary>
+        /// Generate a random food category
+        /// </summary>
+        /// <returns></returns>
+        public static FoodCategory RandomFoodCategory()
+            => new()
+            {
+                Id = RandomId(),
+                Name = RandomTitleCasePhrase(3, 5, 15)
+            };
+
+        /// <summary>
+        /// Generate a random nutritional value
+        /// </summary>
+        /// <returns></returns>
+        public static NutritionalValue RandomNutritionalValue()
+            => new()
+            {
+                Id = RandomId(),
+                Calories = RandomDecimal(10, 100),
+                Fat = RandomDecimal(0, 100),
+                SaturatedFat = RandomDecimal(0, 100),
+                Protein = RandomDecimal(0, 100),
+                Carbohydrates = RandomDecimal(0, 100),
+                Sugar = RandomDecimal(0, 100),
+                Fibre = RandomDecimal(0, 100)
+            };
+
+        /// <summary>
+        /// Generate a random food item
+        /// </summary>
+        /// <returns></returns>
+        public static FoodItem RandomFoodItem()
+        {
+            FoodItem item = new()
+            {
+                Id = RandomId(),
+                Name = RandomTitleCasePhrase(3, 5, 20),
+                Portion = RandomDecimal(1, 100),
+                FoodCategory = RandomFoodCategory(),
+                NutritionalValue = RandomNutritionalValue()
+            };
+
+            item.FoodCategoryId = item.FoodCategory.Id;
+            item.NutritionalValueId = item.NutritionalValue.Id;
+            return item;
+        }
     }
 }

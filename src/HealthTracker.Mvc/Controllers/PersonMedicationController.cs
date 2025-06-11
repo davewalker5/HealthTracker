@@ -244,12 +244,12 @@ namespace HealthTracker.Mvc.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             // Retrieve the measurement and capture the person
-            _logger.LogDebug($"Retrieving exercise measurement: ID = {id}");
+            _logger.LogDebug($"Retrieving person/medication association: ID = {id}");
             var measurement = await _measurementClient.GetAsync(id);
             var personId = measurement.PersonId;
 
             // Delete the measurement
-            _logger.LogDebug($"Deleting blood glucose measurement: ID = {id}");
+            _logger.LogDebug($"Deleting person/medication association: ID = {id}");
             await _measurementClient.DeleteAsync(id);
 
             // Return the list view with an empty list of measurements

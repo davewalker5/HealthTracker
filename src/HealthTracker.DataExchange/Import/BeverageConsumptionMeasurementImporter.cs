@@ -1,5 +1,5 @@
 using HealthTracker.Entities.Interfaces;
-using HealthTracker.Entities.Measurements;
+using HealthTracker.Entities.Food;
 using HealthTracker.DataExchange.Entities;
 using HealthTracker.DataExchange.Interfaces;
 using HealthTracker.Enumerations.Enumerations;
@@ -36,7 +36,7 @@ namespace HealthTracker.DataExchange.Import
         /// <param name="measurement"></param>
         /// <param name="recordCount"></param>
         /// <returns></returns>
-        protected override void ValidateAsync(ExportableBeverageConsumptionMeasurement measurement, int recordCount)
+        protected override void Validate(ExportableBeverageConsumptionMeasurement measurement, int recordCount)
         {
             ValidateCommonFields(measurement, recordCount);
 

@@ -2,7 +2,7 @@ using HealthTracker.Entities.Measurements;
 
 namespace HealthTracker.Client.Interfaces
 {
-    public interface IBloodOxygenSaturationMeasurementClient : IDateBasedEntityRetriever<BloodOxygenSaturationMeasurement>, IImporterExporter
+    public interface IBloodOxygenSaturationMeasurementClient : IDateBasedEntityRetriever<BloodOxygenSaturationMeasurement>, IMeasurementImporterExporter
     {
         Task<BloodOxygenSaturationMeasurement> AddAsync(int personId, DateTime? date, decimal percentage);
         Task<BloodOxygenSaturationMeasurement> UpdateAsync(int id, int personId, DateTime? date, decimal percentage);

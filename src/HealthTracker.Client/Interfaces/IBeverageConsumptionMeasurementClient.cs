@@ -1,8 +1,8 @@
-using HealthTracker.Entities.Measurements;
+using HealthTracker.Entities.Food;
 
 namespace HealthTracker.Client.Interfaces
 {
-    public interface IBeverageConsumptionMeasurementClient : IDateBasedEntityRetriever<BeverageConsumptionMeasurement>, IImporterExporter
+    public interface IBeverageConsumptionMeasurementClient : IDateBasedEntityRetriever<BeverageConsumptionMeasurement>, IMeasurementImporterExporter
     {
         Task<BeverageConsumptionMeasurement> AddAsync(
             int personId,

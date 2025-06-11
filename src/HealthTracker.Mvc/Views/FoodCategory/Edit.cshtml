@@ -1,0 +1,32 @@
+@using HealthTracker.Mvc.Entities
+@model HealthTracker.Mvc.Models.EditFoodCategoryViewModel
+
+@{
+    ViewData["Title"] = "Edit Food Category";
+}
+
+<div class="container-fluid">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="row">
+            <div class="col-md">
+                <span style="font-size: 1.2rem"><strong>Edit Food Category</strong></span>
+            </div>
+        </div>
+        <hr />
+
+        @await Html.PartialAsync("FoodCategory", Model);
+        <br />
+
+        <div class="row">
+            <div class="col-md">
+                <div class="input-group">
+                    <button type="submit" name="Action" value="@ControllerActions.ActionCancel" class="btn btn-secondary" style="margin-right:10px">Cancel</button>
+                    <button type="submit" name="Action" id="Save" value="@ControllerActions.ActionSave" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>

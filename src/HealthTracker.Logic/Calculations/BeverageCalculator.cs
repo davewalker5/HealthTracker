@@ -1,5 +1,5 @@
 using HealthTracker.Entities.Interfaces;
-using HealthTracker.Entities.Measurements;
+using HealthTracker.Entities.Food;
 using HealthTracker.Entities.Logging;
 
 namespace HealthTracker.Logic.Calculations

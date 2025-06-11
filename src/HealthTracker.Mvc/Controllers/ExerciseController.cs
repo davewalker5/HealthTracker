@@ -81,7 +81,7 @@ namespace HealthTracker.Mvc.Controllers
                             end = model.Filters.To
                         });
                     case ControllerActions.ActionExport:
-                        return RedirectToAction("Index", "Export", new
+                        return RedirectToAction("ExportMeasurements", "Export", new
                         {
                             personId = model.Filters.PersonId,
                             start = model.Filters.From,
@@ -102,7 +102,6 @@ namespace HealthTracker.Mvc.Controllers
                     $"Retrieving page {page} of exercise measurements for person with ID {model.Filters.PersonId}" +
                     $" in the date range {model.Filters.From:dd-MMM-yyyy} to {model.Filters.To:dd-MMM-yyyy}");
 
-                // 
                 var measurements = await _measurementClient.ListAsync(
                     model.Filters.PersonId, model.Filters.From, ToDate(model.Filters.To), page, _settings.ResultsPageSize);
                 model.SetEntities(measurements, page, _settings.ResultsPageSize);
@@ -343,7 +342,7 @@ namespace HealthTracker.Mvc.Controllers
             var date = measurement.Date;
 
             // Delete the measurement
-            _logger.LogDebug($"Deleting blood glucose measurement: ID = {id}");
+            _logger.LogDebug($"Deleting exercise measurement: ID = {id}");
             await _measurementClient.DeleteAsync(id);
 
             // Return the list view with an empty list of measurements

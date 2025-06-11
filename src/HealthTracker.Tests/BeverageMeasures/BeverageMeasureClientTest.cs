@@ -2,7 +2,7 @@ using System.Text.Json;
 using HealthTracker.Client.ApiClient;
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Entities;
-using HealthTracker.Entities.Measurements;
+using HealthTracker.Entities.Food;
 using HealthTracker.Tests.Mocks;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -57,7 +57,12 @@ namespace HealthTracker.Tests.BeverageMeasures
         public async Task UpdateTest()
         {
             var measure = DataGenerator.RandomBeverageMeasure();
-            var json = JsonSerializer.Serialize(measure);
+            var json = JsonSerializer.Serialize(new
+            {
+                Id = measure.Id,
+                Name = measure.Name,
+                Volume = measure.Volume
+            });
             _httpClient.AddResponse(json);
 
             var updated = await _client.UpdateAsync(measure.Id, measure.Name, measure.Volume);

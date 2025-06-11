@@ -1,4 +1,5 @@
 using HealthTracker.Entities.Identity;
+using HealthTracker.Entities.Food;
 using HealthTracker.Entities.Measurements;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
@@ -26,9 +27,12 @@ namespace HealthTracker.Data
         public virtual DbSet<BloodGlucoseMeasurement> BloodGlucoseMeasurements { get; set; }
         public virtual DbSet<JobStatus> JobStatuses { get; set; }
         public virtual DbSet<Beverage> Beverages { get; set; }
+        public virtual DbSet<FoodSource> FoodSources { get; set; }
+        public virtual DbSet<FoodCategory> FoodCategories { get; set; }
         public virtual DbSet<BeverageConsumptionMeasurement> BeverageConsumptionMeasurements { get; set; }
         public virtual DbSet<BeverageMeasure> BeverageMeasures { get; set; }
-
+        public virtual DbSet<NutritionalValue> NutritionalValues { get; set; }
+        public virtual DbSet<FoodItem> FoodItems { get; set; }
 
         public HealthTrackerDbContext(DbContextOptions<HealthTrackerDbContext> options) : base(options)
         {
@@ -221,6 +225,54 @@ namespace HealthTracker.Data
                 entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
                 entity.Property(e => e.Name).IsRequired().HasColumnName("name");
                 entity.Property(e => e.Volume).IsRequired().HasColumnName("volume");
+            });
+
+            modelBuilder.Entity<FoodSource>(entity =>
+            {
+                entity.ToTable("FOOD_SOURCES");
+                entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
+                entity.Property(e => e.Name).IsRequired().HasColumnName("name").HasColumnType("VARCHAR(100)");
+            });
+
+            modelBuilder.Entity<FoodCategory>(entity =>
+            {
+                entity.ToTable("FOOD_CATEGORIES");
+                entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
+                entity.Property(e => e.Name).IsRequired().HasColumnName("name").HasColumnType("VARCHAR(100)");
+            });
+
+            modelBuilder.Entity<NutritionalValue>(entity =>
+            {
+                entity.ToTable("NUTRITIONAL_VALUES");
+                entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
+                entity.Property(e => e.Calories).HasColumnName("calories");
+                entity.Property(e => e.Fat).HasColumnName("fat");
+                entity.Property(e => e.SaturatedFat).HasColumnName("saturated_fat");
+                entity.Property(e => e.Protein).HasColumnName("protein");
+                entity.Property(e => e.Carbohydrates).HasColumnName("carbohydrates");
+                entity.Property(e => e.Sugar).HasColumnName("sugar");
+                entity.Property(e => e.Fibre).HasColumnName("fibre");
+            });
+
+            modelBuilder.Entity<FoodItem>(entity =>
+            {
+                entity.ToTable("FOOD_ITEMS");
+                entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
+                entity.Property(e => e.Name).IsRequired().HasColumnName("name").HasColumnType("VARCHAR(100)");
+                entity.Property(e => e.Portion).IsRequired().HasColumnName("portion");
+                entity.Property(e => e.FoodCategoryId).IsRequired().HasColumnName("food_category_id");
+                entity.Property(e => e.NutritionalValueId).HasColumnName("nutritional_value_id");
+
+                entity.HasOne(f => f.FoodCategory)
+                    .WithMany()
+                    .HasForeignKey(f => f.FoodCategoryId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(f => f.NutritionalValue)
+                    .WithOne()
+                    .HasForeignKey<FoodItem>(f => f.NutritionalValueId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
         }
     }

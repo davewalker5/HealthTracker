@@ -1,7 +1,7 @@
 using HealthTracker.Entities.Exceptions;
 using HealthTracker.Entities.Interfaces;
 using HealthTracker.Entities.Logging;
-using HealthTracker.Entities.Measurements;
+using HealthTracker.Entities.Food;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 

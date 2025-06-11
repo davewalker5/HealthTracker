@@ -4,11 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 namespace HealthTracker.Entities.Measurements
 {
     [ExcludeFromCodeCoverage]
-    public class BloodPressureBand
+    public class BloodPressureBand : NamedEntity
     {
-        [Key]
-        public int Id { get ; set; }
-        public string Name { get; set; }
         public int MinimumSystolic { get; set; }
         public int MaximumSystolic { get; set; }
         public int MinimumDiastolic { get; set; }

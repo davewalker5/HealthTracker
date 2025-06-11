@@ -1,6 +1,6 @@
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
-using HealthTracker.Entities.Measurements;
+using HealthTracker.Entities.Food;
 using HealthTracker.Mvc.Entities;
 using HealthTracker.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -167,7 +167,7 @@ namespace HealthTracker.Mvc.Controllers
                 _logger.LogDebug($"Updating beverage: Id = {model.Beverage.Id}, Name = {model.Beverage.Name}, Typical ABV % = {model.Beverage.TypicalABV}, Hydrating = {model.Beverage.IsHydrating}, Alcohol = {model.Beverage.IsAlcohol}");
                 var beverage = await _client.UpdateAsync(model.Beverage.Id, model.Beverage.Name, model.Beverage.TypicalABV, model.Beverage.IsHydrating, model.Beverage.IsAlcohol);
 
-                result = CreateListResult(beverage, $"{beverage.Name} successfully added");
+                result = CreateListResult(beverage, $"{beverage.Name} successfully updated");
             }
             else
             {

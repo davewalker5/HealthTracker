@@ -19,6 +19,200 @@ namespace HealthTracker.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
 
+            modelBuilder.Entity("HealthTracker.Entities.Food.Beverage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("id");
+
+                    b.Property<bool>("IsAlcohol")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("is_alcohol");
+
+                    b.Property<bool>("IsHydrating")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("is_hydrating");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(100)")
+                        .HasColumnName("name");
+
+                    b.Property<decimal>("TypicalABV")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("typical_abv");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BEVERAGES", (string)null);
+                });
+
+            modelBuilder.Entity("HealthTracker.Entities.Food.BeverageConsumptionMeasurement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("id");
+
+                    b.Property<decimal>("ABV")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("abv");
+
+                    b.Property<int>("BeverageId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("beverage_id");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("DATETIME")
+                        .HasColumnName("date");
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("person_id");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("quantity");
+
+                    b.Property<decimal>("Volume")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("volume");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BEVERAGE_CONSUMPTION", (string)null);
+                });
+
+            modelBuilder.Entity("HealthTracker.Entities.Food.BeverageMeasure", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("name");
+
+                    b.Property<decimal>("Volume")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("volume");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BEVERAGE_MEASURES", (string)null);
+                });
+
+            modelBuilder.Entity("HealthTracker.Entities.Food.FoodCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(100)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FOOD_CATEGORIES", (string)null);
+                });
+
+            modelBuilder.Entity("HealthTracker.Entities.Food.FoodItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("id");
+
+                    b.Property<int>("FoodCategoryId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("food_category_id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(100)")
+                        .HasColumnName("name");
+
+                    b.Property<int?>("NutritionalValueId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("nutritional_value_id");
+
+                    b.Property<decimal>("Portion")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("portion");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FoodCategoryId");
+
+                    b.HasIndex("NutritionalValueId")
+                        .IsUnique();
+
+                    b.ToTable("FOOD_ITEMS", (string)null);
+                });
+
+            modelBuilder.Entity("HealthTracker.Entities.Food.FoodSource", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(100)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FOOD_SOURCES", (string)null);
+                });
+
+            modelBuilder.Entity("HealthTracker.Entities.Food.NutritionalValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("id");
+
+                    b.Property<decimal?>("Calories")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("calories");
+
+                    b.Property<decimal?>("Carbohydrates")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("carbohydrates");
+
+                    b.Property<decimal?>("Fat")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("fat");
+
+                    b.Property<decimal?>("Fibre")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("fibre");
+
+                    b.Property<decimal?>("Protein")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("protein");
+
+                    b.Property<decimal?>("SaturatedFat")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("saturated_fat");
+
+                    b.Property<decimal?>("Sugar")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("sugar");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NUTRITIONAL_VALUES", (string)null);
+                });
+
             modelBuilder.Entity("HealthTracker.Entities.Identity.Person", b =>
                 {
                     b.Property<int>("Id")
@@ -76,7 +270,7 @@ namespace HealthTracker.Data.Migrations
 
             modelBuilder.Entity("HealthTracker.Entities.Logging.JobStatus", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
                         .HasColumnName("id");
@@ -144,6 +338,7 @@ namespace HealthTracker.Data.Migrations
                         .HasColumnName("minimum_bmi");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("TEXT")
                         .HasColumnName("name");
 
@@ -154,92 +349,6 @@ namespace HealthTracker.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("BMI_BAND", (string)null);
-                });
-
-            modelBuilder.Entity("HealthTracker.Entities.Measurements.Beverage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("id");
-
-                    b.Property<bool>("IsAlcohol")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("is_alcohol");
-
-                    b.Property<bool>("IsHydrating")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("is_hydrating");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("VARCHAR(100)")
-                        .HasColumnName("name");
-
-                    b.Property<decimal>("TypicalABV")
-                        .HasColumnType("TEXT")
-                        .HasColumnName("typical_abv");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("BEVERAGES", (string)null);
-                });
-
-            modelBuilder.Entity("HealthTracker.Entities.Measurements.BeverageConsumptionMeasurement", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("id");
-
-                    b.Property<decimal>("ABV")
-                        .HasColumnType("TEXT")
-                        .HasColumnName("abv");
-
-                    b.Property<int>("BeverageId")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("beverage_id");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("DATETIME")
-                        .HasColumnName("date");
-
-                    b.Property<int>("PersonId")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("person_id");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("quantity");
-
-                    b.Property<decimal>("Volume")
-                        .HasColumnType("TEXT")
-                        .HasColumnName("volume");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("BEVERAGE_CONSUMPTION", (string)null);
-                });
-
-            modelBuilder.Entity("HealthTracker.Entities.Measurements.BeverageMeasure", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("id");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT")
-                        .HasColumnName("name");
-
-                    b.Property<decimal>("Volume")
-                        .HasColumnType("TEXT")
-                        .HasColumnName("volume");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("BEVERAGE_MEASURES", (string)null);
                 });
 
             modelBuilder.Entity("HealthTracker.Entities.Measurements.BloodGlucoseMeasurement", b =>
@@ -290,6 +399,7 @@ namespace HealthTracker.Data.Migrations
                         .HasColumnName("minimum_spo2");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("TEXT")
                         .HasColumnName("name");
 
@@ -350,6 +460,7 @@ namespace HealthTracker.Data.Migrations
                         .HasColumnName("minimum_systolic");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("TEXT")
                         .HasColumnName("name");
 
@@ -547,6 +658,24 @@ namespace HealthTracker.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PERSON_MEDICATION", (string)null);
+                });
+
+            modelBuilder.Entity("HealthTracker.Entities.Food.FoodItem", b =>
+                {
+                    b.HasOne("HealthTracker.Entities.Food.FoodCategory", "FoodCategory")
+                        .WithMany()
+                        .HasForeignKey("FoodCategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("HealthTracker.Entities.Food.NutritionalValue", "NutritionalValue")
+                        .WithOne()
+                        .HasForeignKey("HealthTracker.Entities.Food.FoodItem", "NutritionalValueId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("FoodCategory");
+
+                    b.Navigation("NutritionalValue");
                 });
 #pragma warning restore 612, 618
         }

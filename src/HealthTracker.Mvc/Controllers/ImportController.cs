@@ -19,6 +19,7 @@ namespace HealthTracker.Mvc.Controllers
             IExerciseMeasurementClient exerciseMeasurementClient,
             IWeightMeasurementClient weightMeasurementClient,
             IBeverageConsumptionMeasurementClient beverageConsumptionMeasurementClient,
+            IFoodItemClient foodItemClient,
             ILogger<WeightController> logger) : base(
                 bloodGlucoseMeasurementClient,
                 bloodOxygenSaturationMeasurementClient,
@@ -26,6 +27,7 @@ namespace HealthTracker.Mvc.Controllers
                 exerciseMeasurementClient,
                 weightMeasurementClient,
                 beverageConsumptionMeasurementClient,
+                foodItemClient,
                 logger
             )
         {

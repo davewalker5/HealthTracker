@@ -1,5 +1,5 @@
 using System.ComponentModel;
-using HealthTracker.Entities.Measurements;
+using HealthTracker.Entities.Food;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace HealthTracker.Mvc.Models

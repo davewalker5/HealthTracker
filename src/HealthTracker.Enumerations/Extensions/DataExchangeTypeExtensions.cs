@@ -17,6 +17,7 @@ namespace HealthTracker.Enumerations.Extensions
                 DataExchangeType.SPO2 => "% SPO2",
                 DataExchangeType.BloodPressure => "Blood Pressure",
                 DataExchangeType.Exercise => "Exercise",
+                DataExchangeType.FoodItems => "Food Items",
                 DataExchangeType.Glucose => "Glucose",
                 DataExchangeType.Weight => "Weight",
                 DataExchangeType.BeverageConsumption => "Beverage Consumption",

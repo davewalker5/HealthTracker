@@ -167,7 +167,7 @@ namespace HealthTracker.Mvc.Controllers
                 _logger.LogDebug($"Updating medication: Id = {model.Medication.Id}, Name = {model.Medication.Name}");
                 var medication = await _client.UpdateAsync(model.Medication.Id, model.Medication.Name);
 
-                result = CreateListResult(medication, $"{medication.Name} successfully added");
+                result = CreateListResult(medication, $"{medication.Name} successfully updated");
             }
             else
             {
