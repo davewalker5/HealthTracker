@@ -218,7 +218,7 @@ namespace HealthTracker.Client.ApiClient
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // Deserialise the JSON response into a collection of summary objects
-            var summaries = Deserialize<IEnumerable<ExerciseSummary>>(json);
+            IEnumerable<ExerciseSummary> summaries = !string.IsNullOrEmpty(json) ? Deserialize<IEnumerable<ExerciseSummary>>(json) : null;
             return summaries;
         }
     }
