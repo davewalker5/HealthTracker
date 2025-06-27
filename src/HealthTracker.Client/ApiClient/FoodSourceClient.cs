@@ -85,7 +85,7 @@ namespace HealthTracker.Client.ApiClient
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no food sources in the database
-            List<FoodSource> foodSources = !string.IsNullOrEmpty(json) ? Deserialize<List<FoodSource>>(json) : null;
+            List<FoodSource> foodSources = Deserialize<List<FoodSource>>(json);
             return foodSources;
         }
     }

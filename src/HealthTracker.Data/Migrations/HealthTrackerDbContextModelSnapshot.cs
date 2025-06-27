@@ -173,6 +173,40 @@ namespace HealthTracker.Data.Migrations
                     b.ToTable("FOOD_SOURCES", (string)null);
                 });
 
+            modelBuilder.Entity("HealthTracker.Entities.Food.Meal", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("id");
+
+                    b.Property<int>("FoodSourceId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("food_source_id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(100)")
+                        .HasColumnName("name");
+
+                    b.Property<int?>("NutritionalValueId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("nutritional_value_id");
+
+                    b.Property<int>("Portions")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("portions");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FoodSourceId");
+
+                    b.HasIndex("NutritionalValueId")
+                        .IsUnique();
+
+                    b.ToTable("MEALS", (string)null);
+                });
+
             modelBuilder.Entity("HealthTracker.Entities.Food.NutritionalValue", b =>
                 {
                     b.Property<int>("Id")
@@ -674,6 +708,24 @@ namespace HealthTracker.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("FoodCategory");
+
+                    b.Navigation("NutritionalValue");
+                });
+
+            modelBuilder.Entity("HealthTracker.Entities.Food.Meal", b =>
+                {
+                    b.HasOne("HealthTracker.Entities.Food.FoodSource", "FoodSource")
+                        .WithMany()
+                        .HasForeignKey("FoodSourceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("HealthTracker.Entities.Food.NutritionalValue", "NutritionalValue")
+                        .WithOne()
+                        .HasForeignKey("HealthTracker.Entities.Food.Meal", "NutritionalValueId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("FoodSource");
 
                     b.Navigation("NutritionalValue");
                 });

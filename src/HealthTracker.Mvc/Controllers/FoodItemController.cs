@@ -113,7 +113,7 @@ namespace HealthTracker.Mvc.Controllers
         }
 
         /// <summary>
-        /// Serve the page to add a new measurement
+        /// Serve the page to add a new item
         /// </summary>
         /// <param name="personId"></param>
         /// <param name="start"></param>
@@ -169,14 +169,14 @@ namespace HealthTracker.Mvc.Controllers
         }
 
         /// <summary>
-        /// Serve the page to edit an existing measurement
+        /// Serve the page to edit an existing item
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            _logger.LogDebug($"Rendering edit view: Measurement ID = {id}");
+            _logger.LogDebug($"Rendering edit view: Food Item ID = {id}");
 
             var model = new EditFoodItemViewModel()
             {
@@ -241,15 +241,11 @@ namespace HealthTracker.Mvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            // Retrieve the measurement and capture the person and date
-            _logger.LogDebug($"Retrieving food item: ID = {id}");
-            var measurement = await _helper.GetAsync(id);
-
-            // Delete the measurement
+            // Delete the item
             _logger.LogDebug($"Deleting food item: ID = {id}");
             await _helper.DeleteAsync(id);
 
-            // Return the list view with an empty list of measurements
+            // Return the list view with an empty list of items
             var model = new FoodItemListViewModel
             {
                 PageNumber = 1,

@@ -10,7 +10,7 @@ using HealthTracker.Logic.Factory;
 using HealthTracker.Tests.Mocks;
 using Moq;
 
-namespace HealthTracker.Tests.Exercise
+namespace HealthTracker.Tests.FoodItems
 {
     [TestClass]
     public class FoodItemImportTest
@@ -48,8 +48,7 @@ namespace HealthTracker.Tests.Exercise
         {
             if (!string.IsNullOrEmpty(_filePath) && File.Exists(_filePath))
             {
-                // File.Delete(_filePath);
-                Console.WriteLine(_filePath);
+                File.Delete(_filePath);
             }
         }
 

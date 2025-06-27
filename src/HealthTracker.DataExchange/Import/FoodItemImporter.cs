@@ -2,7 +2,6 @@ using HealthTracker.Entities.Interfaces;
 using HealthTracker.Entities.Food;
 using HealthTracker.DataExchange.Entities;
 using HealthTracker.DataExchange.Interfaces;
-using HealthTracker.Entities.Logging;
 
 namespace HealthTracker.DataExchange.Import
 {

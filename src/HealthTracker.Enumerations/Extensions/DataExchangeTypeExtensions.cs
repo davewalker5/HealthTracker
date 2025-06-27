@@ -21,6 +21,7 @@ namespace HealthTracker.Enumerations.Extensions
                 DataExchangeType.Glucose => "Glucose",
                 DataExchangeType.Weight => "Weight",
                 DataExchangeType.BeverageConsumption => "Beverage Consumption",
+                DataExchangeType.Meals => "Meals",
                 _ => "",
             };
         }

@@ -13,7 +13,8 @@ namespace HealthTracker.Mvc.Controllers
             { DataExchangeType.Glucose, "BloodGlucose" },
             { DataExchangeType.Weight, "Weight" },
             { DataExchangeType.BeverageConsumption, "BeverageConsumption" },
-            { DataExchangeType.FoodItems, "FoodItems" }
+            { DataExchangeType.FoodItems, "FoodItems" },
+            { DataExchangeType.Meals, "Meals" }
         };
 
         protected readonly Dictionary<DataExchangeType, IImporterExporter> _clients = new();
@@ -27,6 +28,7 @@ namespace HealthTracker.Mvc.Controllers
             IWeightMeasurementClient weightMeasurementClient,
             IBeverageConsumptionMeasurementClient beverageConsumptionMeasurementClient,
             IFoodItemClient foodItemClient,
+            IMealClient mealClient,
             ILogger logger)
         {
             _clients.Add(DataExchangeType.Glucose, bloodGlucoseMeasurementClient);
@@ -36,6 +38,7 @@ namespace HealthTracker.Mvc.Controllers
             _clients.Add(DataExchangeType.Weight, weightMeasurementClient);
             _clients.Add(DataExchangeType.BeverageConsumption, beverageConsumptionMeasurementClient);
             _clients.Add(DataExchangeType.FoodItems, foodItemClient);
+            _clients.Add(DataExchangeType.Meals, mealClient);
             _logger = logger;
         }
 

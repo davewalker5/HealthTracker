@@ -1,6 +1,4 @@
 using HealthTracker.DataExchange.Attributes;
-using System;
-using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
 
 namespace HealthTracker.DataExchange.Entities

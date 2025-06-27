@@ -811,5 +811,25 @@ namespace HealthTracker.Tests.Mocks
             item.NutritionalValueId = item.NutritionalValue.Id;
             return item;
         }
+
+        /// <summary>
+        /// Generate a random meal
+        /// </summary>
+        /// <returns></returns>
+        public static Meal RandomMeal()
+        {
+            Meal meal = new()
+            {
+                Id = RandomId(),
+                Name = RandomTitleCasePhrase(3, 5, 20),
+                Portions = RandomInt(1, 10),
+                FoodSource = RandomFoodSource(),
+                NutritionalValue = RandomNutritionalValue()
+            };
+
+            meal.FoodSourceId = meal.FoodSource.Id;
+            meal.NutritionalValueId = meal.NutritionalValue.Id;
+            return meal;
+        }
     }
 }

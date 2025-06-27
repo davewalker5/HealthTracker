@@ -8,7 +8,7 @@ using HealthTracker.Logic.Factory;
 using HealthTracker.Tests.Mocks;
 using Moq;
 
-namespace HealthTracker.Tests.Exercise
+namespace HealthTracker.Tests.FoodItems
 {
     [TestClass]
     public class FoodItemExportTest

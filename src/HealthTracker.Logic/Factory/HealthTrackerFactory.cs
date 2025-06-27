@@ -32,6 +32,7 @@ namespace HealthTracker.Logic.Factory
         private readonly Lazy<IBeverageMeasureManager> _beverageMeasures;
         private readonly Lazy<INutritionalValueManager> _nutritionalValues;
         private readonly Lazy<IFoodItemManager> _foodItems;
+        private readonly Lazy<IMealManager> _meals;
 
         private readonly Lazy<IMedicationManager> _medications;
         private readonly Lazy<IPersonMedicationManager> _personMedications;
@@ -73,6 +74,7 @@ namespace HealthTracker.Logic.Factory
         public IBeverageMeasureManager BeverageMeasures { get { return _beverageMeasures.Value; } }
         public INutritionalValueManager NutritionalValues { get { return _nutritionalValues.Value; } }
         public IFoodItemManager FoodItems { get { return _foodItems.Value; } }
+        public IMealManager Meals { get { return _meals.Value; } }
 
         public IMedicationManager Medications { get { return _medications.Value;} }
         public IPersonMedicationManager PersonMedications { get { return _personMedications.Value;} }
@@ -116,6 +118,7 @@ namespace HealthTracker.Logic.Factory
             _beverageMeasures = new Lazy<IBeverageMeasureManager>(() => new BeverageMeasureManager(this));
             _nutritionalValues = new Lazy<INutritionalValueManager>(() => new NutritionalValueManager(this));
             _foodItems = new Lazy<IFoodItemManager>(() => new FoodItemManager(this));
+            _meals = new Lazy<IMealManager>(() => new MealManager(this));
 
             _medications = new Lazy<IMedicationManager>(() => new MedicationManager(this));
             _personMedications = new Lazy<IPersonMedicationManager>(() => new PersonMedicationManager(this));

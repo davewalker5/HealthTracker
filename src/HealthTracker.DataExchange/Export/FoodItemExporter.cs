@@ -48,7 +48,7 @@ namespace HealthTracker.DataExchange.Export
 #pragma warning restore CS1998
 
         /// <summary>
-        /// Handler for exercise measurement export notifications
+        /// Handler for food item export notifications
         /// </summary>
         /// <param name="_"></param>
         /// <param name="e"></param>

@@ -1,12 +1,11 @@
 ﻿using HealthTracker.Data;
 using HealthTracker.Entities.Exceptions;
-using HealthTracker.Enumerations.Enumerations;
 using HealthTracker.Entities.Interfaces;
 using HealthTracker.Logic.Factory;
 using HealthTracker.Tests.Mocks;
 using Moq;
 
-namespace HealthTracker.Tests.BloodPressure
+namespace HealthTracker.Tests.FoodItems
 {
     [TestClass]
     public class FoodItemManagerTest
@@ -83,12 +82,12 @@ namespace HealthTracker.Tests.BloodPressure
 
         [TestMethod]
         [ExpectedException(typeof(FoodCategoryNotFoundException))]
-        public async Task CannotAddMeasurementForMissingFoodCategoryTest()
+        public async Task CannotAddItemForMissingFoodCategoryTest()
             => await _factory.FoodItems.AddAsync(UpdatedName, UpdatedPortion, 10 * _categoryId, null);
 
         [TestMethod]
         [ExpectedException(typeof(NutritionalValueNotFoundException))]
-        public async Task CannotUpdateMeasurementForMissingNutritionalValueTest()
+        public async Task CannotUpdateItemForMissingNutritionalValueTest()
             => await _factory.FoodItems.UpdateAsync(_itemId, UpdatedName, UpdatedPortion, _categoryId, 10 * _nutritionalValueId);
     }
 }

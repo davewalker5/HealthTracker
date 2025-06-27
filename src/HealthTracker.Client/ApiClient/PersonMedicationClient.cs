@@ -137,7 +137,7 @@ namespace HealthTracker.Client.ApiClient
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no associations for the person in the database
-            List<PersonMedication> associations = !string.IsNullOrEmpty(json) ? Deserialize<List<PersonMedication>>(json) : null;
+            List<PersonMedication> associations = Deserialize<List<PersonMedication>>(json);
             return associations;
         }
 

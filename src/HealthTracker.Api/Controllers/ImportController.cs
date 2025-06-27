@@ -21,6 +21,7 @@ namespace HealthTracker.Api.Controllers
         private readonly IBackgroundQueue<BloodOxygenSaturationMeasurementImportWorkItem> _spo2MeasurementQueue;
         private readonly IBackgroundQueue<BeverageConsumptionMeasurementImportWorkItem> _beverageConsumptionMeasurementQueue;
         private readonly IBackgroundQueue<FoodItemImportWorkItem> _foodItemQueue;
+        private readonly IBackgroundQueue<MealImportWorkItem> _mealQueue;
 
 
         public ImportController(
@@ -33,7 +34,8 @@ namespace HealthTracker.Api.Controllers
             IBackgroundQueue<BloodOxygenSaturationMeasurementImportWorkItem> spo2MeasurementQueue,
             IBackgroundQueue<BloodGlucoseMeasurementImportWorkItem> bloodGlucoseMeasurementQueue,
             IBackgroundQueue<BeverageConsumptionMeasurementImportWorkItem> beverageConsumptionMeasurementQueue,
-            IBackgroundQueue<FoodItemImportWorkItem> foodItemQueue)
+            IBackgroundQueue<FoodItemImportWorkItem> foodItemQueue,
+            IBackgroundQueue<MealImportWorkItem> mealQueue)
         {
             _personQueue = personQueue;
             _weightMeasurementQueue = weightMeasurementQueue;
@@ -45,6 +47,7 @@ namespace HealthTracker.Api.Controllers
             _bloodGlucoseMeasurementQueue = bloodGlucoseMeasurementQueue;
             _beverageConsumptionMeasurementQueue = beverageConsumptionMeasurementQueue;
             _foodItemQueue = foodItemQueue;
+            _mealQueue = mealQueue;
         }
 
         [HttpPost]
@@ -157,13 +160,25 @@ namespace HealthTracker.Api.Controllers
 
         [HttpPost]
         [Route("fooditem")]
-        public IActionResult ImportBeverageConsumptionMeasurements([FromBody] FoodItemImportWorkItem item)
+        public IActionResult ImportFoodItems([FromBody] FoodItemImportWorkItem item)
         {
             // Set the job name used in the job status record
             item.JobName = "Food Item Import";
 
             // Queue the work item
             _foodItemQueue.Enqueue(item);
+            return Accepted();
+        }
+
+        [HttpPost]
+        [Route("meal")]
+        public IActionResult ImportMeals([FromBody] MealImportWorkItem item)
+        {
+            // Set the job name used in the job status record
+            item.JobName = "Meal Import";
+
+            // Queue the work item
+            _mealQueue.Enqueue(item);
             return Accepted();
         }
     }

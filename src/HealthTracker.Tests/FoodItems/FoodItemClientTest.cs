@@ -6,7 +6,7 @@ using HealthTracker.Tests.Mocks;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace HealthTracker.Tests.Exercise
+namespace HealthTracker.Tests.FoodItems
 {
     [TestClass]
     public class FoodItemClientTest

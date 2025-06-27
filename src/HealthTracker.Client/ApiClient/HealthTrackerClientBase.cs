@@ -127,7 +127,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="json"></param>
         /// <returns></returns>
         protected T Deserialize<T>(string json) where T : class
-            => JsonSerializer.Deserialize<T>(json, _serializerOptions);
+            => !string.IsNullOrEmpty(json) ? JsonSerializer.Deserialize<T>(json, _serializerOptions) : null;
 
         /// <summary>
         /// Calculate a from and to date range from two dates, either or both of which may be null
