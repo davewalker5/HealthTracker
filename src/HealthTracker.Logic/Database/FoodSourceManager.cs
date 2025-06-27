@@ -100,9 +100,8 @@ namespace HealthTracker.Logic.Database
             if (foodSource != null)
             {
                 // Check the food source isn't in use
-                // TODO: Implement this once meals are implemented
-                object? measurement = null;
-                if (measurement != null)
+                var meals = await Factory.Meals.ListAsync(x => x.FoodSourceId == id, 1, int.MaxValue);
+                if (meals.Any())
                 {
                     var message = $"Food source with Id {id} has meals associated with it and cannot be deleted";
                     throw new FoodSourceInUseException(message);
