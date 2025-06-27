@@ -107,13 +107,15 @@ namespace HealthTracker.Logic.Database
         }
 
         /// <summary>
-        /// Delete the measurement with the specified Id
+        /// Delete the food item with the specified Id
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         public async Task DeleteAsync(int id)
         {
             Factory.Logger.LogMessage(Severity.Info, $"Deleting food item with ID {id}");
+
+            // TODO : Once the meal build is implemented, check we're not deleting an item related to a meal
 
             var item = Context.FoodItems.FirstOrDefault(x => x.Id == id);
             if (item != null)

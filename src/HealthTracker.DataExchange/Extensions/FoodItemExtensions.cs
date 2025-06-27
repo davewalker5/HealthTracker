@@ -1,5 +1,4 @@
 using HealthTracker.Entities.Food;
-using HealthTracker.Enumerations.Enumerations;
 using HealthTracker.DataExchange.Entities;
 
 namespace HealthTracker.DataExchange.Extensions

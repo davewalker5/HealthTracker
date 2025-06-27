@@ -153,6 +153,14 @@ namespace HealthTracker.Api
             // Add the food item importer hosted service
             builder.Services.AddSingleton<IBackgroundQueue<FoodItemImportWorkItem>, BackgroundQueue<FoodItemImportWorkItem>>();
             builder.Services.AddHostedService<FoodItemImportService>();
+            
+            // Add the meal exporter hosted service
+            builder.Services.AddSingleton<IBackgroundQueue<MealExportWorkItem>, BackgroundQueue<MealExportWorkItem>>();
+            builder.Services.AddHostedService<MealExportService>();
+
+            // Add the meal importer hosted service
+            builder.Services.AddSingleton<IBackgroundQueue<MealImportWorkItem>, BackgroundQueue<MealImportWorkItem>>();
+            builder.Services.AddHostedService<MealImportService>();
 
             // Configure JWT
             byte[] key = Encoding.ASCII.GetBytes(settings!.Secret);

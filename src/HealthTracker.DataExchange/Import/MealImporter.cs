@@ -5,11 +5,11 @@ using HealthTracker.DataExchange.Interfaces;
 
 namespace HealthTracker.DataExchange.Import
 {
-    public sealed class FoodItemImporter : CsvImporter<ExportableFoodItem>, IFoodItemImporter 
+    public sealed class MealImporter : CsvImporter<ExportableMeal>, IMealImporter 
     {
         private List<FoodCategory> _foodCategories = [];
 
-        public FoodItemImporter(IHealthTrackerFactory factory, string format) : base(factory, format)
+        public MealImporter(IHealthTrackerFactory factory, string format) : base(factory, format)
         {
         }
 
@@ -28,8 +28,8 @@ namespace HealthTracker.DataExchange.Import
         /// </summary>
         /// <param name="record"></param>
         /// <returns></returns>
-        protected override ExportableFoodItem Inflate(string record)
-            => ExportableFoodItem.FromCsv(record);
+        protected override ExportableMeal Inflate(string record)
+            => ExportableMeal.FromCsv(record);
 
         /// <summary>
         /// Validate an inflated record
@@ -37,15 +37,10 @@ namespace HealthTracker.DataExchange.Import
         /// <param name="item"></param>
         /// <param name="recordCount"></param>
         /// <returns></returns>
-        protected override void Validate(ExportableFoodItem item, int recordCount)
+        protected override void Validate(ExportableMeal item, int recordCount)
         {
-            // Make sure the food category maps OK
-            var foodCategory = _foodCategories.FirstOrDefault(x => x.Name.Equals(item.FoodCategory, StringComparison.OrdinalIgnoreCase));
-            ValidateField<FoodCategory>(x => x != null, foodCategory, "FoodCategory", recordCount);
-
-            // Validate the food item properties
             ValidateField<string>(x => !string.IsNullOrEmpty(x), item.Name, "Name", recordCount);
-            ValidateField<decimal>(x => x > 0, item.Portion, "Portion", recordCount);
+            ValidateField<decimal>(x => x > 0, item.Portions, "Portions", recordCount);
             ValidateField<decimal?>(x => !(x < 0), item.Calories, "Calories", recordCount);
             ValidateField<decimal?>(x => !(x < 0), item.Fat, "Fat", recordCount);
             ValidateField<decimal?>(x => !(x < 0), item.SaturatedFat, "SaturatedFat", recordCount);
@@ -58,30 +53,27 @@ namespace HealthTracker.DataExchange.Import
         /// <summary>
         /// Store an inflated record in the database
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="meal"></param>
         /// <returns></returns>
-        protected override async Task AddAsync(ExportableFoodItem item)
+        protected override async Task AddAsync(ExportableMeal meal)
         {
             int? nutritionalValueId = null;
 
-            // Get the related food category
-            var category = _foodCategories.First(x => x.Name.Equals(item.FoodCategory, StringComparison.OrdinalIgnoreCase));
-
             // If any of the nutritional vaues are set, create a nutritional value record from them
-            if ((item.Calories > 0) ||
-                (item.Fat > 0) ||
-                (item.SaturatedFat > 0) ||
-                (item.Protein > 0) ||
-                (item.Carbohydrates > 0) ||
-                (item.Sugar > 0) ||
-                (item.Fibre > 0))
+            if ((meal.Calories > 0) ||
+                (meal.Fat > 0) ||
+                (meal.SaturatedFat > 0) ||
+                (meal.Protein > 0) ||
+                (meal.Carbohydrates > 0) ||
+                (meal.Sugar > 0) ||
+                (meal.Fibre > 0))
             {
-                var nutritionalValue = await _factory.NutritionalValues.AddAsync(item.Calories, item.Fat, item.SaturatedFat, item.Protein, item.Carbohydrates, item.Sugar, item.Fibre);
+                var nutritionalValue = await _factory.NutritionalValues.AddAsync(meal.Calories, meal.Fat, meal.SaturatedFat, meal.Protein, meal.Carbohydrates, meal.Sugar, meal.Fibre);
                 nutritionalValueId = nutritionalValue.Id;
             }
 
             // Add the food item
-            await _factory.FoodItems.AddAsync(item.Name, item.Portion, category.Id, nutritionalValueId);
+            await _factory.Meals.AddAsync(meal.Name, meal.Portions, nutritionalValueId);
         }
     }
 }

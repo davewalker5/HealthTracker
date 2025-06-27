@@ -6,14 +6,14 @@ using HealthTracker.Tests.Mocks;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace HealthTracker.Tests.FoodItems
+namespace HealthTracker.Tests.Meals
 {
     [TestClass]
-    public class FoodItemClientTest
+    public class MealClientTest
     {
         private readonly string ApiToken = DataGenerator.RandomApiToken();
         private MockHealthTrackerHttpClient _httpClient = new();
-        private IFoodItemClient _client;
+        private IMealClient _client;
         private string _filePath;
 
         private readonly HealthTrackerApplicationSettings _settings = new()
@@ -21,9 +21,9 @@ namespace HealthTracker.Tests.FoodItems
             DefaultTimePeriodDays = 7,
             ApiUrl = "http://server/",
             ApiRoutes = [
-                new() { Name = "FoodItem", Route = "/fooditem" },
-                new() { Name = "ExportFoodItem", Route = "/export/fooditem" },
-                new() { Name = "ImportFoodItem", Route = "/import/fooditem" }
+                new() { Name = "Meal", Route = "/meal" },
+                new() { Name = "ExportMeal", Route = "/export/meal" },
+                new() { Name = "ImportMeal", Route = "/import/meal" }
             ]
         };
 
@@ -32,8 +32,8 @@ namespace HealthTracker.Tests.FoodItems
         {
             var provider = new Mock<IAuthenticationTokenProvider>();
             provider.Setup(x => x.GetToken()).Returns(ApiToken);
-            var logger = new Mock<ILogger<FoodItemClient>>();
-            _client = new FoodItemClient(_httpClient, _settings, provider.Object, logger.Object);
+            var logger = new Mock<ILogger<MealClient>>();
+            _client = new MealClient(_httpClient, _settings, provider.Object, logger.Object);
         }
 
         [TestCleanup]
@@ -48,15 +48,14 @@ namespace HealthTracker.Tests.FoodItems
         [TestMethod]
         public async Task AddTest()
         {
-            var item = DataGenerator.RandomFoodItem();
-            var json = JsonSerializer.Serialize(item);
+            var meal = DataGenerator.RandomMeal();
+            var json = JsonSerializer.Serialize(meal);
             _httpClient.AddResponse(json);
 
             var added = await _client.AddAsync(
-                item.Name,
-                item.Portion,
-                item.FoodCategoryId,
-                item.NutritionalValueId);
+                meal.Name,
+                meal.Portions,
+                meal.NutritionalValueId);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -64,26 +63,24 @@ namespace HealthTracker.Tests.FoodItems
             Assert.AreEqual(_settings.ApiRoutes[0].Route, _httpClient.Requests[0].Uri);
 
             Assert.IsNotNull(added);
-            Assert.AreEqual(item.Id, added.Id);
-            Assert.AreEqual(item.Name, added.Name);
-            Assert.AreEqual(item.Portion, added.Portion);
-            Assert.AreEqual(item.FoodCategoryId, added.FoodCategoryId);
-            Assert.AreEqual(item.NutritionalValueId, added.NutritionalValueId);
+            Assert.AreEqual(meal.Id, added.Id);
+            Assert.AreEqual(meal.Name, added.Name);
+            Assert.AreEqual(meal.Portions, added.Portions);
+            Assert.AreEqual(meal.NutritionalValueId, added.NutritionalValueId);
         }
 
         [TestMethod]
         public async Task UpdateTest()
         {
-            var item = DataGenerator.RandomFoodItem();
-            var json = JsonSerializer.Serialize(item);
+            var meal = DataGenerator.RandomMeal();
+            var json = JsonSerializer.Serialize(meal);
             _httpClient.AddResponse(json);
 
             var updated = await _client.UpdateAsync(
-                item.Id,
-                item.Name,
-                item.Portion,
-                item.FoodCategoryId,
-                item.NutritionalValueId);
+                meal.Id,
+                meal.Name,
+                meal.Portions,
+                meal.NutritionalValueId);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -91,11 +88,10 @@ namespace HealthTracker.Tests.FoodItems
             Assert.AreEqual(_settings.ApiRoutes[0].Route, _httpClient.Requests[0].Uri);
 
             Assert.IsNotNull(updated);
-            Assert.AreEqual(item.Id, updated.Id);
-            Assert.AreEqual(item.Name, updated.Name);
-            Assert.AreEqual(item.Portion, updated.Portion);
-            Assert.AreEqual(item.FoodCategoryId, updated.FoodCategoryId);
-            Assert.AreEqual(item.NutritionalValueId, updated.NutritionalValueId);
+            Assert.AreEqual(meal.Id, updated.Id);
+            Assert.AreEqual(meal.Name, updated.Name);
+            Assert.AreEqual(meal.Portions, updated.Portions);
+            Assert.AreEqual(meal.NutritionalValueId, updated.NutritionalValueId);
         }
 
         [TestMethod]
@@ -115,12 +111,12 @@ namespace HealthTracker.Tests.FoodItems
         [TestMethod]
         public async Task GetTest()
         {
-            var item = DataGenerator.RandomFoodItem();
-            var json = JsonSerializer.Serialize(item);
+            var meal = DataGenerator.RandomMeal();
+            var json = JsonSerializer.Serialize(meal);
             _httpClient.AddResponse(json);
 
-            var retrieved = await _client.GetAsync(item.Id);
-            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/{item.Id}";
+            var retrieved = await _client.GetAsync(meal.Id);
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/{meal.Id}";
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -129,23 +125,22 @@ namespace HealthTracker.Tests.FoodItems
 
             Assert.IsNull(_httpClient.Requests[0].Content);
             Assert.IsNotNull(retrieved);
-            Assert.AreEqual(item.Id, retrieved.Id);
-            Assert.AreEqual(item.Name, retrieved.Name);
-            Assert.AreEqual(item.Portion, retrieved.Portion);
-            Assert.AreEqual(item.FoodCategoryId, retrieved.FoodCategoryId);
-            Assert.AreEqual(item.NutritionalValueId, retrieved.NutritionalValueId);
+            Assert.AreEqual(meal.Id, retrieved.Id);
+            Assert.AreEqual(meal.Name, retrieved.Name);
+            Assert.AreEqual(meal.Portions, retrieved.Portions);
+            Assert.AreEqual(meal.NutritionalValueId, retrieved.NutritionalValueId);
         }
 
         [TestMethod]
         public async Task ListTest()
         {
-            var item = DataGenerator.RandomFoodItem();
-            var json = JsonSerializer.Serialize(new List<dynamic> { item });
+            var meal = DataGenerator.RandomMeal();
+            var json = JsonSerializer.Serialize(new List<dynamic> { meal });
             _httpClient.AddResponse(json);
 
-            var items = await _client.ListAsync(item.FoodCategoryId,  1, int.MaxValue);
+            var meals = await _client.ListAsync(1, int.MaxValue);
 
-            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/{item.FoodCategoryId}/1/{int.MaxValue}";
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/1/{int.MaxValue}";
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -153,13 +148,12 @@ namespace HealthTracker.Tests.FoodItems
             Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
 
             Assert.IsNull(_httpClient.Requests[0].Content);
-            Assert.IsNotNull(items);
-            Assert.AreEqual(1, items.Count);
-            Assert.AreEqual(item.Id, items[0].Id);
-            Assert.AreEqual(item.Name, items[0].Name);
-            Assert.AreEqual(item.Portion, items[0].Portion);
-            Assert.AreEqual(item.FoodCategoryId, items[0].FoodCategoryId);
-            Assert.AreEqual(item.NutritionalValueId, items[0].NutritionalValueId);
+            Assert.IsNotNull(meals);
+            Assert.AreEqual(1, meals.Count);
+            Assert.AreEqual(meal.Id, meals[0].Id);
+            Assert.AreEqual(meal.Name, meals[0].Name);
+            Assert.AreEqual(meal.Portions, meals[0].Portions);
+            Assert.AreEqual(meal.NutritionalValueId, meals[0].NutritionalValueId);
         }
 
         [TestMethod]
@@ -167,8 +161,8 @@ namespace HealthTracker.Tests.FoodItems
         {
             _httpClient.AddResponse("");
 
-            var item = DataGenerator.RandomFoodItem();
-            var record = $@"""{item.Name}"",""{item.FoodCategory.Name}"",""{item.Portion}"",""{item.NutritionalValue.Calories}"",""{item.NutritionalValue.Fat}"",""{item.NutritionalValue.SaturatedFat}"",""{item.NutritionalValue.Protein}"",""{item.NutritionalValue.Carbohydrates}"",""{item.NutritionalValue.Sugar}"",""{item.NutritionalValue.Fibre}""";
+            var meal = DataGenerator.RandomMeal();
+            var record = $@"""{meal.Name}"",""{meal.Portions}"",""{meal.NutritionalValue.Calories}"",""{meal.NutritionalValue.Fat}"",""{meal.NutritionalValue.SaturatedFat}"",""{meal.NutritionalValue.Protein}"",""{meal.NutritionalValue.Carbohydrates}"",""{meal.NutritionalValue.Sugar}"",""{meal.NutritionalValue.Fibre}""";
 
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
@@ -178,7 +172,7 @@ namespace HealthTracker.Tests.FoodItems
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
             Assert.AreEqual(HttpMethod.Post, _httpClient.Requests[0].Method);
-            Assert.AreEqual(_settings.ApiRoutes.First(x => x.Name == "ImportFoodItem").Route, _httpClient.Requests[0].Uri);
+            Assert.AreEqual(_settings.ApiRoutes.First(x => x.Name == "ImportMeal").Route, _httpClient.Requests[0].Uri);
         }
 
         [TestMethod]
@@ -192,7 +186,7 @@ namespace HealthTracker.Tests.FoodItems
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
             Assert.AreEqual(HttpMethod.Post, _httpClient.Requests[0].Method);
-            Assert.AreEqual(_settings.ApiRoutes.First(x => x.Name == "ExportFoodItem").Route, _httpClient.Requests[0].Uri);
+            Assert.AreEqual(_settings.ApiRoutes.First(x => x.Name == "ExportMeal").Route, _httpClient.Requests[0].Uri);
         }
     }
 }

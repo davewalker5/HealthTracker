@@ -4,18 +4,15 @@ using System.Diagnostics.CodeAnalysis;
 namespace HealthTracker.DataExchange.Entities
 {
     [ExcludeFromCodeCoverage]
-    public class ExportableFoodItem
+    public class ExportableMeal
     {
-        public const string CsvRecordPattern = @"^"".*"","".*""(,""(?:[0-9.]+)?""){8}.?$";
+        public const string CsvRecordPattern = @"^"".*"",""[0-9]+""(,""(?:[0-9.]+)?""){7}.?$";
 
         [Export("Name", 1)]
         public string Name { get; set; }
 
-        [Export("Category", 2)]
-        public string FoodCategory { get; set; }
-
-        [Export("Portion", 3)]
-        public decimal Portion { get; set; }
+        [Export("Portions", 3)]
+        public int Portions { get; set; }
 
         [Export("Calories", 4)]
         public decimal? Calories { get; set; }
@@ -38,21 +35,20 @@ namespace HealthTracker.DataExchange.Entities
         [Export("Fibre", 10)]
         public decimal? Fibre { get; set; }
 
-        public static ExportableFoodItem FromCsv(string record)
+        public static ExportableMeal FromCsv(string record)
         {
             string[] words = record.Split(["\",\""], StringSplitOptions.None);
-            return new ExportableFoodItem
+            return new ExportableMeal
             {
                 Name = words[0].Replace("\"", "").Trim(),
-                FoodCategory = words[1].Replace("\"", "").Trim(),
-                Portion = decimal.Parse(words[2].Replace("\"", "").Trim()),
-                Calories = ExtractDecimalValue(words[3]),
-                Fat = ExtractDecimalValue(words[4]),
-                SaturatedFat = ExtractDecimalValue(words[5]),
-                Protein = ExtractDecimalValue(words[6]),
-                Carbohydrates = ExtractDecimalValue(words[7]),
-                Sugar = ExtractDecimalValue(words[8]),
-                Fibre = ExtractDecimalValue(words[9])
+                Portions = int.Parse(words[1].Replace("\"", "").Trim()),
+                Calories = ExtractDecimalValue(words[2]),
+                Fat = ExtractDecimalValue(words[3]),
+                SaturatedFat = ExtractDecimalValue(words[4]),
+                Protein = ExtractDecimalValue(words[5]),
+                Carbohydrates = ExtractDecimalValue(words[6]),
+                Sugar = ExtractDecimalValue(words[7]),
+                Fibre = ExtractDecimalValue(words[8])
             };
         }
 
