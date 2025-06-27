@@ -30,7 +30,7 @@ namespace HealthTracker.Client.ApiClient
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no activity types in the database
-            List<BloodPressureBand> bands = !string.IsNullOrEmpty(json) ? Deserialize<List<BloodPressureBand>>(json) : null;
+            List<BloodPressureBand> bands = Deserialize<List<BloodPressureBand>>(json);
             return bands;
         }
 
@@ -46,7 +46,7 @@ namespace HealthTracker.Client.ApiClient
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no activity types in the database
-            List<BloodOxygenSaturationBand> bands = !string.IsNullOrEmpty(json) ? Deserialize<List<BloodOxygenSaturationBand>>(json) : null;
+            List<BloodOxygenSaturationBand> bands = Deserialize<List<BloodOxygenSaturationBand>>(json);
             return bands;
         }
 
@@ -62,7 +62,7 @@ namespace HealthTracker.Client.ApiClient
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no activity types in the database
-            List<BMIBand> bands = !string.IsNullOrEmpty(json) ? Deserialize<List<BMIBand>>(json) : null;
+            List<BMIBand> bands = Deserialize<List<BMIBand>>(json);
             return bands;
         }
     }

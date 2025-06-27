@@ -10,20 +10,20 @@ using HealthTracker.Client.Interfaces;
 namespace HealthTracker.Mvc.Controllers
 {
     [Authorize]
-    public class FoodItemController : HealthTrackerControllerBase
+    public class MealController : HealthTrackerControllerBase
     {
-        private readonly ILogger<FoodItemController> _logger;
-        private readonly IFoodItemHelper _helper;
+        private readonly ILogger<MealController> _logger;
+        private readonly IMealHelper _helper;
         private readonly IHealthTrackerApplicationSettings _settings;
-        private readonly IFoodCategoryListGenerator _listGenerator;
-        private readonly IFoodCategoryFilterGenerator _filterGenerator;
+        private readonly IFoodSourceListGenerator _listGenerator;
+        private readonly IFoodSourceFilterGenerator _filterGenerator;
 
-        public FoodItemController(
-            IFoodItemHelper helper,
+        public MealController(
+            IMealHelper helper,
             IHealthTrackerApplicationSettings settings,
-            IFoodCategoryListGenerator listGenerator,
-            IFoodCategoryFilterGenerator filterGenerator,
-            ILogger<FoodItemController> logger)
+            IFoodSourceListGenerator listGenerator,
+            IFoodSourceFilterGenerator filterGenerator,
+            ILogger<MealController> logger)
         {
             _helper = helper;
             _settings = settings;
@@ -33,19 +33,19 @@ namespace HealthTracker.Mvc.Controllers
         }
 
         /// <summary>
-        /// Serve the items list page
+        /// Serve the meal list page
         /// </summary>
-        /// <param name="foodCategoryId"></param>
+        /// <param name="foodSourceId"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> Index(int foodCategoryId = 0)
+        public async Task<IActionResult> Index(int foodSourceId = 0)
         {
-            _logger.LogDebug($"Rendering index view: Food Category ID = {foodCategoryId}");
+            _logger.LogDebug($"Rendering index view: Food Source ID = {foodSourceId}");
 
-            var model = new FoodItemListViewModel
+            var model = new MealListViewModel
             {
                 PageNumber = 1,
-                Filters = await _filterGenerator.Create(foodCategoryId, ViewFlags.ListView)
+                Filters = await _filterGenerator.Create(foodSourceId, ViewFlags.ListView)
             };
 
             return View(model);
@@ -58,7 +58,7 @@ namespace HealthTracker.Mvc.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(FoodItemListViewModel model)
+        public async Task<IActionResult> Index(MealListViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -76,7 +76,7 @@ namespace HealthTracker.Mvc.Controllers
                     case ControllerActions.ActionExport:
                         return RedirectToAction("Export", "Export", new
                         {
-                            exportType = DataExchangeType.FoodItems
+                            exportType = DataExchangeType.Meals
                         });
                     default:
                         break;
@@ -88,17 +88,17 @@ namespace HealthTracker.Mvc.Controllers
                 ModelState.Clear();
 
                 // Retrieve the matching records
-                _logger.LogDebug($"Retrieving page {page} of food items for category with ID {model.Filters.FoodCategoryId}");
+                _logger.LogDebug($"Retrieving page {page} of meals for source with ID {model.Filters.FoodSourceId}");
 
-                var items = await _helper.ListAsync(model.Filters.FoodCategoryId, page, _settings.ResultsPageSize);
-                model.SetEntities(items, page, _settings.ResultsPageSize);
+                var meals = await _helper.ListAsync(model.Filters.FoodSourceId, page, _settings.ResultsPageSize);
+                model.SetEntities(meals, page, _settings.ResultsPageSize);
 
-                if (items.Count > 0)
+                if (meals.Count > 0)
                 {
                     model.Filters.ShowExportButton = true;
                 }
 
-                _logger.LogDebug($"{items.Count} matching food items retrieved");
+                _logger.LogDebug($"{meals.Count} matching meals retrieved");
             }
             else
             {
@@ -106,14 +106,14 @@ namespace HealthTracker.Mvc.Controllers
             }
 
             // Populate the list of people and render the view
-            await _filterGenerator.PopulateFoodCategoryList(model.Filters);
+            await _filterGenerator.PopulateFoodSourceList(model.Filters);
             model.Filters.ShowAddButton = true;
             model.Filters.ShowExportButton = true;
             return View(model);
         }
 
         /// <summary>
-        /// Serve the page to add a new item
+        /// Serve the page to add a new source
         /// </summary>
         /// <param name="personId"></param>
         /// <param name="start"></param>
@@ -122,19 +122,19 @@ namespace HealthTracker.Mvc.Controllers
         [HttpGet]
         public async Task<IActionResult> Add()
         {
-            var model = new AddFoodItemViewModel() { FoodCategories = await _listGenerator.Create() };
-            model.CreateItem();
+            var model = new AddMealViewModel() { FoodSources = await _listGenerator.Create() };
+            model.CreateMeal();
             return View(model);
         }
 
         /// <summary>
-        /// Handle POST events to save new food items
+        /// Handle POST events to save new meals
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add(AddFoodItemViewModel model)
+        public async Task<IActionResult> Add(AddMealViewModel model)
         {
             if (model.Action == ControllerActions.ActionCancel)
             {
@@ -143,18 +143,18 @@ namespace HealthTracker.Mvc.Controllers
 
             if (ModelState.IsValid)
             {
-                // Add the food item and nutritional value record
-                var item = await _helper.AddAsync(model.FoodItem);
+                // Add the meal and nutritional value record
+                var meal = await _helper.AddAsync(model.Meal);
 
-                // Return the item list view containing only the new item and a confirmation message
-                var listModel = new FoodItemListViewModel
+                // Return the meal list view containing only the new meal and a confirmation message
+                var listModel = new MealListViewModel
                 {
                     PageNumber = 1,
                     Filters = await _filterGenerator.Create(0, ViewFlags.ListView),
-                    Message = "Food item added successfully",
+                    Message = "Meal added successfully",
                 };
 
-                listModel.SetEntities([item], 1, _settings.ResultsPageSize);
+                listModel.SetEntities([meal], 1, _settings.ResultsPageSize);
 
                 return View("Index", listModel);
             }
@@ -163,38 +163,38 @@ namespace HealthTracker.Mvc.Controllers
                 LogModelStateErrors(_logger);
             }
 
-            // Populate the food category list and render the view
-            model.FoodCategories = await _listGenerator.Create();
+            // Populate the food source list and render the view
+            model.FoodSources = await _listGenerator.Create();
             return View(model);
         }
 
         /// <summary>
-        /// Serve the page to edit an existing item
+        /// Serve the page to edit an existing meal
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            _logger.LogDebug($"Rendering edit view: Food Item ID = {id}");
+            _logger.LogDebug($"Rendering edit view: Meal ID = {id}");
 
-            var model = new EditFoodItemViewModel()
+            var model = new EditMealViewModel()
             {
-                FoodItem = await _helper.GetAsync(id),
-                FoodCategories = await _listGenerator.Create()
+                Meal = await _helper.GetAsync(id),
+                FoodSources = await _listGenerator.Create()
             };
 
             return View(model);
         }
 
         /// <summary>
-        /// Handle POST events to save food items
+        /// Handle POST events to save meals
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EditFoodItemViewModel model)
+        public async Task<IActionResult> Edit(EditMealViewModel model)
         {
             IActionResult result;
 
@@ -205,19 +205,18 @@ namespace HealthTracker.Mvc.Controllers
 
             if (ModelState.IsValid)
             {
+                // Update the meal and nutritional value record
+                var meal = await _helper.UpdateAsync(model.Meal);
 
-                // Update the food item and nutritional value record
-                var item = await _helper.UpdateAsync(model.FoodItem);
-
-                // Return the item list view containing only the new item and a confirmation message
-                var listModel = new FoodItemListViewModel
+                // Return the meal list view containing only the new meal and a confirmation message
+                var listModel = new MealListViewModel
                 {
                     PageNumber = 1,
                     Filters = await _filterGenerator.Create(0, ViewFlags.ListView),
-                    Message = "Food item successfully updated",
+                    Message = "Meal successfully updated",
                 };
 
-                listModel.SetEntities([item], 1, _settings.ResultsPageSize);
+                listModel.SetEntities([meal], 1, _settings.ResultsPageSize);
 
                 return View("Index", listModel);
             }
@@ -227,13 +226,13 @@ namespace HealthTracker.Mvc.Controllers
                 result = View(model);
             }
 
-            // Populate the food category list and render the view
-            model.FoodCategories = await _listGenerator.Create();
+            // Populate the food source list and render the view
+            model.FoodSources = await _listGenerator.Create();
             return result;
         }
 
         /// <summary>
-        /// Handle POST events to delete an existing food item
+        /// Handle POST events to delete an existing meal
         /// </summary>
         /// <param name="collection"></param>
         /// <returns></returns>
@@ -241,16 +240,16 @@ namespace HealthTracker.Mvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            // Delete the item
-            _logger.LogDebug($"Deleting food item: ID = {id}");
+            // Delete the meal
+            _logger.LogDebug($"Deleting meal: ID = {id}");
             await _helper.DeleteAsync(id);
 
-            // Return the list view with an empty list of items
-            var model = new FoodItemListViewModel
+            // Return the list view with an empty list of meals
+            var model = new MealListViewModel
             {
                 PageNumber = 1,
                 Filters = await _filterGenerator.Create(0, ViewFlags.ListView),
-                Message = "Food item successfully deleted"
+                Message = "Meal successfully deleted"
             };
 
             return View("Index", model);

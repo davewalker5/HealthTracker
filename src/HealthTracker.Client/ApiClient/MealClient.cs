@@ -24,20 +24,20 @@ namespace HealthTracker.Client.ApiClient
         /// Add a new meal
         /// </summary>
         /// <param name="name"></param>
-        /// <param name="portion"></param>
+        /// <param name="portions"></param>
         /// <param name="foodSourceId"></param>
         /// <param name="nutritionalValueId"></param>
         /// <returns></returns>
         public async Task<Meal> AddAsync(
             string name,
-            decimal portion,
+            int portions,
             int foodSourceId,
             int? nutritionalValueId)
         {
             dynamic template = new
             {
                 Name = name,
-                Portion = portion,
+                Portions = portions,
                 FoodSourceId = foodSourceId,
                 NutritionalValueId = nutritionalValueId
             };
@@ -61,7 +61,7 @@ namespace HealthTracker.Client.ApiClient
         public async Task<Meal> UpdateAsync(
             int id,
             string name,
-            decimal portion,
+            int portions,
             int foodSourceId,
             int? nutritionalValueId)
         {
@@ -69,7 +69,7 @@ namespace HealthTracker.Client.ApiClient
             {
                 Id = id,
                 Name = name,
-                Portion = portion,
+                Portions = portions,
                 FoodSourceId = foodSourceId,
                 NutritionalValueId = nutritionalValueId
             };
@@ -157,7 +157,7 @@ namespace HealthTracker.Client.ApiClient
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no items in the database
-            List<Meal> items = !string.IsNullOrEmpty(json) ? Deserialize<List<Meal>>(json) : null;
+            List<Meal> items = Deserialize<List<Meal>>(json);
             return items;
         }
     }

@@ -37,7 +37,7 @@ namespace HealthTracker.Client.ApiClient
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no records in the database
-            List<JobStatus> records = !string.IsNullOrEmpty(json) ? Deserialize<List<JobStatus>>(json) : null;
+            List<JobStatus> records = Deserialize<List<JobStatus>>(json);
             return records;
         }
     }

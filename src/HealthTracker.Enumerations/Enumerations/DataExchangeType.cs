@@ -9,6 +9,7 @@ namespace HealthTracker.Enumerations.Enumerations
         Exercise,
         FoodItems,
         Glucose,
+        Meals,
         Weight
     }
 }

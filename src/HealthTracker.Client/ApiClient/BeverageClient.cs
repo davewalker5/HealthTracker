@@ -97,7 +97,7 @@ namespace HealthTracker.Client.ApiClient
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no activity types in the database
-            List<Beverage> beverages = !string.IsNullOrEmpty(json) ? Deserialize<List<Beverage>>(json) : null;
+            List<Beverage> beverages = Deserialize<List<Beverage>>(json);
             return beverages;
         }
     }

@@ -195,7 +195,7 @@ namespace HealthTracker.Client.ApiClient
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no measurements in the database
-            List<ExerciseMeasurement> measurements = !string.IsNullOrEmpty(json) ? Deserialize<List<ExerciseMeasurement>>(json) : null;
+            List<ExerciseMeasurement> measurements = Deserialize<List<ExerciseMeasurement>>(json);
             return measurements;
         }
 
@@ -218,7 +218,7 @@ namespace HealthTracker.Client.ApiClient
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // Deserialise the JSON response into a collection of summary objects
-            IEnumerable<ExerciseSummary> summaries = !string.IsNullOrEmpty(json) ? Deserialize<IEnumerable<ExerciseSummary>>(json) : null;
+            IEnumerable<ExerciseSummary> summaries = Deserialize<IEnumerable<ExerciseSummary>>(json);
             return summaries;
         }
     }

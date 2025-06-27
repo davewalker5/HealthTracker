@@ -6,14 +6,14 @@ namespace HealthTracker.Client.Interfaces
     {
         Task<Meal> AddAsync(
             string name,
-            decimal portion,
+            int portions,
             int foodSourceId,
             int? nutritionalValueId);
 
         Task<Meal> UpdateAsync(
             int id,
             string name,
-            decimal portion,
+            int portions,
             int foodSourceId,
             int? nutritionalValueId);
 

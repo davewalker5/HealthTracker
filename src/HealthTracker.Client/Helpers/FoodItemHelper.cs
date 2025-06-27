@@ -3,20 +3,17 @@ using HealthTracker.Client.Interfaces;
 using HealthTracker.Entities.Food;
 using Microsoft.Extensions.Logging;
 
-namespace HealthTracker.Mvc.Helpers
+namespace HealthTracker.Client.Helpers
 {
     [ExcludeFromCodeCoverage]
-    public class FoodItemHelper : IFoodItemHelper
+    public class FoodItemHelper : NutritionalValueHelper<FoodItemHelper>, IFoodItemHelper
     {
         private readonly IFoodItemClient _foodItemClient;
-        private readonly INutritionalValueClient _nutritionalValueClient;
-        private readonly ILogger<FoodItemHelper> _logger;
 
         public FoodItemHelper(IFoodItemClient foodItemClient, INutritionalValueClient nutritionalValueClient, ILogger<FoodItemHelper> logger)
+            : base(nutritionalValueClient, logger)
         {
             _foodItemClient = foodItemClient;
-            _nutritionalValueClient = nutritionalValueClient;
-            _logger = logger;
         }
 
         /// <summary>
@@ -52,7 +49,7 @@ namespace HealthTracker.Mvc.Helpers
         /// <returns></returns>
         public async Task<FoodItem> AddAsync(FoodItem template)
         {
-            _logger.LogDebug(
+            Logger.LogDebug(
                 $"Adding new food item: Food Category ID = {template.FoodCategoryId}, " +
                 $"Name = {template.Name}, " +
                 $"Portion = {template.Portion}");
@@ -77,7 +74,7 @@ namespace HealthTracker.Mvc.Helpers
         /// <returns></returns>
         public async Task<FoodItem> UpdateAsync(FoodItem template)
         {
-            _logger.LogDebug(
+            Logger.LogDebug(
                 $"Updating food item: ID = {template.Id}, " +
                 $"Food Category ID = {template.FoodCategoryId}, " +
                 $"Name = {template.Name}, " +
@@ -87,8 +84,8 @@ namespace HealthTracker.Mvc.Helpers
             // updating the item itself and won't create redundant nutritional value records
             var item = await _foodItemClient.UpdateAsync(template.Id, template.Name, template.Portion, template.FoodCategoryId, null);
 
-            _logger.LogDebug($"Template food item has Nutritional Value ID = {template.NutritionalValueId}");
-            _logger.LogDebug($"Template nutritional values 'HasValues' = {template.NutritionalValue?.HasValues}");
+            Logger.LogDebug($"Template food item has Nutritional Value ID = {template.NutritionalValueId}");
+            Logger.LogDebug($"Template nutritional values 'HasValues' = {template.NutritionalValue?.HasValues}");
 
             int? nutritionalValueId = null;
             if (((template.NutritionalValueId ?? 0) <= 0) && (template.NutritionalValue?.HasValues == true))
@@ -109,87 +106,6 @@ namespace HealthTracker.Mvc.Helpers
             }
 
             return item;
-        }
-
-        /// <summary>
-        /// Add a nutritional value
-        /// </summary>
-        /// <param name="template"></param>
-        /// <returns></returns>
-        private async Task<int?> AddNutritionalValue(NutritionalValue template)
-        {
-            int? nutritionalValueId = null;
-
-            if (template?.HasValues == true)
-            {
-                _logger.LogDebug($"Adding nutritional value record: Calories = {template?.Calories}, " +
-                    $"Fat = {template?.Fat}, " +
-                    $"Saturated Fat = {template?.SaturatedFat}, " +
-                    $"Protein = {template?.Protein}, " +
-                    $"Carbohydrates = {template?.Carbohydrates}, " +
-                    $"Sugar = {template?.Sugar}, " +
-                    $"Fibre = {template?.Fibre}");
-
-                var added = await _nutritionalValueClient.AddAsync(
-                    template.Calories,
-                    template.Fat,
-                    template.SaturatedFat,
-                    template.Protein,
-                    template.Carbohydrates,
-                    template.Sugar,
-                    template.Fibre);
-
-                nutritionalValueId = added.Id;
-            }
-
-            return nutritionalValueId;
-        }
-
-        /// <summary>
-        /// Update an existing nutritional value from the supplied template
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="template"></param>
-        /// <returns></returns>
-        private async Task<int?> UpdateNutritionalValueAsync(int? id, NutritionalValue template)
-        {
-            // Assess the state of the associated nutritional value:
-            //
-            // 1. Existing record, no longer has values => Delete it
-            // 1. New record, has no values => No further action
-            // 2. New Record, has values => Save it, then associate with the food item
-            // 4. Existing record, has values => Update it
-            if ((id > 0) && (template?.HasValues != true))
-            {
-                // Existing record but no longer has any values associated with it and can be deleted
-                _logger.LogDebug($"Deleting nutritional value with ID {id}");
-                await _nutritionalValueClient.DeleteAsync(id ?? 0);
-                id = null;
-            }
-            else
-            {
-                // Existing record and still has values so needs to be updated
-                _logger.LogDebug($"Updating nutritional value with ID {template.Id} : " +
-                    $"Calories = {template.Calories}, " +
-                    $"Fat = {template.Fat}, " +
-                    $"Saturated Fat = {template.SaturatedFat}, " +
-                    $"Protein = {template.Protein}, " +
-                    $"Carbohydrates = {template.Carbohydrates}, " +
-                    $"Sugar = {template.Sugar}, " +
-                    $"Fibre = {template.Fibre}");
-
-                _ = await _nutritionalValueClient.UpdateAsync(
-                    id ?? 0,
-                    template.Calories,
-                    template.Fat,
-                    template.SaturatedFat,
-                    template.Protein,
-                    template.Carbohydrates,
-                    template.Sugar,
-                    template.Fibre);
-            }
-
-            return id;
         }
     }
 }

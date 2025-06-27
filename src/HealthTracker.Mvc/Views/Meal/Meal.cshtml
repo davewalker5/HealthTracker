@@ -1,0 +1,138 @@
+@model HealthTracker.Mvc.Models.MealViewModel
+
+@Html.HiddenFor(m => m.Meal.Id)
+@Html.HiddenFor(m => m.Meal.NutritionalValueId)
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Meal.Name)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Meal.Name, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Meal.Name, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Meal.FoodSourceId)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.DropDownListFor(m => m.Meal.FoodSourceId, Model.FoodSources, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Meal.FoodSourceId, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Meal.Portions)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Meal.Portions, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Meal.Portions, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Meal.NutritionalValue.Calories)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Meal.NutritionalValue.Calories, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Meal.NutritionalValue.Calories, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Meal.NutritionalValue.Fat)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Meal.NutritionalValue.Fat, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Meal.NutritionalValue.Fat, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Meal.NutritionalValue.SaturatedFat)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Meal.NutritionalValue.SaturatedFat, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Meal.NutritionalValue.SaturatedFat, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Meal.NutritionalValue.Protein)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Meal.NutritionalValue.Protein, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Meal.NutritionalValue.Protein, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Meal.NutritionalValue.Carbohydrates)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Meal.NutritionalValue.Carbohydrates, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Meal.NutritionalValue.Carbohydrates, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Meal.NutritionalValue.Sugar)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Meal.NutritionalValue.Sugar, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Meal.NutritionalValue.Sugar, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Meal.NutritionalValue.Fibre)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Meal.NutritionalValue.Fibre, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Meal.NutritionalValue.Fibre, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $(document).on("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                $('#Save').click();
+            }
+        });
+    });
+</script>

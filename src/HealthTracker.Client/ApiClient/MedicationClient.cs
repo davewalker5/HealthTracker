@@ -84,7 +84,7 @@ namespace HealthTracker.Client.ApiClient
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no medications in the database
-            List<Medication> medications = !string.IsNullOrEmpty(json) ? Deserialize<List<Medication>>(json) : null;
+            List<Medication> medications = Deserialize<List<Medication>>(json);
             return medications;
         }
     }

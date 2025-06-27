@@ -178,7 +178,7 @@ namespace HealthTracker.Client.ApiClient
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no measurements in the database
-            var measurements = !string.IsNullOrEmpty(json) ? Deserialize<List<BeverageConsumptionMeasurement>>(json) : null;
+            var measurements = Deserialize<List<BeverageConsumptionMeasurement>>(json);
             return measurements;
         }
 
@@ -213,7 +213,7 @@ namespace HealthTracker.Client.ApiClient
             var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
             var route = $"{baseRoute}/totalhydrating/{personId}/{encodedFromDate}/{encodedToDate}";
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
-            var measurement = !string.IsNullOrEmpty(json) ? Deserialize<BeverageConsumptionSummary>(json) : null;
+            var measurement = Deserialize<BeverageConsumptionSummary>(json);
 
             return measurement;
         }
@@ -233,7 +233,7 @@ namespace HealthTracker.Client.ApiClient
             var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
             var route = $"{baseRoute}/dailytotalhydrating/{personId}/{encodedFromDate}/{encodedToDate}";
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
-            var measurements = !string.IsNullOrEmpty(json) ? Deserialize<List<BeverageConsumptionMeasurement>>(json) : null;
+            var measurements = Deserialize<List<BeverageConsumptionMeasurement>>(json);
 
             return measurements;
         }
@@ -269,7 +269,7 @@ namespace HealthTracker.Client.ApiClient
             var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
             var route = $"{baseRoute}/totalalcohol/{personId}/{encodedFromDate}/{encodedToDate}";
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
-            var measurement = !string.IsNullOrEmpty(json) ? Deserialize<BeverageConsumptionSummary>(json) : null;
+            var measurement = Deserialize<BeverageConsumptionSummary>(json);
 
             return measurement;
         }
@@ -289,7 +289,7 @@ namespace HealthTracker.Client.ApiClient
             var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
             var route = $"{baseRoute}/dailytotalalcohol/{personId}/{encodedFromDate}/{encodedToDate}";
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
-            var measurements = !string.IsNullOrEmpty(json) ? Deserialize<List<BeverageConsumptionMeasurement>>(json) : null;
+            var measurements = Deserialize<List<BeverageConsumptionMeasurement>>(json);
 
             return measurements;
         }

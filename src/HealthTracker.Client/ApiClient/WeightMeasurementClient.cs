@@ -153,7 +153,7 @@ namespace HealthTracker.Client.ApiClient
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no measurements in the database
-            List<WeightMeasurement> measurements = !string.IsNullOrEmpty(json) ? Deserialize<List<WeightMeasurement>>(json) : null;
+            List<WeightMeasurement> measurements = Deserialize<List<WeightMeasurement>>(json);
             return measurements;
         }
 
@@ -176,7 +176,7 @@ namespace HealthTracker.Client.ApiClient
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // If there are no measurements in range, the result will be empty
-            var measurement = !string.IsNullOrEmpty(json) ? Deserialize<WeightMeasurement>(json) : null;
+            var measurement = Deserialize<WeightMeasurement>(json);
 
             return measurement;
         }
