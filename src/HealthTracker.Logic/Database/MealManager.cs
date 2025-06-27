@@ -23,6 +23,7 @@ namespace HealthTracker.Logic.Database
         /// <returns></returns>
         public async Task<List<Meal>> ListAsync(Expression<Func<Meal, bool>> predicate, int pageNumber, int pageSize)
             => await Context.Meals
+                            .Include(x => x.FoodSource)
                             .Include(x => x.NutritionalValue)
                             .Where(predicate)
                             .OrderBy(x => x.Name)
@@ -35,15 +36,17 @@ namespace HealthTracker.Logic.Database
         /// </summary>
         /// <param name="name"></param>
         /// <param name="portion"></param>
+        /// <param name="foodSourceId"></param>
         /// <param name="nutritionalValueId"></param>
         /// <returns></returns>
-        public async Task<Meal> AddAsync(string name, int portions, int? nutritionalValueId)
+        public async Task<Meal> AddAsync(string name, int portions, int foodSourceId, int? nutritionalValueId)
         {
-            Factory.Logger.LogMessage(Severity.Info, $"Adding meal: Name = {name}, Portions = {portions}, Nutritional Value ID = {nutritionalValueId}");
+            Factory.Logger.LogMessage(Severity.Info, $"Adding meal: Name = {name}, Portions = {portions}, Food Source ID = {foodSourceId}, Nutritional Value ID = {nutritionalValueId}");
 
             // Clean up the name and make sure we're not creating a duplicate and that the
             // related nutritional value exists
             var clean = StringCleaner.Clean(name);
+            CheckSourceExists(foodSourceId);
             CheckNutritionalValueExists(nutritionalValueId);
             await CheckMealIsNotADuplicate(clean, 0);
 
@@ -52,6 +55,7 @@ namespace HealthTracker.Logic.Database
             {
                 Name = clean,
                 Portions = portions,
+                FoodSourceId = foodSourceId,
                 NutritionalValueId = nutritionalValueId
             };
 
@@ -68,11 +72,12 @@ namespace HealthTracker.Logic.Database
         /// <param name="id"></param>
         /// <param name="name"></param>
         /// <param name="portion"></param>
+        /// <param name="foodSourceId"></param>
         /// <param name="nutritionalValueId"></param>
         /// <returns></returns>
-        public async Task<Meal> UpdateAsync(int id, string name, int portions, int? nutritionalValueId)
+        public async Task<Meal> UpdateAsync(int id, string name, int portions, int foodSourceId, int? nutritionalValueId)
         {
-            Factory.Logger.LogMessage(Severity.Info, $"Updating meal with ID {id}: Name = {name}, Portions = {portions}, Nutritional Value ID = {nutritionalValueId}");
+            Factory.Logger.LogMessage(Severity.Info, $"Updating meal with ID {id}: Name = {name}, Portions = {portions}, Food Source ID = {foodSourceId}, Nutritional Value ID = {nutritionalValueId}");
 
             // Retrieve the meal for update
             var item = Context.Meals.FirstOrDefault(x => x.Id == id);
@@ -81,16 +86,19 @@ namespace HealthTracker.Logic.Database
                 // Clean up the name and make sure we're not creating a duplicate and that the
                 // related nutritional value exists
                 var clean = StringCleaner.Clean(name);
+                CheckSourceExists(foodSourceId);
                 CheckNutritionalValueExists(nutritionalValueId);
                 await CheckMealIsNotADuplicate(clean, id);
 
                 // Update the meal
                 item.Name = clean;
                 item.Portions = portions;
+                item.FoodSourceId = foodSourceId;
                 item.NutritionalValueId = nutritionalValueId;
                 await Context.SaveChangesAsync();
 
-                // Reload the associated nutritional value
+                // Reload the associated nutritional value and food source
+                await Context.Entry(item).Reference(x => x.FoodSource).LoadAsync();
                 await Context.Entry(item).Reference(x => x.NutritionalValue).LoadAsync();
             }
 
@@ -111,6 +119,20 @@ namespace HealthTracker.Logic.Database
             {
                 Factory.Context.Remove(item);
                 await Factory.Context.SaveChangesAsync();
+            }
+        }
+
+        /// <summary>
+        /// Check a food source with a specified ID exists and raise an exception if not
+        /// </summary>
+        /// <param name="foodSourceId"></param>
+        protected void CheckSourceExists(int foodSourceId)
+        {
+            var category = Context.FoodSources.FirstOrDefault(x => x.Id == foodSourceId);
+            if (category == null)
+            {
+                var message = $"Food source with Id {foodSourceId} does not exist";
+                throw new FoodSourceNotFoundException(message);
             }
         }
 

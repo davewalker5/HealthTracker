@@ -6,10 +6,13 @@ namespace HealthTracker.DataExchange.Entities
     [ExcludeFromCodeCoverage]
     public class ExportableMeal
     {
-        public const string CsvRecordPattern = @"^"".*"",""[0-9]+""(,""(?:[0-9.]+)?""){7}.?$";
+        public const string CsvRecordPattern = @"^"".*"","".*"",""[0-9]+""(,""(?:[0-9.]+)?""){7}.?$";
 
         [Export("Name", 1)]
         public string Name { get; set; }
+
+        [Export("Source", 2)]
+        public string FoodSource { get; set; }
 
         [Export("Portions", 3)]
         public int Portions { get; set; }
@@ -41,14 +44,15 @@ namespace HealthTracker.DataExchange.Entities
             return new ExportableMeal
             {
                 Name = words[0].Replace("\"", "").Trim(),
-                Portions = int.Parse(words[1].Replace("\"", "").Trim()),
-                Calories = ExtractDecimalValue(words[2]),
-                Fat = ExtractDecimalValue(words[3]),
-                SaturatedFat = ExtractDecimalValue(words[4]),
-                Protein = ExtractDecimalValue(words[5]),
-                Carbohydrates = ExtractDecimalValue(words[6]),
-                Sugar = ExtractDecimalValue(words[7]),
-                Fibre = ExtractDecimalValue(words[8])
+                FoodSource = words[1].Replace("\"", "").Trim(),
+                Portions = int.Parse(words[2].Replace("\"", "").Trim()),
+                Calories = ExtractDecimalValue(words[3]),
+                Fat = ExtractDecimalValue(words[4]),
+                SaturatedFat = ExtractDecimalValue(words[5]),
+                Protein = ExtractDecimalValue(words[6]),
+                Carbohydrates = ExtractDecimalValue(words[7]),
+                Sugar = ExtractDecimalValue(words[8]),
+                Fibre = ExtractDecimalValue(words[9])
             };
         }
 

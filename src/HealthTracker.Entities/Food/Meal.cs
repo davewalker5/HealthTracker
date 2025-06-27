@@ -12,6 +12,12 @@ namespace HealthTracker.Entities.Food
         [Range(1, int.MaxValue, ErrorMessage="{0} must be >= {1}")]
         public int Portions { get; set; }
 
+        [DisplayName("Food Source")]
+        [ForeignKey(nameof(FoodSource))]
+        [Range(1, int.MaxValue, ErrorMessage = "You must select a food source")]
+        public int FoodSourceId { get; set; }
+        public FoodSource FoodSource { get; set; }
+
         [ForeignKey(nameof(NutritionalValue))]
         public int? NutritionalValueId { get; set; }
         public NutritionalValue NutritionalValue { get; set; }

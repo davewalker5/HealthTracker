@@ -823,9 +823,11 @@ namespace HealthTracker.Tests.Mocks
                 Id = RandomId(),
                 Name = RandomTitleCasePhrase(3, 5, 20),
                 Portions = RandomInt(1, 10),
+                FoodSource = RandomFoodSource(),
                 NutritionalValue = RandomNutritionalValue()
             };
 
+            meal.FoodSourceId = meal.FoodSource.Id;
             meal.NutritionalValueId = meal.NutritionalValue.Id;
             return meal;
         }

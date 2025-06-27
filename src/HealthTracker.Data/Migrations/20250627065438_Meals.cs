@@ -12,6 +12,8 @@ namespace HealthTracker.Data.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("PRAGMA foreign_keys = ON;");
+
             migrationBuilder.CreateTable(
                 name: "MEALS",
                 columns: table => new

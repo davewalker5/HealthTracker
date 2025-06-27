@@ -25,17 +25,20 @@ namespace HealthTracker.Client.ApiClient
         /// </summary>
         /// <param name="name"></param>
         /// <param name="portion"></param>
+        /// <param name="foodSourceId"></param>
         /// <param name="nutritionalValueId"></param>
         /// <returns></returns>
         public async Task<Meal> AddAsync(
             string name,
             decimal portion,
+            int foodSourceId,
             int? nutritionalValueId)
         {
             dynamic template = new
             {
                 Name = name,
                 Portion = portion,
+                FoodSourceId = foodSourceId,
                 NutritionalValueId = nutritionalValueId
             };
 
@@ -52,12 +55,14 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="id"></param>
         /// <param name="name"></param>
         /// <param name="portion"></param>
+        /// <param name="foodSourceId"></param>
         /// <param name="nutritionalValueId"></param>
         /// <returns></returns>
         public async Task<Meal> UpdateAsync(
             int id,
             string name,
             decimal portion,
+            int foodSourceId,
             int? nutritionalValueId)
         {
             dynamic template = new
@@ -65,6 +70,7 @@ namespace HealthTracker.Client.ApiClient
                 Id = id,
                 Name = name,
                 Portion = portion,
+                FoodSourceId = foodSourceId,
                 NutritionalValueId = nutritionalValueId
             };
 
@@ -139,14 +145,15 @@ namespace HealthTracker.Client.ApiClient
         /// <summary>
         /// Return a list of meals
         /// </summary>
+        /// <param name="foodSourceId"></param>
         /// <param name="pageNumber"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<List<Meal>> ListAsync(int pageNumber, int pageSize)
+        public async Task<List<Meal>> ListAsync(int foodSourceId, int pageNumber, int pageSize)
         {
             // Request a list of meals
             string baseRoute = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
-            string route = $"{baseRoute}/{pageNumber}/{pageSize}";
+            string route = $"{baseRoute}/{foodSourceId}/{pageNumber}/{pageSize}";
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no items in the database

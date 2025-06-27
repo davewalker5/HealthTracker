@@ -7,15 +7,17 @@ namespace HealthTracker.Client.Interfaces
         Task<Meal> AddAsync(
             string name,
             decimal portion,
+            int foodSourceId,
             int? nutritionalValueId);
 
         Task<Meal> UpdateAsync(
             int id,
             string name,
             decimal portion,
+            int foodSourceId,
             int? nutritionalValueId);
 
         Task DeleteAsync(int id);
-        Task<List<Meal>> ListAsync(int pageNumber, int pageSize);
+        Task<List<Meal>> ListAsync(int foodSourceId, int pageNumber, int pageSize);
     }
 }

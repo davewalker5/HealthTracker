@@ -2,6 +2,7 @@ using HealthTracker.Entities.Interfaces;
 using HealthTracker.Entities.Food;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
 
 namespace HealthTracker.Api.Controllers
 {
@@ -40,10 +41,12 @@ namespace HealthTracker.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("{pageNumber}/{pageSize}")]
-        public async Task<ActionResult<IEnumerable<Meal>>> ListMealsAsync(int pageNumber, int pageSize)
+        [Route("{foodSourceId}/{pageNumber}/{pageSize}")]
+        public async Task<ActionResult<IEnumerable<Meal>>> ListMealsAsync(int foodSourceId, int pageNumber, int pageSize)
         {
-            var meals = await _factory.Meals.ListAsync(x => true, pageNumber, pageSize);
+            // If a food source is provided, return only meals from that source. Otherwise, return all meals.
+            Expression<Func<Meal, bool>> predicate = foodSourceId > 0 ? x => x.FoodSourceId == foodSourceId : x => true;
+            var meals = await _factory.Meals.ListAsync(predicate, pageNumber, pageSize);
 
             if (meals == null)
             {
@@ -62,7 +65,7 @@ namespace HealthTracker.Api.Controllers
         [Route("")]
         public async Task<ActionResult<Meal>> AddMealAsync([FromBody] Meal template)
         {
-            var meal = await _factory.Meals.AddAsync(template.Name, template.Portions, template.NutritionalValueId);
+            var meal = await _factory.Meals.AddAsync(template.Name, template.Portions, template.FoodSourceId, template.NutritionalValueId);
             return meal;
         }
 
@@ -75,7 +78,7 @@ namespace HealthTracker.Api.Controllers
         [Route("")]
         public async Task<ActionResult<Meal>> UpdateMealAsync([FromBody] Meal template)
         {
-            var meal = await _factory.Meals.UpdateAsync(template.Id, template.Name, template.Portions, template.NutritionalValueId);
+            var meal = await _factory.Meals.UpdateAsync(template.Id, template.Name, template.Portions, template.FoodSourceId, template.NutritionalValueId);
             return meal;
         }
 

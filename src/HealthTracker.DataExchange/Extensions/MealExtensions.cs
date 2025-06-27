@@ -14,6 +14,7 @@ namespace HealthTracker.DataExchange.Extensions
             => new()
             {
                 Name = meal.Name,
+                FoodSource = meal.FoodSource.Name,
                 Portions = meal.Portions,
                 Calories = meal.NutritionalValue?.Calories,
                 Fat = meal.NutritionalValue?.Fat,
@@ -45,11 +46,16 @@ namespace HealthTracker.DataExchange.Extensions
         /// Return a meal from an exportable meal
         /// </summary>
         /// <param name="meal"></param>
+        /// <param name="sources"></param>
         /// <returns></returns>
-        public static Meal FromExportable(this ExportableMeal meal)
-            => new ()
+        public static Meal FromExportable(this ExportableMeal meal, IEnumerable<FoodSource> sources)
+        {
+            var source = sources.First(x => x.Name == meal.FoodSource);
+            return new()
             {
                 Name = meal.Name,
+                FoodSource = source,
+                FoodSourceId = source.Id,
                 Portions = meal.Portions,
                 NutritionalValue = new NutritionalValue
                 {
@@ -62,19 +68,21 @@ namespace HealthTracker.DataExchange.Extensions
                     Fibre = meal.Fibre
                 }
             };
+        }
 
         /// <summary>
         /// Return a collection of meals from a collection of exportable meals
         /// </summary>
         /// <param name="exportable"></param>
+        /// <param name="sources"></param>
         /// <returns></returns>
-        public static IEnumerable<Meal> FromExportable(this IEnumerable<ExportableMeal> exportable)
+        public static IEnumerable<Meal> FromExportable(this IEnumerable<ExportableMeal> exportable, IEnumerable<FoodSource> sources)
         {
             var meals = new List<Meal>();
 
             foreach (var meal in exportable)
             {
-                meals.Add(meal.FromExportable());
+                meals.Add(meal.FromExportable(sources));
             }
 
             return meals;

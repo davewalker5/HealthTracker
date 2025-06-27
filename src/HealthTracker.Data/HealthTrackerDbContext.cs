@@ -282,7 +282,14 @@ namespace HealthTracker.Data
                 entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
                 entity.Property(e => e.Name).IsRequired().HasColumnName("name").HasColumnType("VARCHAR(100)");
                 entity.Property(e => e.Portions).IsRequired().HasColumnName("portions");
+                entity.Property(e => e.FoodSourceId).HasColumnName("food_source_id");
                 entity.Property(e => e.NutritionalValueId).HasColumnName("nutritional_value_id");
+
+                entity.HasOne(f => f.FoodSource)
+                    .WithMany()
+                    .HasForeignKey(f => f.FoodSourceId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(f => f.NutritionalValue)
                     .WithOne()
