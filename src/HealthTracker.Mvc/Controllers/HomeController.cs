@@ -6,6 +6,7 @@ using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
 using HealthTracker.Mvc.Interfaces;
 using HealthTracker.Mvc.Entities;
+using Microsoft.AspNetCore.Diagnostics;
 
 namespace HealthTracker.Mvc.Controllers
 {
@@ -108,7 +109,15 @@ namespace HealthTracker.Mvc.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            // Construct the error view model
+            var exceptionFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+            var model = new ErrorViewModel
+            {
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
+                ErrorMessage = exceptionFeature != null ? exceptionFeature.Error.Message : ""
+            };
+
+            return View(model);
         }
 
         /// <summary>

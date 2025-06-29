@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Web;
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
+using HealthTracker.Entities.Exceptions;
 using Microsoft.Extensions.Logging;
 
 namespace HealthTracker.Client.ApiClient
@@ -102,11 +103,28 @@ namespace HealthTracker.Client.ApiClient
 
             Logger.LogDebug($"HTTP Status Code = {response?.StatusCode}");
 
-            if ((response != null) && response.IsSuccessStatusCode)
+            if (response != null)
             {
+                // Extract the response content and log it
                 json = await response.Content.ReadAsStringAsync();
                 var content = json ?? "No Content";
                 Logger.LogDebug($"Response content = '{content}'");
+
+                // If the request didn't succeed, try to extract an error message from the response content and, if
+                // successful, log it and raise an exception
+                if (!response.IsSuccessStatusCode)
+                {
+                    using (var document = JsonDocument.Parse(json))
+                    {
+                        var root = document.RootElement;
+                        if (root.TryGetProperty("message", out JsonElement element))
+                        {
+                            var message = element.GetString();
+                            Logger.LogError($"API Error: {message}");
+                            throw new HealthTrackerApiRequestException(message);
+                        }
+                    }
+                }
             }
 
             return json;
