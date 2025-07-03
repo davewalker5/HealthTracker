@@ -34,7 +34,7 @@ namespace HealthTracker.Client.ApiClient
             int mealId,
             int? nutritionalValueId,
             DateTime? date,
-            int quantity)
+            decimal quantity)
         {
             dynamic template = new
             {
@@ -68,7 +68,7 @@ namespace HealthTracker.Client.ApiClient
             int mealId,
             int? nutritionalValueId,
             DateTime? date,
-            int quantity)
+            decimal quantity)
         {
             dynamic template = new
             {

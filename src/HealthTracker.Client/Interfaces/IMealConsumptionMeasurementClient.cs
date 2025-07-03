@@ -9,7 +9,7 @@ namespace HealthTracker.Client.Interfaces
             int mealId,
             int? nutritionalValueId,
             DateTime? date,
-            int quantity);
+            decimal quantity);
 
         Task DeleteAsync(int id);
 
@@ -19,6 +19,6 @@ namespace HealthTracker.Client.Interfaces
             int mealId,
             int? nutritionalValueId,
             DateTime? date,
-            int quantity);
+            decimal quantity);
     }
 }

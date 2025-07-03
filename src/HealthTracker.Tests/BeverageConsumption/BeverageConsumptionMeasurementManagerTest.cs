@@ -2,23 +2,22 @@ using HealthTracker.Data;
 using HealthTracker.Entities.Exceptions;
 using HealthTracker.Enumerations.Enumerations;
 using HealthTracker.Entities.Interfaces;
-using HealthTracker.Logic.Extensions;
 using HealthTracker.Logic.Factory;
 using HealthTracker.Tests.Mocks;
 using Moq;
 
-namespace HealthTracker.Tests.Beverages
+namespace HealthTracker.Tests.BeverageConsumption
 {
     [TestClass]
     public class BeverageConsumptionMeasurementManagerTest
     {
         private readonly DateTime ConsumptionDate = DataGenerator.RandomDateInYear(2024);
-        private readonly int Quantity = DataGenerator.RandomDuration().ToDuration();
+        private readonly int Quantity = DataGenerator.RandomInt(1, 100);
         private readonly decimal Volume = DataGenerator.RandomDecimal(25, 250);
         private readonly decimal ABV = DataGenerator.RandomDecimal(0, 20);
 
         private readonly DateTime UpdatedConsumptionDate = DataGenerator.RandomDateInYear(2024);
-        private readonly int UpdatedQuantity = DataGenerator.RandomDuration().ToDuration();
+        private readonly int UpdatedQuantity = DataGenerator.RandomInt(1, 100);
         private readonly decimal UpdatedVolume = DataGenerator.RandomDecimal(25, 250);
         private readonly decimal UpdatedABV = DataGenerator.RandomDecimal(21, 40);
 
@@ -92,7 +91,7 @@ namespace HealthTracker.Tests.Beverages
 
         [TestMethod]
         [ExpectedException(typeof(BeverageNotFoundException))]
-        public async Task CannotUpdateMeasurementForMissingActivityTypeTest()
+        public async Task CannotUpdateMeasurementForMissingBeverageTest()
             => await _factory.BeverageConsumptionMeasurements.UpdateAsync(_measurementId, _personId, 10 * _beverageId, UpdatedConsumptionDate, UpdatedQuantity, UpdatedVolume, UpdatedABV);
     }
 }

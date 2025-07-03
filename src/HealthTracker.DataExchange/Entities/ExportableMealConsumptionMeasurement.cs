@@ -7,7 +7,7 @@ namespace HealthTracker.DataExchange.Entities
     [ExcludeFromCodeCoverage]
     public class ExportableMealConsumptionMeasurement : ExportableMeasurementBase
     {
-        public const string CsvRecordPattern = @"^""[0-9]+"","".*"",""[0-9]+-[A-Za-z]+-[0-9]+ [0-9]+:[0-9]+:[0-9]+"",""[0-9]+"","".*"",""[0-9]+"",""[0-9.]+"",""[0-9.]+"",""[0-9.]+"".?$";
+        public const string CsvRecordPattern = @"^""[0-9]+"","".*"",""[0-9]+-[A-Za-z]+-[0-9]+ [0-9]+:[0-9]+:[0-9]+"",""[0-9]+"","".*""(,""(?:[0-9.]+)?""){8}.?$";
 
         [Export("Meal Id", 4)]
         public int MealId { get; set; }
