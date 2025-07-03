@@ -7,7 +7,7 @@ namespace HealthTracker.DataExchange.Extensions
     public static class BeverageConsumptionMeasurementExtensions
     {
         /// <summary>
-        /// Return an exportable beverage consumption measurement from an alcohol consumption measuement
+        /// Return an exportable beverage consumption measurement from a beverage consumption measuement
         /// </summary>
         /// <param name="measurement"></param>
         /// <param name="people"></param>
@@ -32,7 +32,7 @@ namespace HealthTracker.DataExchange.Extensions
         }
 
         /// <summary>
-        /// Return a collection of exportable beverage consumption measurements from a collection of alcohol consumption measurements
+        /// Return a collection of exportable beverage consumption measurements from a collection of beverage consumption measurements
         /// </summary>
         /// <param name="measurements"></param>
         /// <param name="people"></param>

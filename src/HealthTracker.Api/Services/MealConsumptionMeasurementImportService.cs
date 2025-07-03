@@ -8,13 +8,13 @@ using HealthTracker.DataExchange.Entities;
 
 namespace HealthTracker.Api.Services
 {
-    public class BeverageConsumptionMeasurementImportService : BackgroundQueueProcessor<BeverageConsumptionMeasurementImportWorkItem>
+    public class MealConsumptionMeasurementImportService : BackgroundQueueProcessor<MealConsumptionMeasurementImportWorkItem>
     {
         private readonly HealthTrackerApplicationSettings _settings;
 
-        public BeverageConsumptionMeasurementImportService(
-            ILogger<BackgroundQueueProcessor<BeverageConsumptionMeasurementImportWorkItem>> logger,
-            IBackgroundQueue<BeverageConsumptionMeasurementImportWorkItem> queue,
+        public MealConsumptionMeasurementImportService(
+            ILogger<BackgroundQueueProcessor<MealConsumptionMeasurementImportWorkItem>> logger,
+            IBackgroundQueue<MealConsumptionMeasurementImportWorkItem> queue,
             IServiceScopeFactory serviceScopeFactory,
             IOptions<HealthTrackerApplicationSettings> settings)
             : base(logger, queue, serviceScopeFactory)
@@ -23,14 +23,14 @@ namespace HealthTracker.Api.Services
         }
 
         /// <summary>
-        /// Import beverage consumption measurements from the data specified in the work item
+        /// Import meal consumption measurements from the data specified in the work item
         /// </summary>
         /// <param name="item"></param>
         /// <param name="factory"></param>
         /// <returns></returns>
-        protected override async Task ProcessWorkItemAsync(BeverageConsumptionMeasurementImportWorkItem item, IHealthTrackerFactory factory)
+        protected override async Task ProcessWorkItemAsync(MealConsumptionMeasurementImportWorkItem item, IHealthTrackerFactory factory)
         {
-            MessageLogger.LogInformation("Beverage consumption measurement import started");
+            MessageLogger.LogInformation("Meal consumption measurement import started");
             var records = item.Content.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
             var count = records.Length - 1;
@@ -38,7 +38,7 @@ namespace HealthTracker.Api.Services
             {
                 var messageEnding = (count > 1) ? "s" : "";
                 MessageLogger.LogInformation($"Importing {records.Count() - 1} measurement{messageEnding}");
-                var importer = new BeverageConsumptionMeasurementImporter(factory, ExportableBeverageConsumptionMeasurement.CsvRecordPattern);
+                var importer = new MealConsumptionMeasurementImporter(factory, ExportableMealConsumptionMeasurement.CsvRecordPattern);
                 await importer.ImportAsync(records);
             }
             else
@@ -46,7 +46,7 @@ namespace HealthTracker.Api.Services
                 MessageLogger.LogWarning("No records found to import");
             }
 
-            MessageLogger.LogInformation("Beverage consumption measurement import completed");
+            MessageLogger.LogInformation("Meal consumption measurement import completed");
         }
     }
 }

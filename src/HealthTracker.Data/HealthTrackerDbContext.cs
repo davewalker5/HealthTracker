@@ -34,6 +34,8 @@ namespace HealthTracker.Data
         public virtual DbSet<NutritionalValue> NutritionalValues { get; set; }
         public virtual DbSet<FoodItem> FoodItems { get; set; }
         public virtual DbSet<Meal> Meals { get; set; }
+        public virtual DbSet<MealConsumptionMeasurement> MealConsumptionMeasurements { get; set; }
+
 
         public HealthTrackerDbContext(DbContextOptions<HealthTrackerDbContext> options) : base(options)
         {
@@ -294,6 +296,28 @@ namespace HealthTracker.Data
                 entity.HasOne(f => f.NutritionalValue)
                     .WithOne()
                     .HasForeignKey<Meal>(f => f.NutritionalValueId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<MealConsumptionMeasurement>(entity =>
+            {
+                entity.ToTable("MEAL_CONSUMPTION");
+                entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
+                entity.Property(e => e.PersonId).HasColumnName("person_id");
+                entity.Property(e => e.Date).IsRequired().HasColumnName("date").HasColumnType("DATETIME");
+                entity.Property(e => e.MealId).HasColumnName("meal_id");
+                entity.Property(e => e.Quantity).IsRequired().HasColumnName("quantity");
+                entity.Property(e => e.NutritionalValueId).HasColumnName("nutritional_value_id");
+
+                entity.HasOne(f => f.Meal)
+                    .WithMany()
+                    .HasForeignKey(f => f.MealId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(f => f.NutritionalValue)
+                    .WithOne()
+                    .HasForeignKey<MealConsumptionMeasurement>(f => f.NutritionalValueId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
         }

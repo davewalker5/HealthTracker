@@ -33,6 +33,7 @@ namespace HealthTracker.Logic.Factory
         private readonly Lazy<INutritionalValueManager> _nutritionalValues;
         private readonly Lazy<IFoodItemManager> _foodItems;
         private readonly Lazy<IMealManager> _meals;
+        private readonly Lazy<IMealConsumptionMeasurementManager> _mealConsumption;
 
         private readonly Lazy<IMedicationManager> _medications;
         private readonly Lazy<IPersonMedicationManager> _personMedications;
@@ -75,8 +76,9 @@ namespace HealthTracker.Logic.Factory
         public INutritionalValueManager NutritionalValues { get { return _nutritionalValues.Value; } }
         public IFoodItemManager FoodItems { get { return _foodItems.Value; } }
         public IMealManager Meals { get { return _meals.Value; } }
+        public IMealConsumptionMeasurementManager MealConsumptionMeasurements { get { return _mealConsumption.Value; } }
 
-        public IMedicationManager Medications { get { return _medications.Value;} }
+        public IMedicationManager Medications { get { return _medications.Value; } }
         public IPersonMedicationManager PersonMedications { get { return _personMedications.Value;} }
         public IMedicationStockUpdater MedicationStockUpdater { get { return _stockUpdater.Value; } }
         public IMedicationActionGenerator MedicationActionGenerator { get { return _actionGenerator.Value; }}
@@ -119,6 +121,7 @@ namespace HealthTracker.Logic.Factory
             _nutritionalValues = new Lazy<INutritionalValueManager>(() => new NutritionalValueManager(this));
             _foodItems = new Lazy<IFoodItemManager>(() => new FoodItemManager(this));
             _meals = new Lazy<IMealManager>(() => new MealManager(this));
+            _mealConsumption = new Lazy<IMealConsumptionMeasurementManager>(() => new MealConsumptionMeasurementManager(this));
 
             _medications = new Lazy<IMedicationManager>(() => new MedicationManager(this));
             _personMedications = new Lazy<IPersonMedicationManager>(() => new PersonMedicationManager(this));

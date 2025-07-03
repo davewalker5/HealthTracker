@@ -58,14 +58,14 @@ namespace HealthTracker.Mvc.Controllers
         {
             if (ModelState.IsValid)
             {
-                int page = model.PageNumber;
+                int page = 1;
                 switch (model.Action)
                 {
                     case ControllerActions.ActionPreviousPage:
-                        page -= 1;
+                        page = model.PageNumber - 1;
                         break;
                     case ControllerActions.ActionNextPage:
-                        page += 1;
+                        page = model.PageNumber + 1;
                         break;
                     case ControllerActions.ActionAdd:
                         return RedirectToAction("Add", new
