@@ -84,7 +84,7 @@ namespace HealthTracker.Tests.Cholesterol
             Assert.AreEqual(info.FullName, _filePath);
             Assert.IsTrue(info.Length > 0);
 
-            var measurements = await _factory.CholesterolMeasurements.ListAsync(x => true);
+            var measurements = await _factory.CholesterolMeasurements.ListAsync(x => true, 1, int.MaxValue);
             Assert.AreEqual(1, measurements.Count);
             Assert.AreEqual(_person.Id, measurements.First().PersonId);
             Assert.AreEqual(_measurement.Date, measurements.First().Date);

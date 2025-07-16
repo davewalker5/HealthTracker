@@ -30,6 +30,11 @@ namespace HealthTracker.Api.Controllers
         public async Task<ActionResult<ExerciseMeasurement>> Get(int id)
         {
             var measurements = await _factory.ExerciseMeasurements.ListAsync(x => x.Id == id, 1, int.MaxValue);
+            if (!measurements.Any())
+            {
+                return NotFound();
+            }
+
             await PopulateAncillaryProperties(measurements);
             return measurements.First();
         }
