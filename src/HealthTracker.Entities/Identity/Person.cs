@@ -7,7 +7,7 @@ using HealthTracker.Enumerations.Enumerations;
 namespace HealthTracker.Entities.Identity
 {
     [ExcludeFromCodeCoverage]
-    public class Person
+    public class Person : HealthTrackerEntityBase
     {
         [Key]
         public int Id { get ; set; }

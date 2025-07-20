@@ -1,7 +1,6 @@
-using System.Text.RegularExpressions;
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
-using HealthTracker.Entities.Measurements;
+using HealthTracker.Entities.Food;
 using HealthTracker.Mvc.Entities;
 using HealthTracker.Mvc.Interfaces;
 using HealthTracker.Mvc.Models;
@@ -12,24 +11,28 @@ using Microsoft.AspNetCore.Mvc;
 namespace HealthTracker.Mvc.Controllers
 {
     [Authorize]
-    public class ExerciseController : FilteredControllerBase<IExerciseMeasurementClient, ExerciseListViewModel, ExerciseMeasurement>
+    public class MealConsumptionController : FilteredControllerBase<IMealConsumptionMeasurementClient, MealConsumptionListViewModel, MealConsumptionMeasurement>
     {
-        private const string DurationPattern = @"^\d{2}:\d{2}:\d{2}$";
-        private readonly Regex _durationRegex = new(DurationPattern, RegexOptions.Compiled);
-        private readonly ILogger<ExerciseController> _logger;
-        private readonly IActivityTypeListGenerator _activityTypeListGenerator;
+        private readonly ILogger<MealConsumptionController> _logger;
+        private readonly IMealListGenerator _mealListGenerator;
+        private readonly IFoodSourceListGenerator _foodSourceListGenerator;
+        private readonly IMealConsumptionMeasurementHelper _helper;
 
-        public ExerciseController(
+        public MealConsumptionController(
             IPersonClient personClient,
-            IExerciseMeasurementClient measurementClient,
+            IMealConsumptionMeasurementClient measurementClient,
+            IMealConsumptionMeasurementHelper helper,
             IHealthTrackerApplicationSettings settings,
             IFilterGenerator filterGenerator,
-            IActivityTypeListGenerator activityTypeListGenerator,
+            IMealListGenerator mealListGenerator,
+            IFoodSourceListGenerator foodSourceListGenerator,
             IViewModelBuilder builder,
-            ILogger<ExerciseController> logger) : base(personClient, measurementClient, settings, filterGenerator, builder)
+            ILogger<MealConsumptionController> logger) : base(personClient, measurementClient, settings, filterGenerator, builder)
         {
             _logger = logger;
-            _activityTypeListGenerator = activityTypeListGenerator;
+            _mealListGenerator = mealListGenerator;
+            _foodSourceListGenerator = foodSourceListGenerator;
+            _helper = helper;
         }
 
         /// <summary>
@@ -44,7 +47,7 @@ namespace HealthTracker.Mvc.Controllers
         {
             _logger.LogDebug($"Rendering index view: Person ID = {personId}, From = {start}, To = {end}");
 
-            var model = new ExerciseListViewModel
+            var model = new MealConsumptionListViewModel
             {
                 PageNumber = 1,
                 Filters = await _filterGenerator.Create(personId, start, end, ViewFlags.Add)
@@ -60,7 +63,7 @@ namespace HealthTracker.Mvc.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(ExerciseListViewModel model)
+        public async Task<IActionResult> Index(MealConsumptionListViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +89,7 @@ namespace HealthTracker.Mvc.Controllers
                             personId = model.Filters.PersonId,
                             start = model.Filters.From,
                             end = model.Filters.To,
-                            exportType = DataExchangeType.Exercise
+                            exportType = DataExchangeType.MealConsumption
                         });
                     default:
                         break;
@@ -99,7 +102,7 @@ namespace HealthTracker.Mvc.Controllers
 
                 // Retrieve the matching records
                 _logger.LogDebug(
-                    $"Retrieving page {page} of exercise measurements for person with ID {model.Filters.PersonId}" +
+                    $"Retrieving page {page} of meal consumption measurements for person with ID {model.Filters.PersonId}" +
                     $" in the date range {model.Filters.From:dd-MMM-yyyy} to {model.Filters.To:dd-MMM-yyyy}");
 
                 var measurements = await _measurementClient.ListAsync(
@@ -111,7 +114,7 @@ namespace HealthTracker.Mvc.Controllers
                     model.Filters.ShowExportButton = true;
                 }
 
-                _logger.LogDebug($"{measurements.Count} matching exercise measurements retrieved");
+                _logger.LogDebug($"{measurements.Count} matching meal consumption measurements retrieved");
             }
             else
             {
@@ -136,7 +139,10 @@ namespace HealthTracker.Mvc.Controllers
         {
             _logger.LogDebug($"Rendering add view: Person ID = {personId}, From = {start}, To = {end}");
 
-            var model = new AddExerciseViewModel() { ActivityTypes = await _activityTypeListGenerator.Create() };
+            var model = new AddMealConsumptionViewModel()
+            {
+                Sources = await _foodSourceListGenerator.Create()
+            };
             model.CreateMeasurement(personId);
             await SetFilterDetails(model, personId, start, end);
             return View(model);
@@ -149,19 +155,18 @@ namespace HealthTracker.Mvc.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add(AddExerciseViewModel model)
+        public async Task<IActionResult> Add(AddMealConsumptionViewModel model)
         {
             if (model.Action == ControllerActions.ActionCancel)
             {
                 return RedirectToAction("Index", new { personId = model.PersonId, start = model.From, end = model.To });
             }
 
-            // Extract the duration from the formatted duration
-            var duration = SecondsFromFormattedDuration(model.Measurement.FormattedDuration);
-            if (duration <= 0)
-            {
-                ModelState.AddModelError("Measurement.Duration", "You must specify a duration");
-            }
+            // The "Meal" entity is part of the hierarchy of the view model, allowing access to its properties in the
+            // view without having to duplicate code, but this means validation of its properties will occur and result
+            // in an invalid model state - remove errors for the properties we're not interested in
+            ModelState.Remove("Measurement.Meal.Name");
+            ModelState.Remove("Measurement.Meal.Portions");
 
             if (ModelState.IsValid)
             {
@@ -170,27 +175,19 @@ namespace HealthTracker.Mvc.Controllers
 
                 // Add the measurement
                 _logger.LogDebug(
-                    $"Adding new exercise measurement: Person ID = {model.Measurement.PersonId}, " +
-                    $"Activity ID = {model.Measurement.ActivityTypeId}, " +
+                    $"Adding new meal consumption measurement: Person ID = {model.Measurement.PersonId}, " +
+                    $"Meal ID = {model.Measurement.MealId}, " +
                     $"Timestamp = {timestamp}, " +
-                    $"Duration = {model.Measurement.FormattedDuration}, " +
-                    $"Distance = {model.Measurement.Distance ?? 0}, " +
-                    $"Calories = {model.Measurement.Calories}, " +
-                    $"Minimum HR = {model.Measurement.MinimumHeartRate}, " +
-                    $"Maximum HR = {model.Measurement.MaximumHeartRate}");
+                    $"Quantity = {model.Measurement.Quantity}");
 
-                var measurement = await _measurementClient.AddAsync(
+                var measurement = await _helper.AddAsync(
                     model.Measurement.PersonId,
-                    model.Measurement.ActivityTypeId,
+                    model.Measurement.MealId,
                     timestamp,
-                    duration,
-                    model.Measurement.Distance,
-                    model.Measurement.Calories,
-                    model.Measurement.MinimumHeartRate,
-                    model.Measurement.MaximumHeartRate);
+                    model.Measurement.Quantity);
 
                 // Return the measurement list view containing only the new measurement and a confirmation message
-                var message = $"Exercise measurement added successfully";
+                var message = $"Meal consumption measurement added successfully";
                 var listModel = await CreateListViewModel(
                     measurement.PersonId,
                     measurement.Id,
@@ -206,8 +203,8 @@ namespace HealthTracker.Mvc.Controllers
                 LogModelState(_logger);
             }
 
-            // Populate the activity types and render the view
-            model.ActivityTypes = await _activityTypeListGenerator.Create();
+            // Re-populate the drop downs and render the view
+            model.Sources = await _foodSourceListGenerator.Create();
             return View(model);
         }
 
@@ -227,7 +224,10 @@ namespace HealthTracker.Mvc.Controllers
             var measurement = await _measurementClient.GetAsync(id);
 
             // Construct the view model
-            var model = new EditExerciseViewModel() { ActivityTypes = await _activityTypeListGenerator.Create() };
+            var model = new EditMealConsumptionViewModel()
+            {
+                Sources = await _foodSourceListGenerator.Create()
+            };
             model.SetMeasurement(measurement);
             await SetFilterDetails(model, measurement.PersonId, start, end);
             return View(model);
@@ -240,7 +240,7 @@ namespace HealthTracker.Mvc.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EditExerciseViewModel model)
+        public async Task<IActionResult> Edit(EditMealConsumptionViewModel model)
         {
             IActionResult result;
 
@@ -249,36 +249,31 @@ namespace HealthTracker.Mvc.Controllers
                 return RedirectToAction("Index", new { personId = model.Measurement.PersonId, start = model.From, end = model.To });
             }
 
+            // The "Meal" entity is part of the hierarchy of the view model, allowing access to its properties in the
+            // view without having to duplicate code, but this means validation of its properties will occur and result
+            // in an invalid model state - remove errors for the properties we're not interested in
+            ModelState.Remove("Measurement.Meal.Name");
+            ModelState.Remove("Measurement.Meal.Portions");
+
             if (ModelState.IsValid)
             {
                 // Combine the date and time strings to produce a timestamp
                 var timestamp = model.Timestamp();
 
-                // Extract the duration from the formatted duration
-                var duration = SecondsFromFormattedDuration(model.Measurement.FormattedDuration);
-
                 // Update the measurement
                 _logger.LogDebug(
-                    $"Updating exercise measurement: ID = {model.Measurement.Id}, " +
+                    $"Updating meal consumption measurement: ID = {model.Measurement.Id}, " +
                     $"Person ID = {model.Measurement.PersonId}, " +
-                    $"Activity ID = {model.Measurement.ActivityTypeId}, " +
+                    $"Beverage ID = {model.Measurement.Meal}, " +
                     $"Timestamp = {timestamp}, " +
-                    $"Duration = {model.Measurement.FormattedDuration}, " +
-                    $"Distance = {model.Measurement.Distance ?? 0}, " +
-                    $"Calories = {model.Measurement.Calories}, " +
-                    $"Minimum HR = {model.Measurement.MinimumHeartRate}, " +
-                    $"Maximum HR = {model.Measurement.MaximumHeartRate}");
+                    $"Quantity = {model.Measurement.Quantity}");
 
-                await _measurementClient.UpdateAsync(
+                await _helper.UpdateAsync(
                     model.Measurement.Id,
                     model.Measurement.PersonId,
-                    model.Measurement.ActivityTypeId,
+                    model.Measurement.MealId,
                     timestamp,
-                    duration,
-                    model.Measurement.Distance,
-                    model.Measurement.Calories,
-                    model.Measurement.MinimumHeartRate,
-                    model.Measurement.MaximumHeartRate);
+                    model.Measurement.Quantity);
 
                 // Return the measurement list view containing only the updated measurement and a confirmation message
                 var listModel = await CreateListViewModel(
@@ -289,7 +284,7 @@ namespace HealthTracker.Mvc.Controllers
                     "Measurement successfully updated",
                     ViewFlags.ListView);
 
-                return View("Index", listModel);
+                result = View("Index", listModel);
             }
             else
             {
@@ -297,33 +292,9 @@ namespace HealthTracker.Mvc.Controllers
                 result = View(model);
             }
 
-            // Populate the activity types and render the view
-            model.ActivityTypes = await _activityTypeListGenerator.Create();
+            // Re-populate the drop downs and render the view
+            model.Sources = await _foodSourceListGenerator.Create();
             return result;
-        }
-
-        /// <summary>
-        /// Calculate a number of seconds from a duration in HH:MM:SS format
-        /// </summary>
-        /// <param name="formattedDuration"></param>
-        /// <returns></returns>
-        private int SecondsFromFormattedDuration(string formattedDuration)
-        {
-            var duration = 0;
-
-            // Check the formatted duration is in the expected format
-            bool matches = _durationRegex.Matches(formattedDuration).Any();
-            if (matches)
-            {
-                // Extract the components and calculate a duration in seconds
-                var segments = formattedDuration.Split(":");
-                var hours = int.Parse(segments[0]);
-                var minutes = int.Parse(segments[1]);
-                var seconds = int.Parse(segments[2]);
-                duration = 3600 * hours + 60 * minutes + seconds;
-            }
-
-            return duration;
         }
 
         /// <summary>
@@ -336,18 +307,34 @@ namespace HealthTracker.Mvc.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             // Retrieve the measurement and capture the person and date
-            _logger.LogDebug($"Retrieving exercise measurement: ID = {id}");
+            _logger.LogDebug($"Retrieving meal consumption measurement: ID = {id}");
             var measurement = await _measurementClient.GetAsync(id);
             var personId = measurement.PersonId;
             var date = measurement.Date;
 
             // Delete the measurement
-            _logger.LogDebug($"Deleting exercise measurement: ID = {id}");
+            _logger.LogDebug($"Deleting meal consumption measurement: ID = {id}");
             await _measurementClient.DeleteAsync(id);
 
             // Return the list view with an empty list of measurements
             var model = await CreateListViewModel(personId, 0, date, date, "Measurement successfully deleted", ViewFlags.ListView);
             return View("Index", model);
+        }
+
+        /// <summary>
+        /// Return the HTML markup for a drop-down list of meals, given a meal source
+        /// </summary>
+        /// <param name="foodSourceId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> Meals(int foodSourceId)
+        {
+            var model = new MealsDropDownViewModel
+            {
+                Meals = await _mealListGenerator.Create(foodSourceId)
+            };
+
+            return PartialView(model);
         }
     }
 }

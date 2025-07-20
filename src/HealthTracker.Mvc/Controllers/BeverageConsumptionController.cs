@@ -14,8 +14,6 @@ namespace HealthTracker.Mvc.Controllers
     [Authorize]
     public class BeverageConsumptionController : FilteredControllerBase<IBeverageConsumptionMeasurementClient, BeverageConsumptionListViewModel, BeverageConsumptionMeasurement>
     {
-        private const string DurationPattern = @"^\d{2}:\d{2}:\d{2}$";
-        private readonly Regex _durationRegex = new(DurationPattern, RegexOptions.Compiled);
         private readonly ILogger<BeverageConsumptionController> _logger;
         private readonly IBeverageClient _beverageClient;
         private readonly IBeverageListGenerator _beverageListGenerator;
@@ -105,7 +103,7 @@ namespace HealthTracker.Mvc.Controllers
 
                 // Retrieve the matching records
                 _logger.LogDebug(
-                    $"Retrieving page {page} of alcohol consumption measurements for person with ID {model.Filters.PersonId}" +
+                    $"Retrieving page {page} of beverage consumption measurements for person with ID {model.Filters.PersonId}" +
                     $" in the date range {model.Filters.From:dd-MMM-yyyy} to {model.Filters.To:dd-MMM-yyyy}");
 
                 var measurements = await _measurementClient.ListAsync(
@@ -117,11 +115,11 @@ namespace HealthTracker.Mvc.Controllers
                     model.Filters.ShowExportButton = true;
                 }
 
-                _logger.LogDebug($"{measurements.Count} matching alcohol consumption measurements retrieved");
+                _logger.LogDebug($"{measurements.Count} matching beverage consumption measurements retrieved");
             }
             else
             {
-                LogModelStateErrors(_logger);
+                LogModelState(_logger);
             }
 
             // Populate the list of people and render the view
@@ -173,7 +171,7 @@ namespace HealthTracker.Mvc.Controllers
 
                 // Add the measurement
                 _logger.LogDebug(
-                    $"Adding new alcohol consumption measurement: Person ID = {model.Measurement.PersonId}, " +
+                    $"Adding new beverage consumption measurement: Person ID = {model.Measurement.PersonId}, " +
                     $"Beverage ID = {model.Measurement.BeverageId}, " +
                     $"Timestamp = {timestamp}, " +
                     $"Quantity = {model.Measurement.Quantity}, " +
@@ -189,7 +187,7 @@ namespace HealthTracker.Mvc.Controllers
                     model.Measurement.ABV);
 
                 // Return the measurement list view containing only the new measurement and a confirmation message
-                var message = $"Alcohol consumption measurement added successfully";
+                var message = $"Beverage consumption measurement added successfully";
                 var listModel = await CreateListViewModel(
                     measurement.PersonId,
                     measurement.Id,
@@ -202,7 +200,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelStateErrors(_logger);
+                LogModelState(_logger);
             }
 
             // Re-populate the drop downs and render the view
@@ -260,7 +258,7 @@ namespace HealthTracker.Mvc.Controllers
 
                 // Update the measurement
                 _logger.LogDebug(
-                    $"Updating alcohol consumption measurement: ID = {model.Measurement.Id}, " +
+                    $"Updating beverage consumption measurement: ID = {model.Measurement.Id}, " +
                     $"Person ID = {model.Measurement.PersonId}, " +
                     $"Beverage ID = {model.Measurement.BeverageId}, " +
                     $"Timestamp = {timestamp}, " +
@@ -290,7 +288,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelStateErrors(_logger);
+                LogModelState(_logger);
                 result = View(model);
             }
 
@@ -310,13 +308,13 @@ namespace HealthTracker.Mvc.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             // Retrieve the measurement and capture the person and date
-            _logger.LogDebug($"Retrieving alcohol consumption measurement: ID = {id}");
+            _logger.LogDebug($"Retrieving beverage consumption measurement: ID = {id}");
             var measurement = await _measurementClient.GetAsync(id);
             var personId = measurement.PersonId;
             var date = measurement.Date;
 
             // Delete the measurement
-            _logger.LogDebug($"Deleting alcohol consumption measurement: ID = {id}");
+            _logger.LogDebug($"Deleting beverage consumption measurement: ID = {id}");
             await _measurementClient.DeleteAsync(id);
 
             // Return the list view with an empty list of measurements

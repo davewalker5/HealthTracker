@@ -22,6 +22,7 @@ namespace HealthTracker.Mvc.Controllers
             IBeverageConsumptionMeasurementClient beverageConsumptionMeasurementClient,
             IFoodItemClient foodItemClient,
             IMealClient mealClient,
+            IMealConsumptionMeasurementClient mealConsumptionMeasurementClient,
             ILogger<WeightController> logger) : base(
                 bloodGlucoseMeasurementClient,
                 bloodOxygenSaturationMeasurementClient,
@@ -31,6 +32,7 @@ namespace HealthTracker.Mvc.Controllers
                 beverageConsumptionMeasurementClient,
                 foodItemClient,
                 mealClient,
+                mealConsumptionMeasurementClient,
                 logger
             )
         {
@@ -102,7 +104,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelStateErrors(_logger);
+                LogModelState(_logger);
             }
 
             // Populate the person name and render the view
@@ -161,7 +163,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelStateErrors(_logger);
+                LogModelState(_logger);
             }
 
             return View(model);

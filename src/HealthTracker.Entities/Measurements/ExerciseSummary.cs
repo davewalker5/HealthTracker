@@ -1,10 +1,9 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
 namespace HealthTracker.Entities.Measurements
 {
     [ExcludeFromCodeCoverage]
-    public class ExerciseSummary
+    public class ExerciseSummary : HealthTrackerEntityBase
     {
         public int? PersonId { get; set; }
         public string PersonName { get; set; }

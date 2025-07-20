@@ -7,7 +7,7 @@ using HealthTracker.Entities.Identity;
 namespace HealthTracker.Entities.Medications
 {
     [ExcludeFromCodeCoverage]
-    public class PersonMedication
+    public class PersonMedication : HealthTrackerEntityBase
     {
         [Key]
         public int Id { get ; set; }

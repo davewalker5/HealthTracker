@@ -10,6 +10,7 @@ namespace HealthTracker.Entities.Food
     public class MealConsumptionMeasurement : MeasurementBase
     {
         [ForeignKey(nameof(Meal))]
+        [Range(1, int.MaxValue, ErrorMessage = "You must select a meal")]
         public int MealId { get; set; }
         public Meal Meal { get; set; }
 

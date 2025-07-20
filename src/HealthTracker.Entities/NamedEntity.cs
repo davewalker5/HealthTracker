@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace HealthTracker.Entities
 {
     [ExcludeFromCodeCoverage]
-    public abstract class NamedEntity
+    public abstract class NamedEntity : HealthTrackerEntityBase
     {
         [Key]
         public int Id { get ; set; }

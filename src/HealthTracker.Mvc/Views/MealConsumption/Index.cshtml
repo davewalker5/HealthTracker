@@ -1,0 +1,79 @@
+@using HealthTracker.Mvc.Entities
+@using Microsoft.AspNetCore.Mvc.ModelBinding
+@model HealthTracker.Mvc.Models.MealConsumptionListViewModel
+
+@{
+    ViewData["Title"] = "Meal Consumption Measurements";
+    var previousDisabled = (Model.PreviousEnabled) ? "" : "disabled";
+    var nextDisabled = (Model.NextEnabled) ? "" : "disabled";
+}
+
+<p class="text-center font-weight-bold">
+    <span style="font-size: 1.2rem">
+        Meal Consumption Measurements
+    </span>
+    <br />
+    <small class="text-muted">
+        <em>
+            View and manage meal consumption measurements
+        </em>
+    </small>
+</p>
+
+
+<div class="container-fluid">
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="row">
+            <div class="col-md-12 message">
+                <span>@Html.Raw(Model.Message)</span>
+            </div>
+        </div>
+        <hr />
+    }
+
+    @using (Html.BeginForm("Delete", "MealConsumption", FormMethod.Post, new { name = "delete-form", id = "delete-form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.Hidden("id", 0)
+    }
+
+    @using (Html.BeginForm("Index", "MealConsumption", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.EditorFor(m => m.Filters)
+        @Html.HiddenFor(m => m.PageNumber)
+
+        @if ((Model.Measurements != null) && (Model.Measurements.Count() > 0))
+        {
+            @await Html.PartialAsync("_MealConsumptionList", Model)
+            <hr />
+            <p class="text-right">
+                <button type="submit" name="Action" value="@ControllerActions.ActionPreviousPage" class="btn btn-secondary" @previousDisabled>Previous</button>
+                <button type="submit" name="Action" value="@ControllerActions.ActionNextPage" class="btn btn-primary" @nextDisabled>Next</button>
+            </p>
+        }
+        else if (Model.HasNoMatchingResults)
+        {
+            <hr />
+            @Html.Raw("No matching measurements")
+        }
+    }
+
+</div>
+
+<script type="text/javascript">
+    function submitDeleteForm(id) {
+        $.confirm({
+            text: "Are you sure?",
+            confirm: function(button) {
+                $("#delete-form #id").val(id);
+                $("#delete-form").submit()
+            },
+            cancel: function(button) {
+            },
+            confirmButton: "Yes",
+            cancelButton: "No"
+        });
+    }
+</script>

@@ -62,7 +62,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelStateErrors(_logger);
+                LogModelState(_logger);
             }
 
             // Populate the measures and render the view

@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace HealthTracker.Entities.Measurements
 {
     [ExcludeFromCodeCoverage]
-    public class ActivityType
+    public class ActivityType : HealthTrackerEntityBase
     {
         [Key]
         public int Id { get ; set; }

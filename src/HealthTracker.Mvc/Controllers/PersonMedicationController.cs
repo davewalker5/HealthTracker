@@ -87,7 +87,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelStateErrors(_logger);
+                LogModelState(_logger);
                 await _filterGenerator.PopulatePersonList(model.Filters);
                 model.Settings = _settings;
             }
@@ -154,7 +154,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelStateErrors(_logger);
+                LogModelState(_logger);
             }
 
             return View(model);
@@ -227,7 +227,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelStateErrors(_logger);
+                LogModelState(_logger);
                 result = View(model);
             }
 

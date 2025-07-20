@@ -109,7 +109,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelStateErrors(_logger);
+                LogModelState(_logger);
             }
 
             // Populate the list of people and render the view
@@ -177,7 +177,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelStateErrors(_logger);
+                LogModelState(_logger);
             }
 
             return View(model);
@@ -247,7 +247,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelStateErrors(_logger);
+                LogModelState(_logger);
                 result = View(model);
             }
 

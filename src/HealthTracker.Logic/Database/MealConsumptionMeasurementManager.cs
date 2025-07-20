@@ -22,8 +22,9 @@ namespace HealthTracker.Logic.Database
         /// <returns></returns>
         public async Task<List<MealConsumptionMeasurement>> ListAsync(Expression<Func<MealConsumptionMeasurement, bool>> predicate, int pageNumber, int pageSize)
             => await Context.MealConsumptionMeasurements
-                            .Include(x => x.Meal)
                             .Include(x => x.NutritionalValue)
+                            .Include(x => x.Meal)
+                            .ThenInclude(x => x.NutritionalValue)
                             .Where(predicate)
                             .OrderBy(x => x.Date)
                             .Skip((pageNumber - 1) * pageSize)

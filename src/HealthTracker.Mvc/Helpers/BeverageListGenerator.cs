@@ -26,7 +26,7 @@ namespace HealthTracker.Mvc.Helpers
             // Load the list of beverages
             var beverages = await _client.ListAsync(1, int.MaxValue);
             var plural = beverages.Count == 1 ? "" : "s";
-            _logger.LogDebug($"{beverages.Count} activity type{plural} loaded via the service");
+            _logger.LogDebug($"{beverages.Count} beverage{plural} loaded via the service");
 
             // Create a list of select list items from the list of beverages. Add an empty entry if there
             // is more than one. If not, the list will only contain that one beverage which will be the default
