@@ -1,11 +1,12 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using HealthTracker.Entities;
 using HealthTracker.Entities.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace HealthTracker.Mvc.Models
 {
-    public class PersonFilterViewModel
+    public class PersonFilterViewModel : HealthTrackerEntityBase
     {
         public IList<SelectListItem> People { get; set; } = [];
         public bool ShowAddButton { get; set; }

@@ -21,10 +21,37 @@ namespace HealthTracker.Mvc.Controllers
         }
 
         /// <summary>
+        /// Log the contents of model state
+        /// </summary>
+        /// <param name="logger"></param>
+        protected void LogModelState(ILogger logger)
+        {
+            LogModelStateValues(logger);
+            LogModelStateErrors(logger);
+        }
+
+        /// <summary>
+        /// Log model state keys and values
+        /// </summary>
+        /// <param name="logger"></param>
+        private void LogModelStateValues(ILogger logger)
+        {
+            foreach (var kvp in ModelState)
+            {
+                var entry = kvp.Value;
+                var attemptedValue = entry?.AttemptedValue;
+                var rawValue = entry?.RawValue?.ToString();
+                var isValid = entry?.Errors?.Count == 0;
+
+                logger.LogDebug($"Model State Key {kvp.Key}: Attempted = {attemptedValue}, Raw = {rawValue}, Valid =  {isValid}");
+            }
+        }
+
+        /// <summary>
         /// Log model state errors
         /// </summary>
         /// <param name="logger"></param>
-        protected void LogModelStateErrors(ILogger logger)
+        private void LogModelStateErrors(ILogger logger)
         {
             foreach (var modelState in ViewData.ModelState.Values)
             {

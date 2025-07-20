@@ -23,6 +23,7 @@ namespace HealthTracker.Api.Controllers
         private readonly IBackgroundQueue<BeverageConsumptionMeasurementExportWorkItem> _beverageConsumptionMeasurementQueue;
         private readonly IBackgroundQueue<FoodItemExportWorkItem> _foodItemQueue;
         private readonly IBackgroundQueue<MealExportWorkItem> _mealQueue;
+        private readonly IBackgroundQueue<MealConsumptionMeasurementExportWorkItem> _mealConsumptionQueue;
 
         public ExportController(
             IBackgroundQueue<PersonExportWorkItem> personQueue,
@@ -36,7 +37,8 @@ namespace HealthTracker.Api.Controllers
             IBackgroundQueue<BloodGlucoseMeasurementExportWorkItem> bloodGlucoseMeasurementQueue,
             IBackgroundQueue<BeverageConsumptionMeasurementExportWorkItem> beverageConsumptionMeasurementQueue,
             IBackgroundQueue<FoodItemExportWorkItem> foodItemQueue,
-            IBackgroundQueue<MealExportWorkItem> mealQueue)
+            IBackgroundQueue<MealExportWorkItem> mealQueue,
+            IBackgroundQueue<MealConsumptionMeasurementExportWorkItem> mealConsumptionQueue)
         {
             _personQueue = personQueue;
             _weightMeasurementQueue = weightMeasurementQueue;
@@ -50,6 +52,7 @@ namespace HealthTracker.Api.Controllers
             _beverageConsumptionMeasurementQueue = beverageConsumptionMeasurementQueue;
             _foodItemQueue = foodItemQueue;
             _mealQueue = mealQueue;
+            _mealConsumptionQueue = mealConsumptionQueue;
         }
 
         [HttpPost]
@@ -193,6 +196,18 @@ namespace HealthTracker.Api.Controllers
 
             // Queue the work item
             _mealQueue.Enqueue(item);
+            return Accepted();
+        }
+
+        [HttpPost]
+        [Route("mealconsumptionmeasurement")]
+        public IActionResult ExportMealConsumptionMeasurements([FromBody] MealConsumptionMeasurementExportWorkItem item)
+        {
+            // Set the job name used in the job status record
+            item.JobName = "Meal Consumption Measurement Export";
+
+            // Queue the work item
+            _mealConsumptionQueue.Enqueue(item);
             return Accepted();
         }
     }

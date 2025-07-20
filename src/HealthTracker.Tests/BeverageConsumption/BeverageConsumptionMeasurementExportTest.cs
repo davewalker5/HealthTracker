@@ -10,7 +10,7 @@ using HealthTracker.Logic.Factory;
 using HealthTracker.Tests.Mocks;
 using Moq;
 
-namespace HealthTracker.Tests.Alcohol
+namespace HealthTracker.Tests.BeverageConsumption
 {
     [TestClass]
     public class BeverageConsumptionMeasurementExportTest

@@ -1,9 +1,10 @@
+using HealthTracker.Entities;
+
 namespace HealthTracker.Mvc.Models
 {
-    public abstract class PaginatedViewModelBase<T> where T : class
+    public abstract class PaginatedViewModelBase<T> : HealthTrackerEntityBase where T : class
     {
         public IEnumerable<T> Entities { get; private set; }
-        public int ResultsCount { get; set; }
         public int PageNumber { get; set; }
         public bool PreviousEnabled { get; private set; }
         public bool NextEnabled { get; private set; }

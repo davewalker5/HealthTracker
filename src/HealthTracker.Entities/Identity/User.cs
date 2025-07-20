@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace HealthTracker.Entities.Identity
 {
     [ExcludeFromCodeCoverage]
-    public class User
+    public class User : HealthTrackerEntityBase
     {
         [Key]
         public int Id { get; set; }

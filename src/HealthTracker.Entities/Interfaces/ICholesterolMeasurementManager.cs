@@ -7,7 +7,7 @@ namespace HealthTracker.Entities.Interfaces
     {
         Task<CholesterolMeasurement> AddAsync(int personId, DateTime date, decimal total, decimal hdl, decimal ldl, decimal triglycerides);
         Task DeleteAsync(int id);
-        Task<List<CholesterolMeasurement>> ListAsync(Expression<Func<CholesterolMeasurement, bool>> predicate);
+        Task<List<CholesterolMeasurement>> ListAsync(Expression<Func<CholesterolMeasurement, bool>> predicate, int pageNumber, int pageSize);
         Task<CholesterolMeasurement> UpdateAsync(int id, int personId, DateTime date, decimal total, decimal hdl, decimal ldl, decimal triglycerides);
     }
 }

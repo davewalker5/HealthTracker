@@ -1,0 +1,25 @@
+@model HealthTracker.Mvc.Models.MealsDropDownViewModel
+
+<div class="row">
+    <div class="col">
+        <strong>Meal</strong>
+    </div>
+    <div class="col">
+        <div class="input-group">
+            @Html.DropDownList("MealsListId", Model.Meals, new { @class = "form-control" })
+        </div>
+    </div>
+</div>
+<br/>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // When the selection on the meals list changes, copy it to the meal ID that's used when the
+        // form is POSTed back
+        $("#MealsListId").change(function() {
+            var mealId = $("#MealsListId").val();
+            $("#Measurement_MealId").val(mealId);
+            console.log("Meal ID = " + $("#Measurement_MealId").val());
+        });
+    });
+</script>

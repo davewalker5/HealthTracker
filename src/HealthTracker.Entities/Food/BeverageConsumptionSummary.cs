@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace HealthTracker.Entities.Food
 {
     [ExcludeFromCodeCoverage]
-    public class BeverageConsumptionSummary
+    public class BeverageConsumptionSummary : HealthTrackerEntityBase
     {
         public int? PersonId { get; set; }
         public string PersonName { get; set; }

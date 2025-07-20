@@ -23,7 +23,7 @@ namespace HealthTracker.Api.Services
         }
 
         /// <summary>
-        /// Import exercise measurements from the data specified in the work item
+        /// Import beverage consumption measurements from the data specified in the work item
         /// </summary>
         /// <param name="item"></param>
         /// <param name="factory"></param>

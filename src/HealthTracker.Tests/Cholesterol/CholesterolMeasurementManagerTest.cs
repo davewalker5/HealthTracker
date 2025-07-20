@@ -40,7 +40,7 @@ namespace HealthTracker.Tests.Cholesterol
         [TestMethod]
         public async Task AddAndListTest()
         {
-            var measurements = await _factory.CholesterolMeasurements.ListAsync(x => x.PersonId == _personId);
+            var measurements = await _factory.CholesterolMeasurements.ListAsync(x => x.PersonId == _personId, 1, int.MaxValue);
             Assert.AreEqual(1, measurements.Count);
             Assert.AreEqual(_measurementId, measurements.First().Id);
             Assert.AreEqual(_personId, measurements.First().PersonId);
@@ -55,7 +55,7 @@ namespace HealthTracker.Tests.Cholesterol
         public async Task UpdateTest()
         {
             await _factory.CholesterolMeasurements.UpdateAsync(_measurementId, _personId, UpdatedMeasurementDate, UpdatedTotal, UpdatedHDL, UpdatedLDL, UpdatedTriglycerides);
-            var measurements = await _factory.CholesterolMeasurements.ListAsync(x => x.PersonId == _personId);
+            var measurements = await _factory.CholesterolMeasurements.ListAsync(x => x.PersonId == _personId, 1, int.MaxValue);
             Assert.AreEqual(1, measurements.Count);
             Assert.AreEqual(_measurementId, measurements.First().Id);
             Assert.AreEqual(_personId, measurements.First().PersonId);
@@ -70,7 +70,7 @@ namespace HealthTracker.Tests.Cholesterol
         public async Task DeleteTest()
         {
             await _factory.CholesterolMeasurements.DeleteAsync(_measurementId);
-            var measurements = await _factory.CholesterolMeasurements.ListAsync(a => true);
+            var measurements = await _factory.CholesterolMeasurements.ListAsync(a => true, 1, int.MaxValue);
             Assert.AreEqual(0, measurements.Count);
         }
 

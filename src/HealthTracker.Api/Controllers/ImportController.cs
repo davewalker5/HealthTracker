@@ -22,6 +22,7 @@ namespace HealthTracker.Api.Controllers
         private readonly IBackgroundQueue<BeverageConsumptionMeasurementImportWorkItem> _beverageConsumptionMeasurementQueue;
         private readonly IBackgroundQueue<FoodItemImportWorkItem> _foodItemQueue;
         private readonly IBackgroundQueue<MealImportWorkItem> _mealQueue;
+        private readonly IBackgroundQueue<MealConsumptionMeasurementImportWorkItem> _mealConsumptionQueue;
 
 
         public ImportController(
@@ -35,7 +36,8 @@ namespace HealthTracker.Api.Controllers
             IBackgroundQueue<BloodGlucoseMeasurementImportWorkItem> bloodGlucoseMeasurementQueue,
             IBackgroundQueue<BeverageConsumptionMeasurementImportWorkItem> beverageConsumptionMeasurementQueue,
             IBackgroundQueue<FoodItemImportWorkItem> foodItemQueue,
-            IBackgroundQueue<MealImportWorkItem> mealQueue)
+            IBackgroundQueue<MealImportWorkItem> mealQueue,
+            IBackgroundQueue<MealConsumptionMeasurementImportWorkItem> mealConsumptionQueue)
         {
             _personQueue = personQueue;
             _weightMeasurementQueue = weightMeasurementQueue;
@@ -48,6 +50,7 @@ namespace HealthTracker.Api.Controllers
             _beverageConsumptionMeasurementQueue = beverageConsumptionMeasurementQueue;
             _foodItemQueue = foodItemQueue;
             _mealQueue = mealQueue;
+            _mealConsumptionQueue = mealConsumptionQueue;
         }
 
         [HttpPost]
@@ -179,6 +182,18 @@ namespace HealthTracker.Api.Controllers
 
             // Queue the work item
             _mealQueue.Enqueue(item);
+            return Accepted();
+        }
+
+        [HttpPost]
+        [Route("mealconsumptionmeasurement")]
+        public IActionResult ImportMealConsumptionMeasurements([FromBody] MealConsumptionMeasurementImportWorkItem item)
+        {
+            // Set the job name used in the job status record
+            item.JobName = "Meal Consumption Measurement Import";
+
+            // Queue the work item
+            _mealConsumptionQueue.Enqueue(item);
             return Accepted();
         }
     }

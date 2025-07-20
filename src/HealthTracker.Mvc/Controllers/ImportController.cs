@@ -20,7 +20,8 @@ namespace HealthTracker.Mvc.Controllers
             IWeightMeasurementClient weightMeasurementClient,
             IBeverageConsumptionMeasurementClient beverageConsumptionMeasurementClient,
             IFoodItemClient foodItemClient,
-            IMealClient mealClient,
+            IMealClient mealClient,  
+            IMealConsumptionMeasurementClient mealConsumptionMeasurementClient,
             ILogger<WeightController> logger) : base(
                 bloodGlucoseMeasurementClient,
                 bloodOxygenSaturationMeasurementClient,
@@ -30,6 +31,7 @@ namespace HealthTracker.Mvc.Controllers
                 beverageConsumptionMeasurementClient,
                 foodItemClient,
                 mealClient,
+                mealConsumptionMeasurementClient,
                 logger
             )
         {
@@ -119,7 +121,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelStateErrors(_logger);
+                LogModelState(_logger);
             }
 
             return View(model);

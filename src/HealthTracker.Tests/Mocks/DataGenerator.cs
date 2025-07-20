@@ -831,5 +831,37 @@ namespace HealthTracker.Tests.Mocks
             meal.NutritionalValueId = meal.NutritionalValue.Id;
             return meal;
         }
+
+        /// <summary>
+        /// Generate a random meal consumption record
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public static MealConsumptionMeasurement RandomMealConsumptionMeasurement(int personId, int year)
+        {
+            MealConsumptionMeasurement measurement = new()
+            {
+                Id = RandomId(),
+                PersonId = personId,
+                Date = RandomDateInYear(year),
+                Meal = RandomMeal(),
+                Quantity = RandomDecimal(1, 100),
+                NutritionalValue = RandomNutritionalValue()
+            };
+
+            measurement.MealId = measurement.Meal.Id;
+            measurement.NutritionalValueId = measurement.NutritionalValue.Id;
+            return measurement;
+        }
+
+        /// <summary>
+        /// Generate a random meal consumption record
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public static MealConsumptionMeasurement RandomMealConsumptionMeasurement(int year)
+            => RandomMealConsumptionMeasurement(RandomId(), year);
     }
 }
