@@ -47,8 +47,8 @@ namespace HealthTracker.Logic.Database
             // Clean up the name and make sure we're not creating a duplicate and that the
             // related category and nutritional value exist
             var clean = StringCleaner.Clean(name);
-            CheckCategoryExists(foodCategoryId);
-            CheckNutritionalValueExists(nutritionalValueId);
+            Factory.FoodCategories.CheckFoodCategoryExists(foodCategoryId);
+            Factory.NutritionalValues.CheckNutritionalValueExists(nutritionalValueId);
             await CheckFoodItemIsNotADuplicate(clean, 0);
 
             // Create the item
@@ -87,8 +87,8 @@ namespace HealthTracker.Logic.Database
                 // Clean up the name and make sure we're not creating a duplicate and that the
                 // related category and nutritional value exist
                 var clean = StringCleaner.Clean(name);
-                CheckCategoryExists(foodCategoryId);
-                CheckNutritionalValueExists(nutritionalValueId);
+                Factory.FoodCategories.CheckFoodCategoryExists(foodCategoryId);
+                Factory.NutritionalValues.CheckNutritionalValueExists(nutritionalValueId);
                 await CheckFoodItemIsNotADuplicate(clean, id);
 
                 // Update the item
@@ -107,6 +107,20 @@ namespace HealthTracker.Logic.Database
         }
 
         /// <summary>
+        /// Check a food item with a specified ID exists and raise an exception if not
+        /// </summary>
+        /// <param name="id"></param>
+        public void CheckFoodItemExists(int id)
+        {
+            var category = Context.FoodCategories.FirstOrDefault(x => x.Id == id);
+            if (category == null)
+            {
+                var message = $"Food item with Id {id} does not exist";
+                throw new FoodItemNotFoundException(message);
+            }
+        }
+
+        /// <summary>
         /// Delete the food item with the specified Id
         /// </summary>
         /// <param name="id"></param>
@@ -115,44 +129,20 @@ namespace HealthTracker.Logic.Database
         {
             Factory.Logger.LogMessage(Severity.Info, $"Deleting food item with ID {id}");
 
-            // TODO : Once the meal build is implemented, check we're not deleting an item related to a meal
-
             var item = Context.FoodItems.FirstOrDefault(x => x.Id == id);
             if (item != null)
             {
+                // Check the item isn't referenced in a meal/food item relationship
+                var relationship = await Factory.MealFoodItems.GetAsync(x => x.FoodItemId == id);
+                if (relationship != null)
+                {
+                    var message = $"Food item with ID {id} has meal relationships and cannot be deleted";
+                    throw new FoodItemInUseException(message);
+                }
+
+                // Delete the food item
                 Factory.Context.Remove(item);
                 await Factory.Context.SaveChangesAsync();
-            }
-        }
-
-        /// <summary>
-        /// Check a food category with a specified ID exists and raise an exception if not
-        /// </summary>
-        /// <param name="foodCategoryId"></param>
-        protected void CheckCategoryExists(int foodCategoryId)
-        {
-            var category = Context.FoodCategories.FirstOrDefault(x => x.Id == foodCategoryId);
-            if (category == null)
-            {
-                var message = $"Food category with Id {foodCategoryId} does not exist";
-                throw new FoodCategoryNotFoundException(message);
-            }
-        }
-
-        /// <summary>
-        /// Check a nutritional vaue with a specified ID exists and raise an exception if not
-        /// </summary>
-        /// <param name="nutritionalValueId"></param>
-        protected void CheckNutritionalValueExists(int? nutritionalValueId)
-        {
-            if (nutritionalValueId != null)
-            {
-                var nutrition = Context.NutritionalValues.FirstOrDefault(x => x.Id == nutritionalValueId);
-                if (nutrition == null)
-                {
-                    var message = $"Nutritional value with Id {nutritionalValueId} does not exist";
-                    throw new NutritionalValueNotFoundException(message);
-                }
             }
         }
 

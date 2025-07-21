@@ -9,5 +9,6 @@ namespace HealthTracker.Entities.Interfaces
         Task<FoodItem> AddAsync(string name, decimal portion, int categoryId, int? nutritionalValueId);
         Task<FoodItem> UpdateAsync(int id, string name, decimal portion, int categoryId, int? nutritionalValueId);
         Task DeleteAsync(int id);
+        void CheckFoodItemExists(int id);
     }
 }

@@ -10,5 +10,6 @@ namespace HealthTracker.Entities.Interfaces
         Task<ActivityType> GetAsync(Expression<Func<ActivityType, bool>> predicate);
         Task<List<ActivityType>> ListAsync(Expression<Func<ActivityType, bool>> predicate, int pageNumber, int pageSize);
         Task<ActivityType> UpdateAsync(int id, string description, bool distanceBased);
+        void CheckActivityTypeExists(int activityTypeId);
     }
 }

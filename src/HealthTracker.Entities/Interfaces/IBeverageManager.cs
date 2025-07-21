@@ -10,5 +10,6 @@ namespace HealthTracker.Entities.Interfaces
         Task<Beverage> GetAsync(Expression<Func<Beverage, bool>> predicate);
         Task<List<Beverage>> ListAsync(Expression<Func<Beverage, bool>> predicate, int pageNumber, int pageSize);
         Task<Beverage> UpdateAsync(int id, string name, decimal typicalABV, bool isHydrating, bool isAlcohol);
+        void CheckBeverageExists(int beverageId);
     }
 }

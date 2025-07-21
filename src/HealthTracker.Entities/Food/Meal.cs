@@ -9,7 +9,7 @@ namespace HealthTracker.Entities.Food
     public class Meal : NamedEntity
     {
         [DisplayName("Portions")]
-        [Range(1, int.MaxValue, ErrorMessage="{0} must be >= {1}")]
+        [Range(1, int.MaxValue, ErrorMessage = "{0} must be >= {1}")]
         public int Portions { get; set; }
 
         [DisplayName("Food Source")]
@@ -21,5 +21,7 @@ namespace HealthTracker.Entities.Food
         [ForeignKey(nameof(NutritionalValue))]
         public int? NutritionalValueId { get; set; }
         public NutritionalValue NutritionalValue { get; set; }
+
+        public ICollection<MealFoodItem> FoodItems { get; set; }
     }
 }

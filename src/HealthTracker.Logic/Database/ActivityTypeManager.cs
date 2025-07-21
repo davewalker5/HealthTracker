@@ -118,6 +118,20 @@ namespace HealthTracker.Logic.Database
         }
 
         /// <summary>
+        /// Check an activity type with a specified ID exists and raise an exception if not
+        /// </summary>
+        /// <param name="activityTypeId"></param>
+        public void CheckActivityTypeExists(int activityTypeId)
+        {
+            var activityType = Context.ActivityTypes.FirstOrDefault(x => x.Id == activityTypeId);
+            if (activityType == null)
+            {
+                var message = $"Activity type with Id {activityTypeId} does not exist";
+                throw new ActivityTypeNotFoundException(message);
+            }
+        }
+
+        /// <summary>
         /// Raise an exception if an attempt is made to add/update an activity type with a duplicate
         /// description
         /// </summary>

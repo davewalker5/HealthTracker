@@ -10,5 +10,6 @@ namespace HealthTracker.Entities.Interfaces
         Task<FoodCategory> GetAsync(Expression<Func<FoodCategory, bool>> predicate);
         Task<List<FoodCategory>> ListAsync(Expression<Func<FoodCategory, bool>> predicate, int pageNumber, int pageSize);
         Task<FoodCategory> UpdateAsync(int id, string name);
+        void CheckFoodCategoryExists(int foodCategoryId);
     }
 }

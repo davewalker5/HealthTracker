@@ -114,6 +114,20 @@ namespace HealthTracker.Logic.Database
         }
 
         /// <summary>
+        /// Check a food source with a specified ID exists and raise an exception if not
+        /// </summary>
+        /// <param name="foodSourceId"></param>
+        public void CheckFoodSourceExists(int foodSourceId)
+        {
+            var category = Context.FoodSources.FirstOrDefault(x => x.Id == foodSourceId);
+            if (category == null)
+            {
+                var message = $"Food source with Id {foodSourceId} does not exist";
+                throw new FoodSourceNotFoundException(message);
+            }
+        }
+
+        /// <summary>
         /// Raise an exception if an attempt is made to add/update a food source with a duplicate
         /// name
         /// </summary>

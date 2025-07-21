@@ -50,7 +50,7 @@ namespace HealthTracker.Logic.Database
             Factory.Logger.LogMessage(Severity.Info, $"Adding meal consumption measurement: Person ID {personId}, {date.ToShortDateString()}, Meal ID {mealId}, Quantity {quantity}, Nutritional Value ID = {nutritionalValueId}");
 
             CheckPersonExists(personId);
-            CheckMealExists(mealId);
+            Factory.Meals.CheckMealExists(mealId);
 
             var measurement = new MealConsumptionMeasurement
             {
@@ -91,7 +91,7 @@ namespace HealthTracker.Logic.Database
             if (measurement != null)
             {
                 CheckPersonExists(personId);
-                CheckMealExists(mealId);
+                Factory.Meals.CheckMealExists(mealId);
 
                 // Save the changes
                 measurement.PersonId = personId;
@@ -123,20 +123,6 @@ namespace HealthTracker.Logic.Database
             {
                 Factory.Context.Remove(measurement);
                 await Factory.Context.SaveChangesAsync();
-            }
-        }
-
-        /// <summary>
-        /// Check a meal type with the specified ID exists and raise an exception if not
-        /// </summary>
-        /// <param name="mealId"></param>
-        private void CheckMealExists(int mealId)
-        {
-            var meal = Context.Meals.FirstOrDefault(x => x.Id == mealId);
-            if (meal == null)
-            {
-                var message = $"Meal with Id {mealId} does not exist";
-                throw new MealNotFoundException(message);
             }
         }
     }

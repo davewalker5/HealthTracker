@@ -2,7 +2,6 @@ using HealthTracker.Entities.Exceptions;
 using HealthTracker.Entities.Interfaces;
 using HealthTracker.Entities.Logging;
 using HealthTracker.Entities.Food;
-using HealthTracker.Logic.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -133,6 +132,23 @@ namespace HealthTracker.Logic.Database
             {
                 Factory.Context.Remove(nutrition);
                 await Factory.Context.SaveChangesAsync();
+            }
+        }
+
+        /// <summary>
+        /// Check a nutritional vaue with a specified ID exists and raise an exception if not
+        /// </summary>
+        /// <param name="nutritionalValueId"></param>
+        public void CheckNutritionalValueExists(int? nutritionalValueId)
+        {
+            if (nutritionalValueId != null)
+            {
+                var nutrition = Context.NutritionalValues.FirstOrDefault(x => x.Id == nutritionalValueId);
+                if (nutrition == null)
+                {
+                    var message = $"Nutritional value with Id {nutritionalValueId} does not exist";
+                    throw new NutritionalValueNotFoundException(message);
+                }
             }
         }
     }

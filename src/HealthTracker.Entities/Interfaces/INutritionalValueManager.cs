@@ -27,5 +27,6 @@ namespace HealthTracker.Entities.Interfaces
             decimal? fibre);
 
         Task DeleteAsync(int id);
+        void CheckNutritionalValueExists(int? nutritionalValueId);
     }
 }

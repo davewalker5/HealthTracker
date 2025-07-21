@@ -46,8 +46,8 @@ namespace HealthTracker.Logic.Database
             // Clean up the name and make sure we're not creating a duplicate and that the
             // related nutritional value exists
             var clean = StringCleaner.Clean(name);
-            CheckSourceExists(foodSourceId);
-            CheckNutritionalValueExists(nutritionalValueId);
+            Factory.FoodSources.CheckFoodSourceExists(foodSourceId);
+            Factory.NutritionalValues.CheckNutritionalValueExists(nutritionalValueId);
             await CheckMealIsNotADuplicate(clean, 0);
 
             // Create the meal
@@ -86,8 +86,8 @@ namespace HealthTracker.Logic.Database
                 // Clean up the name and make sure we're not creating a duplicate and that the
                 // related nutritional value exists
                 var clean = StringCleaner.Clean(name);
-                CheckSourceExists(foodSourceId);
-                CheckNutritionalValueExists(nutritionalValueId);
+                Factory.FoodSources.CheckFoodSourceExists(foodSourceId);
+                Factory.NutritionalValues.CheckNutritionalValueExists(nutritionalValueId);
                 await CheckMealIsNotADuplicate(clean, id);
 
                 // Update the meal
@@ -117,39 +117,31 @@ namespace HealthTracker.Logic.Database
             var item = Context.Meals.FirstOrDefault(x => x.Id == id);
             if (item != null)
             {
+                // Check the meal isn't referenced in a meal/food item relationship
+                var relationship = await Factory.MealFoodItems.GetAsync(x => x.MealId == id);
+                if (relationship != null)
+                {
+                    var message = $"Meal with ID {id} has food item relationships and cannot be deleted";
+                    throw new MealInUseException(message);
+                }
+
+                // Delete the meal
                 Factory.Context.Remove(item);
                 await Factory.Context.SaveChangesAsync();
             }
         }
 
         /// <summary>
-        /// Check a food source with a specified ID exists and raise an exception if not
+        /// Check a meal type with the specified ID exists and raise an exception if not
         /// </summary>
-        /// <param name="foodSourceId"></param>
-        protected void CheckSourceExists(int foodSourceId)
+        /// <param name="mealId"></param>
+        public void CheckMealExists(int mealId)
         {
-            var category = Context.FoodSources.FirstOrDefault(x => x.Id == foodSourceId);
-            if (category == null)
+            var meal = Context.Meals.FirstOrDefault(x => x.Id == mealId);
+            if (meal == null)
             {
-                var message = $"Food source with Id {foodSourceId} does not exist";
-                throw new FoodSourceNotFoundException(message);
-            }
-        }
-
-        /// <summary>
-        /// Check a nutritional vaue with a specified ID exists and raise an exception if not
-        /// </summary>
-        /// <param name="nutritionalValueId"></param>
-        protected void CheckNutritionalValueExists(int? nutritionalValueId)
-        {
-            if (nutritionalValueId != null)
-            {
-                var nutrition = Context.NutritionalValues.FirstOrDefault(x => x.Id == nutritionalValueId);
-                if (nutrition == null)
-                {
-                    var message = $"Nutritional value with Id {nutritionalValueId} does not exist";
-                    throw new NutritionalValueNotFoundException(message);
-                }
+                var message = $"Meal with Id {mealId} does not exist";
+                throw new MealNotFoundException(message);
             }
         }
 

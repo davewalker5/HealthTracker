@@ -1,4 +1,3 @@
-using HealthTracker.Entities.Exceptions;
 using HealthTracker.Entities.Interfaces;
 using HealthTracker.Entities.Logging;
 using HealthTracker.Entities.Food;
@@ -49,7 +48,7 @@ namespace HealthTracker.Logic.Database
             Factory.Logger.LogMessage(Severity.Info, $"Adding beverage consumption measurement: Person ID {personId}, {date.ToShortDateString()}, Beverage ID {beverageId}, Quantity {quantity}, Volume {volume}, ABV {abv}");
 
             CheckPersonExists(personId);
-            CheckBeverageExists(beverageId);
+            Factory.Beverages.CheckBeverageExists(beverageId);
 
             var measurement = new BeverageConsumptionMeasurement
             {
@@ -93,7 +92,7 @@ namespace HealthTracker.Logic.Database
             if (measurement != null)
             {
                 CheckPersonExists(personId);
-                CheckBeverageExists(beverageId);
+                Factory.Beverages.CheckBeverageExists(beverageId);
 
                 // Save the changes
                 measurement.PersonId = personId;
@@ -122,20 +121,6 @@ namespace HealthTracker.Logic.Database
             {
                 Factory.Context.Remove(measurement);
                 await Factory.Context.SaveChangesAsync();
-            }
-        }
-
-        /// <summary>
-        /// Check an activity type with a specified ID exists and raise an exception if not
-        /// </summary>
-        /// <param name="beverageId"></param>
-        private void CheckBeverageExists(int beverageId)
-        {
-            var beverage = Context.Beverages.FirstOrDefault(x => x.Id == beverageId);
-            if (beverage == null)
-            {
-                var message = $"Beverage with Id {beverageId} does not exist";
-                throw new BeverageNotFoundException(message);
             }
         }
     }
