@@ -112,7 +112,7 @@ namespace HealthTracker.Logic.Database
         /// <param name="id"></param>
         public void CheckFoodItemExists(int id)
         {
-            var category = Context.FoodCategories.FirstOrDefault(x => x.Id == id);
+            var category = Context.FoodItems.FirstOrDefault(x => x.Id == id);
             if (category == null)
             {
                 var message = $"Food item with Id {id} does not exist";

@@ -23,8 +23,8 @@ namespace HealthTracker.DataExchange.Export
         /// <param name="file"></param>
         public async Task ExportAsync(string file)
         {
-            var mealfooditems = await _factory.MealFoodItems.ListAsync(x => true);
-            await ExportAsync(mealfooditems, file);
+            var relationships = await _factory.MealFoodItems.ListAsync(x => true);
+            await ExportAsync(relationships, file);
         }
 
         /// <summary>

@@ -23,7 +23,7 @@ namespace HealthTracker.Api.Controllers
         private readonly IBackgroundQueue<FoodItemImportWorkItem> _foodItemQueue;
         private readonly IBackgroundQueue<MealImportWorkItem> _mealQueue;
         private readonly IBackgroundQueue<MealConsumptionMeasurementImportWorkItem> _mealConsumptionQueue;
-
+        private readonly IBackgroundQueue<MealFoodItemImportWorkItem> _mealFoodItemQueue;
 
         public ImportController(
             IBackgroundQueue<PersonImportWorkItem> personQueue,
@@ -37,7 +37,8 @@ namespace HealthTracker.Api.Controllers
             IBackgroundQueue<BeverageConsumptionMeasurementImportWorkItem> beverageConsumptionMeasurementQueue,
             IBackgroundQueue<FoodItemImportWorkItem> foodItemQueue,
             IBackgroundQueue<MealImportWorkItem> mealQueue,
-            IBackgroundQueue<MealConsumptionMeasurementImportWorkItem> mealConsumptionQueue)
+            IBackgroundQueue<MealConsumptionMeasurementImportWorkItem> mealConsumptionQueue,
+            IBackgroundQueue<MealFoodItemImportWorkItem> mealFoodItemQueue)
         {
             _personQueue = personQueue;
             _weightMeasurementQueue = weightMeasurementQueue;
@@ -51,6 +52,7 @@ namespace HealthTracker.Api.Controllers
             _foodItemQueue = foodItemQueue;
             _mealQueue = mealQueue;
             _mealConsumptionQueue = mealConsumptionQueue;
+            _mealFoodItemQueue = mealFoodItemQueue;
         }
 
         [HttpPost]
@@ -194,6 +196,18 @@ namespace HealthTracker.Api.Controllers
 
             // Queue the work item
             _mealConsumptionQueue.Enqueue(item);
+            return Accepted();
+        }
+
+        [HttpPost]
+        [Route("mealfooditem")]
+        public IActionResult ImportMealFoodItemRelationships([FromBody] MealFoodItemImportWorkItem item)
+        {
+            // Set the job name used in the job status record
+            item.JobName = "Meal/Food Item Relationship Import";
+
+            // Queue the work item
+            _mealFoodItemQueue.Enqueue(item);
             return Accepted();
         }
     }

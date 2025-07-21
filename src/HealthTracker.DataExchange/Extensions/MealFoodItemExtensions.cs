@@ -16,7 +16,7 @@ namespace HealthTracker.DataExchange.Extensions
             => new()
             {
                 Meal = meals.First(x => x.Id == relationship.MealId).Name,
-                FoodItem = foodItems.First(x => x.Id == relationship.MealId).Name,
+                FoodItem = foodItems.First(x => x.Id == relationship.FoodItemId).Name,
             };
 
         /// <summary>

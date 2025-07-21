@@ -34,6 +34,7 @@ namespace HealthTracker.Logic.Database
         public async Task<List<MealFoodItem>> ListAsync(Expression<Func<MealFoodItem, bool>> predicate)
             => await Context.MealFoodItems
                             .Where(predicate)
+                            .Include(x => x.FoodItem)
                             .ToListAsync();
 
         /// <summary>

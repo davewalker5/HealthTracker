@@ -24,6 +24,7 @@ namespace HealthTracker.Api.Controllers
         private readonly IBackgroundQueue<FoodItemExportWorkItem> _foodItemQueue;
         private readonly IBackgroundQueue<MealExportWorkItem> _mealQueue;
         private readonly IBackgroundQueue<MealConsumptionMeasurementExportWorkItem> _mealConsumptionQueue;
+        private readonly IBackgroundQueue<MealFoodItemExportWorkItem> _mealFoodItemQueue;
 
         public ExportController(
             IBackgroundQueue<PersonExportWorkItem> personQueue,
@@ -38,7 +39,8 @@ namespace HealthTracker.Api.Controllers
             IBackgroundQueue<BeverageConsumptionMeasurementExportWorkItem> beverageConsumptionMeasurementQueue,
             IBackgroundQueue<FoodItemExportWorkItem> foodItemQueue,
             IBackgroundQueue<MealExportWorkItem> mealQueue,
-            IBackgroundQueue<MealConsumptionMeasurementExportWorkItem> mealConsumptionQueue)
+            IBackgroundQueue<MealConsumptionMeasurementExportWorkItem> mealConsumptionQueue,
+            IBackgroundQueue<MealFoodItemExportWorkItem> mealFoodItemQueue)
         {
             _personQueue = personQueue;
             _weightMeasurementQueue = weightMeasurementQueue;
@@ -53,6 +55,7 @@ namespace HealthTracker.Api.Controllers
             _foodItemQueue = foodItemQueue;
             _mealQueue = mealQueue;
             _mealConsumptionQueue = mealConsumptionQueue;
+            _mealFoodItemQueue = mealFoodItemQueue;
         }
 
         [HttpPost]
@@ -208,6 +211,18 @@ namespace HealthTracker.Api.Controllers
 
             // Queue the work item
             _mealConsumptionQueue.Enqueue(item);
+            return Accepted();
+        }
+
+        [HttpPost]
+        [Route("mealfooditem")]
+        public IActionResult ExportMealFoodItemRelationships([FromBody] MealFoodItemExportWorkItem item)
+        {
+            // Set the job name used in the job status record
+            item.JobName = "Meal/Food Item Relationship Export";
+
+            // Queue the work item
+            _mealFoodItemQueue.Enqueue(item);
             return Accepted();
         }
     }
