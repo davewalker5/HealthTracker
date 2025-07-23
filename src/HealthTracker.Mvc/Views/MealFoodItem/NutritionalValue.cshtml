@@ -1,5 +1,4 @@
-@using HealthTracker.Mvc.Entities
-@model HealthTracker.Mvc.Models.MealFoodItemListViewModel
+@model HealthTracker.Mvc.Models.NutritionalValueTableViewModel
 
 @functions
 {
@@ -7,33 +6,43 @@
         => value != null ? value.Value.ToString("0.0") : "";
 }
 
-@{
-    var calories = GetNutritonalValue(Model.Meal.NutritionalValue?.Calories);
-    var fat = GetNutritonalValue(Model.Meal.NutritionalValue?.Fat);
-    var saturated = GetNutritonalValue(Model.Meal.NutritionalValue?.SaturatedFat);
-    var protein = GetNutritonalValue(Model.Meal.NutritionalValue?.Protein);
-    var carbohydrates = GetNutritonalValue(Model.Meal.NutritionalValue?.Carbohydrates);
-    var sugar = GetNutritonalValue(Model.Meal.NutritionalValue?.Sugar);
-    var fibre = GetNutritonalValue(Model.Meal.NutritionalValue?.Fibre);
-}
+@if (Model.Values != null)
+{
+    var calories = GetNutritonalValue(Model.Values?.Calories);
+    var fat = GetNutritonalValue(Model.Values?.Fat);
+    var saturated = GetNutritonalValue(Model.Values?.SaturatedFat);
+    var protein = GetNutritonalValue(Model.Values?.Protein);
+    var carbohydrates = GetNutritonalValue(Model.Values?.Carbohydrates);
+    var sugar = GetNutritonalValue(Model.Values?.Sugar);
+    var fibre = GetNutritonalValue(Model.Values?.Fibre);
 
-<table class="table">
-    <tr>
-        <th>Calories</th>
-        <th>Fat</th>
-        <th>Saturated Fat</th>
-        <th>Protein</th>
-        <th>Carbohydrates</th>
-        <th>Sugar</th>
-        <th>Fibre</th>
-    </tr>
+    <table class="table">
         <tr>
-            <td valign="center">@calories</td>
-            <td valign="center">@fat</td>
-            <td valign="center">@saturated</td>
-            <td valign="center">@protein</td>
-            <td valign="center">@carbohydrates</td>
-            <td valign="center">@sugar</td>
-            <td valign="center">@fibre</td>
+            @if (Model.Portion != null)
+            {
+                <th>Portion</th>
+            }
+            <th>Calories</th>
+            <th>Fat</th>
+            <th>Saturated Fat</th>
+            <th>Protein</th>
+            <th>Carbohydrates</th>
+            <th>Sugar</th>
+            <th>Fibre</th>
         </tr>
-</table>
+            <tr>
+                @if (Model.Portion != null)
+                {
+                    <td valign="center">@Model.Portion</td>
+                }
+                <td valign="center">@calories</td>
+                <td valign="center">@fat</td>
+                <td valign="center">@saturated</td>
+                <td valign="center">@protein</td>
+                <td valign="center">@carbohydrates</td>
+                <td valign="center">@sugar</td>
+                <td valign="center">@fibre</td>
+            </tr>
+    </table>
+    <br/>
+}

@@ -21,6 +21,7 @@
         <th>Sugar</th>
         <th>Fibre</th>
         <th/>
+        <th/>
     </tr>
     @foreach (var relationship in Model)
     {
@@ -42,6 +43,11 @@
             <td valign="center">@carbohydrates</td>
             <td valign="center">@sugar</td>
             <td valign="center">@fibre</td>
+            <td valign="center">
+                <a class="btn btn-lg" asp-area="" asp-controller="MealFoodItem" asp-action="Edit" asp-route-id="@relationship.Id">
+                    <i class="fas fa-edit"></i>
+                </a>
+            </td>
             <td valign="center">
                 <a class="btn btn-lg" href="javascript:submitDeleteForm(@relationship.Id)">
                     <i class="fas fa-trash"></i>

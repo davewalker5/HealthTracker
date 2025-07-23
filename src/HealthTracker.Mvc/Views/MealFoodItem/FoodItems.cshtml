@@ -1,0 +1,26 @@
+@model HealthTracker.Mvc.Models.FoodItemsDropDownViewModel
+
+<div class="row">
+    <div class="col">
+        <strong>Food Item</strong>
+    </div>
+    <div class="col">
+        <div class="input-group">
+            @Html.DropDownList("FoodItemListId", Model.Items, new { @class = "form-control" })
+        </div>
+    </div>
+</div>
+<br/>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // When the selection on the food items list changes, copy it to the food item ID that's used when the
+        // form is POSTed back and refresh the table of nutritional values for the selected item
+        $("#FoodItemListId").change(function() {
+            var foodItemId = $("#FoodItemListId").val();
+            console.log("Food item ID = " + foodItemId);
+            $("#Relationship_FoodItemId").val(foodItemId);
+            LoadNutritionalValuesForFoodItem();
+        });
+    });
+</script>

@@ -79,6 +79,7 @@ namespace HealthTracker.Mvc
             services.AddSingleton<IViewModelBuilder, ViewModelBuilder>();
             services.AddSingleton<IFoodSourceListGenerator, FoodSourceListGenerator>();
             services.AddSingleton<IFoodSourceFilterGenerator, FoodSourceFilterGenerator>();
+            services.AddSingleton<IFoodItemListGenerator, FoodItemListGenerator>();
 
             // Configure session state for token storage
             services.AddSession(options =>

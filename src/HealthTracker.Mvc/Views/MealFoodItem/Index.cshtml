@@ -34,7 +34,7 @@
         @Html.Hidden("id", 0)
     }
 
-    @await Html.PartialAsync("NutritionalValue", Model)
+    @await Html.PartialAsync("NutritionalValue", new NutritionalValueTableViewModel() { Values = Model.Meal.NutritionalValue })
     <hr/>
 
     <p class="text-center font-weight-bold">
@@ -56,7 +56,7 @@
 
     <hr />
     <p class="text-right">
-        <a class="btn btn-primary" href="/MealFoodItem/Add" role="button">Add</a>
+        <a class="btn btn-primary" href="/MealFoodItem/Add?mealId=@Model.Meal.Id" role="button">Add</a>
     </p>
 </div>
 
