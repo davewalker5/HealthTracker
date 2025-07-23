@@ -20,8 +20,10 @@ namespace HealthTracker.Data.Migrations
                 {
                     id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    quantity = table.Column<decimal>(type: "TEXT", nullable: false),
                     meal_id = table.Column<int>(type: "INTEGER", nullable: false),
-                    food_item_id = table.Column<int>(type: "INTEGER", nullable: false)
+                    food_item_id = table.Column<int>(type: "INTEGER", nullable: false),
+                    nutritional_value_id = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -38,6 +40,12 @@ namespace HealthTracker.Data.Migrations
                         principalTable: "MEALS",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_MEAL_FOOD_ITEMS_NUTRITIONAL_VALUES_nutritional_value_id",
+                        column: x => x.nutritional_value_id,
+                        principalTable: "NUTRITIONAL_VALUES",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -49,6 +57,12 @@ namespace HealthTracker.Data.Migrations
                 name: "IX_MEAL_FOOD_ITEMS_meal_id",
                 table: "MEAL_FOOD_ITEMS",
                 column: "meal_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MEAL_FOOD_ITEMS_nutritional_value_id",
+                table: "MEAL_FOOD_ITEMS",
+                column: "nutritional_value_id",
+                unique: true);
         }
 
         /// <inheritdoc />

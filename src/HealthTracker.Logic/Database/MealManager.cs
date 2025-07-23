@@ -25,6 +25,11 @@ namespace HealthTracker.Logic.Database
             => await Context.Meals
                             .Include(x => x.FoodSource)
                             .Include(x => x.NutritionalValue)
+                            .Include(x => x.MealFoodItems)
+                                .ThenInclude(x => x.FoodItem)
+                                    .ThenInclude(x => x.FoodCategory)
+                            .Include(x => x.MealFoodItems)
+                                .ThenInclude(x => x.NutritionalValue)
                             .Where(predicate)
                             .OrderBy(x => x.Name)
                             .Skip((pageNumber - 1) * pageSize)
@@ -51,7 +56,7 @@ namespace HealthTracker.Logic.Database
             await CheckMealIsNotADuplicate(clean, 0);
 
             // Create the meal
-            var item = new Meal
+            var meal = new Meal
             {
                 Name = clean,
                 Portions = portions,
@@ -60,10 +65,12 @@ namespace HealthTracker.Logic.Database
             };
 
             // Add it to the database
-            await Context.Meals.AddAsync(item);
+            await Context.Meals.AddAsync(meal);
             await Context.SaveChangesAsync();
 
-            return item;
+            // Reload to load associated entities
+            meal = (await ListAsync(x => x.Id == meal.Id, 1, 1)).First();
+            return meal;
         }
 
         /// <summary>
@@ -80,29 +87,78 @@ namespace HealthTracker.Logic.Database
             Factory.Logger.LogMessage(Severity.Info, $"Updating meal with ID {id}: Name = {name}, Portions = {portions}, Food Source ID = {foodSourceId}, Nutritional Value ID = {nutritionalValueId}");
 
             // Retrieve the meal for update
-            var item = Context.Meals.FirstOrDefault(x => x.Id == id);
-            if (item != null)
+            var meal = Context.Meals.FirstOrDefault(x => x.Id == id);
+            if (meal == null)
             {
-                // Clean up the name and make sure we're not creating a duplicate and that the
-                // related nutritional value exists
-                var clean = StringCleaner.Clean(name);
-                Factory.FoodSources.CheckFoodSourceExists(foodSourceId);
-                Factory.NutritionalValues.CheckNutritionalValueExists(nutritionalValueId);
-                await CheckMealIsNotADuplicate(clean, id);
-
-                // Update the meal
-                item.Name = clean;
-                item.Portions = portions;
-                item.FoodSourceId = foodSourceId;
-                item.NutritionalValueId = nutritionalValueId;
-                await Context.SaveChangesAsync();
-
-                // Reload the associated nutritional value and food source
-                await Context.Entry(item).Reference(x => x.FoodSource).LoadAsync();
-                await Context.Entry(item).Reference(x => x.NutritionalValue).LoadAsync();
+                var message = $"Meal with ID {id} not found";
+                throw new MealNotFoundException(message);
             }
 
-            return item;
+            // Clean up the name and make sure we're not creating a duplicate and that the
+            // related nutritional value exists
+            var clean = StringCleaner.Clean(name);
+            Factory.FoodSources.CheckFoodSourceExists(foodSourceId);
+            Factory.NutritionalValues.CheckNutritionalValueExists(nutritionalValueId);
+            await CheckMealIsNotADuplicate(clean, id);
+
+            // Update the meal
+            meal.Name = clean;
+            meal.Portions = portions;
+            meal.FoodSourceId = foodSourceId;
+            meal.NutritionalValueId = nutritionalValueId;
+            await Context.SaveChangesAsync();
+
+            // Reload to load associated entities
+            meal = (await ListAsync(x => x.Id == id, 1, 1)).First();
+            return meal;
+        }
+
+        /// <summary>
+        /// Update the total nutritional value for a meal based on the associated food itm
+        /// relationships
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="MealNotFoundException"></exception>
+        public async Task UpdateNutritionalValues(int id)
+        {
+            Factory.Logger.LogMessage(Severity.Info, $"Updating nutritional values for meal with ID = {id}");
+
+            // Retrieve the meal
+            var meal = Context.Meals.FirstOrDefault(x => x.Id == id);
+            if (meal == null)
+            {
+                var message = $"Meal with ID {id} not found";
+                throw new MealNotFoundException(message);
+            }
+
+            Factory.Logger.LogMessage(Severity.Debug, $"Retrieved meal {meal}");
+
+            // Retrieve the associated food item relationships and calculate a total nutritional value
+            var relationships = await Factory.MealFoodItems.ListAsync(x => x.MealId == id);
+            var plural = relationships.Count == 1 ? "" : "s";
+            Factory.Logger.LogMessage(Severity.Debug, $"Found {relationships.Count} food item relationship{plural} associated with meal ID {id}");
+
+            var calculated = Factory.NutritionalValues.CalculateTotalNutritionalValue(relationships);
+            Factory.Logger.LogMessage(Severity.Debug, $"Calculated nutritional values : {calculated}");
+
+            var nutritionalValues = await Factory.NutritionalValues.CreateOrUpdateNutritionalValueAsync(meal.NutritionalValueId, calculated);
+            Factory.Logger.LogMessage(Severity.Debug, $"Created/updated nutritional values : {nutritionalValues}");
+
+            // Update the meal to associate the nutritional values with it, if the calculated values have some
+            // values, or remove any existing association if they don't
+            if (nutritionalValues != null)
+            {
+                Factory.Logger.LogMessage(Severity.Debug, $"Setting nutritional value ID for meal {id} to {nutritionalValues.Id}");
+                meal.NutritionalValueId = nutritionalValues.Id;
+                await Context.SaveChangesAsync();
+            }
+            else if (meal.NutritionalValueId != null)
+            {
+                Factory.Logger.LogMessage(Severity.Debug, $"Removing nutritional value ID from meal {id}");
+                meal.NutritionalValueId = null;
+                await Context.SaveChangesAsync();
+            }
         }
 
         /// <summary>
@@ -114,21 +170,24 @@ namespace HealthTracker.Logic.Database
         {
             Factory.Logger.LogMessage(Severity.Info, $"Deleting meal with ID {id}");
 
-            var item = Context.Meals.FirstOrDefault(x => x.Id == id);
-            if (item != null)
+            var meal = Context.Meals.FirstOrDefault(x => x.Id == id);
+            if (meal == null)
             {
-                // Check the meal isn't referenced in a meal/food item relationship
-                var relationship = await Factory.MealFoodItems.GetAsync(x => x.MealId == id);
-                if (relationship != null)
-                {
-                    var message = $"Meal with ID {id} has food item relationships and cannot be deleted";
-                    throw new MealInUseException(message);
-                }
-
-                // Delete the meal
-                Factory.Context.Remove(item);
-                await Factory.Context.SaveChangesAsync();
+                var message = $"Meal with ID {id} not found";
+                throw new MealNotFoundException(message);
             }
+
+            // Check the meal isn't referenced in a meal/food item relationship
+            var relationship = await Factory.MealFoodItems.GetAsync(x => x.MealId == id);
+            if (relationship != null)
+            {
+                var message = $"Meal with ID {id} has food item relationships and cannot be deleted";
+                throw new MealInUseException(message);
+            }
+
+            // Delete the meal
+            Factory.Context.Remove(meal);
+            await Factory.Context.SaveChangesAsync();
         }
 
         /// <summary>

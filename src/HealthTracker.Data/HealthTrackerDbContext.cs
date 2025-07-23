@@ -328,10 +328,12 @@ namespace HealthTracker.Data
                 entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
                 entity.Property(e => e.MealId).IsRequired().HasColumnName("meal_id");
                 entity.Property(e => e.FoodItemId).IsRequired().HasColumnName("food_item_id");
+                entity.Property(e => e.Quantity).IsRequired().HasColumnName("quantity");
+                entity.Property(e => e.NutritionalValueId).HasColumnName("nutritional_value_id");
 
                 modelBuilder.Entity<MealFoodItem>()
                         .HasOne<Meal>()
-                        .WithMany(e => e.FoodItems)
+                        .WithMany(e => e.MealFoodItems)
                         .HasForeignKey(e => e.MealId)
                         .OnDelete(DeleteBehavior.Restrict);
 
@@ -339,6 +341,11 @@ namespace HealthTracker.Data
                     .HasOne(e => e.FoodItem)
                     .WithMany()
                     .HasForeignKey(e => e.FoodItemId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.NutritionalValue)
+                    .WithOne()
+                    .HasForeignKey<MealFoodItem>(e => e.NutritionalValueId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
         }

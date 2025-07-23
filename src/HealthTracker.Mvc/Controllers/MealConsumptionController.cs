@@ -16,12 +16,12 @@ namespace HealthTracker.Mvc.Controllers
         private readonly ILogger<MealConsumptionController> _logger;
         private readonly IMealListGenerator _mealListGenerator;
         private readonly IFoodSourceListGenerator _foodSourceListGenerator;
-        private readonly IMealConsumptionMeasurementHelper _helper;
+        private readonly IMealConsumptionMeasurementClient _client;
 
         public MealConsumptionController(
             IPersonClient personClient,
             IMealConsumptionMeasurementClient measurementClient,
-            IMealConsumptionMeasurementHelper helper,
+            IMealConsumptionMeasurementClient client,
             IHealthTrackerApplicationSettings settings,
             IFilterGenerator filterGenerator,
             IMealListGenerator mealListGenerator,
@@ -32,7 +32,7 @@ namespace HealthTracker.Mvc.Controllers
             _logger = logger;
             _mealListGenerator = mealListGenerator;
             _foodSourceListGenerator = foodSourceListGenerator;
-            _helper = helper;
+            _client = client;
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace HealthTracker.Mvc.Controllers
                     $"Timestamp = {timestamp}, " +
                     $"Quantity = {model.Measurement.Quantity}");
 
-                var measurement = await _helper.AddAsync(
+                var measurement = await _client.AddAsync(
                     model.Measurement.PersonId,
                     model.Measurement.MealId,
                     timestamp,
@@ -268,7 +268,7 @@ namespace HealthTracker.Mvc.Controllers
                     $"Timestamp = {timestamp}, " +
                     $"Quantity = {model.Measurement.Quantity}");
 
-                await _helper.UpdateAsync(
+                await _client.UpdateAsync(
                     model.Measurement.Id,
                     model.Measurement.PersonId,
                     model.Measurement.MealId,

@@ -7,8 +7,8 @@ namespace HealthTracker.Entities.Interfaces
     {
         Task<MealFoodItem> GetAsync(Expression<Func<MealFoodItem, bool>> predicate);
         Task<List<MealFoodItem>> ListAsync(Expression<Func<MealFoodItem, bool>> predicate);
-        Task<MealFoodItem> AddAsync(int mealId, int foodItemId);
-        Task<MealFoodItem> UpdateAsync(int id, int mealId, int foodItemId);
+        Task<MealFoodItem> AddAsync(int mealId, int foodItemId, decimal quantity);
+        Task<MealFoodItem> UpdateAsync(int id, int mealId, int foodItemId, decimal quantity);
         Task DeleteAsync(int id);
     }
 }

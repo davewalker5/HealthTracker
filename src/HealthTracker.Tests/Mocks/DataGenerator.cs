@@ -503,7 +503,7 @@ namespace HealthTracker.Tests.Mocks
                 ActivityTypeId = activityTypeId,
                 Date = date,
                 Duration = RandomInt(1800, 10800),
-                Distance = RandomDecimal(0, 50),
+                Distance = RandomDecimal(1, 50),
                 Calories = RandomInt(250, 3200),
                 MinimumHeartRate = RandomInt(50, 80),
                 MaximumHeartRate = RandomInt(130, 160)
@@ -840,14 +840,27 @@ namespace HealthTracker.Tests.Mocks
         /// <returns></returns>
         public static MealConsumptionMeasurement RandomMealConsumptionMeasurement(int personId, int year)
         {
+            var quantity = RandomDecimal(1, 100);
+            var meal = RandomMeal();
+
             MealConsumptionMeasurement measurement = new()
             {
                 Id = RandomId(),
                 PersonId = personId,
                 Date = RandomDateInYear(year),
-                Meal = RandomMeal(),
-                Quantity = RandomDecimal(1, 100),
-                NutritionalValue = RandomNutritionalValue()
+                Meal = meal,
+                Quantity = quantity
+            };
+
+            measurement.NutritionalValue = new()
+            {
+                Calories = quantity * meal.NutritionalValue.Calories,
+                Fat = quantity * meal.NutritionalValue.Fat,
+                SaturatedFat = quantity * meal.NutritionalValue.SaturatedFat,
+                Protein = quantity * meal.NutritionalValue.Protein,
+                Carbohydrates = quantity * meal.NutritionalValue.Carbohydrates,
+                Sugar = quantity * meal.NutritionalValue.Sugar,
+                Fibre = quantity * meal.NutritionalValue.Fibre
             };
 
             measurement.MealId = measurement.Meal.Id;

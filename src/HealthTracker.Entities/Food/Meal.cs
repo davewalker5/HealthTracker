@@ -22,6 +22,6 @@ namespace HealthTracker.Entities.Food
         public int? NutritionalValueId { get; set; }
         public NutritionalValue NutritionalValue { get; set; }
 
-        public ICollection<MealFoodItem> FoodItems { get; set; }
+        public ICollection<MealFoodItem> MealFoodItems { get; set; }
     }
 }

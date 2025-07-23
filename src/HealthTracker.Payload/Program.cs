@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
 
 // Tool to create the payload for a data import job based on an existing file
-const string FilePath = @"glucose.csv";
-const string JobName = @"Blood Glucose Import";
+const string FilePath = @"data.csv";
+const string JobName = @"Data Import";
 
 // Construct the payload
 dynamic data = new{ Content = File.ReadAllText(FilePath), JobName = JobName };

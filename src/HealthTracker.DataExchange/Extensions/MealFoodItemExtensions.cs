@@ -17,6 +17,14 @@ namespace HealthTracker.DataExchange.Extensions
             {
                 Meal = meals.First(x => x.Id == relationship.MealId).Name,
                 FoodItem = foodItems.First(x => x.Id == relationship.FoodItemId).Name,
+                Quantity = relationship.Quantity,
+                Calories = relationship.NutritionalValue?.Calories,
+                Fat = relationship.NutritionalValue?.Fat,
+                SaturatedFat = relationship.NutritionalValue?.SaturatedFat,
+                Protein = relationship.NutritionalValue?.Protein,
+                Carbohydrates = relationship.NutritionalValue?.Carbohydrates,
+                Sugar = relationship.NutritionalValue?.Sugar,
+                Fibre = relationship.NutritionalValue?.Fibre
             };
 
         /// <summary>
@@ -52,7 +60,18 @@ namespace HealthTracker.DataExchange.Extensions
             => new()
             {
                 MealId = meals.First(x => x.Name == exportable.Meal).Id,
-                FoodItemId = foodItems.First(x => x.Name == exportable.FoodItem).Id
+                FoodItemId = foodItems.First(x => x.Name == exportable.FoodItem).Id,
+                Quantity = exportable.Quantity,
+                NutritionalValue = new NutritionalValue
+                {
+                    Calories = exportable.Calories,
+                    Fat = exportable.Fat,
+                    SaturatedFat = exportable.SaturatedFat,
+                    Protein = exportable.Protein,
+                    Carbohydrates = exportable.Carbohydrates,
+                    Sugar = exportable.Sugar,
+                    Fibre = exportable.Fibre
+                }
             };
 
         /// <summary>

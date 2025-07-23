@@ -11,6 +11,10 @@ namespace HealthTracker.Entities.Food
         [Key]
         public int Id { get ; set; }
 
+        [DisplayName("Quantity")]
+        [Range(1.0, double.MaxValue, ErrorMessage = "You must specify a quantity")]
+        public decimal Quantity { get; set; }
+
         [DisplayName("Meal")]
         [ForeignKey(nameof(Meal))]
         [Range(1, int.MaxValue, ErrorMessage = "You must specify a meal")]
@@ -21,5 +25,9 @@ namespace HealthTracker.Entities.Food
         [Range(1, int.MaxValue, ErrorMessage = "You must specify a food item")]
         public int FoodItemId { get; set; }
         public FoodItem FoodItem { get; set; }
+
+        [ForeignKey(nameof(NutritionalValue))]
+        public int? NutritionalValueId { get; set; }
+        public NutritionalValue NutritionalValue { get; set; }
     }
 }

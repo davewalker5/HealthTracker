@@ -29,7 +29,7 @@ namespace HealthTracker.Mvc.Helpers
         /// <returns></returns>
         public async Task<FoodSourceFilterViewModel> Create(int foodSourceId, ViewFlags flags)
         {
-            // Create a new model and populate the list of people
+            // Create a new model and populate the list of food sources
             var model = new FoodSourceFilterViewModel()
             {
                 FoodSourceId = foodSourceId,

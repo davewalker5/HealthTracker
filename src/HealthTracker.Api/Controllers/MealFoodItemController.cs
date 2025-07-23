@@ -2,7 +2,6 @@ using HealthTracker.Entities.Interfaces;
 using HealthTracker.Entities.Food;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq.Expressions;
 
 namespace HealthTracker.Api.Controllers
 {
@@ -63,7 +62,7 @@ namespace HealthTracker.Api.Controllers
         [Route("")]
         public async Task<ActionResult<MealFoodItem>> AddMealFoodItemAsync([FromBody] MealFoodItem template)
         {
-            var meal = await _factory.MealFoodItems.AddAsync(template.MealId, template.FoodItemId);
+            var meal = await _factory.MealFoodItems.AddAsync(template.MealId, template.FoodItemId, template.Quantity);
             return meal;
         }
 
@@ -76,7 +75,7 @@ namespace HealthTracker.Api.Controllers
         [Route("")]
         public async Task<ActionResult<MealFoodItem>> UpdateMealFoodItemAsync([FromBody] MealFoodItem template)
         {
-            var meal = await _factory.MealFoodItems.UpdateAsync(template.Id, template.MealId, template.FoodItemId);
+            var meal = await _factory.MealFoodItems.UpdateAsync(template.Id, template.MealId, template.FoodItemId, template.Quantity);
             return meal;
         }
 

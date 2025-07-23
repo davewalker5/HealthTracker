@@ -1,0 +1,39 @@
+@using HealthTracker.Mvc.Entities
+@model HealthTracker.Mvc.Models.MealFoodItemListViewModel
+
+@functions
+{
+    public string GetNutritonalValue(decimal? value)
+        => value != null ? value.Value.ToString("0.0") : "";
+}
+
+@{
+    var calories = GetNutritonalValue(Model.Meal.NutritionalValue?.Calories);
+    var fat = GetNutritonalValue(Model.Meal.NutritionalValue?.Fat);
+    var saturated = GetNutritonalValue(Model.Meal.NutritionalValue?.SaturatedFat);
+    var protein = GetNutritonalValue(Model.Meal.NutritionalValue?.Protein);
+    var carbohydrates = GetNutritonalValue(Model.Meal.NutritionalValue?.Carbohydrates);
+    var sugar = GetNutritonalValue(Model.Meal.NutritionalValue?.Sugar);
+    var fibre = GetNutritonalValue(Model.Meal.NutritionalValue?.Fibre);
+}
+
+<table class="table">
+    <tr>
+        <th>Calories</th>
+        <th>Fat</th>
+        <th>Saturated Fat</th>
+        <th>Protein</th>
+        <th>Carbohydrates</th>
+        <th>Sugar</th>
+        <th>Fibre</th>
+    </tr>
+        <tr>
+            <td valign="center">@calories</td>
+            <td valign="center">@fat</td>
+            <td valign="center">@saturated</td>
+            <td valign="center">@protein</td>
+            <td valign="center">@carbohydrates</td>
+            <td valign="center">@sugar</td>
+            <td valign="center">@fibre</td>
+        </tr>
+</table>

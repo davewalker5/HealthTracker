@@ -61,8 +61,8 @@ namespace HealthTracker.DataExchange.Import
             var mealId = _meals.First(x => x.Name.Equals(exportable.Meal, StringComparison.OrdinalIgnoreCase)).Id;
             var foodItemId = _foodItems.First(x => x.Name.Equals(exportable.FoodItem, StringComparison.OrdinalIgnoreCase)).Id;
 
-            // Save the relationship
-            await _factory.MealFoodItems.AddAsync(mealId, foodItemId);
+            // Save the relationship, which will also create a nutritional value record automatically
+            await _factory.MealFoodItems.AddAsync(mealId, foodItemId, exportable.Quantity);
         }
     }
 }
