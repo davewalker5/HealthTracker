@@ -1,0 +1,58 @@
+@using HealthTracker.Mvc.Entities
+@using HealthTracker.Entities.Food
+@model IEnumerable<MealFoodItem>
+
+@functions
+{
+    public string GetNutritonalValue(decimal? value)
+        => value != null ? value.Value.ToString("0.0") : "";
+}
+
+<table class="table">
+    <tr>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Quantity / Portion</th>
+        <th>Calories</th>
+        <th>Fat</th>
+        <th>Saturated Fat</th>
+        <th>Protein</th>
+        <th>Carbohydrates</th>
+        <th>Sugar</th>
+        <th>Fibre</th>
+        <th/>
+        <th/>
+    </tr>
+    @foreach (var relationship in Model)
+    {
+        var calories = GetNutritonalValue(relationship.NutritionalValue?.Calories);
+        var fat = GetNutritonalValue(relationship.NutritionalValue?.Fat);
+        var saturated = GetNutritonalValue(relationship.NutritionalValue?.SaturatedFat);
+        var protein = GetNutritonalValue(relationship.NutritionalValue?.Protein);
+        var carbohydrates = GetNutritonalValue(relationship.NutritionalValue?.Carbohydrates);
+        var sugar = GetNutritonalValue(relationship.NutritionalValue?.Sugar);
+        var fibre = GetNutritonalValue(relationship.NutritionalValue?.Fibre);
+        <tr>
+            <td valign="center">@relationship.FoodItem.Name</td>
+            <td valign="center">@relationship.FoodItem.FoodCategory.Name</td>
+            <td valign="center">@relationship.Quantity.ToString("0.0") / @relationship.FoodItem.Portion.ToString("0.0")</td>
+            <td valign="center">@calories</td>
+            <td valign="center">@fat</td>
+            <td valign="center">@saturated</td>
+            <td valign="center">@protein</td>
+            <td valign="center">@carbohydrates</td>
+            <td valign="center">@sugar</td>
+            <td valign="center">@fibre</td>
+            <td valign="center">
+                <a class="btn btn-lg" asp-area="" asp-controller="MealFoodItem" asp-action="Edit" asp-route-id="@relationship.Id">
+                    <i class="fas fa-edit"></i>
+                </a>
+            </td>
+            <td valign="center">
+                <a class="btn btn-lg" href="javascript:submitDeleteForm(@relationship.Id)">
+                    <i class="fas fa-trash"></i>
+                </a>
+            </td>
+        </tr>
+    }
+</table>

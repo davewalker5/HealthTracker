@@ -70,7 +70,6 @@ namespace HealthTracker.Api.Controllers
             var measurement = await _factory.MealConsumptionMeasurements.AddAsync(
                 template.PersonId,
                 template.MealId,
-                template.NutritionalValueId,
                 template.Date,
                 template.Quantity
             );
@@ -92,7 +91,6 @@ namespace HealthTracker.Api.Controllers
                 template.Id,
                 template.PersonId,
                 template.MealId,
-                template.NutritionalValueId,
                 template.Date,
                 template.Quantity
             );

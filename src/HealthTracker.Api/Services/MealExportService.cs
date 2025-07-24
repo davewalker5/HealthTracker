@@ -10,14 +10,17 @@ namespace HealthTracker.Api.Services
     public class MealExportService : BackgroundQueueProcessor<MealExportWorkItem>
     {
         private readonly HealthTrackerApplicationSettings _settings;
+        private readonly IBackgroundQueue<MealFoodItemExportWorkItem> _mealFoodItemQueue;
 
         public MealExportService(
             ILogger<BackgroundQueueProcessor<MealExportWorkItem>> logger,
             IBackgroundQueue<MealExportWorkItem> queue,
+            IBackgroundQueue<MealFoodItemExportWorkItem> mealFoodItemQueue,
             IServiceScopeFactory serviceScopeFactory,
             IOptions<HealthTrackerApplicationSettings> settings)
             : base(logger, queue, serviceScopeFactory)
         {
+            _mealFoodItemQueue = mealFoodItemQueue;
             _settings = settings.Value;
         }
 
@@ -41,6 +44,18 @@ namespace HealthTracker.Api.Services
             var exporter = new MealExporter(factory);
             await exporter.ExportAsync(meals, filePath);
             MessageLogger.LogInformation("Meal export completed");
+
+            // When meals are exported, we also enqueue a request to export meal/food item relationships
+            var fileName = Path.GetFileNameWithoutExtension(filePath);
+            var extension = Path.GetExtension(filePath);
+
+            var relationshipExportItem = new MealFoodItemExportWorkItem()
+            {
+                JobName = "Meal/Food Item Relationship Export",
+                FileName = $"{fileName}-FoodItems{extension}"
+            };
+
+            _mealFoodItemQueue.Enqueue(relationshipExportItem);
         }
     }
 }

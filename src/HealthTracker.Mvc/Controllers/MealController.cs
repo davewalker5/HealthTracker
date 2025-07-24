@@ -115,9 +115,6 @@ namespace HealthTracker.Mvc.Controllers
         /// <summary>
         /// Serve the page to add a new source
         /// </summary>
-        /// <param name="personId"></param>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
         /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> Add()

@@ -1,4 +1,3 @@
-using HealthTracker.Data;
 using HealthTracker.Entities.Exceptions;
 using HealthTracker.Entities.Interfaces;
 

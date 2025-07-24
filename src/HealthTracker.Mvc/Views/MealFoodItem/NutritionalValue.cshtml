@@ -1,0 +1,48 @@
+@model HealthTracker.Mvc.Models.NutritionalValueTableViewModel
+
+@functions
+{
+    public string GetNutritonalValue(decimal? value)
+        => value != null ? value.Value.ToString("0.0") : "";
+}
+
+@if (Model.Values != null)
+{
+    var calories = GetNutritonalValue(Model.Values?.Calories);
+    var fat = GetNutritonalValue(Model.Values?.Fat);
+    var saturated = GetNutritonalValue(Model.Values?.SaturatedFat);
+    var protein = GetNutritonalValue(Model.Values?.Protein);
+    var carbohydrates = GetNutritonalValue(Model.Values?.Carbohydrates);
+    var sugar = GetNutritonalValue(Model.Values?.Sugar);
+    var fibre = GetNutritonalValue(Model.Values?.Fibre);
+
+    <table class="table">
+        <tr>
+            @if (Model.Portion != null)
+            {
+                <th>Portion</th>
+            }
+            <th>Calories</th>
+            <th>Fat</th>
+            <th>Saturated Fat</th>
+            <th>Protein</th>
+            <th>Carbohydrates</th>
+            <th>Sugar</th>
+            <th>Fibre</th>
+        </tr>
+            <tr>
+                @if (Model.Portion != null)
+                {
+                    <td valign="center">@Model.Portion</td>
+                }
+                <td valign="center">@calories</td>
+                <td valign="center">@fat</td>
+                <td valign="center">@saturated</td>
+                <td valign="center">@protein</td>
+                <td valign="center">@carbohydrates</td>
+                <td valign="center">@sugar</td>
+                <td valign="center">@fibre</td>
+            </tr>
+    </table>
+    <br/>
+}

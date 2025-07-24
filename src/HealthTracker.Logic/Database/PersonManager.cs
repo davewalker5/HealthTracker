@@ -9,6 +9,8 @@ using HealthTracker.Logic.Extensions;
 using System.Linq.Expressions;
 using HealthTracker.Entities.Logging;
 using HealthTracker.Enumerations.Enumerations;
+using HealthTracker.Entities.Food;
+using HealthTracker.Entities.Medications;
 
 namespace HealthTracker.Logic.Database
 {
@@ -115,11 +117,24 @@ namespace HealthTracker.Logic.Database
             var person = await GetAsync(x => x.Id == id);
             if (person != null)
             {
-                // Check for weight, blood pressure and exercise measurements. If there are any, the person can't be
+                // Check for measurements associated with the person. If there are any, the person can't be
                 // deleted
-                RaisePersonInUseException<WeightMeasurement>(id, "weight measurements");
+                RaisePersonInUseException<BeverageConsumptionMeasurement>(id, "beverage consumption measurements");
+                RaisePersonInUseException<BloodGlucoseMeasurement>(id, "glucose measurements");
+                RaisePersonInUseException<BloodOxygenSaturationMeasurement>(id, "% SPO2 measurements");
                 RaisePersonInUseException<BloodPressureMeasurement>(id, "blood pressure measurements");
+                RaisePersonInUseException<CholesterolMeasurement>(id, "cholesterol measurements");
                 RaisePersonInUseException<ExerciseMeasurement>(id, "exercise measurements");
+                RaisePersonInUseException<MealConsumptionMeasurement>(id, "meal consumption measurements");
+                RaisePersonInUseException<WeightMeasurement>(id, "weight measurements");
+
+                // Check there are no medication associations for the person
+                var associations = await Factory.PersonMedications.ListAsync(x => x.PersonId == id, 1, 1);
+                if (associations.Any())
+                {
+                    var message = $"Person with Id {id} has medication associations and cannot be deleted";
+                    throw new PersonInUseException(message);
+                }
 
                 // Delete the person record and save changes
                 Factory.Context.Remove(person);

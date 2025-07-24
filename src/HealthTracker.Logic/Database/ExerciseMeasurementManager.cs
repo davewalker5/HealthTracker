@@ -55,7 +55,7 @@ namespace HealthTracker.Logic.Database
             Factory.Logger.LogMessage(Severity.Info, $"Adding exercise measurement: Person ID {personId}, {date.ToShortDateString()}, Duration {duration.ToFormattedDuration()}, Distance {logDistance}, Calories {calories}, Heart Rate {minimumHeartRate} to {maximumHeartRate}");
 
             CheckPersonExists(personId);
-            CheckActivityTypeExists(activityTypeId);
+            Factory.ActivityTypes.CheckActivityTypeExists(activityTypeId);
 
             var measurement = new ExerciseMeasurement
             {
@@ -106,7 +106,7 @@ namespace HealthTracker.Logic.Database
             if (measurement != null)
             {
                 CheckPersonExists(personId);
-                CheckActivityTypeExists(activityTypeId);
+                Factory.ActivityTypes.CheckActivityTypeExists(activityTypeId);
 
                 // Save the changes
                 measurement.PersonId = personId;
@@ -137,20 +137,6 @@ namespace HealthTracker.Logic.Database
             {
                 Factory.Context.Remove(measurement);
                 await Factory.Context.SaveChangesAsync();
-            }
-        }
-
-        /// <summary>
-        /// Check an activity type with a specified ID exists and raise an exception if not
-        /// </summary>
-        /// <param name="activityTypeId"></param>
-        private void CheckActivityTypeExists(int activityTypeId)
-        {
-            var activityType = Context.ActivityTypes.FirstOrDefault(x => x.Id == activityTypeId);
-            if (activityType == null)
-            {
-                var message = $"Activity type with Id {activityTypeId} does not exist";
-                throw new ActivityTypeNotFoundException(message);
             }
         }
     }

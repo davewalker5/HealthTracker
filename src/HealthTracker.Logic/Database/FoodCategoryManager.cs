@@ -114,6 +114,20 @@ namespace HealthTracker.Logic.Database
         }
 
         /// <summary>
+        /// Check a food category with a specified ID exists and raise an exception if not
+        /// </summary>
+        /// <param name="foodCategoryId"></param>
+        public void CheckFoodCategoryExists(int foodCategoryId)
+        {
+            var category = Context.FoodCategories.FirstOrDefault(x => x.Id == foodCategoryId);
+            if (category == null)
+            {
+                var message = $"Food category with Id {foodCategoryId} does not exist";
+                throw new FoodCategoryNotFoundException(message);
+            }
+        }
+
+        /// <summary>
         /// Raise an exception if an attempt is made to add/update a food category with a duplicate
         /// name
         /// </summary>

@@ -1,0 +1,129 @@
+@model HealthTracker.Mvc.Models.MealFoodItemViewModel
+
+@Html.HiddenFor(m => m.Relationship.Id)
+@Html.HiddenFor(m => m.Relationship.MealId)
+@Html.HiddenFor(m => m.Relationship.FoodItemId)
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <strong>@Html.Label("Meal")</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Meal, new { @class = "form-control", disabled = "disabled" })
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Relationship.FoodItem.FoodCategoryId)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.DropDownListFor(m => m.Relationship.FoodItem.FoodCategoryId, Model.FoodCategories, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Relationship.FoodItem.FoodCategoryId, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div id="FoodItemsList">
+    </div>
+    <div id="NutritionalValues">
+    </div>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Relationship.Quantity)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Relationship.Quantity, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.Relationship.Quantity, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+</div>
+
+<script type="text/javascript">
+    function LoadItemsForFoodCategory() {
+        var foodCategoryId = $("#Relationship_FoodItem_FoodCategoryId").val();
+        if (foodCategoryId > 0) {
+            var route = "/MealFoodItem/FoodItems?foodCategoryId=" + foodCategoryId;
+            $('html, body').css("cursor", "wait");
+            $.ajax({
+                url: route,
+                method: "GET",
+                dataType: "html",
+                cache: false,
+                success: function (result) {
+                    // Update the food items drop-down
+                    $("#FoodItemsList").html(result);
+
+                    // Select the current meal, if it's in the list
+                    var foodItemId = $("#Relationship_FoodItemId").val();
+                    console.log("Trying to select food item " + foodItemId);
+                    if (foodItemId > 0) {
+                        $('#FoodItemsList option[value="' + foodItemId + '"]').attr("selected", "selected");
+                    }
+
+                    $('html, body').css("cursor", "auto");
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    $("#FoodItemsList").html(errorMessage);
+                    $('html, body').css("cursor", "auto");
+                }
+            });
+        } else {
+            $("#FoodItemsList").html("");
+        }
+    }
+
+    function LoadNutritionalValuesForFoodItem() {
+        var foodItemId = $("#Relationship_FoodItemId").val();
+        if (foodItemId > 0) {
+            var route = "/MealFoodItem/NutritionalValue?foodItemId=" + foodItemId;
+            $('html, body').css("cursor", "wait");
+            $.ajax({
+                url: route,
+                method: "GET",
+                dataType: "html",
+                cache: false,
+                success: function (result) {
+                    // Update the nutritional values
+                    $("#NutritionalValues").html(result);
+                    $('html, body').css("cursor", "auto");
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    $("#NutritionalValues").html(errorMessage);
+                    $('html, body').css("cursor", "auto");
+                }
+            });
+        } else {
+            $("#NutritionalValues").html("");
+        }
+    }
+
+    $(document).ready(function () {
+        // If the page is loaded with an existing relationship, make sure
+        // the associated food items are loaded, the current one is selected
+        // and its nutritional values are tabulated
+        LoadItemsForFoodCategory();
+        LoadNutritionalValuesForFoodItem();
+
+        // When the food category drop-down is changed, update the food items list
+        $("#Relationship_FoodItem_FoodCategoryId").change(function () {
+            LoadItemsForFoodCategory();
+        });
+
+        $(document).on("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                $('#Save').click();
+            }
+        });
+    });
+</script>

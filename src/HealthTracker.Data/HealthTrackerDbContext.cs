@@ -35,6 +35,7 @@ namespace HealthTracker.Data
         public virtual DbSet<FoodItem> FoodItems { get; set; }
         public virtual DbSet<Meal> Meals { get; set; }
         public virtual DbSet<MealConsumptionMeasurement> MealConsumptionMeasurements { get; set; }
+        public virtual DbSet<MealFoodItem> MealFoodItems { get; set; }
 
 
         public HealthTrackerDbContext(DbContextOptions<HealthTrackerDbContext> options) : base(options)
@@ -266,15 +267,15 @@ namespace HealthTracker.Data
                 entity.Property(e => e.FoodCategoryId).IsRequired().HasColumnName("food_category_id");
                 entity.Property(e => e.NutritionalValueId).HasColumnName("nutritional_value_id");
 
-                entity.HasOne(f => f.FoodCategory)
+                entity.HasOne(e => e.FoodCategory)
                     .WithMany()
-                    .HasForeignKey(f => f.FoodCategoryId)
+                    .HasForeignKey(e => e.FoodCategoryId)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(f => f.NutritionalValue)
+                entity.HasOne(e => e.NutritionalValue)
                     .WithOne()
-                    .HasForeignKey<FoodItem>(f => f.NutritionalValueId)
+                    .HasForeignKey<FoodItem>(e => e.NutritionalValueId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
@@ -287,15 +288,15 @@ namespace HealthTracker.Data
                 entity.Property(e => e.FoodSourceId).HasColumnName("food_source_id");
                 entity.Property(e => e.NutritionalValueId).HasColumnName("nutritional_value_id");
 
-                entity.HasOne(f => f.FoodSource)
+                entity.HasOne(e => e.FoodSource)
                     .WithMany()
-                    .HasForeignKey(f => f.FoodSourceId)
+                    .HasForeignKey(e => e.FoodSourceId)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(f => f.NutritionalValue)
+                entity.HasOne(e => e.NutritionalValue)
                     .WithOne()
-                    .HasForeignKey<Meal>(f => f.NutritionalValueId)
+                    .HasForeignKey<Meal>(e => e.NutritionalValueId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
@@ -309,15 +310,42 @@ namespace HealthTracker.Data
                 entity.Property(e => e.Quantity).IsRequired().HasColumnName("quantity");
                 entity.Property(e => e.NutritionalValueId).HasColumnName("nutritional_value_id");
 
-                entity.HasOne(f => f.Meal)
+                entity.HasOne(e => e.Meal)
                     .WithMany()
-                    .HasForeignKey(f => f.MealId)
+                    .HasForeignKey(e => e.MealId)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(f => f.NutritionalValue)
+                entity.HasOne(e => e.NutritionalValue)
                     .WithOne()
-                    .HasForeignKey<MealConsumptionMeasurement>(f => f.NutritionalValueId)
+                    .HasForeignKey<MealConsumptionMeasurement>(e => e.NutritionalValueId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<MealFoodItem>(entity =>
+            {
+                entity.ToTable("MEAL_FOOD_ITEMS");
+                entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
+                entity.Property(e => e.MealId).IsRequired().HasColumnName("meal_id");
+                entity.Property(e => e.FoodItemId).IsRequired().HasColumnName("food_item_id");
+                entity.Property(e => e.Quantity).IsRequired().HasColumnName("quantity");
+                entity.Property(e => e.NutritionalValueId).HasColumnName("nutritional_value_id");
+
+                modelBuilder.Entity<MealFoodItem>()
+                        .HasOne<Meal>()
+                        .WithMany(e => e.MealFoodItems)
+                        .HasForeignKey(e => e.MealId)
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                modelBuilder.Entity<MealFoodItem>()
+                    .HasOne(e => e.FoodItem)
+                    .WithMany()
+                    .HasForeignKey(e => e.FoodItemId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.NutritionalValue)
+                    .WithOne()
+                    .HasForeignKey<MealFoodItem>(e => e.NutritionalValueId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
         }

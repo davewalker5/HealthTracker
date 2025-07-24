@@ -101,8 +101,6 @@ namespace HealthTracker.Mvc.Controllers
         /// Serve the page to add a new association
         /// </summary>
         /// <param name="personId"></param>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
         /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> Add(int personId)

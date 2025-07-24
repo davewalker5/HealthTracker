@@ -10,7 +10,6 @@ namespace HealthTracker.Entities.Interfaces
         Task<MealConsumptionMeasurement> AddAsync(
             int personId,
             int mealId,
-            int? nutritionalValueId,
             DateTime date,
             decimal quantity);
 
@@ -18,7 +17,6 @@ namespace HealthTracker.Entities.Interfaces
             int id,
             int personId,
             int mealId,
-            int? nutritionalValueId,
             DateTime date,
             decimal quantity);
 

@@ -62,6 +62,7 @@ namespace HealthTracker.Mvc
             services.AddSingleton<IFoodItemClient, FoodItemClient>();
             services.AddSingleton<IMealClient, MealClient>();
             services.AddSingleton<IMealConsumptionMeasurementClient, MealConsumptionMeasurementClient>();
+            services.AddSingleton<IMealFoodItemClient, MealFoodItemClient>();
 
             // Configure the helpers used to build the filtering view model used on the measurements pages
             // and the activity type and medication select lists
@@ -78,7 +79,7 @@ namespace HealthTracker.Mvc
             services.AddSingleton<IViewModelBuilder, ViewModelBuilder>();
             services.AddSingleton<IFoodSourceListGenerator, FoodSourceListGenerator>();
             services.AddSingleton<IFoodSourceFilterGenerator, FoodSourceFilterGenerator>();
-            services.AddSingleton<IMealConsumptionMeasurementHelper, MealConsumptionMeasurementHelper>();
+            services.AddSingleton<IFoodItemListGenerator, FoodItemListGenerator>();
 
             // Configure session state for token storage
             services.AddSession(options =>

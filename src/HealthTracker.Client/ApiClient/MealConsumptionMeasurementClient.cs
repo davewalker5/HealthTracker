@@ -25,14 +25,12 @@ namespace HealthTracker.Client.ApiClient
         /// </summary>
         /// <param name="personId"></param>
         /// <param name="mealId"></param>
-        /// <param name="nutritionalValueId"></param>
         /// <param name="date"></param>
         /// <param name="quantity"></param>
         /// <returns></returns>
         public async Task<MealConsumptionMeasurement> AddAsync(
             int personId,
             int mealId,
-            int? nutritionalValueId,
             DateTime? date,
             decimal quantity)
         {
@@ -40,7 +38,6 @@ namespace HealthTracker.Client.ApiClient
             {
                 PersonId = personId,
                 MealId = mealId,
-                NutritionalValueId = nutritionalValueId,
                 Date = date ?? DateTime.Now,
                 Quantity = quantity
             };
@@ -58,7 +55,6 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="id"></param>
         /// <param name="personId"></param>
         /// <param name="mealId"></param>
-        /// <param name="nutritionalValueId"></param>
         /// <param name="date"></param>
         /// <param name="quantity"></param>
         /// <returns></returns>
@@ -66,7 +62,6 @@ namespace HealthTracker.Client.ApiClient
             int id,
             int personId,
             int mealId,
-            int? nutritionalValueId,
             DateTime? date,
             decimal quantity)
         {
@@ -75,7 +70,6 @@ namespace HealthTracker.Client.ApiClient
                 Id = id,
                 PersonId = personId,
                 MealId = mealId,
-                NutritionalValueId = nutritionalValueId,
                 Date = date ?? DateTime.Now,
                 Quantity = quantity
             };

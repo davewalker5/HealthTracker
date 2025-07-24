@@ -36,34 +36,47 @@ namespace HealthTracker.Logic.Database
         /// </summary>
         /// <param name="personId"></param>
         /// <param name="mealId"></param>
-        /// <param name="nutritionalValueId"></param>
         /// <param name="date"></param>
         /// <param name="quantity"></param>
         /// <returns></returns>
         public async Task<MealConsumptionMeasurement> AddAsync(
             int personId,
             int mealId,
-            int? nutritionalValueId,
             DateTime date,
             decimal quantity)
         {
-            Factory.Logger.LogMessage(Severity.Info, $"Adding meal consumption measurement: Person ID {personId}, {date.ToShortDateString()}, Meal ID {mealId}, Quantity {quantity}, Nutritional Value ID = {nutritionalValueId}");
+            Factory.Logger.LogMessage(Severity.Info, $"Adding meal consumption measurement: Person ID {personId}, {date.ToShortDateString()}, Meal ID {mealId}, Quantity {quantity}");
 
+            // Check the required entities exist
             CheckPersonExists(personId);
-            CheckMealExists(mealId);
+            Factory.Meals.CheckMealExists(mealId);
 
+            // Create and save the measurement
             var measurement = new MealConsumptionMeasurement
             {
                 PersonId = personId,
                 MealId = mealId,
                 Date = date,
-                Quantity = quantity,
-                NutritionalValueId = nutritionalValueId
+                Quantity = quantity
             };
 
             await Context.MealConsumptionMeasurements.AddAsync(measurement);
             await Context.SaveChangesAsync();
 
+            // Create the nutritional value for this consumption record
+            var meal = (await Factory.Meals.ListAsync(x => x.Id == mealId, 1, 1)).First();
+            var calculated = Factory.NutritionalValues.CalculateNutritionalValues(meal.NutritionalValue, quantity);
+            var nutritionalValues = await Factory.NutritionalValues.CreateOrUpdateNutritionalValueAsync(null, calculated);
+
+            // Update the measurement to associate the nutritional values with it
+            if (nutritionalValues != null)
+            {
+                measurement.NutritionalValueId = nutritionalValues.Id;
+                await Context.SaveChangesAsync();
+            }
+
+            // Reload to load related entities
+            measurement = (await ListAsync(x => x.Id == measurement.Id, 1, 1)).First();
             return measurement;
         }
 
@@ -73,7 +86,6 @@ namespace HealthTracker.Logic.Database
         /// <param name="id"></param>
         /// <param name="personId"></param>
         /// <param name="mealId"></param>
-        /// <param name="nutritionalValueId"></param>
         /// <param name="date"></param>
         /// <param name="quantity"></param>
         /// <returns></returns>
@@ -81,31 +93,42 @@ namespace HealthTracker.Logic.Database
             int id,
             int personId,
             int mealId,
-            int? nutritionalValueId,
             DateTime date,
             decimal quantity)
         {
-            Factory.Logger.LogMessage(Severity.Info, $"Updating meal consumption measurement with ID {id}: Person ID {personId}, {date.ToShortDateString()}, Meal ID {mealId}, Nutritional Value ID = {nutritionalValueId}");
+            Factory.Logger.LogMessage(Severity.Info, $"Updating meal consumption measurement with ID {id}: Person ID {personId}, {date.ToShortDateString()}, Meal ID {mealId}");
 
             var measurement = Context.MealConsumptionMeasurements.FirstOrDefault(x => x.Id == id);
-            if (measurement != null)
+            if (measurement == null)
             {
-                CheckPersonExists(personId);
-                CheckMealExists(mealId);
-
-                // Save the changes
-                measurement.PersonId = personId;
-                measurement.MealId = mealId;
-                measurement.Date = date;
-                measurement.Quantity = quantity;
-                measurement.NutritionalValueId = nutritionalValueId;
-                await Context.SaveChangesAsync();
-
-                // Reload the associated meal and nutritional value
-                await Context.Entry(measurement).Reference(x => x.Meal).LoadAsync();
-                await Context.Entry(measurement).Reference(x => x.NutritionalValue).LoadAsync();
+                var message = $"Meal consumption record with ID = {id} not found";
+                throw new MealConsumptionMeasurementNotFoundException(message);
             }
 
+            CheckPersonExists(personId);
+            Factory.Meals.CheckMealExists(mealId);
+
+            // Save the changes
+            measurement.PersonId = personId;
+            measurement.MealId = mealId;
+            measurement.Date = date;
+            measurement.Quantity = quantity;
+            await Context.SaveChangesAsync();
+
+            // Create the nutritional value for this consumption record
+            var meal = (await Factory.Meals.ListAsync(x => x.Id == mealId, 1, 1)).First();
+            var calculated = Factory.NutritionalValues.CalculateNutritionalValues(meal.NutritionalValue, quantity);
+            var nutritionalValues = await Factory.NutritionalValues.CreateOrUpdateNutritionalValueAsync(measurement.NutritionalValueId, calculated);
+
+            // Update the measurement to associate the nutritional values with it
+            if (nutritionalValues != null)
+            {
+                measurement.NutritionalValueId = nutritionalValues.Id;
+                await Context.SaveChangesAsync();
+            }
+
+            // Reload to load related entities
+            measurement = (await ListAsync(x => x.Id == measurement.Id, 1, 1)).First();
             return measurement;
         }
 
@@ -119,25 +142,14 @@ namespace HealthTracker.Logic.Database
             Factory.Logger.LogMessage(Severity.Info, $"Deleting meal consumption measurement with ID {id}");
 
             var measurement = Context.MealConsumptionMeasurements.FirstOrDefault(x => x.Id == id);
-            if (measurement != null)
+            if (measurement == null)
             {
-                Factory.Context.Remove(measurement);
-                await Factory.Context.SaveChangesAsync();
+                var message = $"Meal consumption record with ID = {id} not found";
+                throw new MealConsumptionMeasurementNotFoundException(message);
             }
-        }
 
-        /// <summary>
-        /// Check a meal type with the specified ID exists and raise an exception if not
-        /// </summary>
-        /// <param name="mealId"></param>
-        private void CheckMealExists(int mealId)
-        {
-            var meal = Context.Meals.FirstOrDefault(x => x.Id == mealId);
-            if (meal == null)
-            {
-                var message = $"Meal with Id {mealId} does not exist";
-                throw new MealNotFoundException(message);
-            }
+            Factory.Context.Remove(measurement);
+            await Factory.Context.SaveChangesAsync();
         }
     }
 }

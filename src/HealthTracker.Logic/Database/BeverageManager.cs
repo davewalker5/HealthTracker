@@ -126,6 +126,20 @@ namespace HealthTracker.Logic.Database
         }
 
         /// <summary>
+        /// Check an activity type with a specified ID exists and raise an exception if not
+        /// </summary>
+        /// <param name="beverageId"></param>
+        public void CheckBeverageExists(int beverageId)
+        {
+            var beverage = Context.Beverages.FirstOrDefault(x => x.Id == beverageId);
+            if (beverage == null)
+            {
+                var message = $"Beverage with Id {beverageId} does not exist";
+                throw new BeverageNotFoundException(message);
+            }
+        }
+
+        /// <summary>
         /// Raise an exception if an attempt is made to add/update an beverage with a duplicate
         /// name
         /// </summary>

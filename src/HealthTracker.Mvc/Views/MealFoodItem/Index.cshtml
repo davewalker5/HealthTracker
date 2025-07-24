@@ -1,0 +1,77 @@
+@using HealthTracker.Mvc.Entities
+@using Microsoft.AspNetCore.Mvc.ModelBinding
+@model HealthTracker.Mvc.Models.MealFoodItemListViewModel
+
+@{
+    ViewData["Title"] = Model.Meal.Name;
+}
+
+<p class="text-center font-weight-bold">
+    <span style="font-size: 1.2rem">
+        @Model.Meal.Name
+    </span>
+    <br />
+    <small class="text-muted">
+        <em>
+            View and manage the ingredients for @Model.Meal.Name
+        </em>
+    </small>
+</p>
+
+<div class="container-fluid">
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="row">
+            <div class="col-md-12 message">
+                <span>@Html.Raw(Model.Message)</span>
+            </div>
+        </div>
+    }
+
+    @using (Html.BeginForm("Delete", "MealFoodItem", FormMethod.Post, new { name = "delete-form", id = "delete-form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.Hidden("id", 0)
+    }
+
+    @await Html.PartialAsync("NutritionalValue", new NutritionalValueTableViewModel() { Values = Model.Meal.NutritionalValue })
+    <hr/>
+
+    <p class="text-center font-weight-bold">
+        <span style="font-size: 1.2rem">
+           Ingredients
+        </span>
+    </p>
+
+    @if ((Model.Meal.MealFoodItems != null) && (Model.Meal.MealFoodItems.Count() > 0))
+    {
+
+        @await Html.PartialAsync("_MealFoodItemList", Model.Meal.MealFoodItems)
+    }
+    else
+    {
+        <hr/>
+        @Html.Raw("There are no ingredients associated with this meal")
+    }
+
+    <hr />
+    <p class="text-right">
+        <a class="btn btn-primary" href="/MealFoodItem/Add?mealId=@Model.Meal.Id" role="button">Add</a>
+    </p>
+</div>
+
+<script type="text/javascript">
+    function submitDeleteForm(id) {
+        $.confirm({
+            text: "Are you sure?",
+            confirm: function(button) {
+                $("#delete-form #id").val(id);
+                $("#delete-form").submit()
+            },
+            cancel: function(button) {
+            },
+            confirmButton: "Yes",
+            cancelButton: "No"
+        });
+    }
+</script>

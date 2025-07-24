@@ -97,5 +97,41 @@ namespace HealthTracker.Client.Helpers
 
             return id;
         }
+
+        /// <summary>
+        /// Calculate a set of nutritional values given a base set of values and a quantity
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="quantity"></param>
+        /// <returns></returns>
+        protected NutritionalValue CalculateNutritionalValues(NutritionalValue values, decimal quantity)
+        {
+            NutritionalValue calculated = null;
+
+            if (values != null)
+            {
+                calculated = new()
+                {
+                    Calories = CalculateValue(values.Calories, quantity),
+                    Fat = CalculateValue(values.Fat, quantity),
+                    SaturatedFat = CalculateValue(values.SaturatedFat, quantity),
+                    Protein = CalculateValue(values.Protein, quantity),
+                    Carbohydrates = CalculateValue(values.Carbohydrates, quantity),
+                    Sugar = CalculateValue(values.Sugar, quantity),
+                    Fibre = CalculateValue(values.Fibre, quantity)
+                };
+            }
+
+            return calculated;
+        }
+
+        /// <summary>
+        /// Calculate a nullable nutritional value from the base value and a quantity
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="quantity"></param>
+        /// <returns></returns>
+        private decimal? CalculateValue(decimal? value, decimal quantity)
+            => value == null ? null : value * quantity;
     }
 }

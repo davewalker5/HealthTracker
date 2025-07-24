@@ -56,7 +56,6 @@ namespace HealthTracker.Tests.MealConsumption
             var added = await _client.AddAsync(
                 measurement.PersonId,
                 measurement.MealId,
-                measurement.NutritionalValueId,
                 measurement.Date,
                 measurement.Quantity);
 
@@ -70,7 +69,6 @@ namespace HealthTracker.Tests.MealConsumption
             Assert.AreEqual(measurement.PersonId, added.PersonId);
             Assert.AreEqual(measurement.Date, added.Date);
             Assert.AreEqual(measurement.MealId, added.MealId);
-            Assert.AreEqual(measurement.NutritionalValueId, added.NutritionalValueId);
             Assert.AreEqual(measurement.Quantity, added.Quantity);
         }
 
@@ -85,7 +83,6 @@ namespace HealthTracker.Tests.MealConsumption
                 measurement.Id,
                 measurement.PersonId,
                 measurement.MealId,
-                measurement.NutritionalValueId,
                 measurement.Date,
                 measurement.Quantity);
 
@@ -99,7 +96,6 @@ namespace HealthTracker.Tests.MealConsumption
             Assert.AreEqual(measurement.PersonId, updated.PersonId);
             Assert.AreEqual(measurement.Date, updated.Date);
             Assert.AreEqual(measurement.MealId, updated.MealId);
-            Assert.AreEqual(measurement.NutritionalValueId, updated.NutritionalValueId);
             Assert.AreEqual(measurement.Quantity, updated.Quantity);
         }
 
@@ -138,7 +134,6 @@ namespace HealthTracker.Tests.MealConsumption
             Assert.AreEqual(measurement.PersonId, retrieved.PersonId);
             Assert.AreEqual(measurement.Date, retrieved.Date);
             Assert.AreEqual(measurement.MealId, retrieved.MealId);
-            Assert.AreEqual(measurement.NutritionalValueId, retrieved.NutritionalValueId);
             Assert.AreEqual(measurement.Quantity, retrieved.Quantity);
         }
 
@@ -169,7 +164,6 @@ namespace HealthTracker.Tests.MealConsumption
             Assert.AreEqual(measurement.PersonId, measurements[0].PersonId);
             Assert.AreEqual(measurement.Date, measurements[0].Date);
             Assert.AreEqual(measurement.MealId, measurements[0].MealId);
-            Assert.AreEqual(measurement.NutritionalValueId, measurements[0].NutritionalValueId);
             Assert.AreEqual(measurement.Quantity, measurements[0].Quantity);
         }
 
@@ -200,7 +194,6 @@ namespace HealthTracker.Tests.MealConsumption
             Assert.AreEqual(measurement.PersonId, measurements[0].PersonId);
             Assert.AreEqual(measurement.Date, measurements[0].Date);
             Assert.AreEqual(measurement.MealId, measurements[0].MealId);
-            Assert.AreEqual(measurement.NutritionalValueId, measurements[0].NutritionalValueId);
             Assert.AreEqual(measurement.Quantity, measurements[0].Quantity);
         }
 
@@ -231,7 +224,6 @@ namespace HealthTracker.Tests.MealConsumption
             Assert.AreEqual(measurement.PersonId, measurements[0].PersonId);
             Assert.AreEqual(measurement.Date, measurements[0].Date);
             Assert.AreEqual(measurement.MealId, measurements[0].MealId);
-            Assert.AreEqual(measurement.NutritionalValueId, measurements[0].NutritionalValueId);
             Assert.AreEqual(measurement.Quantity, measurements[0].Quantity);
         }
 
@@ -262,7 +254,6 @@ namespace HealthTracker.Tests.MealConsumption
             Assert.AreEqual(measurement.PersonId, measurements[0].PersonId);
             Assert.AreEqual(measurement.Date, measurements[0].Date);
             Assert.AreEqual(measurement.MealId, measurements[0].MealId);
-            Assert.AreEqual(measurement.NutritionalValueId, measurements[0].NutritionalValueId);
             Assert.AreEqual(measurement.Quantity, measurements[0].Quantity);
         }
 
@@ -273,7 +264,7 @@ namespace HealthTracker.Tests.MealConsumption
 
             var person = DataGenerator.RandomPerson(16, 90);
             var measurement = DataGenerator.RandomMealConsumptionMeasurement(person.Id, 2024);
-                var record = $@"""{person.Id}"",""{person.Name}"",""{measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{measurement.MealId}"",""{measurement.Meal.Name}"",""{measurement.Quantity}"",""{measurement.NutritionalValue.Calories}"",""{measurement.NutritionalValue.Fat}"",""{measurement.NutritionalValue.SaturatedFat}"",""{measurement.NutritionalValue.Protein}"",""{measurement.NutritionalValue.Carbohydrates}"",""{measurement.NutritionalValue.Sugar}"",""{measurement.NutritionalValue.Fibre}""";
+            var record = $@"""{person.Id}"",""{person.Name}"",""{measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{measurement.MealId}"",""{measurement.Meal.Name}"",""{measurement.Quantity}"",""{measurement.NutritionalValue.Calories}"",""{measurement.NutritionalValue.Fat}"",""{measurement.NutritionalValue.SaturatedFat}"",""{measurement.NutritionalValue.Protein}"",""{measurement.NutritionalValue.Carbohydrates}"",""{measurement.NutritionalValue.Sugar}"",""{measurement.NutritionalValue.Fibre}""";
 
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);

@@ -43,14 +43,10 @@ namespace HealthTracker.DataExchange.Import
             var meal = _meals.FirstOrDefault(x => x.Name.Equals(measurement.Meal, StringComparison.OrdinalIgnoreCase));
             ValidateField<Meal>(x => x != null, meal, "Meal", recordCount);
 
+            // On export, the nutritional values associated with the consumption record are also exported. On import, though,
+            // the nutritional values are recalculated and added automatically based on the current state of the specified
+            // meal, so only the quantity is validated
             ValidateField<decimal>(x => x > 0, measurement.Quantity, "Quantity", recordCount);
-            ValidateField<decimal?>(x => !(x < 0), measurement.Calories, "Calories", recordCount);
-            ValidateField<decimal?>(x => !(x < 0), measurement.Fat, "Fat", recordCount);
-            ValidateField<decimal?>(x => !(x < 0), measurement.SaturatedFat, "SaturatedFat", recordCount);
-            ValidateField<decimal?>(x => !(x < 0), measurement.Protein, "Protein", recordCount);
-            ValidateField<decimal?>(x => !(x < 0), measurement.Carbohydrates, "Carbohydrates", recordCount);
-            ValidateField<decimal?>(x => !(x < 0), measurement.Sugar, "Sugar", recordCount);
-            ValidateField<decimal?>(x => !(x < 0), measurement.Fibre, "Fibre", recordCount);
         }
 
         /// <summary>
@@ -60,28 +56,15 @@ namespace HealthTracker.DataExchange.Import
         /// <returns></returns>
         protected override async Task AddAsync(ExportableMealConsumptionMeasurement measurement)
         {
-            int? nutritionalValueId = null;
-
             // Get the related meal
             var meal = _meals.First(x => x.Name.Equals(measurement.Meal, StringComparison.OrdinalIgnoreCase));
 
-            // If any of the nutritional vaues are set, create a nutritional value record from them
-            if ((measurement.Calories > 0) ||
-                (measurement.Fat > 0) ||
-                (measurement.SaturatedFat > 0) ||
-                (measurement.Protein > 0) ||
-                (measurement.Carbohydrates > 0) ||
-                (measurement.Sugar > 0) ||
-                (measurement.Fibre > 0))
-            {
-                var nutritionalValue = await _factory.NutritionalValues.AddAsync(measurement.Calories, measurement.Fat, measurement.SaturatedFat, measurement.Protein, measurement.Carbohydrates, measurement.Sugar, measurement.Fibre);
-                nutritionalValueId = nutritionalValue.Id;
-            }
-
+            // On export, the nutritional values associated with the consumption record are also exported. On import, though,
+            // the nutritional values are recalculated and added automatically based on the current state of the specified
+            // meal, so there's no need to manually create a nutritional value record. Just add the consumption record
             await _factory.MealConsumptionMeasurements.AddAsync(
                 measurement.PersonId,
                 meal.Id,
-                nutritionalValueId,
                 measurement.Date,
                 measurement.Quantity);
         }

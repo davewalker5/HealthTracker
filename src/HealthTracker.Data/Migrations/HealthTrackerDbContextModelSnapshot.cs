@@ -244,6 +244,41 @@ namespace HealthTracker.Data.Migrations
                     b.ToTable("MEAL_CONSUMPTION", (string)null);
                 });
 
+            modelBuilder.Entity("HealthTracker.Entities.Food.MealFoodItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("id");
+
+                    b.Property<int>("FoodItemId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("food_item_id");
+
+                    b.Property<int>("MealId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("meal_id");
+
+                    b.Property<int?>("NutritionalValueId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("nutritional_value_id");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("quantity");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FoodItemId");
+
+                    b.HasIndex("MealId");
+
+                    b.HasIndex("NutritionalValueId")
+                        .IsUnique();
+
+                    b.ToTable("MEAL_FOOD_ITEMS", (string)null);
+                });
+
             modelBuilder.Entity("HealthTracker.Entities.Food.NutritionalValue", b =>
                 {
                     b.Property<int>("Id")
@@ -783,6 +818,35 @@ namespace HealthTracker.Data.Migrations
                     b.Navigation("Meal");
 
                     b.Navigation("NutritionalValue");
+                });
+
+            modelBuilder.Entity("HealthTracker.Entities.Food.MealFoodItem", b =>
+                {
+                    b.HasOne("HealthTracker.Entities.Food.FoodItem", "FoodItem")
+                        .WithMany()
+                        .HasForeignKey("FoodItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("HealthTracker.Entities.Food.Meal", null)
+                        .WithMany("MealFoodItems")
+                        .HasForeignKey("MealId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("HealthTracker.Entities.Food.NutritionalValue", "NutritionalValue")
+                        .WithOne()
+                        .HasForeignKey("HealthTracker.Entities.Food.MealFoodItem", "NutritionalValueId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("FoodItem");
+
+                    b.Navigation("NutritionalValue");
+                });
+
+            modelBuilder.Entity("HealthTracker.Entities.Food.Meal", b =>
+                {
+                    b.Navigation("MealFoodItems");
                 });
 #pragma warning restore 612, 618
         }
