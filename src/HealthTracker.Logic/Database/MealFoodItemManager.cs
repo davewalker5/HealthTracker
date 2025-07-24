@@ -117,6 +117,7 @@ namespace HealthTracker.Logic.Database
             // Save the changes
             relationship.MealId = mealId;
             relationship.FoodItemId = foodItemId;
+            relationship.Quantity = quantity;
             await Context.SaveChangesAsync();
 
             // Update the nutritional value for this relationship. The assumption is the units for "quantity" are the same

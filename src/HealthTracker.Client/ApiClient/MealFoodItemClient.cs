@@ -26,15 +26,13 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="mealId"></param>
         /// <param name="foodItemId"></param>
         /// <param name="quantity"></param>
-        /// <param name="nutritionalValueId"></param>
         /// <returns></returns>
-        public async Task<MealFoodItem> AddAsync(int mealId, int foodItemId, decimal quantity, int? nutritionalValueId)
+        public async Task<MealFoodItem> AddAsync(int mealId, int foodItemId, decimal quantity)
         {
             dynamic template = new
             {
                 MealId = mealId,
                 FoodItemId = foodItemId,
-                NutritionalValueId = nutritionalValueId,
                 Quantity = quantity
             };
 
@@ -54,14 +52,13 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="quantity"></param>
         /// <param name="nutritionalValueId"></param>
         /// <returns></returns>
-        public async Task<MealFoodItem> UpdateAsync(int id, int mealId, int foodItemId, decimal quantity, int? nutritionalValueId)
+        public async Task<MealFoodItem> UpdateAsync(int id, int mealId, int foodItemId, decimal quantity)
         {
             dynamic template = new
             {
                 Id = id,
                 MealId = mealId,
                 FoodItemId = foodItemId,
-                NutritionalValueId = nutritionalValueId,
                 Quantity = quantity
             };
 

@@ -9,6 +9,7 @@ namespace HealthTracker.Mvc.Models
         public IList<SelectListItem> FoodCategories { get; set; } = [];
         public MealFoodItem Relationship { get; set; } = new();
         public string Meal { get; set; }
+        public string Action { get; set; }
 
         /// <summary>
         /// Create a new, empty relationship for the specified meal
