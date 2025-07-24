@@ -18,6 +18,11 @@ Health Tracker is an application for recording health metrics, maintaining detai
   - Cholesterol measurements
   - Exercise records
   - Weight measurements
+- Food-Related
+  - Food items (either individual food items or ingredients for meals)
+  - Meals (entered directly or constructed using food items)
+  - Nutritional values for food items and meals
+  - Meal consumption records
 - Medications
   - Medication definitions
   - Person/medication associations and medication tracking
