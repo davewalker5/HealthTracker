@@ -876,5 +876,25 @@ namespace HealthTracker.Tests.Mocks
         /// <returns></returns>
         public static MealConsumptionMeasurement RandomMealConsumptionMeasurement(int year)
             => RandomMealConsumptionMeasurement(RandomId(), year);
+
+        /// <summary>
+        /// Generate a random meal/food item relationship record
+        /// </summary>
+        /// <returns></returns>
+        public static MealFoodItem RandomMealFoodItemRelationship()
+        {
+            var relationship = new MealFoodItem()
+            {
+                MealId = RandomId(),
+                FoodItem = RandomFoodItem(),
+                Quantity = RandomDecimal(1, 5),
+                NutritionalValue = RandomNutritionalValue()
+            };
+
+            relationship.FoodItemId = relationship.FoodItem.Id;
+            relationship.NutritionalValueId = relationship.NutritionalValue.Id;
+
+            return relationship;
+        }
     }
 }

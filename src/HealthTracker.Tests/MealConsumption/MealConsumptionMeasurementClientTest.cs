@@ -264,7 +264,7 @@ namespace HealthTracker.Tests.MealConsumption
 
             var person = DataGenerator.RandomPerson(16, 90);
             var measurement = DataGenerator.RandomMealConsumptionMeasurement(person.Id, 2024);
-                var record = $@"""{person.Id}"",""{person.Name}"",""{measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{measurement.MealId}"",""{measurement.Meal.Name}"",""{measurement.Quantity}"",""{measurement.NutritionalValue.Calories}"",""{measurement.NutritionalValue.Fat}"",""{measurement.NutritionalValue.SaturatedFat}"",""{measurement.NutritionalValue.Protein}"",""{measurement.NutritionalValue.Carbohydrates}"",""{measurement.NutritionalValue.Sugar}"",""{measurement.NutritionalValue.Fibre}""";
+            var record = $@"""{person.Id}"",""{person.Name}"",""{measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{measurement.MealId}"",""{measurement.Meal.Name}"",""{measurement.Quantity}"",""{measurement.NutritionalValue.Calories}"",""{measurement.NutritionalValue.Fat}"",""{measurement.NutritionalValue.SaturatedFat}"",""{measurement.NutritionalValue.Protein}"",""{measurement.NutritionalValue.Carbohydrates}"",""{measurement.NutritionalValue.Sugar}"",""{measurement.NutritionalValue.Fibre}""";
 
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);

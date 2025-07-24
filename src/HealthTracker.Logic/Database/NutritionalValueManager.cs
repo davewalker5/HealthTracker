@@ -281,6 +281,6 @@ namespace HealthTracker.Logic.Database
         /// <param name="quantity"></param>
         /// <returns></returns>
         private decimal? CalculateValue(decimal? value, decimal quantity)
-            => value == null ? null : value * quantity;
+            => value == null ? null : Math.Round(value.Value * quantity, 4);
     }
 }

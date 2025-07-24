@@ -48,6 +48,9 @@ namespace HealthTracker.DataExchange.Import
             // Make sure the food item maps OK
             var foodItem = _foodItems.FirstOrDefault(x => x.Name.Equals(exportable.FoodItem, StringComparison.OrdinalIgnoreCase));
             ValidateField<FoodItem>(x => x != null, foodItem, "FoodItem", recordCount);
+
+            // Make sure the quantity is valid
+            ValidateField<decimal>(x => x > 0, exportable.Quantity, "Quantity", recordCount);
         }
 
         /// <summary>
