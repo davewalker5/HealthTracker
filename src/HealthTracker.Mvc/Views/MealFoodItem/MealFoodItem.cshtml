@@ -63,7 +63,6 @@
 
                     // Select the current meal, if it's in the list
                     var foodItemId = $("#Relationship_FoodItemId").val();
-                    console.log("Trying to select food item " + foodItemId);
                     if (foodItemId > 0) {
                         $('#FoodItemsList option[value="' + foodItemId + '"]').attr("selected", "selected");
                     }
