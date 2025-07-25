@@ -202,7 +202,10 @@ namespace HealthTracker.Mvc.Controllers
             _logger.LogDebug($"{measures.Count} beverage measure{plural} loaded via the service");
 
             // Construct the view model and serve the page
-            var model = new BeverageMeasureListViewModel();
+            var model = new BeverageMeasureListViewModel()
+            {
+                Message = message
+            };
             model.SetEntities(measures, 1, _settings.ResultsPageSize);
             return model;
         }

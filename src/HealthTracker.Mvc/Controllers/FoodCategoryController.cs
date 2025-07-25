@@ -25,20 +25,13 @@ namespace HealthTracker.Mvc.Controllers
         }
 
         /// <summary>
-        /// Serve the current list of food sources
+        /// Serve the current list of food categories
         /// </summary>
         /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            // Get the list of current foodCategorys
-            var foodCategorys = await _client.ListAsync(1, _settings.ResultsPageSize);
-            var plural = foodCategorys.Count == 1 ? "category" : "categories";
-            _logger.LogDebug($"{foodCategorys.Count} food {plural} loaded via the service");
-
-            // Construct the view model and serve the page
-            var model = new FoodCategoryListViewModel();
-            model.SetEntities(foodCategorys, 1, _settings.ResultsPageSize);
+            var model = await CreateFoodCategoryListViewModel("");
             return View(model);
         }
 
@@ -84,7 +77,7 @@ namespace HealthTracker.Mvc.Controllers
         }
         
         /// <summary>
-        /// Serve the page to add a new food source
+        /// Serve the page to add a new food category
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -95,7 +88,7 @@ namespace HealthTracker.Mvc.Controllers
         }
 
         /// <summary>
-        /// Handle POST events to save new food sources
+        /// Handle POST events to save new food categories
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -127,7 +120,7 @@ namespace HealthTracker.Mvc.Controllers
         }
         
         /// <summary>
-        /// Serve the page to edit an existing food source
+        /// Serve the page to edit an existing food category
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -147,7 +140,7 @@ namespace HealthTracker.Mvc.Controllers
         }
 
         /// <summary>
-        /// Handle POST events to update an existing food source
+        /// Handle POST events to update an existing food category
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -176,6 +169,45 @@ namespace HealthTracker.Mvc.Controllers
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Handle POST events to delete an existing food category
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            // Delete the item
+            _logger.LogDebug($"Deleting food category: ID = {id}");
+            await _client.DeleteAsync(id);
+
+            // Return the list view with an empty list of items
+            var message = $"Food category with ID {id} successfully deleted";
+            var model = await CreateFoodCategoryListViewModel(message);
+            return View("Index", model);
+        }
+
+        /// <summary>
+        /// Build the food category list view model
+        /// </summary>
+        /// <returns></returns>
+        private async Task<FoodCategoryListViewModel> CreateFoodCategoryListViewModel(string message)
+        {
+            // Get the list of current food categories
+            var categories = await _client.ListAsync(1, _settings.ResultsPageSize);
+            var plural = categories.Count == 1 ? "category" : "categories";
+            _logger.LogDebug($"{categories.Count} food {plural} loaded via the service");
+
+            // Construct the view model and serve the page
+            var model = new FoodCategoryListViewModel()
+            {
+                Message = message
+            };
+            model.SetEntities(categories, 1, _settings.ResultsPageSize);
+            return model;
         }
     }
 }
