@@ -14,11 +14,19 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        // There may be a food item selected by default, if it's the only item in the current category. In that
+        // case, copy its ID to the food item ID used on POST events
+        var foodItemId = $("#FoodItemListId").val();
+        $("#Relationship_FoodItemId").val(foodItemId);
+
+        // Show the nutritional values for the default selection or, if there is no default selection, hide the
+        // nutritional values table
+        LoadNutritionalValuesForFoodItem();
+
         // When the selection on the food items list changes, copy it to the food item ID that's used when the
         // form is POSTed back and refresh the table of nutritional values for the selected item
         $("#FoodItemListId").change(function() {
             var foodItemId = $("#FoodItemListId").val();
-            console.log("Food item ID = " + foodItemId);
             $("#Relationship_FoodItemId").val(foodItemId);
             LoadNutritionalValuesForFoodItem();
         });
