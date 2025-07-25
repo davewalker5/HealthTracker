@@ -31,14 +31,7 @@ namespace HealthTracker.Mvc.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            // Get the list of current beverage measures
-            var measures = await _client.ListAsync(1, _settings.ResultsPageSize);
-            var plural = measures.Count == 1 ? "" : "s";
-            _logger.LogDebug($"{measures.Count} beverage measure{plural} loaded via the service");
-
-            // Construct the view model and serve the page
-            var model = new BeverageMeasureListViewModel();
-            model.SetEntities(measures, 1, _settings.ResultsPageSize);
+            var model = await CreateBeverageMeasureListViewModel("");
             return View(model);
         }
 
@@ -176,6 +169,42 @@ namespace HealthTracker.Mvc.Controllers
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Handle POST events to delete an existing beverage measure
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            // Delete the item
+            _logger.LogDebug($"Deleting beverage measure: ID = {id}");
+            await _client.DeleteAsync(id);
+
+            // Return the list view with an empty list of items
+            var message = $"Beverage measure with ID {id} successfully deleted";
+            var model = await CreateBeverageMeasureListViewModel(message);
+            return View("Index", model);
+        }
+
+        /// <summary>
+        /// Build the beverage measure list view model
+        /// </summary>
+        /// <returns></returns>
+        private async Task<BeverageMeasureListViewModel> CreateBeverageMeasureListViewModel(string message)
+        {
+            // Get the list of current beverage measures
+            var measures = await _client.ListAsync(1, _settings.ResultsPageSize);
+            var plural = measures.Count == 1 ? "" : "s";
+            _logger.LogDebug($"{measures.Count} beverage measure{plural} loaded via the service");
+
+            // Construct the view model and serve the page
+            var model = new BeverageMeasureListViewModel();
+            model.SetEntities(measures, 1, _settings.ResultsPageSize);
+            return model;
         }
     }
 }

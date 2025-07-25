@@ -32,6 +32,12 @@
         <hr />
     }
 
+    @using (Html.BeginForm("Delete", "BeverageMeasure", FormMethod.Post, new { name = "delete-form", id = "delete-form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.Hidden("id", 0)
+    }
+
     @using (Html.BeginForm("Index", "BeverageMeasure", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
@@ -44,6 +50,7 @@
                     <th>Description</th>
                     <th>Volume</th>
                     <th />
+                    <th />
                 </tr>
                 @foreach (var measure in Model.BeverageMeasures)
                 {
@@ -53,6 +60,11 @@
                         <td valign="center">
                             <a class="btn btn-lg" asp-area="" asp-controller="BeverageMeasure" asp-action="Edit" asp-route-id="@measure.Id">
                                 <i class="fas fa-edit"></i>
+                            </a>
+                        </td>
+                        <td valign="center">
+                            <a class="btn btn-lg" href="javascript:submitDeleteForm(@measure.Id)">
+                                <i class="fas fa-trash"></i>
                             </a>
                         </td>
                     </tr>
@@ -74,3 +86,19 @@
     }
 
 </div>
+
+<script type="text/javascript">
+    function submitDeleteForm(id) {
+        $.confirm({
+            text: "Are you sure?",
+            confirm: function(button) {
+                $("#delete-form #id").val(id);
+                $("#delete-form").submit()
+            },
+            cancel: function(button) {
+            },
+            confirmButton: "Yes",
+            cancelButton: "No"
+        });
+    }
+</script>
