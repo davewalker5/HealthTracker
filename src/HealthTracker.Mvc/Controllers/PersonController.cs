@@ -30,14 +30,7 @@ namespace HealthTracker.Mvc.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            // Get the list of current people
-            var people = await _client.ListAsync(1, _settings.ResultsPageSize);
-            var personText = people.Count == 1 ? "person" : "people";
-            _logger.LogDebug($"{people.Count} {personText} loaded via the service");
-
-            // Construct the view model and serve the page
-            var model = new PersonListViewModel();
-            model.SetEntities(people, 1, _settings.ResultsPageSize);
+            var model = await CreatePersonListViewModel("");
             return View(model);
         }
 
@@ -186,6 +179,46 @@ namespace HealthTracker.Mvc.Controllers
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Handle POST events to delete an existing medication
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            // Delete the item
+            _logger.LogDebug($"Deleting person: ID = {id}");
+            await _client.DeleteAsync(id);
+
+            // Return the list view with an empty list of items
+            var message = $"Person with ID {id} successfully deleted";
+            var model = await CreatePersonListViewModel(message);
+            return View("Index", model);
+        }
+
+        /// <summary>
+        /// Build the person list view model
+        /// </summary>
+        /// <returns></returns>
+        private async Task<PersonListViewModel> CreatePersonListViewModel(string message)
+        {
+            // Get the list of current people
+            var people = await _client.ListAsync(1, _settings.ResultsPageSize);
+            var personText = people.Count == 1 ? "person" : "people";
+            _logger.LogDebug($"{people.Count} {personText} loaded via the service");
+
+
+            // Construct the view model and serve the page
+            var model = new PersonListViewModel()
+            {
+                Message = message
+            };
+            model.SetEntities(people, 1, _settings.ResultsPageSize);
+            return model;
         }
     }
 }

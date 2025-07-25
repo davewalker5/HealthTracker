@@ -231,7 +231,7 @@ namespace HealthTracker.Mvc.Controllers
         /// <summary>
         /// Handle POST events to delete an existing meal
         /// </summary>
-        /// <param name="collection"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]

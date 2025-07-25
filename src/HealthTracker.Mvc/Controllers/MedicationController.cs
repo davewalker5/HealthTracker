@@ -31,14 +31,7 @@ namespace HealthTracker.Mvc.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            // Get the list of current medications
-            var medications = await _client.ListAsync(1, _settings.ResultsPageSize);
-            var plural = medications.Count == 1 ? "" : "s";
-            _logger.LogDebug($"{medications.Count} medication{plural} loaded via the service");
-
-            // Construct the view model and serve the page
-            var model = new MedicationListViewModel();
-            model.SetEntities(medications, 1, _settings.ResultsPageSize);
+            var model = await CreateMedicationListViewModel("");
             return View(model);
         }
 
@@ -176,6 +169,45 @@ namespace HealthTracker.Mvc.Controllers
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Handle POST events to delete an existing medication
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            // Delete the item
+            _logger.LogDebug($"Deleting medication: ID = {id}");
+            await _client.DeleteAsync(id);
+
+            // Return the list view with an empty list of items
+            var message = $"Medication with ID {id} successfully deleted";
+            var model = await CreateMedicationListViewModel(message);
+            return View("Index", model);
+        }
+
+        /// <summary>
+        /// Build the medication list view model
+        /// </summary>
+        /// <returns></returns>
+        private async Task<MedicationListViewModel> CreateMedicationListViewModel(string message)
+        {
+            // Get the list of current medications
+            var medications = await _client.ListAsync(1, _settings.ResultsPageSize);
+            var plural = medications.Count == 1 ? "" : "s";
+            _logger.LogDebug($"{medications.Count} medication{plural} loaded via the service");
+
+            // Construct the view model and serve the page
+            var model = new MedicationListViewModel()
+            {
+                Message = message
+            };
+            model.SetEntities(medications, 1, _settings.ResultsPageSize);
+            return model;
         }
     }
 }

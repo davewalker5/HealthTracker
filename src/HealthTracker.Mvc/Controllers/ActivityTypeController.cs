@@ -31,14 +31,7 @@ namespace HealthTracker.Mvc.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            // Get the list of current activity types
-            var activityTypes = await _client.ListAsync(1, _settings.ResultsPageSize);
-            var plural = activityTypes.Count == 1 ? "" : "s";
-            _logger.LogDebug($"{activityTypes.Count} activity type{plural} loaded via the service");
-
-            // Construct the view model and serve the page
-            var model = new ActivityTypeListViewModel();
-            model.SetEntities(activityTypes, 1, _settings.ResultsPageSize);
+            var model = await CreateActivityTypeListViewModel("");
             return View(model);
         }
 
@@ -82,7 +75,7 @@ namespace HealthTracker.Mvc.Controllers
 
             return View(model);
         }
-        
+
         /// <summary>
         /// Serve the page to add a new activity type
         /// </summary>
@@ -125,7 +118,7 @@ namespace HealthTracker.Mvc.Controllers
 
             return result;
         }
-        
+
         /// <summary>
         /// Serve the page to edit an existing activity type
         /// </summary>
@@ -176,6 +169,45 @@ namespace HealthTracker.Mvc.Controllers
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Handle POST events to delete an existing activity type
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            // Delete the item
+            _logger.LogDebug($"Deleting activity type: ID = {id}");
+            await _client.DeleteAsync(id);
+
+            // Return the list view with an empty list of items
+            var message = $"Activity type with ID {id} successfully deleted";
+            var model = await CreateActivityTypeListViewModel(message);
+            return View("Index", model);
+        }
+
+        /// <summary>
+        /// Build the activity type list view model
+        /// </summary>
+        /// <returns></returns>
+        private async Task<ActivityTypeListViewModel> CreateActivityTypeListViewModel(string message)
+        {
+            // Get the list of current activity types
+            var activityTypes = await _client.ListAsync(1, _settings.ResultsPageSize);
+            var plural = activityTypes.Count == 1 ? "" : "s";
+            _logger.LogDebug($"{activityTypes.Count} activity type{plural} loaded via the service");
+
+            // Construct the view model and serve the page
+            var model = new ActivityTypeListViewModel()
+            {
+                Message = message
+            };
+            model.SetEntities(activityTypes, 1, _settings.ResultsPageSize);
+            return model;
         }
     }
 }

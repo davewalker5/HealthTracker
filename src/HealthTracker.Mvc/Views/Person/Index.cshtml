@@ -28,6 +28,11 @@
             </div>
         </div>
     }
+    @using (Html.BeginForm("Delete", "Person", FormMethod.Post, new { name = "delete-form", id = "delete-form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.Hidden("id", 0)
+    }
 
     @using (Html.BeginForm("Index", "Person", FormMethod.Post))
     {
@@ -41,6 +46,7 @@
                 <th>Age</th>
                 <th>Height</th>
                 <th>Gender</th>
+                <th />
                 <th />
             </tr>
             @foreach (var person in Model.People)
@@ -56,6 +62,11 @@
                             <i class="fas fa-edit"></i>
                         </a>
                     </td>
+                    <td valign="center">
+                        <a class="btn btn-lg" href="javascript:submitDeleteForm(@person.Id)">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
                 </tr>
             }
         </table>
@@ -67,3 +78,19 @@
         </p>
     }
 </div>
+
+<script type="text/javascript">
+    function submitDeleteForm(id) {
+        $.confirm({
+            text: "Are you sure?",
+            confirm: function(button) {
+                $("#delete-form #id").val(id);
+                $("#delete-form").submit()
+            },
+            cancel: function(button) {
+            },
+            confirmButton: "Yes",
+            cancelButton: "No"
+        });
+    }
+</script>
