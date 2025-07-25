@@ -34,7 +34,11 @@
         @Html.Hidden("id", 0)
     }
 
-    @await Html.PartialAsync("NutritionalValue", new NutritionalValueTableViewModel() { Values = Model.Meal.NutritionalValue })
+    @await Html.PartialAsync("NutritionalValue", new NutritionalValueTableViewModel()
+        {
+            Portion = Model.Meal.Portions,
+            Values = Model.Meal.NutritionalValue
+        })
     <hr/>
 
     <p class="text-center font-weight-bold">
