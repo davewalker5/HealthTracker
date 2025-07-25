@@ -31,14 +31,7 @@ namespace HealthTracker.Mvc.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            // Get the list of current foodSources
-            var foodSources = await _client.ListAsync(1, _settings.ResultsPageSize);
-            var plural = foodSources.Count == 1 ? "" : "s";
-            _logger.LogDebug($"{foodSources.Count} food source{plural} loaded via the service");
-
-            // Construct the view model and serve the page
-            var model = new FoodSourceListViewModel();
-            model.SetEntities(foodSources, 1, _settings.ResultsPageSize);
+            var model = await CreateFoodSourceListViewModel("");
             return View(model);
         }
 
@@ -176,6 +169,45 @@ namespace HealthTracker.Mvc.Controllers
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Handle POST events to delete an existing food source
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            // Delete the item
+            _logger.LogDebug($"Deleting food source: ID = {id}");
+            await _client.DeleteAsync(id);
+
+            // Return the list view with an empty list of items
+            var message = $"Food source with ID {id} successfully deleted";
+            var model = await CreateFoodSourceListViewModel(message);
+            return View("Index", model);
+        }
+
+        /// <summary>
+        /// Build the food source list view model
+        /// </summary>
+        /// <returns></returns>
+        private async Task<FoodSourceListViewModel> CreateFoodSourceListViewModel(string message)
+        {
+            // Get the list of current foodSources
+            var foodSources = await _client.ListAsync(1, _settings.ResultsPageSize);
+            var plural = foodSources.Count == 1 ? "" : "s";
+            _logger.LogDebug($"{foodSources.Count} food source{plural} loaded via the service");
+
+            // Construct the view model and serve the page
+            var model = new FoodSourceListViewModel()
+            {
+                Message = message
+            };
+            model.SetEntities(foodSources, 1, _settings.ResultsPageSize);
+            return model;
         }
     }
 }
