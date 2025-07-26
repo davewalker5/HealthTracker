@@ -14,6 +14,11 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        // The page may be loaded with a default meal selected so make sure it's copied to the field
+        // that's used when the form is POSTedvar mealId = $("#MealsListId").val();
+        var mealId = $("#MealsListId").val();
+        $("#Measurement_MealId").val(mealId);
+
         // When the selection on the meals list changes, copy it to the meal ID that's used when the
         // form is POSTed back
         $("#MealsListId").change(function() {
