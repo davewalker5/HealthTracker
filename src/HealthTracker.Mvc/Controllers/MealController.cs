@@ -250,5 +250,24 @@ namespace HealthTracker.Mvc.Controllers
 
             return View("Index", model);
         }
+
+        /// <summary>
+        /// Show the modal dialog containing the nutritional values for the specified meal
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> ShowNutritionalValues(int id)
+        {
+            var meal = await _helper.GetAsync(id);
+            var model = new NutritionalValueTableViewModel()
+            {
+                Portion = meal.Portions,
+                Values = meal.NutritionalValue
+            };
+
+            var title = $"Nutritional Values for {meal.Name}";
+            return await LoadModalContent("_NutritionalValues", model, title);
+        }
     }
 }

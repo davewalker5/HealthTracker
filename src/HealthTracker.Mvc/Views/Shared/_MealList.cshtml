@@ -1,25 +1,11 @@
 @using HealthTracker.Mvc.Entities
 @model HealthTracker.Mvc.Models.MealListViewModel
 
-@* @functions
-{
-    public string GetNutritonalValue(decimal? value)
-        => value != null ? value.Value.ToString("0.0") : "";
-} *@
-
 <table class="table">
     <tr>
         <th>Name</th>
         <th>Source</th>
         <th />
-        @* <th>Portions</th> *@
-        @* <th>Calories</th>
-        <th>Fat</th>
-        <th>Saturated Fat</th>
-        <th>Protein</th>
-        <th>Carbohydrates</th>
-        <th>Sugar</th>
-        <th>Fibre</th> *@
         @if (Model.Editable)
         {
             <th />
@@ -28,26 +14,11 @@
     </tr>
     @foreach (var meal in Model.Meals)
     {
-        @* var calories = GetNutritonalValue(meal.NutritionalValue?.Calories);
-        var fat = GetNutritonalValue(meal.NutritionalValue?.Fat);
-        var saturated = GetNutritonalValue(meal.NutritionalValue?.SaturatedFat);
-        var protein = GetNutritonalValue(meal.NutritionalValue?.Protein);
-        var carbohydrates = GetNutritonalValue(meal.NutritionalValue?.Carbohydrates);
-        var sugar = GetNutritonalValue(meal.NutritionalValue?.Sugar);
-        var fibre = GetNutritonalValue(meal.NutritionalValue?.Fibre); *@
         <tr>
             <td valign="center">@meal.Name</td>
             <td valign="center">@meal.FoodSource.Name</td>
-            @* <td valign="center">@meal.Portions.ToString("0.0")</td> *@
-            @* <td valign="center">@calories</td>
-            <td valign="center">@fat</td>
-            <td valign="center">@saturated</td>
-            <td valign="center">@protein</td>
-            <td valign="center">@carbohydrates</td>
-            <td valign="center">@sugar</td>
-            <td valign="center">@fibre</td> *@
             <td valign="center">
-                <a class="btn btn-lg" asp-area="" asp-controller="Meal" asp-action="ShowNutritionalValues" asp-route-mealId="@meal.Id">
+                <a class="btn btn-lg" href="javascript:LoadModalContent(@meal.Id, 'Meal/ShowNutritionalValues')">
                     <i class="fas fa-info-circle"></i>
                 </a>
             </td>
