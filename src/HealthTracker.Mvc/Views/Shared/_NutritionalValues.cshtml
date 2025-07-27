@@ -33,7 +33,7 @@
             <tr>
                 @if (Model.Portion != null)
                 {
-                    <td valign="center">@Model.Portion</td>
+                    <td valign="center">@Model.Portion.Value.ToString("0.00")</td>
                 }
                 <td valign="center">@calories</td>
                 <td valign="center">@fat</td>

@@ -261,7 +261,7 @@ namespace HealthTracker.Mvc.Controllers
                 Values = foodItem.NutritionalValue
             };
 
-            return PartialView(model);
+            return PartialView("_NutritionalValues", model);
         }
 
         /// <summary>
