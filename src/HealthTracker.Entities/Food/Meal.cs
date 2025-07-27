@@ -18,6 +18,9 @@ namespace HealthTracker.Entities.Food
         public int FoodSourceId { get; set; }
         public FoodSource FoodSource { get; set; }
 
+        [DisplayName("Reference")]
+        public string Reference { get; set; }
+
         [ForeignKey(nameof(NutritionalValue))]
         public int? NutritionalValueId { get; set; }
         public NutritionalValue NutritionalValue { get; set; }

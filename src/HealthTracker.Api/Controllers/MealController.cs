@@ -65,7 +65,8 @@ namespace HealthTracker.Api.Controllers
         [Route("")]
         public async Task<ActionResult<Meal>> AddMealAsync([FromBody] Meal template)
         {
-            var meal = await _factory.Meals.AddAsync(template.Name, template.Portions, template.FoodSourceId, template.NutritionalValueId);
+            var meal = await _factory.Meals.AddAsync(
+                template.Name, template.Portions, template.FoodSourceId, template.Reference, template.NutritionalValueId);
             return meal;
         }
 
@@ -78,7 +79,8 @@ namespace HealthTracker.Api.Controllers
         [Route("")]
         public async Task<ActionResult<Meal>> UpdateMealAsync([FromBody] Meal template)
         {
-            var meal = await _factory.Meals.UpdateAsync(template.Id, template.Name, template.Portions, template.FoodSourceId, template.NutritionalValueId);
+            var meal = await _factory.Meals.UpdateAsync(
+                template.Id, template.Name, template.Portions, template.FoodSourceId, template.Reference, template.NutritionalValueId);
             return meal;
         }
 

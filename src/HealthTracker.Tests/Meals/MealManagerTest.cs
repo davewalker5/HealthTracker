@@ -12,9 +12,11 @@ namespace HealthTracker.Tests.Meals
     {
         private readonly string Name = DataGenerator.RandomTitleCasePhrase(5, 5, 20);
         private readonly int Portions = DataGenerator.RandomInt(1, 10);
+        private readonly string Reference = DataGenerator.RandomTitleCasePhrase(2, 5, 10);
 
         private readonly string UpdatedName = DataGenerator.RandomTitleCasePhrase(5, 5, 20);
         private readonly int UpdatedPortions = DataGenerator.RandomInt(1, 10);
+        private readonly string UpdatedReference = DataGenerator.RandomTitleCasePhrase(2, 5, 10);
 
         private IHealthTrackerFactory _factory;
         private int _sourceId;
@@ -39,7 +41,7 @@ namespace HealthTracker.Tests.Meals
                 DataGenerator.RandomDecimal(0, 100),
                 DataGenerator.RandomDecimal(0, 100)
             )).Result.Id;
-            _mealId = Task.Run(() => _factory.Meals.AddAsync(Name, Portions, _sourceId, _nutritionalValueId)).Result.Id;
+            _mealId = Task.Run(() => _factory.Meals.AddAsync(Name, Portions, _sourceId, Reference, _nutritionalValueId)).Result.Id;
         }
 
         [TestMethod]
@@ -49,6 +51,7 @@ namespace HealthTracker.Tests.Meals
             Assert.AreEqual(1, meals.Count);
             Assert.AreEqual(_mealId, meals.First().Id);
             Assert.AreEqual(_sourceId, meals.First().FoodSourceId);
+            Assert.AreEqual(Reference, meals.First().Reference);
             Assert.AreEqual(_nutritionalValueId, meals.First().NutritionalValueId);
             Assert.AreEqual(Name, meals.First().Name);
             Assert.AreEqual(Portions, meals.First().Portions);
@@ -57,11 +60,12 @@ namespace HealthTracker.Tests.Meals
         [TestMethod]
         public async Task UpdateTest()
         {
-            await _factory.Meals.UpdateAsync(_mealId, UpdatedName, UpdatedPortions, _updatedSourceId, null);
+            await _factory.Meals.UpdateAsync(_mealId, UpdatedName, UpdatedPortions, _updatedSourceId, UpdatedReference, null);
             var meals = await _factory.Meals.ListAsync(x => x.Id == _mealId, 1, int.MaxValue);
             Assert.AreEqual(1, meals.Count);
             Assert.AreEqual(_mealId, meals.First().Id);
             Assert.AreEqual(_updatedSourceId, meals.First().FoodSourceId);
+            Assert.AreEqual(UpdatedReference, meals.First().Reference);
             Assert.IsNull(meals.First().NutritionalValueId);
             Assert.AreEqual(UpdatedName, meals.First().Name);
             Assert.AreEqual(UpdatedPortions, meals.First().Portions);
@@ -78,16 +82,16 @@ namespace HealthTracker.Tests.Meals
         [TestMethod]
         [ExpectedException(typeof(MealExistsException))]
         public async Task CannotCreateDuplicateTest()
-            => await _factory.Meals.AddAsync(Name, UpdatedPortions, _updatedSourceId, null);
+            => await _factory.Meals.AddAsync(Name, UpdatedPortions, _updatedSourceId, UpdatedReference, null);
 
         [TestMethod]
         [ExpectedException(typeof(FoodSourceNotFoundException))]
         public async Task CannotAddMealForMissingFoodSourceTest()
-            => await _factory.Meals.AddAsync(UpdatedName, UpdatedPortions, 10 * _sourceId, null);
+            => await _factory.Meals.AddAsync(UpdatedName, UpdatedPortions, 10 * _sourceId, UpdatedReference, null);
 
         [TestMethod]
         [ExpectedException(typeof(NutritionalValueNotFoundException))]
         public async Task CannotUpdateMealForMissingNutritionalValueTest()
-            => await _factory.Meals.UpdateAsync(_mealId, UpdatedName, UpdatedPortions, _updatedSourceId, 10 * _nutritionalValueId);
+            => await _factory.Meals.UpdateAsync(_mealId, UpdatedName, UpdatedPortions, _updatedSourceId, UpdatedReference, 10 * _nutritionalValueId);
     }
 }

@@ -59,6 +59,7 @@ namespace HealthTracker.Tests.Meals
             Assert.AreEqual(_exportable.Name, meal.Name);
             Assert.AreEqual(_exportable.Portions, meal.Portions);
             Assert.AreEqual(_exportable.FoodSource, meal.FoodSource.Name);
+            Assert.AreEqual(_exportable.Reference, meal.Reference);
             Assert.AreEqual(_exportable.Calories, meal.NutritionalValue.Calories);
             Assert.AreEqual(_exportable.Fat, meal.NutritionalValue.Fat);
             Assert.AreEqual(_exportable.SaturatedFat, meal.NutritionalValue.SaturatedFat);
@@ -76,6 +77,7 @@ namespace HealthTracker.Tests.Meals
             Assert.AreEqual(_exportable.Name, meals.First().Name);
             Assert.AreEqual(_exportable.Portions, meals.First().Portions);
             Assert.AreEqual(_exportable.FoodSource, meals.First().FoodSource.Name);
+            Assert.AreEqual(_exportable.Reference, meals.First().Reference);
             Assert.AreEqual(_exportable.Calories, meals.First().NutritionalValue.Calories);
             Assert.AreEqual(_exportable.Fat, meals.First().NutritionalValue.Fat);
             Assert.AreEqual(_exportable.SaturatedFat, meals.First().NutritionalValue.SaturatedFat);
@@ -88,7 +90,7 @@ namespace HealthTracker.Tests.Meals
         [TestMethod]
         public async Task ImportTest()
         {
-            var record = $@"""{_exportable.Name}"",""{_exportable.FoodSource}"",""{_exportable.Portions}"",""{_exportable.Calories}"",""{_exportable.Fat}"",""{_exportable.SaturatedFat}"",""{_exportable.Protein}"",""{_exportable.Carbohydrates}"",""{_exportable.Sugar}"",""{_exportable.Fibre}""";
+            var record = $@"""{_exportable.Name}"",""{_exportable.FoodSource}"",""{_exportable.Reference}"",""{_exportable.Portions}"",""{_exportable.Calories}"",""{_exportable.Fat}"",""{_exportable.SaturatedFat}"",""{_exportable.Protein}"",""{_exportable.Carbohydrates}"",""{_exportable.Sugar}"",""{_exportable.Fibre}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 
@@ -129,7 +131,7 @@ namespace HealthTracker.Tests.Meals
         [ExpectedException(typeof(InvalidFieldValueException))]
         public async Task InvalidNameTest()
         {
-            var record = $@""""",""{_exportable.FoodSource}"",""{_exportable.Portions}"",""{_exportable.Calories}"",""{_exportable.Fat}"",""{_exportable.SaturatedFat}"",""{_exportable.Protein}"",""{_exportable.Carbohydrates}"",""{_exportable.Sugar}"",""{_exportable.Fibre}""";
+            var record = $@""""",""{_exportable.FoodSource}"",""{_exportable.Reference}"",""{_exportable.Portions}"",""{_exportable.Calories}"",""{_exportable.Fat}"",""{_exportable.SaturatedFat}"",""{_exportable.Protein}"",""{_exportable.Carbohydrates}"",""{_exportable.Sugar}"",""{_exportable.Fibre}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 
@@ -140,7 +142,7 @@ namespace HealthTracker.Tests.Meals
         [ExpectedException(typeof(InvalidFieldValueException))]
         public async Task InvalidFoodSourceTest()
         {
-            var record = $@"""{_exportable.Name}"","""",""{_exportable.Portions}"",""{_exportable.Calories}"",""{_exportable.Fat}"",""{_exportable.SaturatedFat}"",""{_exportable.Protein}"",""{_exportable.Carbohydrates}"",""{_exportable.Sugar}"",""{_exportable.Fibre}""";
+            var record = $@"""{_exportable.Name}"","""",""{_exportable.Reference}"",""{_exportable.Portions}"",""{_exportable.Calories}"",""{_exportable.Fat}"",""{_exportable.SaturatedFat}"",""{_exportable.Protein}"",""{_exportable.Carbohydrates}"",""{_exportable.Sugar}"",""{_exportable.Fibre}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 
@@ -151,7 +153,7 @@ namespace HealthTracker.Tests.Meals
         [ExpectedException(typeof(InvalidFieldValueException))]
         public async Task InvalidPortionsTest()
         {
-            var record = $@"""{_exportable.Name}"",""{_exportable.FoodSource}"",""0"",""{_exportable.Calories}"",""{_exportable.Fat}"",""{_exportable.SaturatedFat}"",""{_exportable.Protein}"",""{_exportable.Carbohydrates}"",""{_exportable.Sugar}"",""{_exportable.Fibre}""";
+            var record = $@"""{_exportable.Name}"",""{_exportable.FoodSource}"",""{_exportable.Reference}"",""0"",""{_exportable.Calories}"",""{_exportable.Fat}"",""{_exportable.SaturatedFat}"",""{_exportable.Protein}"",""{_exportable.Carbohydrates}"",""{_exportable.Sugar}"",""{_exportable.Fibre}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 

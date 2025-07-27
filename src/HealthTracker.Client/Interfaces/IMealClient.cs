@@ -8,6 +8,7 @@ namespace HealthTracker.Client.Interfaces
             string name,
             int portions,
             int foodSourceId,
+            string reference,
             int? nutritionalValueId);
 
         Task<Meal> UpdateAsync(
@@ -15,6 +16,7 @@ namespace HealthTracker.Client.Interfaces
             string name,
             int portions,
             int foodSourceId,
+            string reference,
             int? nutritionalValueId);
 
         Task DeleteAsync(int id);

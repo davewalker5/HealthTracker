@@ -81,7 +81,7 @@ namespace HealthTracker.DataExchange.Import
             }
 
             // Add the food item
-            await _factory.Meals.AddAsync(meal.Name, meal.Portions, source.Id, nutritionalValueId);
+            await _factory.Meals.AddAsync(meal.Name, meal.Portions, source.Id, meal.Reference, nutritionalValueId);
         }
     }
 }

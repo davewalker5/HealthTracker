@@ -41,7 +41,7 @@ namespace HealthTracker.Tests.MealConsumption
                 DataGenerator.RandomDecimal(0, 100),
                 DataGenerator.RandomDecimal(0, 100)
             )).Result;
-            _mealId = Task.Run(() => _factory.Meals.AddAsync("Some Meal", 1, foodSourceId, _nutrition.Id)).Result.Id;
+            _mealId = Task.Run(() => _factory.Meals.AddAsync("Some Meal", 1, foodSourceId, null, _nutrition.Id)).Result.Id;
             _measurementId = Task.Run(() => _factory.MealConsumptionMeasurements.AddAsync(_personId, _mealId, ConsumptionDate, Quantity)).Result.Id;
         }
 

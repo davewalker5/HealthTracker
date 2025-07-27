@@ -5,6 +5,7 @@
     <tr>
         <th>Name</th>
         <th>Source</th>
+        <th>Reference</th>
         <th />
         @if (Model.Editable)
         {
@@ -17,6 +18,7 @@
         <tr>
             <td valign="center">@meal.Name</td>
             <td valign="center">@meal.FoodSource.Name</td>
+            <td valign="center">@meal.Reference</td>
             <td valign="center">
                 <a class="btn btn-lg" href="javascript:LoadModalContent(@meal.Id, 'Meal/ShowNutritionalValues')">
                     <i class="fas fa-info-circle"></i>

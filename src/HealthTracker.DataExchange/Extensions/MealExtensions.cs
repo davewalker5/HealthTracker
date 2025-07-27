@@ -15,6 +15,7 @@ namespace HealthTracker.DataExchange.Extensions
             {
                 Name = meal.Name,
                 FoodSource = meal.FoodSource.Name,
+                Reference = meal.Reference,
                 Portions = meal.Portions,
                 Calories = meal.NutritionalValue?.Calories,
                 Fat = meal.NutritionalValue?.Fat,
@@ -55,6 +56,7 @@ namespace HealthTracker.DataExchange.Extensions
             {
                 Name = meal.Name,
                 FoodSource = source,
+                Reference = meal.Reference,
                 FoodSourceId = source.Id,
                 Portions = meal.Portions,
                 NutritionalValue = new NutritionalValue

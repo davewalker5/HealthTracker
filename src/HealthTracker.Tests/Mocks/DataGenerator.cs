@@ -824,6 +824,7 @@ namespace HealthTracker.Tests.Mocks
                 Name = RandomTitleCasePhrase(3, 5, 20),
                 Portions = RandomInt(1, 10),
                 FoodSource = RandomFoodSource(),
+                Reference = RandomTitleCasePhrase(2, 5, 10),
                 NutritionalValue = RandomNutritionalValue()
             };
 

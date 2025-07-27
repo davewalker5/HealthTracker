@@ -6,7 +6,7 @@ namespace HealthTracker.DataExchange.Entities
     [ExcludeFromCodeCoverage]
     public class ExportableMeal
     {
-        public const string CsvRecordPattern = @"^"".*"","".*"",""[0-9]+""(,""(?:[0-9.]+)?""){7}.?$";
+        public const string CsvRecordPattern = @"^"".*"","".*"","".*"",""[0-9]+""(,""(?:[0-9.]+)?""){7}.?$";
 
         [Export("Name", 1)]
         public string Name { get; set; }
@@ -14,28 +14,31 @@ namespace HealthTracker.DataExchange.Entities
         [Export("Source", 2)]
         public string FoodSource { get; set; }
 
-        [Export("Portions", 3)]
+        [Export("Reference", 3)]
+        public string Reference { get; set; }
+
+        [Export("Portions", 4)]
         public int Portions { get; set; }
 
-        [Export("Calories", 4)]
+        [Export("Calories", 5)]
         public decimal? Calories { get; set; }
 
-        [Export("Fat", 5)]
+        [Export("Fat", 6)]
         public decimal? Fat { get; set; }
 
-        [Export("Saturated Fat", 6)]
+        [Export("Saturated Fat", 7)]
         public decimal? SaturatedFat { get; set; }
 
-        [Export("Protein", 7)]
+        [Export("Protein", 8)]
         public decimal? Protein { get; set; }
 
-        [Export("Carbohydrates", 8)]
+        [Export("Carbohydrates", 9)]
         public decimal? Carbohydrates { get; set; }
 
-        [Export("Sugar", 9)]
+        [Export("Sugar", 10)]
         public decimal? Sugar { get; set; }
 
-        [Export("Fibre", 10)]
+        [Export("Fibre", 11)]
         public decimal? Fibre { get; set; }
 
         public static ExportableMeal FromCsv(string record)
@@ -45,14 +48,15 @@ namespace HealthTracker.DataExchange.Entities
             {
                 Name = words[0].Replace("\"", "").Trim(),
                 FoodSource = words[1].Replace("\"", "").Trim(),
-                Portions = int.Parse(words[2].Replace("\"", "").Trim()),
-                Calories = ExtractDecimalValue(words[3]),
-                Fat = ExtractDecimalValue(words[4]),
-                SaturatedFat = ExtractDecimalValue(words[5]),
-                Protein = ExtractDecimalValue(words[6]),
-                Carbohydrates = ExtractDecimalValue(words[7]),
-                Sugar = ExtractDecimalValue(words[8]),
-                Fibre = ExtractDecimalValue(words[9])
+                Reference = words[2].Replace("\"", "").Trim(),
+                Portions = int.Parse(words[3].Replace("\"", "").Trim()),
+                Calories = ExtractDecimalValue(words[4]),
+                Fat = ExtractDecimalValue(words[5]),
+                SaturatedFat = ExtractDecimalValue(words[6]),
+                Protein = ExtractDecimalValue(words[7]),
+                Carbohydrates = ExtractDecimalValue(words[8]),
+                Sugar = ExtractDecimalValue(words[9]),
+                Fibre = ExtractDecimalValue(words[10])
             };
         }
 
