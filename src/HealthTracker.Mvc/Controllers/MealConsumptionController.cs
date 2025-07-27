@@ -13,7 +13,6 @@ namespace HealthTracker.Mvc.Controllers
     [Authorize]
     public class MealConsumptionController : FilteredControllerBase<IMealConsumptionMeasurementClient, MealConsumptionListViewModel, MealConsumptionMeasurement>
     {
-        private readonly ILogger<MealConsumptionController> _logger;
         private readonly IMealListGenerator _mealListGenerator;
         private readonly IFoodSourceListGenerator _foodSourceListGenerator;
         private readonly IMealConsumptionMeasurementClient _client;
@@ -27,9 +26,10 @@ namespace HealthTracker.Mvc.Controllers
             IMealListGenerator mealListGenerator,
             IFoodSourceListGenerator foodSourceListGenerator,
             IViewModelBuilder builder,
-            ILogger<MealConsumptionController> logger) : base(personClient, measurementClient, settings, filterGenerator, builder)
+            IPartialViewToStringRenderer renderer,
+            ILogger<MealConsumptionController> logger)
+            : base(personClient, measurementClient, settings, filterGenerator, builder, renderer, logger)
         {
-            _logger = logger;
             _mealListGenerator = mealListGenerator;
             _foodSourceListGenerator = foodSourceListGenerator;
             _client = client;
@@ -118,7 +118,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
             }
 
             // Populate the list of people and render the view
@@ -200,7 +200,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
             }
 
             // Re-populate the drop downs and render the view
@@ -288,7 +288,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
                 result = View(model);
             }
 

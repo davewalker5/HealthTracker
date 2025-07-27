@@ -19,7 +19,6 @@ namespace HealthTracker.Mvc.Controllers
         private readonly IHealthTrackerApplicationSettings _settings;
         private readonly IFilterGenerator _filterGenerator;
         private readonly IViewModelBuilder _builder;
-        private readonly ILogger<PersonMedicationController> _logger;
 
         public HomeController(
             IWeightMeasurementClient weightClient,
@@ -28,7 +27,8 @@ namespace HealthTracker.Mvc.Controllers
             IHealthTrackerApplicationSettings settings,
             IFilterGenerator filterGenerator,
             IViewModelBuilder builder,
-            ILogger<PersonMedicationController> logger)
+            IPartialViewToStringRenderer renderer,
+            ILogger<PersonMedicationController> logger) : base(renderer, logger)
         {
             _weightClient = weightClient;
             _exerciseClient = exerciseClient;
@@ -36,7 +36,6 @@ namespace HealthTracker.Mvc.Controllers
             _settings = settings;
             _filterGenerator = filterGenerator;
             _builder = builder;
-            _logger = logger;
         }
 
         /// <summary>

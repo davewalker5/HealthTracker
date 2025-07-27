@@ -1,6 +1,7 @@
 ﻿using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
 using HealthTracker.Mvc.Entities;
+using HealthTracker.Mvc.Interfaces;
 using HealthTracker.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,12 +9,16 @@ using Microsoft.AspNetCore.Mvc;
 namespace HealthTracker.Mvc.Controllers
 {
     [Authorize]
-    public class JobStatusController : Controller
+    public class JobStatusController : HealthTrackerControllerBase
     {
         private readonly IJobStatusClient _client;
         private readonly IHealthTrackerApplicationSettings _settings;
 
-        public JobStatusController(IJobStatusClient client, IHealthTrackerApplicationSettings settings)
+        public JobStatusController(
+            IJobStatusClient client,
+            IHealthTrackerApplicationSettings settings,
+            IPartialViewToStringRenderer renderer,
+            ILogger<JobStatusController> logger) : base(renderer, logger)
         {
             _client = client;
             _settings = settings;
@@ -72,6 +77,10 @@ namespace HealthTracker.Mvc.Controllers
                 // Retrieve the matching report records
                 var records = await _client.ListAsync(start, end, pageNumber, _settings.ResultsPageSize);
                 model.SetEntities(records, pageNumber, _settings.ResultsPageSize);
+            }
+            else
+            {
+                LogModelState();
             }
 
             return View(model);

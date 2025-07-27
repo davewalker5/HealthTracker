@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using HealthTracker.Mvc.Models;
 using HealthTracker.Client.Interfaces;
 using System.Security.Authentication;
+using HealthTracker.Mvc.Interfaces;
 
 namespace HealthTracker.Mvc.Controllers
 {
@@ -12,13 +13,15 @@ namespace HealthTracker.Mvc.Controllers
 
         private readonly IAuthenticationClient _client;
         private readonly IAuthenticationTokenProvider _tokenProvider;
-        private readonly ILogger<LoginController> _logger;
 
-        public LoginController(IAuthenticationClient client, IAuthenticationTokenProvider provider, ILogger<LoginController> logger)
+        public LoginController(
+            IAuthenticationClient client,
+            IAuthenticationTokenProvider provider,
+            IPartialViewToStringRenderer renderer,
+            ILogger<LoginController> logger) : base(renderer, logger)
         {
             _client = client;
             _tokenProvider = provider;
-            _logger = logger;
         }
 
         /// <summary>

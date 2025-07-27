@@ -10,7 +10,6 @@ namespace HealthTracker.Mvc.Controllers
     [Authorize]
     public class MealFoodItemController : HealthTrackerControllerBase
     {
-        private readonly ILogger<MealFoodItemController> _logger;
         private readonly IMealHelper _mealHelper;
         private readonly IFoodCategoryListGenerator _foodCategoryListGenerator;
         private readonly IFoodItemListGenerator _foodItemListGenerator;
@@ -23,14 +22,14 @@ namespace HealthTracker.Mvc.Controllers
             IFoodItemListGenerator foodItemListGenerator,
             IFoodItemClient foodItemClient,
             IMealFoodItemClient client,
-            ILogger<MealFoodItemController> logger)
+            IPartialViewToStringRenderer renderer,
+            ILogger<MealFoodItemController> logger) : base(renderer, logger)
         {
             _mealHelper = helper;
             _foodCategoryListGenerator = foodCategoryListGenerator;
             _foodItemListGenerator = foodItemListGenerator;
             _foodItemClient = foodItemClient;
             _client = client;
-            _logger = logger;
         }
 
         /// <summary>
@@ -118,7 +117,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
             }
 
             // Populate the meal name and food category list and render the add view
@@ -192,7 +191,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
                 result = View(model);
             }
 
@@ -263,6 +262,27 @@ namespace HealthTracker.Mvc.Controllers
             };
 
             return PartialView(model);
+        }
+
+        /// <summary>
+        /// Show the modal dialog containing the nutritional values for the specified meal/food item relationship
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> ShowNutritionalValues(int id)
+        {
+            var relationship = await _client.GetAsync(id);
+            var meal = await _mealHelper.GetAsync(relationship.MealId);
+
+            var model = new NutritionalValueTableViewModel()
+            {
+                Portion = relationship.Quantity / relationship.FoodItem.Portion,
+                Values = relationship.NutritionalValue
+            };
+
+            var title = $"Nutritional Values for {relationship.FoodItem.Name} in {meal.Name}";
+            return await LoadModalContent("_NutritionalValues", model, title);
         }
     }
 }

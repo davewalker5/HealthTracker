@@ -13,17 +13,16 @@ namespace HealthTracker.Mvc.Controllers
     [Authorize]
     public class BloodGlucoseController : FilteredControllerBase<IBloodGlucoseMeasurementClient, BloodGlucoseListViewModel, BloodGlucoseMeasurement>
     {
-        private readonly ILogger<BloodGlucoseController> _logger;
-
         public BloodGlucoseController(
             IPersonClient personClient,
             IBloodGlucoseMeasurementClient measurementClient,
             IHealthTrackerApplicationSettings settings,
             IFilterGenerator filterGenerator,
             IViewModelBuilder builder,
-            ILogger<BloodGlucoseController> logger) : base(personClient, measurementClient, settings, filterGenerator, builder)
+            IPartialViewToStringRenderer renderer,
+            ILogger<BloodGlucoseController> logger)
+            : base(personClient, measurementClient, settings, filterGenerator, builder, renderer, logger)
         {
-            _logger = logger;
         }
 
         /// <summary>
@@ -109,7 +108,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
             }
 
             // Populate the list of people and render the view
@@ -177,7 +176,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
             }
 
             return View(model);
@@ -247,7 +246,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
                 result = View(model);
             }
 

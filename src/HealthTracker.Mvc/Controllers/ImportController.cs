@@ -1,6 +1,7 @@
 using System.Text;
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Enumerations.Enumerations;
+using HealthTracker.Mvc.Interfaces;
 using HealthTracker.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +23,7 @@ namespace HealthTracker.Mvc.Controllers
             IFoodItemClient foodItemClient,
             IMealClient mealClient,  
             IMealConsumptionMeasurementClient mealConsumptionMeasurementClient,
+            IPartialViewToStringRenderer renderer,
             ILogger<WeightController> logger) : base(
                 bloodGlucoseMeasurementClient,
                 bloodOxygenSaturationMeasurementClient,
@@ -32,6 +34,7 @@ namespace HealthTracker.Mvc.Controllers
                 foodItemClient,
                 mealClient,
                 mealConsumptionMeasurementClient,
+                renderer,
                 logger
             )
         {
@@ -121,7 +124,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
             }
 
             return View(model);

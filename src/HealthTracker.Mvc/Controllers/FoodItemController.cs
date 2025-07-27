@@ -12,7 +12,6 @@ namespace HealthTracker.Mvc.Controllers
     [Authorize]
     public class FoodItemController : HealthTrackerControllerBase
     {
-        private readonly ILogger<FoodItemController> _logger;
         private readonly IFoodItemHelper _helper;
         private readonly IHealthTrackerApplicationSettings _settings;
         private readonly IFoodCategoryListGenerator _listGenerator;
@@ -23,13 +22,13 @@ namespace HealthTracker.Mvc.Controllers
             IHealthTrackerApplicationSettings settings,
             IFoodCategoryListGenerator listGenerator,
             IFoodCategoryFilterGenerator filterGenerator,
-            ILogger<FoodItemController> logger)
+            IPartialViewToStringRenderer renderer,
+            ILogger<FoodItemController> logger) : base(renderer, logger)
         {
             _helper = helper;
             _settings = settings;
             _listGenerator = listGenerator;
             _filterGenerator = filterGenerator;
-            _logger = logger;
         }
 
         /// <summary>
@@ -102,7 +101,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
             }
 
             // Populate the list of people and render the view
@@ -157,7 +156,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
             }
 
             // Populate the food category list and render the view
@@ -220,7 +219,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
                 result = View(model);
             }
 
@@ -251,6 +250,25 @@ namespace HealthTracker.Mvc.Controllers
             };
 
             return View("Index", model);
+        }
+
+        /// <summary>
+        /// Show the modal dialog containing the nutritional values for the specified item
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> ShowNutritionalValues(int id)
+        {
+            var item = await _helper.GetAsync(id);
+            var model = new NutritionalValueTableViewModel()
+            {
+                Portion = item.Portion,
+                Values = item.NutritionalValue
+            };
+
+            var title = $"Nutritional Values for {item.Name}";
+            return await LoadModalContent("_NutritionalValues", model, title);
         }
     }
 }

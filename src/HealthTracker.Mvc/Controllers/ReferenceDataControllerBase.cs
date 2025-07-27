@@ -1,4 +1,5 @@
 using HealthTracker.Configuration.Interfaces;
+using HealthTracker.Mvc.Interfaces;
 using HealthTracker.Mvc.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,8 +11,13 @@ namespace HealthTracker.Mvc.Controllers
     {
         protected readonly IHealthTrackerApplicationSettings _settings;
 
-        public ReferenceDataControllerBase(IHealthTrackerApplicationSettings settings)
-            => _settings = settings;
+        public ReferenceDataControllerBase(
+            IHealthTrackerApplicationSettings settings,
+            IPartialViewToStringRenderer renderer,
+            ILogger logger) : base(renderer, logger)
+        {
+            _settings = settings;
+        }
 
         /// <summary>
         /// Helper method to create a list view result
