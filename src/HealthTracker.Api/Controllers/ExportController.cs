@@ -25,6 +25,7 @@ namespace HealthTracker.Api.Controllers
         private readonly IBackgroundQueue<MealExportWorkItem> _mealQueue;
         private readonly IBackgroundQueue<MealConsumptionMeasurementExportWorkItem> _mealConsumptionQueue;
         private readonly IBackgroundQueue<MealFoodItemExportWorkItem> _mealFoodItemQueue;
+        private readonly IBackgroundQueue<PlannedMealExportWorkItem> _plannedMealQueue;
 
         public ExportController(
             IBackgroundQueue<PersonExportWorkItem> personQueue,
@@ -40,7 +41,8 @@ namespace HealthTracker.Api.Controllers
             IBackgroundQueue<FoodItemExportWorkItem> foodItemQueue,
             IBackgroundQueue<MealExportWorkItem> mealQueue,
             IBackgroundQueue<MealConsumptionMeasurementExportWorkItem> mealConsumptionQueue,
-            IBackgroundQueue<MealFoodItemExportWorkItem> mealFoodItemQueue)
+            IBackgroundQueue<MealFoodItemExportWorkItem> mealFoodItemQueue,
+            IBackgroundQueue<PlannedMealExportWorkItem> plannedMealQueue)
         {
             _personQueue = personQueue;
             _weightMeasurementQueue = weightMeasurementQueue;
@@ -56,6 +58,7 @@ namespace HealthTracker.Api.Controllers
             _mealQueue = mealQueue;
             _mealConsumptionQueue = mealConsumptionQueue;
             _mealFoodItemQueue = mealFoodItemQueue;
+            _plannedMealQueue = plannedMealQueue;
         }
 
         [HttpPost]
@@ -223,6 +226,18 @@ namespace HealthTracker.Api.Controllers
 
             // Queue the work item
             _mealFoodItemQueue.Enqueue(item);
+            return Accepted();
+        }
+
+        [HttpPost]
+        [Route("plannedmeal")]
+        public IActionResult ExportPlannedMeals([FromBody] PlannedMealExportWorkItem item)
+        {
+            // Set the job name used in the job status record
+            item.JobName = "Planned Meal Export";
+
+            // Queue the work item
+            _plannedMealQueue.Enqueue(item);
             return Accepted();
         }
     }
