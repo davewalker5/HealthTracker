@@ -2,7 +2,6 @@ using HealthTracker.Client.Interfaces;
 using HealthTracker.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using HealthTracker.Enumerations.Enumerations;
 using HealthTracker.Mvc.Interfaces;
 
 namespace HealthTracker.Mvc.Controllers
@@ -12,16 +11,15 @@ namespace HealthTracker.Mvc.Controllers
     {
         private readonly IAlcoholUnitCalculationsClient _client;
         private readonly IBeverageMeasureListGenerator _listGenerator;
-        private readonly ILogger<AlcoholController> _logger;
 
         public AlcoholController(
             IAlcoholUnitCalculationsClient client,
             IBeverageMeasureListGenerator listGenerator,
-            ILogger<AlcoholController> logger)
+            IPartialViewToStringRenderer renderer,
+            ILogger<AlcoholController> logger) : base(renderer, logger)
         {
             _client = client;
             _listGenerator = listGenerator;
-            _logger = logger;
         }
 
         /// <summary>
@@ -62,7 +60,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
             }
 
             // Populate the measures and render the view

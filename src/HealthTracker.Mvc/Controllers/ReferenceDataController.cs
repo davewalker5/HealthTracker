@@ -1,6 +1,7 @@
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
 using HealthTracker.Entities.Measurements;
+using HealthTracker.Mvc.Interfaces;
 using HealthTracker.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,15 +13,14 @@ namespace HealthTracker.Mvc.Controllers
     {
         private readonly IReferenceDataClient _client;
 
-        private readonly ILogger<ReferenceDataController> _logger;
-
         public ReferenceDataController(
             IReferenceDataClient client,
             IHealthTrackerApplicationSettings settings,
-            ILogger<ReferenceDataController> logger) : base(settings)
+            IPartialViewToStringRenderer renderer,
+            ILogger<ReferenceDataController> logger)
+            : base(settings, renderer, logger)
         {
             _client = client;
-            _logger = logger;
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Enumerations.Enumerations;
+using HealthTracker.Mvc.Interfaces;
 
 namespace HealthTracker.Mvc.Controllers
 {
@@ -19,7 +20,6 @@ namespace HealthTracker.Mvc.Controllers
         };
 
         protected readonly Dictionary<DataExchangeType, IImporterExporter> _clients = new();
-        protected readonly ILogger _logger;
 
         public DataExchangeControllerBase(
             IBloodGlucoseMeasurementClient bloodGlucoseMeasurementClient,
@@ -31,7 +31,8 @@ namespace HealthTracker.Mvc.Controllers
             IFoodItemClient foodItemClient,
             IMealClient mealClient,
             IMealConsumptionMeasurementClient mealConsumptionMeasurementClient,
-            ILogger logger)
+            IPartialViewToStringRenderer renderer,
+            ILogger logger) : base(renderer, logger)
         {
             _clients.Add(DataExchangeType.Glucose, bloodGlucoseMeasurementClient);
             _clients.Add(DataExchangeType.SPO2, bloodOxygenSaturationMeasurementClient);
@@ -42,7 +43,6 @@ namespace HealthTracker.Mvc.Controllers
             _clients.Add(DataExchangeType.FoodItems, foodItemClient);
             _clients.Add(DataExchangeType.Meals, mealClient);
             _clients.Add(DataExchangeType.MealConsumption, mealConsumptionMeasurementClient);
-            _logger = logger;
         }
 
         /// <summary>

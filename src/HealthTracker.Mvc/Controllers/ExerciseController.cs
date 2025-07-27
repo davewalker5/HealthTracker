@@ -16,7 +16,6 @@ namespace HealthTracker.Mvc.Controllers
     {
         private const string DurationPattern = @"^\d{2}:\d{2}:\d{2}$";
         private readonly Regex _durationRegex = new(DurationPattern, RegexOptions.Compiled);
-        private readonly ILogger<ExerciseController> _logger;
         private readonly IActivityTypeListGenerator _activityTypeListGenerator;
 
         public ExerciseController(
@@ -26,9 +25,10 @@ namespace HealthTracker.Mvc.Controllers
             IFilterGenerator filterGenerator,
             IActivityTypeListGenerator activityTypeListGenerator,
             IViewModelBuilder builder,
-            ILogger<ExerciseController> logger) : base(personClient, measurementClient, settings, filterGenerator, builder)
+            IPartialViewToStringRenderer renderer,
+            ILogger<ExerciseController> logger)
+            : base(personClient, measurementClient, settings, filterGenerator, builder, renderer, logger)
         {
-            _logger = logger;
             _activityTypeListGenerator = activityTypeListGenerator;
         }
 
@@ -115,7 +115,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
             }
 
             // Populate the list of people and render the view
@@ -203,7 +203,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
             }
 
             // Populate the activity types and render the view
@@ -293,7 +293,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
                 result = View(model);
             }
 

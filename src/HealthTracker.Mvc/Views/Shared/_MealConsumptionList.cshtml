@@ -8,8 +8,9 @@
         <th>Time</th>
         <th>Meal</th>
         <th>Quantity</th>
-        <th>Calories</th>
-        <th>Carbohydrates</th>
+        <th />
+        @* <th>Calories</th>
+        <th>Carbohydrates</th> *@
         @if (Model.Editable)
         {
             <th />
@@ -24,8 +25,13 @@
             <td valign="center">@measurement.Date.ToString("HH:mm")</td>
             <td valign="center">@measurement.Meal.Name</td>
             <td valign="center">@measurement.Quantity</td>
-            <td valign="center">@measurement.NutritionalValue?.Calories</td>
-            <td valign="center">@measurement.NutritionalValue?.Carbohydrates</td>
+            @* <td valign="center">@measurement.NutritionalValue?.Calories</td>
+            <td valign="center">@measurement.NutritionalValue?.Carbohydrates</td> *@
+            <td valign="center">
+                <a class="btn btn-lg" asp-area="" asp-controller="MealFoodItem" asp-action="ShowNutritionalValues" asp-route-mealId="@measurement.Id">
+                    <i class="fas fa-info-circle"></i>
+                </a>
+            </td>
             @if (Model.Editable)
             {
                 <td valign="center">

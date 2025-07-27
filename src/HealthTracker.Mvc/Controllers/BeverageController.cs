@@ -2,6 +2,7 @@ using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
 using HealthTracker.Entities.Food;
 using HealthTracker.Mvc.Entities;
+using HealthTracker.Mvc.Interfaces;
 using HealthTracker.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,15 +14,13 @@ namespace HealthTracker.Mvc.Controllers
     {
         private readonly IBeverageClient _client;
 
-        private readonly ILogger<BeverageController> _logger;
-
         public BeverageController(
             IBeverageClient client,
             IHealthTrackerApplicationSettings settings,
-            ILogger<BeverageController> logger) : base(settings)
+            IPartialViewToStringRenderer renderer,
+            ILogger<BeverageController> logger) : base(settings, renderer ,logger)
         {
             _client = client;
-            _logger = logger;
         }
 
         /// <summary>
@@ -70,7 +69,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
             }
 
             return View(model);
@@ -112,7 +111,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
                 result = View(model);
             }
 
@@ -164,7 +163,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
                 result = View(model);
             }
 

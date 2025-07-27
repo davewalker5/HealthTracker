@@ -12,6 +12,8 @@ using HealthTracker.Mvc.Helpers;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
 using HealthTracker.Client.Helpers;
+using HealthTracker.Mvc.Services;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace HealthTracker.Mvc
 {
@@ -80,6 +82,10 @@ namespace HealthTracker.Mvc
             services.AddSingleton<IFoodSourceListGenerator, FoodSourceListGenerator>();
             services.AddSingleton<IFoodSourceFilterGenerator, FoodSourceFilterGenerator>();
             services.AddSingleton<IFoodItemListGenerator, FoodItemListGenerator>();
+
+            // Modal dialog support    services.AddHttpContextAccessor();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddScoped<IPartialViewToStringRenderer, PartialViewToStringRenderer>();
 
             // Configure session state for token storage
             services.AddSession(options =>

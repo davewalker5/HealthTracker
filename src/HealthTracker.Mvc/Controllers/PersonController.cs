@@ -2,6 +2,7 @@ using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
 using HealthTracker.Entities.Identity;
 using HealthTracker.Mvc.Entities;
+using HealthTracker.Mvc.Interfaces;
 using HealthTracker.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,15 +13,14 @@ namespace HealthTracker.Mvc.Controllers
     public class PersonController : ReferenceDataControllerBase<PersonListViewModel, Person>
     {
         private readonly IPersonClient _client;
-        private readonly ILogger<PersonController> _logger;
 
         public PersonController(
             IPersonClient client,
             IHealthTrackerApplicationSettings settings,
-            ILogger<PersonController> logger) : base(settings)
+            IPartialViewToStringRenderer renderer,
+            ILogger<PersonController> logger) : base(settings, renderer, logger)
         {
             _client = client;
-            _logger = logger;
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
             }
 
             return View(model);
@@ -113,7 +113,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
                 result = View(model);
             }
 
@@ -174,7 +174,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
                 result = View(model);
             }
 

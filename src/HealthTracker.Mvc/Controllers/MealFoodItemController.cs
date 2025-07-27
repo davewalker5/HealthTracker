@@ -10,7 +10,6 @@ namespace HealthTracker.Mvc.Controllers
     [Authorize]
     public class MealFoodItemController : HealthTrackerControllerBase
     {
-        private readonly ILogger<MealFoodItemController> _logger;
         private readonly IMealHelper _mealHelper;
         private readonly IFoodCategoryListGenerator _foodCategoryListGenerator;
         private readonly IFoodItemListGenerator _foodItemListGenerator;
@@ -23,14 +22,14 @@ namespace HealthTracker.Mvc.Controllers
             IFoodItemListGenerator foodItemListGenerator,
             IFoodItemClient foodItemClient,
             IMealFoodItemClient client,
-            ILogger<MealFoodItemController> logger)
+            IPartialViewToStringRenderer renderer,
+            ILogger<MealFoodItemController> logger) : base(renderer, logger)
         {
             _mealHelper = helper;
             _foodCategoryListGenerator = foodCategoryListGenerator;
             _foodItemListGenerator = foodItemListGenerator;
             _foodItemClient = foodItemClient;
             _client = client;
-            _logger = logger;
         }
 
         /// <summary>
@@ -118,7 +117,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
             }
 
             // Populate the meal name and food category list and render the add view
@@ -192,7 +191,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
                 result = View(model);
             }
 

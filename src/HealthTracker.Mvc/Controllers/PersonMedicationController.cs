@@ -12,7 +12,6 @@ namespace HealthTracker.Mvc.Controllers
     [Authorize]
     public class PersonMedicationController : FilteredByPersonControllerBase<IPersonMedicationClient, PersonMedicationListViewModel, PersonMedication>
     {
-        private readonly ILogger<PersonMedicationController> _logger;
         private readonly IMedicationTrackingClient _medicationTrackingClient;
         private readonly IMedicationListGenerator _medicationListGenerator;
 
@@ -24,9 +23,10 @@ namespace HealthTracker.Mvc.Controllers
             IFilterGenerator filterGenerator,
             IViewModelBuilder builder,
             IMedicationListGenerator medicationListGenerator,
-            ILogger<PersonMedicationController> logger) : base(personClient, measurementClient, settings, filterGenerator, builder)
+            IPartialViewToStringRenderer renderer,
+            ILogger<PersonMedicationController> logger)
+            : base(personClient, measurementClient, settings, filterGenerator, builder, renderer, logger)
         {
-            _logger = logger;
             _medicationTrackingClient = medicationTrackingClient;
             _medicationListGenerator = medicationListGenerator;
         }
@@ -87,7 +87,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
                 await _filterGenerator.PopulatePersonList(model.Filters);
                 model.Settings = _settings;
             }
@@ -152,7 +152,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
             }
 
             return View(model);
@@ -225,7 +225,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
                 result = View(model);
             }
 

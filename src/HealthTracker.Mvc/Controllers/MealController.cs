@@ -12,7 +12,6 @@ namespace HealthTracker.Mvc.Controllers
     [Authorize]
     public class MealController : HealthTrackerControllerBase
     {
-        private readonly ILogger<MealController> _logger;
         private readonly IMealHelper _helper;
         private readonly IHealthTrackerApplicationSettings _settings;
         private readonly IFoodSourceListGenerator _listGenerator;
@@ -23,13 +22,13 @@ namespace HealthTracker.Mvc.Controllers
             IHealthTrackerApplicationSettings settings,
             IFoodSourceListGenerator listGenerator,
             IFoodSourceFilterGenerator filterGenerator,
-            ILogger<MealController> logger)
+            IPartialViewToStringRenderer renderer,
+            ILogger<MealController> logger) : base(renderer, logger)
         {
             _helper = helper;
             _settings = settings;
             _listGenerator = listGenerator;
             _filterGenerator = filterGenerator;
-            _logger = logger;
         }
 
         /// <summary>
@@ -102,7 +101,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
             }
 
             // Populate the list of people and render the view
@@ -157,7 +156,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
             }
 
             // Populate the food source list and render the view
@@ -219,7 +218,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
                 result = View(model);
             }
 

@@ -14,7 +14,6 @@ namespace HealthTracker.Mvc.Controllers
     [Authorize]
     public class BeverageConsumptionController : FilteredControllerBase<IBeverageConsumptionMeasurementClient, BeverageConsumptionListViewModel, BeverageConsumptionMeasurement>
     {
-        private readonly ILogger<BeverageConsumptionController> _logger;
         private readonly IBeverageClient _beverageClient;
         private readonly IBeverageListGenerator _beverageListGenerator;
         private readonly IBeverageMeasureListGenerator _beverageMeasureListGenerator;
@@ -28,9 +27,10 @@ namespace HealthTracker.Mvc.Controllers
             IBeverageListGenerator beverageListGenerator,
             IBeverageMeasureListGenerator beverageMeasureListGenerator,
             IViewModelBuilder builder,
-            ILogger<BeverageConsumptionController> logger) : base(personClient, measurementClient, settings, filterGenerator, builder)
+            IPartialViewToStringRenderer renderer,
+            ILogger<BeverageConsumptionController> logger)
+            : base(personClient, measurementClient, settings, filterGenerator, builder, renderer, logger)
         {
-            _logger = logger;
             _beverageClient = beverageClient;
             _beverageListGenerator = beverageListGenerator;
             _beverageMeasureListGenerator = beverageMeasureListGenerator;
@@ -119,7 +119,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
             }
 
             // Populate the list of people and render the view
@@ -200,7 +200,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
             }
 
             // Re-populate the drop downs and render the view
@@ -288,7 +288,7 @@ namespace HealthTracker.Mvc.Controllers
             }
             else
             {
-                LogModelState(_logger);
+                LogModelState();
                 result = View(model);
             }
 

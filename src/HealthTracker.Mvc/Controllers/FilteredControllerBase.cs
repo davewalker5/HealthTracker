@@ -18,18 +18,32 @@ namespace HealthTracker.Mvc.Controllers
         protected readonly IFilterGenerator _filterGenerator;
         protected readonly IViewModelBuilder _builder;
 
-        public FilteredControllerBase()
-            => _personClient = null;
+        public FilteredControllerBase(
+            IPartialViewToStringRenderer renderer,
+            ILogger logger)
+            : base(renderer, logger)
+        {
+            _personClient = null;
+        }
 
-        public FilteredControllerBase(IPersonClient personClient)
-            => _personClient = personClient;
+        public FilteredControllerBase(
+            IPersonClient personClient,
+            IPartialViewToStringRenderer renderer,
+            ILogger logger)
+            : base(renderer, logger)
+        {
+            _personClient = personClient;
+        }
 
         public FilteredControllerBase(
             IPersonClient personClient,
             C measurementClient,
             IHealthTrackerApplicationSettings settings,
             IFilterGenerator filterGenerator,
-            IViewModelBuilder builder)
+            IViewModelBuilder builder,
+            IPartialViewToStringRenderer renderer,
+            ILogger logger)
+            : base(renderer, logger)
         {
             _personClient = personClient;
             _measurementClient = measurementClient;
