@@ -63,7 +63,7 @@ namespace HealthTracker.Mvc.Controllers
         {
             // Calculate the date range for the last "N" days
             var to = ToDate(DateTime.Today);
-            var from = FromDate(to).AddDays(-_settings.DefaultTimePeriodDays);
+            var from = FromDate(to).AddDays(-_settings.DefaultTimePeriodDays + 1);
             _logger.LogDebug($"Retrieving summary data for person with ID {model.Filters.PersonId} from {from} to {to}");
 
             // Calculate the rolling average weight for the default period
