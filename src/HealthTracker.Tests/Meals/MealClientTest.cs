@@ -56,6 +56,7 @@ namespace HealthTracker.Tests.Meals
                 meal.Name,
                 meal.Portions,
                 meal.FoodSource.Id,
+                meal.Reference,
                 meal.NutritionalValueId);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
@@ -68,6 +69,7 @@ namespace HealthTracker.Tests.Meals
             Assert.AreEqual(meal.Name, added.Name);
             Assert.AreEqual(meal.Portions, added.Portions);
             Assert.AreEqual(meal.FoodSourceId, added.FoodSourceId);
+            Assert.AreEqual(meal.Reference, added.Reference);
             Assert.AreEqual(meal.NutritionalValueId, added.NutritionalValueId);
         }
 
@@ -83,6 +85,7 @@ namespace HealthTracker.Tests.Meals
                 meal.Name,
                 meal.Portions,
                 meal.FoodSource.Id,
+                meal.Reference,
                 meal.NutritionalValueId);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
@@ -95,6 +98,7 @@ namespace HealthTracker.Tests.Meals
             Assert.AreEqual(meal.Name, updated.Name);
             Assert.AreEqual(meal.Portions, updated.Portions);
             Assert.AreEqual(meal.FoodSourceId, updated.FoodSourceId);
+            Assert.AreEqual(meal.Reference, updated.Reference);
             Assert.AreEqual(meal.NutritionalValueId, updated.NutritionalValueId);
         }
 

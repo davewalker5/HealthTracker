@@ -42,11 +42,12 @@ namespace HealthTracker.Logic.Database
         /// <param name="name"></param>
         /// <param name="portion"></param>
         /// <param name="foodSourceId"></param>
+        /// <param name="reference"></param>
         /// <param name="nutritionalValueId"></param>
         /// <returns></returns>
-        public async Task<Meal> AddAsync(string name, int portions, int foodSourceId, int? nutritionalValueId)
+        public async Task<Meal> AddAsync(string name, int portions, int foodSourceId, string reference, int? nutritionalValueId)
         {
-            Factory.Logger.LogMessage(Severity.Info, $"Adding meal: Name = {name}, Portions = {portions}, Food Source ID = {foodSourceId}, Nutritional Value ID = {nutritionalValueId}");
+            Factory.Logger.LogMessage(Severity.Info, $"Adding meal: Name = {name}, Portions = {portions}, Food Source ID = {foodSourceId}, Reference = {reference}, Nutritional Value ID = {nutritionalValueId}");
 
             // Clean up the name and make sure we're not creating a duplicate and that the
             // related nutritional value exists
@@ -61,6 +62,7 @@ namespace HealthTracker.Logic.Database
                 Name = clean,
                 Portions = portions,
                 FoodSourceId = foodSourceId,
+                Reference = reference,
                 NutritionalValueId = nutritionalValueId
             };
 
@@ -80,11 +82,12 @@ namespace HealthTracker.Logic.Database
         /// <param name="name"></param>
         /// <param name="portion"></param>
         /// <param name="foodSourceId"></param>
+        /// <param name="reference"></param>
         /// <param name="nutritionalValueId"></param>
         /// <returns></returns>
-        public async Task<Meal> UpdateAsync(int id, string name, int portions, int foodSourceId, int? nutritionalValueId)
+        public async Task<Meal> UpdateAsync(int id, string name, int portions, int foodSourceId, string reference, int? nutritionalValueId)
         {
-            Factory.Logger.LogMessage(Severity.Info, $"Updating meal with ID {id}: Name = {name}, Portions = {portions}, Food Source ID = {foodSourceId}, Nutritional Value ID = {nutritionalValueId}");
+            Factory.Logger.LogMessage(Severity.Info, $"Updating meal with ID {id}: Name = {name}, Portions = {portions}, Food Source ID = {foodSourceId}, Reference = {reference}, Nutritional Value ID = {nutritionalValueId}");
 
             // Retrieve the meal for update
             var meal = Context.Meals.FirstOrDefault(x => x.Id == id);
@@ -105,6 +108,7 @@ namespace HealthTracker.Logic.Database
             meal.Name = clean;
             meal.Portions = portions;
             meal.FoodSourceId = foodSourceId;
+            meal.Reference = reference;
             meal.NutritionalValueId = nutritionalValueId;
             await Context.SaveChangesAsync();
 

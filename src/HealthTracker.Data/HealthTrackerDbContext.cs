@@ -284,6 +284,7 @@ namespace HealthTracker.Data
                 entity.ToTable("MEALS");
                 entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
                 entity.Property(e => e.Name).IsRequired().HasColumnName("name").HasColumnType("VARCHAR(100)");
+                entity.Property(e => e.Reference).HasColumnName("reference").HasColumnType("VARCHAR(100)");
                 entity.Property(e => e.Portions).IsRequired().HasColumnName("portions");
                 entity.Property(e => e.FoodSourceId).HasColumnName("food_source_id");
                 entity.Property(e => e.NutritionalValueId).HasColumnName("nutritional_value_id");

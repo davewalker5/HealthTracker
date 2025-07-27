@@ -32,7 +32,7 @@ namespace HealthTracker.Tests.MealFoodItems
             Console.WriteLine($"Added food item: {_foodItem}");
 
             var foodSourceId = (await _factory.FoodSources.AddAsync(DataGenerator.RandomTitleCasePhrase(3, 5, 15))).Id;
-            _meal = await _factory.Meals.AddAsync(DataGenerator.RandomTitleCasePhrase(3, 5, 15), 1, foodSourceId, null);
+            _meal = await _factory.Meals.AddAsync(DataGenerator.RandomTitleCasePhrase(3, 5, 15), 1, foodSourceId, null, null);
             Console.WriteLine($"Added meal: {_meal}");
 
             _relationship = await _factory.MealFoodItems.AddAsync(_meal.Id, _foodItem.Id, Quantity);
