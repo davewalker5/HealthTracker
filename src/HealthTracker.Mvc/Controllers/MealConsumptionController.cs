@@ -336,5 +336,24 @@ namespace HealthTracker.Mvc.Controllers
 
             return PartialView(model);
         }
+
+        /// <summary>
+        /// Show the modal dialog containing the nutritional values for the specified consumption record
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> ShowNutritionalValues(int id)
+        {
+            var measurement = await _measurementClient.GetAsync(id);
+            var model = new NutritionalValueTableViewModel()
+            {
+                Portion = measurement.Quantity,
+                Values = measurement.NutritionalValue
+            };
+
+            var title = $"Nutritional Values for consumption of {measurement.Meal.Name} on {measurement.Date.ToShortDateString()}";
+            return await LoadModalContent("_NutritionalValues", model, title);
+        }
     }
 }
