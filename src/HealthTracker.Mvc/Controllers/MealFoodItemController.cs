@@ -263,5 +263,26 @@ namespace HealthTracker.Mvc.Controllers
 
             return PartialView(model);
         }
+
+        /// <summary>
+        /// Show the modal dialog containing the nutritional values for the specified meal/food item relationship
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> ShowNutritionalValues(int id)
+        {
+            var relationship = await _client.GetAsync(id);
+            var meal = await _mealHelper.GetAsync(relationship.MealId);
+
+            var model = new NutritionalValueTableViewModel()
+            {
+                Portion = relationship.Quantity / relationship.FoodItem.Portion,
+                Values = relationship.NutritionalValue
+            };
+
+            var title = $"Nutritional Values for {relationship.FoodItem.Name} in {meal.Name}";
+            return await LoadModalContent("_NutritionalValues", model, title);
+        }
     }
 }
