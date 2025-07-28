@@ -189,6 +189,14 @@ namespace HealthTracker.Logic.Database
                 throw new MealInUseException(message);
             }
 
+            // Check the meal isn't referenced in a planned meal
+            var plannedMeal = await Factory.PlannedMeals.GetAsync(x => x.MealId == id);
+            if (plannedMeal != null)
+            {
+                var message = $"Meal with ID {id} is part of a meal plan and cannot be deleted";
+                throw new MealInUseException(message);
+            }
+
             // Delete the meal
             Factory.Context.Remove(meal);
             await Factory.Context.SaveChangesAsync();

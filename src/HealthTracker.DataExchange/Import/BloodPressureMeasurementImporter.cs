@@ -6,7 +6,7 @@ namespace HealthTracker.DataExchange.Import
 {
     public sealed class BloodPressureMeasurementImporter : MeasurementImporter<ExportableBloodPressureMeasurement>, IBloodPressureMeasurementImporter
     {
-        public BloodPressureMeasurementImporter(IHealthTrackerFactory factory, string format) : base (factory, format) {}
+        public BloodPressureMeasurementImporter(IHealthTrackerFactory factory, string format) : base (factory, format, false, true) {}
 
         /// <summary>
         /// Inflate a record to an object

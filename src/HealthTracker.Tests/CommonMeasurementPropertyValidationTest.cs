@@ -59,13 +59,27 @@ namespace HealthTracker.Tests
 
         [TestMethod]
         [ExpectedException(typeof(InvalidFieldValueException))]
-        public async Task InvalidDateTest()
+        public async Task InvalidFutureDateTest()
         {
             var date = DateTime.Now.AddDays(1);
             var record = $@"""{_person.Id}"",""{_person.Name}"",""{date:dd-MMM-yyyy HH:mm:ss}"",""{_measurement.Systolic}"",""{_measurement.Diastolic}"",""{Assessment}""";
             var filePath = Path.ChangeExtension(Path.GetTempFileName(), "csv");
             File.WriteAllLines(filePath, ["", record]);
 
+            await _importer.ImportAsync(filePath);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidFieldValueException))]
+        public async Task InvalidHistoricDateTest()
+        {
+            var date = DateTime.Now.AddDays(-1);
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{date:dd-MMM-yyyy HH:mm:ss}"",""{_measurement.Systolic}"",""{_measurement.Diastolic}"",""{Assessment}""";
+            var filePath = Path.ChangeExtension(Path.GetTempFileName(), "csv");
+            File.WriteAllLines(filePath, ["", record]);
+
+            _importer.AllowFutureDates = true;
+            _importer.AllowHistoricDates = false;
             await _importer.ImportAsync(filePath);
         }
     }

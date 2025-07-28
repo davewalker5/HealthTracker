@@ -1,0 +1,130 @@
+@using HealthTracker.Mvc.Entities
+@model HealthTracker.Mvc.Models.PlannedMealViewModel
+
+@Html.HiddenFor(m => m.PlannedMeal.Id)
+@Html.HiddenFor(m => m.PlannedMeal.MealId)
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.PlannedMeal.PersonId)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.DropDownListFor(m => m.PlannedMeal.PersonId, Model.People, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.PlannedMeal.MealType, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.PlannedMeal.Meal.FoodSourceId)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.DropDownListFor(m => m.PlannedMeal.Meal.FoodSourceId, Model.FoodSources, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.PlannedMeal.Meal.FoodSourceId, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div id="MealsList">
+    </div>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.PlannedMeal.MealType)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.DropDownListFor(m => m.PlannedMeal.MealType, Model.MealTypes, new { @class = "form-control" })
+            </div>
+            <span>@Html.ValidationMessageFor(m => m.PlannedMeal.MealType, "", new { @class = "text-danger" })</span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <strong>@Html.LabelFor(m => m.Date)</strong>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                @Html.EditorFor(m => m.Date, new { @class = "form-control" })
+                <script type="text/javascript">
+                    new GijgoDatePicker(document.getElementById("Date"), {
+                        calendarWeeks: false,
+                        uiLibrary: "bootstrap4",
+                        format: "@DateFormats.DateJavascript",
+                        value: "@Model.Date"
+                    });
+                </script>
+                <span>@Html.ValidationMessageFor(m => m.Date, "", new { @class = "text-danger" })</span>
+            </div>
+        </div>
+    </div>
+    <br/>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $(document).on("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                $('#Save').click();
+            }
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    function LoadMealsForFoodSource() {
+        var foodSourceId = $("#PlannedMeal_Meal_FoodSourceId").val();
+        if (foodSourceId > 0) {
+            var route = "/PlannedMeal/Meals?foodSourceId=" + foodSourceId;
+            $('html, body').css("cursor", "wait");
+            $.ajax({
+                url: route,
+                method: "GET",
+                dataType: "html",
+                cache: false,
+                success: function (result) {
+                    // Update the meals drop-down
+                    $("#MealsList").html(result);
+
+                    // Select the current meal, if it's in the list
+                    var mealId = $("#PlannedMeal_MealId").val();
+                    if (mealId > 0) {
+                        $('#MealsList option[value="' + mealId + '"]').attr("selected", "selected");
+                    }
+
+                    $('html, body').css("cursor", "auto");
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    $("#MealsList").html(errorMessage);
+                    $('html, body').css("cursor", "auto");
+                }
+            });
+        } else {
+            $("#MealsList").html("");
+        }
+    }
+
+    $(document).ready(function () {
+        // If the page is loaded with a meal and food source selected, make sure
+        // the associated meals are loaded and the current one is selected
+        LoadMealsForFoodSource();
+
+        // When the food source drop-down is changed, update the meals list
+        $("#PlannedMeal_Meal_FoodSourceId").change(function () {
+            LoadMealsForFoodSource();
+        });
+
+        $(document).on("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                $('#Save').click();
+            }
+        });
+    });
+</script>

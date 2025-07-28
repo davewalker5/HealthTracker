@@ -323,6 +323,35 @@ namespace HealthTracker.Data.Migrations
                     b.ToTable("NUTRITIONAL_VALUES", (string)null);
                 });
 
+            modelBuilder.Entity("HealthTracker.Entities.Food.PlannedMeal", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("DATETIME")
+                        .HasColumnName("date");
+
+                    b.Property<int>("MealId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("meal_id");
+
+                    b.Property<int>("MealType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("person_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MealId");
+
+                    b.ToTable("PLANNED_MEALS", (string)null);
+                });
+
             modelBuilder.Entity("HealthTracker.Entities.Identity.Person", b =>
                 {
                     b.Property<int>("Id")
@@ -846,6 +875,17 @@ namespace HealthTracker.Data.Migrations
                     b.Navigation("FoodItem");
 
                     b.Navigation("NutritionalValue");
+                });
+
+            modelBuilder.Entity("HealthTracker.Entities.Food.PlannedMeal", b =>
+                {
+                    b.HasOne("HealthTracker.Entities.Food.Meal", "Meal")
+                        .WithMany()
+                        .HasForeignKey("MealId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Meal");
                 });
 
             modelBuilder.Entity("HealthTracker.Entities.Food.Meal", b =>

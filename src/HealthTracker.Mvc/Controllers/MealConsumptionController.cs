@@ -331,10 +331,11 @@ namespace HealthTracker.Mvc.Controllers
         {
             var model = new MealsDropDownViewModel
             {
+                TargetField = "Measurement_MealId",
                 Meals = await _mealListGenerator.Create(foodSourceId)
             };
 
-            return PartialView(model);
+            return PartialView("_MealsDropdownList", model);
         }
 
         /// <summary>

@@ -24,6 +24,7 @@ namespace HealthTracker.Enumerations.Extensions
                 DataExchangeType.Meals => "Meals",
                 DataExchangeType.MealConsumption => "Meal Consumption",
                 DataExchangeType.MealFoodItem => "Meal/Food Item Relationships",
+                DataExchangeType.PlannedMeals => "Scheduled Meals",
                 _ => "",
             };
         }

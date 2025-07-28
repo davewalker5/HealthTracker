@@ -6,7 +6,7 @@ namespace HealthTracker.DataExchange.Import
 {
     public sealed class CholesterolMeasurementImporter : MeasurementImporter<ExportableCholesterolMeasurement>, ICholesterolMeasurementImporter
     {
-        public CholesterolMeasurementImporter(IHealthTrackerFactory factory, string format) : base (factory, format) {}
+        public CholesterolMeasurementImporter(IHealthTrackerFactory factory, string format) : base (factory, format, false, true) {}
 
         /// <summary>
         /// Inflate a record to an object

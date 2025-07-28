@@ -897,5 +897,22 @@ namespace HealthTracker.Tests.Mocks
 
             return relationship;
         }
+
+        /// <summary>
+        /// Generate a random planned meal
+        /// </summary>
+        /// <returns></returns>
+        public static PlannedMeal RandomPlannedMeal()
+        {
+            var plannedMeal = new PlannedMeal()
+            {
+                MealType = (MealType)RandomInt(1, 3),
+                Date = RandomDateInYear(2025),
+                Meal = RandomMeal()
+            };
+
+            plannedMeal.MealId = plannedMeal.Meal.Id;
+            return plannedMeal;
+        }
     }
 }

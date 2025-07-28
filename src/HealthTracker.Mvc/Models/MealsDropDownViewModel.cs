@@ -11,5 +11,7 @@ namespace HealthTracker.Mvc.Models
         [DisplayName("Meal")]
         [Range(1, int.MaxValue, ErrorMessage = "You must select a food source")]
         public int MealId { get; set; }
+
+        public string TargetField { get; set; }
     }
 }
