@@ -355,6 +355,7 @@ namespace HealthTracker.Data
             {
                 entity.ToTable("PLANNED_MEALS");
                 entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
+                entity.Property(e => e.PersonId).IsRequired().HasColumnName("person_id");
                 entity.Property(e => e.MealId).IsRequired().HasColumnName("meal_id");
                 entity.Property(e => e.Date).IsRequired().HasColumnName("date").HasColumnType("DATETIME");
 

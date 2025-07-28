@@ -23,6 +23,7 @@ namespace HealthTracker.Mvc.Controllers
             IFoodItemClient foodItemClient,
             IMealClient mealClient,  
             IMealConsumptionMeasurementClient mealConsumptionMeasurementClient,
+            IPlannedMealClient plannedMealClient,
             IPartialViewToStringRenderer renderer,
             ILogger<WeightController> logger) : base(
                 bloodGlucoseMeasurementClient,
@@ -34,6 +35,7 @@ namespace HealthTracker.Mvc.Controllers
                 foodItemClient,
                 mealClient,
                 mealConsumptionMeasurementClient,
+                plannedMealClient,
                 renderer,
                 logger
             )

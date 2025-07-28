@@ -112,7 +112,7 @@ namespace HealthTracker.Mvc.Controllers
         }
 
         /// <summary>
-        /// Serve the page to add a new source
+        /// Serve the page to add a new meal
         /// </summary>
         /// <returns></returns>
         [HttpGet]

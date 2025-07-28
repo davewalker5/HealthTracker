@@ -24,14 +24,16 @@ namespace HealthTracker.Client.ApiClient
         /// <summary>
         /// Add a new planned meal
         /// </summary>
+        /// <param name="personId"></param>
         /// <param name="mealType"></param>
         /// <param name="date"></param>
         /// <param name="mealId"></param>
         /// <returns></returns>
-        public async Task<PlannedMeal> AddAsync(MealType mealType, DateTime date, int mealId)
+        public async Task<PlannedMeal> AddAsync(int personId, MealType mealType, DateTime date, int mealId)
         {
             dynamic template = new
             {
+                PersonId = personId,
                 MealType = mealType,
                 Date = date,
                 MealId = mealId
@@ -48,15 +50,17 @@ namespace HealthTracker.Client.ApiClient
         /// Update an existing planned meal
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="personId"></param>
         /// <param name="mealType"></param>
         /// <param name="date"></param>
         /// <param name="mealId"></param>
         /// <returns></returns>
-        public async Task<PlannedMeal> UpdateAsync(int id, MealType mealType, DateTime date, int mealId)
+        public async Task<PlannedMeal> UpdateAsync(int id, int personId, MealType mealType, DateTime date, int mealId)
         {
             dynamic template = new
             {
                 Id = id,
+                PersonId = personId,
                 MealType = mealType,
                 Date = date,
                 MealId = mealId
@@ -92,11 +96,14 @@ namespace HealthTracker.Client.ApiClient
         /// <summary>
         /// Request an export of planned meals to a named file in the API export folder
         /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public async Task ExportAsync(string fileName)
+        public async Task ExportAsync(int personId, DateTime? from, DateTime? to, string fileName)
         {
-            dynamic data = new { FileName = fileName };
+            dynamic data = new { PersonId = personId, From = from, To = to, FileName = fileName };
             var json = Serialize(data);
             await SendIndirectAsync(ExportRouteKey, json, HttpMethod.Post);
         }
@@ -133,11 +140,12 @@ namespace HealthTracker.Client.ApiClient
         /// <summary>
         /// Purge planned meals with a date less than a specified cutoff
         /// </summary>
+        /// <param name="personId"></param>
         /// <param name="cutoff"></param>
         /// <returns></returns>
-        public async Task PurgeAsync(DateTime? cutoff)
+        public async Task PurgeAsync(int personId, DateTime? cutoff)
         {
-            dynamic data = new { Cutoff = cutoff };
+            dynamic data = new { PersonId = personId, Cutoff = cutoff };
             var json = Serialize(data);
             var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
             var route = $"{baseRoute}/purge";
@@ -147,14 +155,18 @@ namespace HealthTracker.Client.ApiClient
         /// <summary>
         /// Return a list of planned meals
         /// </summary>
+        /// <param name="personId"></param>
         /// <param name="pageNumber"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<List<PlannedMeal>> ListAsync(int pageNumber, int pageSize)
+        public async Task<List<PlannedMeal>> ListAsync(int personId, DateTime? from, DateTime? to, int pageNumber, int pageSize)
         {
+            // Determine the encoded date range
+            (var encodedFromDate, var encodedToDate) = CalculateEncodedDateRange(from, to);
+
             // Request a list of meals
             string baseRoute = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
-            string route = $"{baseRoute}/{pageNumber}/{pageSize}";
+            string route = $"{baseRoute}/{personId}/{encodedFromDate}/{encodedToDate}/{pageNumber}/{pageSize}";
             string json = await SendDirectAsync(route, null, HttpMethod.Get);
 
             // The returned JSON will be empty if there are no items in the database

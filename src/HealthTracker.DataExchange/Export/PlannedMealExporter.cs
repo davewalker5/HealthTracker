@@ -20,10 +20,17 @@ namespace HealthTracker.DataExchange.Export
         /// <summary>
         /// Export the planned meals to a CSV file
         /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
         /// <param name="file"></param>
-        public async Task ExportAsync(string file)
+        public async Task ExportAsync(int personId, DateTime? from, DateTime? to, string file)
         {
-            var meals = await _factory.PlannedMeals.ListAsync(x => true, 1, int.MaxValue);
+            var meals = await _factory.PlannedMeals.ListAsync(x =>
+                                                (x.PersonId == personId) &&
+                                                ((from == null) || (x.Date >= from)) &&
+                                                ((to == null) || (x.Date <= to)),
+                                                1, int.MaxValue);
             await ExportAsync(meals, file);
         }
 
@@ -35,11 +42,14 @@ namespace HealthTracker.DataExchange.Export
 #pragma warning disable CS1998
         public async Task ExportAsync(IEnumerable<PlannedMeal> meals, string file)
         {
+            // Get a list of people for ID mapping
+            var people = await _factory.People.ListAsync(x => true, 1, int.MaxValue);
+
             // Convert to exportable (flattened hierarchy) meals
-            var exportable = meals.ToExportable();
+            var exportable = meals.ToExportable(people);
 
             // Configure an exporter to export them
-            var exporter = new CsvExporter<ExportablePlannedMeal>(ExportableEntityBase.DateTimeFormat);
+            var exporter = new CsvExporter<ExportablePlannedMeal>(ExportableEntityBase.TimestampFormat);
             exporter.RecordExport += OnRecordExported;
 
             // Export the records

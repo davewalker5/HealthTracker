@@ -7,15 +7,25 @@ using HealthTracker.Entities.Food;
 using HealthTracker.Logic.Factory;
 using HealthTracker.Tests.Mocks;
 using Moq;
+using HealthTracker.Entities.Identity;
 
 namespace HealthTracker.Tests.PlannedMeals
 {
     [TestClass]
     public class PlannedMealExportTest
     {
-        private readonly PlannedMeal _plannedMeal = DataGenerator.RandomPlannedMeal();
+        private PlannedMeal _plannedMeal;
+        private Person _person;
 
         private string _filePath;
+
+        [TestInitialize]
+        public void Initialise()
+        {
+            _person = DataGenerator.RandomPerson(10, 90);
+            _plannedMeal = DataGenerator.RandomPlannedMeal();
+            _plannedMeal.PersonId = _person.Id;
+        }
 
         [TestCleanup]
         public void CleanUp()
@@ -29,7 +39,7 @@ namespace HealthTracker.Tests.PlannedMeals
         [TestMethod]
         public void ConvertSingleObjectToExportable()
         {
-            var exportable = _plannedMeal.ToExportable();
+            var exportable = _plannedMeal.ToExportable([_person]);
             Assert.AreEqual(_plannedMeal.MealType.ToString(), exportable.MealType);
             Assert.AreEqual(_plannedMeal.Date, exportable.Date);
             Assert.AreEqual(_plannedMeal.Meal.Name, exportable.Meal);
@@ -39,19 +49,21 @@ namespace HealthTracker.Tests.PlannedMeals
         public void ConvertCollectionToExportable()
         {
             List<PlannedMeal> plannedMeals = [_plannedMeal];
-            var exportable = plannedMeals.ToExportable();
-            Assert.AreEqual(_plannedMeal.MealType.ToString(), exportable.First().MealType);
+            var exportable = plannedMeals.ToExportable([_person]);
+            Assert.AreEqual(_plannedMeal.PersonId, exportable.First().PersonId);
             Assert.AreEqual(_plannedMeal.Date, exportable.First().Date);
+            Assert.AreEqual(_plannedMeal.MealType.ToString(), exportable.First().MealType);
             Assert.AreEqual(_plannedMeal.Meal.Name, exportable.First().Meal);
         }
 
         [TestMethod]
         public void FromCsvRecordTest()
         {
-            var record = $@"""{_plannedMeal.MealType}"",""{_plannedMeal.Date:dd/MM/yyyy}"",""{_plannedMeal.Meal.Name}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_plannedMeal.Date:dd-MMM-yyyy HH:mm:ss}"",""{_plannedMeal.MealType}"",""{_plannedMeal.Meal.Name}"",""{_plannedMeal.Meal.FoodSource.Name}"",""{_plannedMeal.Meal.Reference}""";
             var exportable = ExportablePlannedMeal.FromCsv(record);
-            Assert.AreEqual(_plannedMeal.MealType.ToString(), exportable.MealType);
+            Assert.AreEqual(_plannedMeal.PersonId, exportable.PersonId);
             Assert.AreEqual(_plannedMeal.Date, exportable.Date);
+            Assert.AreEqual(_plannedMeal.MealType.ToString(), exportable.MealType);
             Assert.AreEqual(_plannedMeal.Meal.Name, exportable.Meal);
         }
 
@@ -59,6 +71,7 @@ namespace HealthTracker.Tests.PlannedMeals
         public async Task ExportTest()
         {
             var context = HealthTrackerDbContextFactory.CreateInMemoryDbContext();
+            await context.People.AddAsync(_person);
             await context.FoodSources.AddAsync(_plannedMeal.Meal.FoodSource);
             await context.NutritionalValues.AddAsync(_plannedMeal.Meal.NutritionalValue);
             await context.SaveChangesAsync();
@@ -88,8 +101,9 @@ namespace HealthTracker.Tests.PlannedMeals
             Assert.AreEqual(2, records.Length);
 
             var exportable = ExportablePlannedMeal.FromCsv(records[1]);
-            Assert.AreEqual(_plannedMeal.MealType.ToString(), exportable.MealType);
+            Assert.AreEqual(_plannedMeal.PersonId, exportable.PersonId);
             Assert.AreEqual(_plannedMeal.Date, exportable.Date);
+            Assert.AreEqual(_plannedMeal.MealType.ToString(), exportable.MealType);
             Assert.AreEqual(_plannedMeal.Meal.Name, exportable.Meal);
         }
     }

@@ -6,7 +6,7 @@ namespace HealthTracker.DataExchange.Interfaces
     public interface IPlannedMealExporter
     {
         event EventHandler<ExportEventArgs<ExportablePlannedMeal>> RecordExport;
-        Task ExportAsync(string file);
+        Task ExportAsync(int personId, DateTime? from, DateTime? to, string file);
         Task ExportAsync(IEnumerable<PlannedMeal> meals, string file);
     }
 }

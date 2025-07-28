@@ -3,7 +3,7 @@ using HealthTracker.Entities.Food;
 using HealthTracker.Api.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq.Expressions;
+using System.Web;
 
 namespace HealthTracker.Api.Controllers
 {
@@ -44,10 +44,18 @@ namespace HealthTracker.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("{pageNumber}/{pageSize}")]
-        public async Task<ActionResult<IEnumerable<PlannedMeal>>> ListPlannedMealsAsync(int pageNumber, int pageSize)
+        [Route("{personId}/{from}/{to}/{pageNumber}/{pageSize}")]
+        public async Task<ActionResult<IEnumerable<PlannedMeal>>> ListPlannedMealsAsync(int personId, string from, string to, int pageNumber, int pageSize)
         {
-            var plannedMeals = await _factory.PlannedMeals.ListAsync(x => true, pageNumber, pageSize);
+            // Decode the start and end date and convert them to dates
+            DateTime fromDate = DateTime.ParseExact(HttpUtility.UrlDecode(from), DateTimeFormat, null);
+            DateTime toDate = DateTime.ParseExact(HttpUtility.UrlDecode(to), DateTimeFormat, null);
+
+            // Retrieve planned meals in the specified date range
+            var plannedMeals = await _factory.PlannedMeals.ListAsync(
+                x => (x.PersonId == personId) && (x.Date >= fromDate) && (x.Date <= toDate),
+                pageNumber,
+                pageSize);
 
             if (plannedMeals == null)
             {
@@ -66,7 +74,7 @@ namespace HealthTracker.Api.Controllers
         [Route("")]
         public async Task<ActionResult<PlannedMeal>> AddPlannedMealAsync([FromBody] PlannedMeal template)
         {
-            var plannedMeal = await _factory.PlannedMeals.AddAsync(template.MealType, template.Date, template.MealId);
+            var plannedMeal = await _factory.PlannedMeals.AddAsync(template.PersonId, template.MealType, template.Date, template.MealId);
             return plannedMeal;
         }
 
@@ -79,7 +87,7 @@ namespace HealthTracker.Api.Controllers
         [Route("")]
         public async Task<ActionResult<PlannedMeal>> UpdatePlannedMealAsync([FromBody] PlannedMeal template)
         {
-            var plannedMeal = await _factory.PlannedMeals.UpdateAsync(template.Id, template.MealType, template.Date, template.MealId);
+            var plannedMeal = await _factory.PlannedMeals.UpdateAsync(template.Id, template.PersonId, template.MealType, template.Date, template.MealId);
             return plannedMeal;
         }
 
@@ -113,7 +121,7 @@ namespace HealthTracker.Api.Controllers
         [Route("purge")]
         public async Task<IActionResult> PurgePlannedMeals([FromBody] PurgePlannedMealsModel model)
         {
-            await _factory.PlannedMeals.Purge(model.Cutoff);
+            await _factory.PlannedMeals.PurgeAsync(model.PersonId, model.Cutoff);
             return Ok();
         }
     }

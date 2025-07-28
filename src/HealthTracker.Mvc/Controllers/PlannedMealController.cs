@@ -1,42 +1,43 @@
-using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
-using HealthTracker.Entities.Food;
-using HealthTracker.Mvc.Entities;
 using HealthTracker.Mvc.Interfaces;
 using HealthTracker.Mvc.Models;
-using HealthTracker.Enumerations.Enumerations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using HealthTracker.Client.Interfaces;
+using HealthTracker.Mvc.Entities;
+using HealthTracker.Entities.Food;
+using HealthTracker.Enumerations.Enumerations;
+using System.Globalization;
 
 namespace HealthTracker.Mvc.Controllers
 {
     [Authorize]
-    public class MealConsumptionController : FilteredControllerBase<IMealConsumptionMeasurementClient, MealConsumptionListViewModel, MealConsumptionMeasurement>
+    public class PlannedMealController : FilteredControllerBase<IPlannedMealClient, PlannedMealListViewModel, PlannedMeal>
     {
+        private readonly IMealClient _mealClient;
         private readonly IMealListGenerator _mealListGenerator;
         private readonly IFoodSourceListGenerator _foodSourceListGenerator;
-        private readonly IMealConsumptionMeasurementClient _client;
 
-        public MealConsumptionController(
+        public PlannedMealController(
             IPersonClient personClient,
-            IMealConsumptionMeasurementClient measurementClient,
-            IMealConsumptionMeasurementClient client,
+            IMealClient mealClient,
+            IPlannedMealClient measurementClient,
             IHealthTrackerApplicationSettings settings,
             IFilterGenerator filterGenerator,
-            IMealListGenerator mealListGenerator,
             IFoodSourceListGenerator foodSourceListGenerator,
+            IMealListGenerator mealListGenerator,
             IViewModelBuilder builder,
             IPartialViewToStringRenderer renderer,
-            ILogger<MealConsumptionController> logger)
+            ILogger<ExerciseController> logger)
             : base(personClient, measurementClient, settings, filterGenerator, builder, renderer, logger)
         {
-            _mealListGenerator = mealListGenerator;
+            _mealClient = mealClient;
             _foodSourceListGenerator = foodSourceListGenerator;
-            _client = client;
+            _mealListGenerator = mealListGenerator;
         }
 
         /// <summary>
-        /// Serve the measurements list page
+        /// Serve the scheduled meal list page
         /// </summary>
         /// <param name="personId"></param>
         /// <param name="start"></param>
@@ -47,10 +48,10 @@ namespace HealthTracker.Mvc.Controllers
         {
             _logger.LogDebug($"Rendering index view: Person ID = {personId}, From = {start}, To = {end}");
 
-            var model = new MealConsumptionListViewModel
+            var model = new PlannedMealListViewModel
             {
                 PageNumber = 1,
-                Filters = await _filterGenerator.Create(personId, start, end, ViewFlags.Add)
+                Filters = await _filterGenerator.Create(personId, start, end, ViewFlags.Add | ViewFlags.FutureDates)
             };
 
             return View(model);
@@ -63,7 +64,7 @@ namespace HealthTracker.Mvc.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(MealConsumptionListViewModel model)
+        public async Task<IActionResult> Index(PlannedMealListViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -89,7 +90,7 @@ namespace HealthTracker.Mvc.Controllers
                             personId = model.Filters.PersonId,
                             start = model.Filters.From,
                             end = model.Filters.To,
-                            exportType = DataExchangeType.MealConsumption
+                            exportType = DataExchangeType.PlannedMeals
                         });
                     default:
                         break;
@@ -102,19 +103,19 @@ namespace HealthTracker.Mvc.Controllers
 
                 // Retrieve the matching records
                 _logger.LogDebug(
-                    $"Retrieving page {page} of meal consumption measurements for person with ID {model.Filters.PersonId}" +
+                    $"Retrieving page {page} of scheduled meals for person with ID {model.Filters.PersonId}" +
                     $" in the date range {model.Filters.From:dd-MMM-yyyy} to {model.Filters.To:dd-MMM-yyyy}");
 
-                var measurements = await _measurementClient.ListAsync(
+                var plannedMeals = await _measurementClient.ListAsync(
                     model.Filters.PersonId, model.Filters.From, ToDate(model.Filters.To), page, _settings.ResultsPageSize);
-                model.SetEntities(measurements, page, _settings.ResultsPageSize);
+                model.SetEntities(plannedMeals, page, _settings.ResultsPageSize);
 
-                if (measurements.Count > 0)
+                if (plannedMeals.Count > 0)
                 {
                     model.Filters.ShowExportButton = true;
                 }
 
-                _logger.LogDebug($"{measurements.Count} matching meal consumption measurements retrieved");
+                _logger.LogDebug($"{plannedMeals.Count} matching scheduled meals retrieved");
             }
             else
             {
@@ -128,7 +129,7 @@ namespace HealthTracker.Mvc.Controllers
         }
 
         /// <summary>
-        /// Serve the page to add a new measurement
+        /// Serve the page to add a new scheduled meal
         /// </summary>
         /// <param name="personId"></param>
         /// <param name="start"></param>
@@ -139,23 +140,48 @@ namespace HealthTracker.Mvc.Controllers
         {
             _logger.LogDebug($"Rendering add view: Person ID = {personId}, From = {start}, To = {end}");
 
-            var model = new AddMealConsumptionViewModel()
+            // Construct the view model
+            var model = new AddPlannedMealViewModel()
             {
-                Sources = await _foodSourceListGenerator.Create()
+                People = await _filterGenerator.CreatePersonSelectList(),
+                FoodSources = await _foodSourceListGenerator.Create()
             };
-            model.CreateMeasurement(personId);
+
+            model.CreatePlannedMeal();
             await SetFilterDetails(model, personId, start, end);
             return View(model);
         }
 
         /// <summary>
-        /// Handle POST events to save new measurements
+        /// Serve the page to add a new scheuled meal given a meal ID
+        /// </summary>
+        /// <param name="mealId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> AddFromMeal(int mealId)
+        {
+            _logger.LogDebug($"Rendering add from meal view: Meal ID = {mealId}");
+
+            // Construct the view model
+            var model = new AddPlannedMealViewModel()
+            {
+                People = await _filterGenerator.CreatePersonSelectList(),
+                FoodSources = await _foodSourceListGenerator.Create()
+            };
+
+            var meal = await _mealClient.GetAsync(mealId);
+            model.CreatePlannedMeal(meal);
+            return View("Add", model);
+        }
+
+        /// <summary>
+        /// Handle POST events to save new scheduled meals
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add(AddMealConsumptionViewModel model)
+        public async Task<IActionResult> Add(AddPlannedMealViewModel model)
         {
             if (model.Action == ControllerActions.ActionCancel)
             {
@@ -165,36 +191,35 @@ namespace HealthTracker.Mvc.Controllers
             // The "Meal" entity is part of the hierarchy of the view model, allowing access to its properties in the
             // view without having to duplicate code, but this means validation of its properties will occur and result
             // in an invalid model state - remove errors for the properties we're not interested in
-            ModelState.Remove("Measurement.Meal.Name");
-            ModelState.Remove("Measurement.Meal.Portions");
+            ModelState.Remove("PlannedMeal.Meal.Name");
+            ModelState.Remove("PlannedMeal.Meal.Portions");
 
             if (ModelState.IsValid)
             {
-                // Combine the date and time strings to produce a timestamp
-                var timestamp = model.Timestamp();
+                // Convert the string representation of the date to a DateTime object
+                var date = DateTime.ParseExact($"{model.Date} 00:00", DateFormats.DateTime, CultureInfo.InvariantCulture);
 
-                // Add the measurement
+                // Update the scheduled meal
                 _logger.LogDebug(
-                    $"Adding new meal consumption measurement: Person ID = {model.Measurement.PersonId}, " +
-                    $"Meal ID = {model.Measurement.MealId}, " +
-                    $"Timestamp = {timestamp}, " +
-                    $"Quantity = {model.Measurement.Quantity}");
+                    $"Adding scheduled meal: Person ID = {model.PlannedMeal.PersonId}, " +
+                    $"Meal ID = {model.PlannedMeal.MealId}, " +
+                    $"Meal Type = {model.PlannedMeal.MealType}, " +
+                    $"Date = {date}");
 
-                var measurement = await _client.AddAsync(
-                    model.Measurement.PersonId,
-                    model.Measurement.MealId,
-                    timestamp,
-                    model.Measurement.Quantity);
+                await _measurementClient.AddAsync(
+                    model.PlannedMeal.PersonId,
+                    model.PlannedMeal.MealType,
+                    date,
+                    model.PlannedMeal.MealId);
 
-                // Return the measurement list view containing only the new measurement and a confirmation message
-                var message = $"Meal consumption measurement added successfully";
+                // Return the measurement list view containing only the updated scheduled meal and a confirmation message
                 var listModel = await CreateListViewModel(
-                    measurement.PersonId,
-                    measurement.Id,
-                    timestamp,
-                    timestamp,
-                    message,
-                    ViewFlags.ListView);
+                    model.PlannedMeal.PersonId,
+                    model.PlannedMeal.Id,
+                    date,
+                    date,
+                    "Scheduled meal added updated",
+                    ViewFlags.ListView | ViewFlags.FutureDates);
 
                 return View("Index", listModel);
             }
@@ -203,13 +228,14 @@ namespace HealthTracker.Mvc.Controllers
                 LogModelState();
             }
 
-            // Re-populate the drop downs and render the view
-            model.Sources = await _foodSourceListGenerator.Create();
+            // Populate the activity types and render the view
+            model.People = await _filterGenerator.CreatePersonSelectList();
+            model.FoodSources = await _foodSourceListGenerator.Create();
             return View(model);
         }
 
         /// <summary>
-        /// Serve the page to edit an existing measurement
+        /// Serve the page to edit an existing scheduled meal
         /// </summary>
         /// <param name="id"></param>
         /// <param name="start"></param>
@@ -218,73 +244,75 @@ namespace HealthTracker.Mvc.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id, string start, string end)
         {
-            _logger.LogDebug($"Rendering edit view: Measurement ID = {id}, From = {start}, To = {end}");
+            _logger.LogDebug($"Rendering edit view: Scheduled meal ID = {id}, From = {start}, To = {end}");
 
-            // Load the measurement to edit
-            var measurement = await _measurementClient.GetAsync(id);
+            // Load the meal to edit
+            var plannedMeal = await _measurementClient.GetAsync(id);
 
             // Construct the view model
-            var model = new EditMealConsumptionViewModel()
+            var model = new EditPlannedMealViewModel()
             {
-                Sources = await _foodSourceListGenerator.Create()
+                People = await _filterGenerator.CreatePersonSelectList(),
+                FoodSources = await _foodSourceListGenerator.Create()
             };
-            model.SetMeasurement(measurement);
-            await SetFilterDetails(model, measurement.PersonId, start, end);
+
+            model.SetPlannedMeal(plannedMeal);
+            await SetFilterDetails(model, plannedMeal.PersonId, start, end);
             return View(model);
         }
 
         /// <summary>
-        /// Handle POST events to save updated measurements
+        /// Handle POST events to save updated scheduled meals
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EditMealConsumptionViewModel model)
+        public async Task<IActionResult> Edit(EditPlannedMealViewModel model)
         {
             IActionResult result;
 
             if (model.Action == ControllerActions.ActionCancel)
             {
-                return RedirectToAction("Index", new { personId = model.Measurement.PersonId, start = model.From, end = model.To });
+                return RedirectToAction("Index", new { personId = model.PlannedMeal.PersonId, start = model.From, end = model.To });
             }
 
             // The "Meal" entity is part of the hierarchy of the view model, allowing access to its properties in the
             // view without having to duplicate code, but this means validation of its properties will occur and result
             // in an invalid model state - remove errors for the properties we're not interested in
-            ModelState.Remove("Measurement.Meal.Name");
-            ModelState.Remove("Measurement.Meal.Portions");
+            ModelState.Remove("PlannedMeal.Meal.Name");
+            ModelState.Remove("PlannedMeal.Meal.Portions");
 
             if (ModelState.IsValid)
             {
-                // Combine the date and time strings to produce a timestamp
-                var timestamp = model.Timestamp();
+                // Convert the string representation of the date to a DateTime object
+                var date = DateTime.ParseExact($"{model.Date} 00:00", DateFormats.DateTime, CultureInfo.InvariantCulture);
 
-                // Update the measurement
+                // Update the scheduled meal
                 _logger.LogDebug(
-                    $"Updating meal consumption measurement: ID = {model.Measurement.Id}, " +
-                    $"Person ID = {model.Measurement.PersonId}, " +
-                    $"Beverage ID = {model.Measurement.Meal}, " +
-                    $"Timestamp = {timestamp}, " +
-                    $"Quantity = {model.Measurement.Quantity}");
+                    $"Updating scheduled meal: ID = {model.PlannedMeal.Id}, " +
+                    $"Person ID = {model.PlannedMeal.PersonId}, " +
+                    $"Meal ID = {model.PlannedMeal.MealId}, " +
+                    $"Meal Type = {model.PlannedMeal.MealType}, " +
+                    $"Date = {date}");
 
-                await _client.UpdateAsync(
-                    model.Measurement.Id,
-                    model.Measurement.PersonId,
-                    model.Measurement.MealId,
-                    timestamp,
-                    model.Measurement.Quantity);
+                await _measurementClient.UpdateAsync(
+                    model.PlannedMeal.Id,
+                    model.PlannedMeal.PersonId,
+                    model.PlannedMeal.MealType,
+                    date,
+                    model.PlannedMeal.MealId);
 
-                // Return the measurement list view containing only the updated measurement and a confirmation message
+                // Return the measurement list view containing only the updated scheduled meal and a confirmation message
                 var listModel = await CreateListViewModel(
-                    model.Measurement.PersonId,
-                    model.Measurement.Id,
-                    timestamp,
-                    timestamp,
-                    "Measurement successfully updated",
-                    ViewFlags.ListView);
+                    model.PlannedMeal.PersonId,
+                    model.PlannedMeal.Id,
+                    date,
+                    date,
+                    "Scheduled meal successfully updated",
+                    ViewFlags.ListView | ViewFlags.FutureDates);
 
-                result = View("Index", listModel);
+                return View("Index", listModel);
             }
             else
             {
@@ -292,13 +320,14 @@ namespace HealthTracker.Mvc.Controllers
                 result = View(model);
             }
 
-            // Re-populate the drop downs and render the view
-            model.Sources = await _foodSourceListGenerator.Create();
+            // Populate the people and food source lists and render the view
+            model.People = await _filterGenerator.CreatePersonSelectList();
+            model.FoodSources = await _foodSourceListGenerator.Create();
             return result;
         }
 
         /// <summary>
-        /// Handle POST events to delete an existing measurement
+        /// Handle POST events to delete an existing scheduled meal
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -306,18 +335,18 @@ namespace HealthTracker.Mvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            // Retrieve the measurement and capture the person and date
-            _logger.LogDebug($"Retrieving meal consumption measurement: ID = {id}");
+            // Retrieve the scheduled meal and capture the person and date
+            _logger.LogDebug($"Retrieving scheduled meal: ID = {id}");
             var measurement = await _measurementClient.GetAsync(id);
             var personId = measurement.PersonId;
             var date = measurement.Date;
 
-            // Delete the measurement
-            _logger.LogDebug($"Deleting meal consumption measurement: ID = {id}");
+            // Delete the scheduled meal
+            _logger.LogDebug($"Deleting scheduled meal: ID = {id}");
             await _measurementClient.DeleteAsync(id);
 
             // Return the list view with an empty list of measurements
-            var model = await CreateListViewModel(personId, 0, date, date, "Measurement successfully deleted", ViewFlags.ListView);
+            var model = await CreateListViewModel(personId, 0, date, date, "Scheduled meal successfully deleted", ViewFlags.ListView | ViewFlags.FutureDates);
             return View("Index", model);
         }
 
@@ -331,30 +360,11 @@ namespace HealthTracker.Mvc.Controllers
         {
             var model = new MealsDropDownViewModel
             {
-                TargetField = "Measurement_MealId",
+                TargetField = "PlannedMeal_MealId",
                 Meals = await _mealListGenerator.Create(foodSourceId)
             };
 
             return PartialView("_MealsDropdownList", model);
-        }
-
-        /// <summary>
-        /// Show the modal dialog containing the nutritional values for the specified consumption record
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpGet]
-        public async Task<IActionResult> ShowNutritionalValues(int id)
-        {
-            var measurement = await _measurementClient.GetAsync(id);
-            var model = new NutritionalValueTableViewModel()
-            {
-                Portion = measurement.Quantity,
-                Values = measurement.NutritionalValue
-            };
-
-            var title = $"Nutritional Values for consumption of {measurement.Meal.Name} on {measurement.Date.ToShortDateString()}";
-            return await LoadModalContent("_NutritionalValues", model, title);
         }
     }
 }

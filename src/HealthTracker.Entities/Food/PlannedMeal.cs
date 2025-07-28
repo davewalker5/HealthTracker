@@ -7,18 +7,11 @@ using HealthTracker.Enumerations.Enumerations;
 namespace HealthTracker.Entities.Food
 {
     [ExcludeFromCodeCoverage]
-    public class PlannedMeal : HealthTrackerEntityBase
+    public class PlannedMeal : MeasurementBase
     {
-        [Key]
-        public int Id { get; set; }
-
         [DisplayName("Meal Type")]
         [Range(1, int.MaxValue, ErrorMessage = "You must select a meal type")]
         public MealType MealType { get; set; }
-
-        [DisplayName("Date")]
-        [Required(ErrorMessage = "You must provide a date")]
-        public DateTime Date { get; set; }
 
         [DisplayName("Meal")]
         [ForeignKey(nameof(Meal))]

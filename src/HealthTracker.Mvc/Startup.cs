@@ -65,6 +65,7 @@ namespace HealthTracker.Mvc
             services.AddSingleton<IMealClient, MealClient>();
             services.AddSingleton<IMealConsumptionMeasurementClient, MealConsumptionMeasurementClient>();
             services.AddSingleton<IMealFoodItemClient, MealFoodItemClient>();
+            services.AddSingleton<IPlannedMealClient, PlannedMealClient>();
 
             // Configure the helpers used to build the filtering view model used on the measurements pages
             // and the activity type and medication select lists

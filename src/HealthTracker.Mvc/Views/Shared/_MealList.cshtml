@@ -11,6 +11,8 @@
         {
             <th />
             <th />
+            <th />
+            <th />
         }
     </tr>
     @foreach (var meal in Model.Meals)
@@ -26,6 +28,11 @@
             </td>
             @if (Model.Editable)
             {
+                <td valign="center">
+                    <a class="btn btn-lg" asp-area="" asp-controller="PlannedMeal" asp-action="AddFromMeal" asp-route-mealId="@meal.Id">
+                        <i class="fas fa-calendar"></i>
+                    </a>
+                </td>
                 <td valign="center">
                     <a class="btn btn-lg" asp-area="" asp-controller="Meal" asp-action="Edit" asp-route-id="@meal.Id" asp-route-start="@Model.Filters.FoodSourceId">
                         <i class="fas fa-edit"></i>

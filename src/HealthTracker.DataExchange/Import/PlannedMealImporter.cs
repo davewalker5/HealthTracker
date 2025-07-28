@@ -6,11 +6,11 @@ using HealthTracker.Enumerations.Enumerations;
 
 namespace HealthTracker.DataExchange.Import
 {
-    public sealed class PlannedMealImporter : CsvImporter<ExportablePlannedMeal>, IPlannedMealImporter 
+    public sealed class PlannedMealImporter : MeasurementImporter<ExportablePlannedMeal>, IPlannedMealImporter 
     {
         private List<Meal> _meals = [];
 
-        public PlannedMealImporter(IHealthTrackerFactory factory, string format) : base(factory, format)
+        public PlannedMealImporter(IHealthTrackerFactory factory, string format) : base(factory, format, true, false)
         {
         }
 
@@ -40,6 +40,8 @@ namespace HealthTracker.DataExchange.Import
         /// <returns></returns>
         protected override void Validate(ExportablePlannedMeal exportable, int recordCount)
         {
+            ValidateCommonFields(exportable, recordCount);
+
             // Make sure the meal type is valid
             _ = Enum.TryParse(exportable.MealType, out MealType value);
             ValidateField<MealType>(x => (int)x > 0, value, "MealType", recordCount);
@@ -61,7 +63,7 @@ namespace HealthTracker.DataExchange.Import
             var meal = _meals.First(x => x.Name.Equals(exportable.Meal, StringComparison.OrdinalIgnoreCase));
 
             // Add the planned meal
-            await _factory.PlannedMeals.AddAsync(mealType, exportable.Date, meal.Id);
+            await _factory.PlannedMeals.AddAsync(exportable.PersonId, mealType, exportable.Date, meal.Id);
         }
     }
 }

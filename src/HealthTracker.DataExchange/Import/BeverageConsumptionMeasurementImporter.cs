@@ -10,7 +10,7 @@ namespace HealthTracker.DataExchange.Import
     {
         private List<Beverage> _beverages = [];
 
-        public BeverageConsumptionMeasurementImporter(IHealthTrackerFactory factory, string format) : base (factory, format) {}
+        public BeverageConsumptionMeasurementImporter(IHealthTrackerFactory factory, string format) : base (factory, format, false, true) {}
 
         /// <summary>
         /// Prepare for import

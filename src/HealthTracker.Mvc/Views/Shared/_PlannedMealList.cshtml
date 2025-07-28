@@ -1,0 +1,42 @@
+@using HealthTracker.Mvc.Entities
+@model HealthTracker.Mvc.Models.PlannedMealListViewModel
+
+<table class="table">
+    <tr>
+        <th>Person</th>
+        <th>Date</th>
+        <th>Meal Time</th>
+        <th>Meal</th>
+        <th>Source</th>
+        <th>Reference</th>
+        @if (Model.Editable)
+        {
+            <th />
+            <th />
+        }
+    </tr>
+    @foreach (var entry in Model.Schedule)
+    {
+        <tr>
+            <td valign="center">@Model.Filters.SelectedPerson.Name</td>
+            <td valign="center">@entry.Date.ToString("dd-MMM-yyyy")</td>
+            <td valign="center">@entry.MealType</td>
+            <td valign="center">@entry.Meal.Name</td>
+            <td valign="center">@entry.Meal.FoodSource.Name</td>
+            <td valign="center">@entry.Meal.Reference</td>
+            @if (Model.Editable)
+            {
+                <td valign="center">
+                    <a class="btn btn-lg" asp-area="" asp-controller="PlannedMeal" asp-action="Edit" asp-route-id="@entry.Id" asp-route-start="@Model.Filters.From.ToString(DateFormats.DateTime)" asp-route-end="@Model.Filters.To.ToString(DateFormats.DateTime)">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                </td>
+                <td valign="center">
+                    <a class="btn btn-lg" href="javascript:submitDeleteForm(@entry.Id)">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </td>
+            }
+        </tr>
+    }
+</table>

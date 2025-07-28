@@ -8,10 +8,17 @@ namespace HealthTracker.DataExchange.Import
     public abstract class MeasurementImporter<T> : CsvImporter<T>, ICsvImporter<T> where T : ExportableMeasurementBase
     {
         private List<Person> _people = [];
+        public bool AllowFutureDates { get;  set; }
+        public bool AllowHistoricDates { get;  set; }
 
-        public MeasurementImporter(IHealthTrackerFactory factory, string format) : base(factory, format)
+        public MeasurementImporter(
+            IHealthTrackerFactory factory,
+            string format,
+            bool allowFutureDates,
+            bool allowHistoricDates) : base(factory, format)
         {
-            
+            AllowFutureDates = allowFutureDates;
+            AllowHistoricDates = allowHistoricDates;
         }
 
         /// <summary>
@@ -32,7 +39,16 @@ namespace HealthTracker.DataExchange.Import
             var person = _people.FirstOrDefault(x => x.Id == measurement.PersonId);
             ValidateField<Person>(x => x != null, person, "PersonId", recordCount);
             ValidateField<string>(x => !string.IsNullOrEmpty(x), measurement.Name, "Name", recordCount);
-            ValidateField<DateTime>(x => x <= DateTime.Now, measurement.Date, "Date", recordCount);
+
+            if (!AllowFutureDates)
+            {
+                ValidateField<DateTime>(x => x <= DateTime.Now, measurement.Date, "Date", recordCount);
+            }
+
+            if (!AllowHistoricDates)
+            {
+                ValidateField<DateTime>(x => x >= DateTime.Now, measurement.Date, "Date", recordCount);
+            }
         }
     }
 }

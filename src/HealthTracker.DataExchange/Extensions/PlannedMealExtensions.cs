@@ -1,6 +1,7 @@
 using HealthTracker.Entities.Food;
 using HealthTracker.DataExchange.Entities;
 using HealthTracker.Enumerations.Enumerations;
+using HealthTracker.Entities.Identity;
 
 namespace HealthTracker.DataExchange.Extensions
 {
@@ -11,26 +12,34 @@ namespace HealthTracker.DataExchange.Extensions
         /// </summary>
         /// <param name="plannedMeal"></param>
         /// <returns></returns>
-        public static ExportablePlannedMeal ToExportable(this PlannedMeal plannedMeal)
-            => new()
+        public static ExportablePlannedMeal ToExportable(this PlannedMeal plannedMeal, IEnumerable<Person> people)
+        {
+            var person = people.First(x => x.Id == plannedMeal.PersonId);
+            return new()
             {
-                MealType = plannedMeal.MealType.ToString(),
+                PersonId = plannedMeal.PersonId,
+                Name = $"{person.FirstNames} {person.Surname}",
                 Date = plannedMeal.Date,
-                Meal = plannedMeal.Meal.Name
+                MealType = plannedMeal.MealType.ToString(),
+                Meal = plannedMeal.Meal.Name,
+                Source = plannedMeal.Meal.FoodSource.Name,
+                Reference = plannedMeal.Meal.Reference
             };
+        }
 
         /// <summary>
         /// Return a collection of exportable planned meals from a collection of planned meals
         /// </summary>
         /// <param name="plannedMeals"></param>
+        /// <param name="people"></param>
         /// <returns></returns>
-        public static IEnumerable<ExportablePlannedMeal> ToExportable(this IEnumerable<PlannedMeal> plannedMeals)
+        public static IEnumerable<ExportablePlannedMeal> ToExportable(this IEnumerable<PlannedMeal> plannedMeals, IEnumerable<Person> people)
         {
             var exportable = new List<ExportablePlannedMeal>();
 
             foreach (var plannedMeal in plannedMeals)
             {
-                exportable.Add(plannedMeal.ToExportable());
+                exportable.Add(plannedMeal.ToExportable(people));
             }
 
             return exportable;
@@ -47,8 +56,9 @@ namespace HealthTracker.DataExchange.Extensions
             var meal = meals.First(x => x.Name == exportable.Meal);
             return new()
             {
-                MealType = (MealType)Enum.Parse(typeof(MealType), exportable.MealType),
+                PersonId = exportable.PersonId,
                 Date = exportable.Date,
+                MealType = (MealType)Enum.Parse(typeof(MealType), exportable.MealType),
                 MealId = meal.Id,
                 Meal = meal
             };

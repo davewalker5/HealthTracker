@@ -12,6 +12,7 @@ namespace HealthTracker.Enumerations.Enumerations
         Meals,
         MealConsumption,
         MealFoodItem,
+        PlannedMeals,
         Weight
     }
 }

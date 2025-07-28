@@ -79,10 +79,10 @@ namespace HealthTracker.Mvc.Controllers
         {
             // Retrieve the person with whom the new measurement is to be associated
             var people = await _personClient.ListAsync(1, int.MaxValue);
-            var person = people.First(x => x.Id == personId);
+            var person = people.FirstOrDefault(x => x.Id == personId);
 
             // Set the filter details on the model
-            model.PersonName = person.Name;
+            model.PersonName = person?.Name;
             model.From = from;
             model.To = to;
         }

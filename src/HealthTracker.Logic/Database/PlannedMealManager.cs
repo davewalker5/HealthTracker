@@ -43,8 +43,11 @@ namespace HealthTracker.Logic.Database
                             .Include(x => x.Meal)
                                 .ThenInclude(x => x.MealFoodItems)
                                     .ThenInclude(x => x.NutritionalValue)
+                            .Include(x => x.Meal)
+                                .ThenInclude(x => x.FoodSource)
                             .Where(predicate)
-                            .OrderBy(x => x.Meal.Name)
+                            .OrderBy(x => x.Date)
+                                .ThenBy(x => x.MealType)
                             .Skip((pageNumber - 1) * pageSize)
                             .Take(pageSize)
                             .ToListAsync();
@@ -52,23 +55,25 @@ namespace HealthTracker.Logic.Database
         /// <summary>
         /// Add a new planned meal
         /// </summary>
+        /// <param name="personId"></param>
         /// <param name="mealType"></param>
         /// <param name="date"></param>
         /// <param name="mealId"></param>
         /// <returns></returns>
-        public async Task<PlannedMeal> AddAsync(MealType mealType, DateTime date, int mealId)
+        public async Task<PlannedMeal> AddAsync(int personId, MealType mealType, DateTime date, int mealId)
         {
-            Factory.Logger.LogMessage(Severity.Info, $"Adding planned meal: Type = {mealType}, Date = {date}, Meal ID = {mealId}");
+            Factory.Logger.LogMessage(Severity.Info, $"Adding planned meal: Person ID = {personId}, Type = {mealType}, Date = {date}, Meal ID = {mealId}");
 
             // Clean up the date and make sure we're not creating a duplicate and that the
             // related meal exists
             var cleanDate = RemoveTimestamp(date);
             Factory.Meals.CheckMealExists(mealId);
-            await CheckPlannedMealIsNotADuplicate(mealType, cleanDate, 0);
+            await CheckPlannedMealIsNotADuplicate(personId, mealType, cleanDate, 0);
 
             // Create the planned meal
             var plannedMeal = new PlannedMeal
             {
+                PersonId = personId,
                 MealType = mealType,
                 Date = cleanDate,
                 MealId = mealId
@@ -87,13 +92,14 @@ namespace HealthTracker.Logic.Database
         /// Update the properties of the specified planned meal
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="personId"></param>
         /// <param name="mealType"></param>
         /// <param name="date"></param>
         /// <param name="mealId"></param>
         /// <returns></returns>
-        public async Task<PlannedMeal> UpdateAsync(int id, MealType mealType, DateTime date, int mealId)
+        public async Task<PlannedMeal> UpdateAsync(int id, int personId, MealType mealType, DateTime date, int mealId)
         {
-            Factory.Logger.LogMessage(Severity.Info, $"Updating planned meal with ID {id}: Type = {mealType}, Date = {date}, Meal ID = {mealId}");
+            Factory.Logger.LogMessage(Severity.Info, $"Updating planned meal with ID {id}: Person ID = {personId}, Type = {mealType}, Date = {date}, Meal ID = {mealId}");
 
             // Retrieve the meal for update
             var plannedMeal = Context.PlannedMeals.FirstOrDefault(x => x.Id == id);
@@ -107,9 +113,10 @@ namespace HealthTracker.Logic.Database
             // related meal exists
             var cleanDate = RemoveTimestamp(date);
             Factory.Meals.CheckMealExists(mealId);
-            await CheckPlannedMealIsNotADuplicate(mealType, cleanDate, id);
+            await CheckPlannedMealIsNotADuplicate(personId, mealType, cleanDate, id);
 
             // Update the meal
+            plannedMeal.PersonId = personId;
             plannedMeal.MealType = mealType;
             plannedMeal.Date = cleanDate;
             plannedMeal.MealId = mealId;
@@ -145,28 +152,35 @@ namespace HealthTracker.Logic.Database
         /// Purge all planned meals with a date less than a specified cutoff, or less than midnight last
         /// night if no cutoff is specified
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="personId"></param>
+        /// <param name="cutoff"></param>
         /// <returns></returns>
-        public async Task Purge(DateTime? cutoff)
+        public async Task PurgeAsync(int personId, DateTime? cutoff)
         {
             var cleanCutoff = RemoveTimestamp(cutoff);
-            Factory.Logger.LogMessage(Severity.Info, $"Purging planned meals with date < {cleanCutoff}");
-            await Context.PlannedMeals.Where(x => x.Date < cleanCutoff).ExecuteDeleteAsync();
+            Factory.Logger.LogMessage(Severity.Info, $"Purging planned meals for person with ID {personId} and date < {cleanCutoff}");
+
+            // SQLite doesn't support ExecuteDeleteAsync() so we need to load the planned meals and then delete them manually
+            // await Context.PlannedMeals.Where(x => x.Date < cleanCutoff).ExecuteDeleteAsync();
+            var plannedMeals = Context.PlannedMeals.Where(x => (x.PersonId == personId) && (x.Date < cleanCutoff));
+            Context.PlannedMeals.RemoveRange(plannedMeals);
+            await Context.SaveChangesAsync();
         }
 
         /// <summary>
         /// Raise an exception if an attempt is made to add/update a planned meal with a duplicate type and date
         /// </summary>
+        /// <param name="personId"></param>
         /// <param name="mealType"></param>
         /// <param name="date"></param>
         /// <param name="id"></param>
         /// <exception cref="PlannedMealExistsException"></exception>
-        private async Task CheckPlannedMealIsNotADuplicate(MealType mealType, DateTime date, int id)
+        private async Task CheckPlannedMealIsNotADuplicate(int personId, MealType mealType, DateTime date, int id)
         {
-            var meal = await Context.PlannedMeals.FirstOrDefaultAsync(x => (x.MealType == mealType) && (x.Date == date));
+            var meal = await Context.PlannedMeals.FirstOrDefaultAsync(x => (x.PersonId == personId) && (x.MealType == mealType) && (x.Date == date));
             if ((meal != null) && (meal.Id != id))
             {
-                var message = $"Planned meal type {mealType} on {date} already exists";
+                var message = $"Planned meal type {mealType} on {date} already exists for person with ID {personId}";
                 throw new PlannedMealExistsException(message);
             }
         }
