@@ -186,6 +186,10 @@ namespace HealthTracker.Api
             builder.Services.AddSingleton<IBackgroundQueue<PlannedMealImportWorkItem>, BackgroundQueue<PlannedMealImportWorkItem>>();
             builder.Services.AddHostedService<PlannedMealImportService>();
 
+            // Add the shopping list exporter hosted service
+            builder.Services.AddSingleton<IBackgroundQueue<ShoppingListExportWorkItem>, BackgroundQueue<ShoppingListExportWorkItem>>();
+            builder.Services.AddHostedService<ShoppingListExportService>();
+
             // Add the meal nutritional value recalculator hosted service
             builder.Services.AddSingleton<IBackgroundQueue<RecalculateMealNutritionWorkItem>, BackgroundQueue<RecalculateMealNutritionWorkItem>>();
             builder.Services.AddHostedService<MealNutritionCalculationService>();

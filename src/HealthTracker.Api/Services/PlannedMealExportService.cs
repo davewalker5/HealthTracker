@@ -11,15 +11,18 @@ namespace HealthTracker.Api.Services
     {
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss";
         private readonly HealthTrackerApplicationSettings _settings;
+        private readonly IBackgroundQueue<ShoppingListExportWorkItem> _shoppingListQueue;
 
         public PlannedMealExportService(
             ILogger<BackgroundQueueProcessor<PlannedMealExportWorkItem>> logger,
-            IBackgroundQueue<PlannedMealExportWorkItem> queue,
+            IBackgroundQueue<PlannedMealExportWorkItem> plannedMealQueue,
+            IBackgroundQueue<ShoppingListExportWorkItem> shoppingListQueue,
             IServiceScopeFactory serviceScopeFactory,
             IOptions<HealthTrackerApplicationSettings> settings)
-            : base(logger, queue, serviceScopeFactory)
+            : base(logger, plannedMealQueue, serviceScopeFactory)
         {
             _settings = settings.Value;
+            _shoppingListQueue = shoppingListQueue;
         }
 
         /// <summary>
@@ -34,32 +37,25 @@ namespace HealthTracker.Api.Services
             var filePath = Path.Combine(_settings.ExportPath, item.FileName);
 
             // Export the planned meals
-            LogExportMessages(item, filePath);
+            MessageLogger.LogInformation($"Exporting planned meals for the person with ID {item.PersonId} for the date range {item.From} to {item.To} to {filePath}");
             var exporter = new PlannedMealExporter(factory);
             await exporter.ExportAsync(item.PersonId, item.From, item.To, filePath);
             MessageLogger.LogInformation("Planned meal export completed");
-        }
 
-        /// <summary>
-        /// Log the export messages, indicating the date range for export
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="filePath"></param>
-        private void LogExportMessages(PlannedMealExportWorkItem item, string filePath)
-        {
-            MessageLogger.LogInformation($"Exporting planned meals for the person with ID {item.PersonId} to {filePath}");
-            if ((item.From != null) && (item.To != null))
+            // When scheduled meals are exported, we also enqueue a request to export the shopping list
+            var fileName = Path.GetFileNameWithoutExtension(filePath);
+            var extension = Path.GetExtension(filePath);
+
+            var relationshipExportItem = new ShoppingListExportWorkItem()
             {
-                MessageLogger.LogInformation($"Exporting planned meals in the date range {item.From.Value.ToString(DateTimeFormat)} to {item.To.Value.ToString(DateTimeFormat)}");
-            }
-            else if (item.From != null)
-            {
-                MessageLogger.LogInformation($"Exporting planned meals logged from {item.From.Value.ToString(DateTimeFormat)}");
-            }
-            else if (item.To != null)
-            {
-                MessageLogger.LogInformation($"Exporting planned meals logged up to {item.To.Value.ToString(DateTimeFormat)}");
-            }
+                JobName = "Shopping List Export",
+                PersonId = item.PersonId,
+                From = item.From,
+                To = item.To,
+                FileName = $"{fileName}-ShoppingList{extension}"
+            };
+
+            _shoppingListQueue.Enqueue(relationshipExportItem);
         }
     }
 }

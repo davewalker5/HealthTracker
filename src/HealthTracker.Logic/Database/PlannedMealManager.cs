@@ -168,6 +168,62 @@ namespace HealthTracker.Logic.Database
         }
 
         /// <summary>
+        /// Compile a shopping list from planned meals for a given person in a date range
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
+        public async Task<List<ShoppingListItem>> GetShoppingList(int personId, DateTime from, DateTime to)
+        {
+            Factory.Logger.LogMessage(Severity.Info, $"Generating shopping list for person with ID {personId} for the date range {from} to {to}");
+
+            // Get a list of planned meals in the date range and, from that, a list of meals
+            var plannedMeals = await ListAsync(x => (x.PersonId == personId) && (x.Date >= from) && (x.Date <= to), 1, int.MaxValue);
+            var meals = plannedMeals.Select(x => x.Meal).ToList();
+
+            // Aggregate to generate a list of shopping list entries
+            var aggregated = meals
+                .SelectMany(m => m.MealFoodItems)
+                .GroupBy(mfi => mfi.FoodItem.Id)
+                .Select(group =>
+                {
+                    var first = group.First();
+
+                    // This gives a dictionary of quantity vs number of that quantity for each food item
+                    var quantities = group
+                        .GroupBy(mfi => mfi.Quantity)
+                        .ToDictionary(
+                            g => g.Key,
+                            g => g.Count()
+                        );
+
+                    // This gives a set of aggregates per food item
+                    return new ShoppingListItemAggregate
+                    {
+                        FoodItemId = group.Key,
+                        Item = first.FoodItem.Name,
+                        Quantities = quantities
+                    };
+                })
+                .ToList();
+
+            // Flatten the aggregates to produce a list of shopping list items
+            var shoppingList = aggregated
+                .SelectMany(agg => agg.Quantities.Select(x => new ShoppingListItem()
+                {
+                    FoodItemId = agg.FoodItemId,
+                    Item = agg.Item,
+                    Portion = x.Key,
+                    Quantity = x.Value
+                }))
+                .OrderBy(x => x.Item)
+                .ToList();
+
+            return shoppingList;
+        }
+
+        /// <summary>
         /// Raise an exception if an attempt is made to add/update a planned meal with a duplicate type and date
         /// </summary>
         /// <param name="personId"></param>
