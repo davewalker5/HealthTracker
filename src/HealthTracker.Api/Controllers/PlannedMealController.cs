@@ -4,6 +4,7 @@ using HealthTracker.Api.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
+using HealthTracker.Api.Interfaces;
 
 namespace HealthTracker.Api.Controllers
 {
@@ -16,16 +17,20 @@ namespace HealthTracker.Api.Controllers
         private const string DateTimeFormat = "yyyy-MM-dd H:mm:ss";
 
         private readonly IHealthTrackerFactory _factory;
+        private readonly IBackgroundQueue<PurgePlannedMealsWorkItem> _queue;
 
-        public PlannedMealController(IHealthTrackerFactory factory)
-            => _factory = factory;
+        public PlannedMealController(IHealthTrackerFactory factory, IBackgroundQueue<PurgePlannedMealsWorkItem> queue)
+        {
+            _factory = factory;
+            _queue = queue;
+        }
 
         /// <summary>
-        /// Return planned meal details given an ID
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpGet]
+            /// Return planned meal details given an ID
+            /// </summary>
+            /// <param name="id"></param>
+            /// <returns></returns>
+            [HttpGet]
         [Route("{id}")]
         public async Task<ActionResult<PlannedMeal>> GetPlannedMealByIdAsync(int id)
         {
@@ -113,16 +118,20 @@ namespace HealthTracker.Api.Controllers
         }
 
         /// <summary>
-        /// Purge all planned meals earlier than a specified cutoff date
+        /// Purge all planned meals per the specification in the work item
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPost]
         [Route("purge")]
-        public async Task<IActionResult> PurgePlannedMeals([FromBody] PurgePlannedMealsModel model)
+        public IActionResult PurgePlannedMeals([FromBody] PurgePlannedMealsWorkItem item)
         {
-            await _factory.PlannedMeals.PurgeAsync(model.PersonId, model.Cutoff);
-            return Ok();
+            // Set the job name used in the job status record
+            item.JobName = "Planned Meal Purge";
+
+            // Queue the work item
+            _queue.Enqueue(item);
+            return Accepted();
         }
     }
 }

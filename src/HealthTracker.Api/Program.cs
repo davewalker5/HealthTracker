@@ -194,6 +194,10 @@ namespace HealthTracker.Api
             builder.Services.AddSingleton<IBackgroundQueue<RecalculateMealConsumptionWorkItem>, BackgroundQueue<RecalculateMealConsumptionWorkItem>>();
             builder.Services.AddHostedService<MealConsumptionCalculationService>();
 
+            // Add the hosted service to purge planned meals
+            builder.Services.AddSingleton<IBackgroundQueue<PurgePlannedMealsWorkItem>, BackgroundQueue<PurgePlannedMealsWorkItem>>();
+            builder.Services.AddHostedService<PurgePlannedMealsService>();
+
             // Configure JWT
             byte[] key = Encoding.ASCII.GetBytes(settings!.Secret);
             builder.Services.AddAuthentication(x =>

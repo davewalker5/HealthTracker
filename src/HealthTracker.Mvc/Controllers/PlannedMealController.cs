@@ -14,6 +14,7 @@ namespace HealthTracker.Mvc.Controllers
     [Authorize]
     public class PlannedMealController : FilteredControllerBase<IPlannedMealClient, PlannedMealListViewModel, PlannedMeal>
     {
+        private const ViewFlags IndexViewFlags = ViewFlags.Add | ViewFlags.FutureDates | ViewFlags.Purge;
         private readonly IMealClient _mealClient;
         private readonly IMealListGenerator _mealListGenerator;
         private readonly IFoodSourceListGenerator _foodSourceListGenerator;
@@ -51,7 +52,7 @@ namespace HealthTracker.Mvc.Controllers
             var model = new PlannedMealListViewModel
             {
                 PageNumber = 1,
-                Filters = await _filterGenerator.Create(personId, start, end, ViewFlags.Add | ViewFlags.FutureDates)
+                Filters = await _filterGenerator.Create(personId, start, end, IndexViewFlags)
             };
 
             return View(model);
@@ -109,6 +110,7 @@ namespace HealthTracker.Mvc.Controllers
                 var plannedMeals = await _measurementClient.ListAsync(
                     model.Filters.PersonId, model.Filters.From, ToDate(model.Filters.To), page, _settings.ResultsPageSize);
                 model.SetEntities(plannedMeals, page, _settings.ResultsPageSize);
+                model.Filters.ShowPurgeButton = true;
 
                 if (plannedMeals.Count > 0)
                 {
@@ -125,6 +127,7 @@ namespace HealthTracker.Mvc.Controllers
             // Populate the list of people and render the view
             await _filterGenerator.PopulatePersonList(model.Filters);
             model.Filters.ShowAddButton = true;
+            model.Filters.ShowPurgeButton = true;
             return View(model);
         }
 
@@ -218,8 +221,8 @@ namespace HealthTracker.Mvc.Controllers
                     model.PlannedMeal.Id,
                     date,
                     date,
-                    "Scheduled meal added updated",
-                    ViewFlags.ListView | ViewFlags.FutureDates);
+                    "Scheduled meal updated",
+                    IndexViewFlags | ViewFlags.Export);
 
                 return View("Index", listModel);
             }
@@ -310,7 +313,7 @@ namespace HealthTracker.Mvc.Controllers
                     date,
                     date,
                     "Scheduled meal successfully updated",
-                    ViewFlags.ListView | ViewFlags.FutureDates);
+                    IndexViewFlags | ViewFlags.Export);
 
                 return View("Index", listModel);
             }
@@ -346,7 +349,22 @@ namespace HealthTracker.Mvc.Controllers
             await _measurementClient.DeleteAsync(id);
 
             // Return the list view with an empty list of measurements
-            var model = await CreateListViewModel(personId, 0, date, date, "Scheduled meal successfully deleted", ViewFlags.ListView | ViewFlags.FutureDates);
+            var model = await CreateListViewModel(personId, 0, date, date, "Scheduled meal successfully deleted", IndexViewFlags);
+            return View("Index", model);
+        }
+
+        /// <summary>
+        /// Handle POST events to purge historical scheduled meals for a person
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Purge(int personId)
+        {
+            // Submit the request to purge historical meals
+            await _measurementClient.PurgeAsync(personId, DateTime.Now);
+            var model = await CreateListViewModel(personId, 0, null, null, "The request to purge historical scheduled meals has been submitted", IndexViewFlags);
             return View("Index", model);
         }
 

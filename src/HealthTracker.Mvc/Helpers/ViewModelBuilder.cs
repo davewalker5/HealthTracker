@@ -52,8 +52,8 @@ namespace HealthTracker.Mvc.Helpers
             int personId,
             int measurementId,
             IEnumerable<M> measurements,
-            DateTime from,
-            DateTime to,
+            DateTime? from,
+            DateTime? to,
             string message,
             ViewFlags flags)
 
@@ -92,8 +92,14 @@ namespace HealthTracker.Mvc.Helpers
                 model.SetEntities(measurements, 1, _settings.ResultsPageSize);
             }
 
+            // If requested, suppress the "no matches" message
+            if (flags.HasFlag(ViewFlags.SuppressNoMatches))
+            {
+                model.HasNoMatchingResults = false;
+            }
+
             // Set the message
-            model.Message = message;
+                model.Message = message;
 
             // Return the model
             return model;

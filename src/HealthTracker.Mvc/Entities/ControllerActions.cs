@@ -16,5 +16,6 @@ namespace HealthTracker.Mvc.Entities
         public const string ActionSkip = "Skip";
         public const string ActionExport = "Export";
         public const string ActionImport = "Import";
+
     }
 }

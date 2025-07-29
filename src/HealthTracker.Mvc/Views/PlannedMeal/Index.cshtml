@@ -38,9 +38,16 @@
         @Html.Hidden("id", 0)
     }
 
-    @using (Html.BeginForm("Index", "PlannedMeal", FormMethod.Post))
+    @using (Html.BeginForm("Purge", "PlannedMeal", FormMethod.Post, new { name = "purge-form", id = "purge-form" }))
     {
         @Html.AntiForgeryToken()
+        @Html.Hidden("personId", 0)
+    }
+
+    @using (Html.BeginForm("Index", "PlannedMeal", FormMethod.Post, new { name = "main-form", id = "main-form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.Action)
         @Html.EditorFor(m => m.Filters)
         @Html.HiddenFor(m => m.PageNumber)
 
@@ -48,9 +55,11 @@
         {
             @await Html.PartialAsync("_PlannedMealList", Model)
             <hr />
-            <p class="text-right">
-                <button type="submit" name="Action" value="@ControllerActions.ActionPreviousPage" class="btn btn-secondary" @previousDisabled>Previous</button>
-                <button type="submit" name="Action" value="@ControllerActions.ActionNextPage" class="btn btn-primary" @nextDisabled>Next</button>
+            <p>
+                <div style="float: right">
+                    <button type="submit" name="Action" value="@ControllerActions.ActionPreviousPage" class="btn btn-secondary" @previousDisabled>Previous</button>
+                    <button type="submit" name="Action" value="@ControllerActions.ActionNextPage" class="btn btn-primary" @nextDisabled>Next</button>
+                </div>
             </p>
         }
         else if (Model.HasNoMatchingResults)

@@ -9,6 +9,8 @@ namespace HealthTracker.Mvc.Entities
         IncludeInactive = 0x04,
         Export = 0x08,
         FutureDates = 0x10,
+        SuppressNoMatches = 0x20,
+        Purge = 0x40,
         ListView = Editable | Add | Export
     }
 }

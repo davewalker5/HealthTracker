@@ -50,7 +50,11 @@
                 }
                 @if (Model.ShowExportButton)
                 {
-                    <button type="submit" name="Action" value="@ControllerActions.ActionExport" class="btn btn-primary">Export</button>
+                    <button type="submit" name="Action" value="@ControllerActions.ActionExport" class="btn btn-primary" style="margin-right: 10px">Export</button>
+                }
+                @if (Model.ShowPurgeButton)
+                {
+                    <input type="button" class="btn btn-danger" value="Purge" onclick="javascript:submitPurge()" />
                 }
             </div>
         </div>
@@ -59,6 +63,22 @@
 </div>
 
 <script type="text/javascript">
+    function submitPurge() {
+        $.confirm({
+            text: "Are you sure?",
+            confirm: function(button) {
+                // For the purge button to work, the page must have a "purge-form" that POSTs to an action method to
+                // purge data
+                $("#purge-form #personId").val($("#PersonId").val());
+                $("#purge-form").submit()
+            },
+            cancel: function(button) {
+            },
+            confirmButton: "Yes",
+            cancelButton: "No"
+        });
+    }
+
     $(document).ready(function() {
         $(document).on("keydown", function (e) {
             if (e.key === "Enter") {

@@ -19,101 +19,103 @@
     <script src="~/lib/gijgo/dist/modular/js/timepicker.js" type="text/javascript"></script>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Health Tracker</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav">
-                        @if (User?.Identity?.IsAuthenticated == true)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="PersonMedication" asp-action="Index">Medications</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="PlannedMeal" asp-action="Index">Meal Planner</a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link text-dark dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Measurements
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" asp-area="" asp-controller="BloodOxygenSaturation" asp-action="Index">% SPO2</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="BeverageConsumption" asp-action="Index">Beverage Consumption</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="BloodPressure" asp-action="Index">Blood Pressure</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Exercise" asp-action="Index">Exercise</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="BloodGlucose" asp-action="Index">Glucose</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="MealConsumption" asp-action="Index">Meal Consumption</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Weight" asp-action="Index">Weight</a>
-                                </div>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link text-dark dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Reference Data
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" asp-area="" asp-controller="Alcohol" asp-action="Index">Alcohol Calculator</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="ReferenceData" asp-action="BloodPressureBands">Blood Pressure Bands</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="ReferenceData" asp-action="BMIBands">BMI Bands</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="ReferenceData" asp-action="BloodOxygenSaturationBands">% SPO2 Bands</a>
-                                </div>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link text-dark dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Data Maintenance
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" asp-area="" asp-controller="ActivityType" asp-action="Index">Activity Types</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Beverage" asp-action="Index">Beverages</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="BeverageMeasure" asp-action="Index">Beverage Measures</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="FoodCategory" asp-action="Index">Food Categories</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="FoodItem" asp-action="Index">Food Items</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="FoodSource" asp-action="Index">Food Sources</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Meal" asp-action="Index">Meals</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Medication" asp-action="Index">Medications</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Person" asp-action="Index">People</a>
-                                </div>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link text-dark dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Jobs
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" asp-area="" asp-controller="Import" asp-action="Index">Import</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="JobStatus" asp-action="Index">Job Status</a>
-                                </div>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="LogOut">Log Out</a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Index">Log In</a>
-                            </li>
-                        }
-                    </ul>
+    <div style="width: 90%; margin: 0 auto;">
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+                <div class="container-fluid">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Health Tracker</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                        <ul class="navbar-nav">
+                            @if (User?.Identity?.IsAuthenticated == true)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="PersonMedication" asp-action="Index">Medications</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="PlannedMeal" asp-action="Index">Meal Planner</a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link text-dark dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Measurements
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" asp-area="" asp-controller="BloodOxygenSaturation" asp-action="Index">% SPO2</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="BeverageConsumption" asp-action="Index">Beverage Consumption</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="BloodPressure" asp-action="Index">Blood Pressure</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Exercise" asp-action="Index">Exercise</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="BloodGlucose" asp-action="Index">Glucose</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="MealConsumption" asp-action="Index">Meal Consumption</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Weight" asp-action="Index">Weight</a>
+                                    </div>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link text-dark dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Reference Data
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" asp-area="" asp-controller="Alcohol" asp-action="Index">Alcohol Calculator</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="ReferenceData" asp-action="BloodPressureBands">Blood Pressure Bands</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="ReferenceData" asp-action="BMIBands">BMI Bands</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="ReferenceData" asp-action="BloodOxygenSaturationBands">% SPO2 Bands</a>
+                                    </div>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link text-dark dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Data Maintenance
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" asp-area="" asp-controller="ActivityType" asp-action="Index">Activity Types</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Beverage" asp-action="Index">Beverages</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="BeverageMeasure" asp-action="Index">Beverage Measures</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="FoodCategory" asp-action="Index">Food Categories</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="FoodItem" asp-action="Index">Food Items</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="FoodSource" asp-action="Index">Food Sources</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Meal" asp-action="Index">Meals</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Medication" asp-action="Index">Medications</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Person" asp-action="Index">People</a>
+                                    </div>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link text-dark dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Jobs
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" asp-area="" asp-controller="Import" asp-action="Index">Import</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="JobStatus" asp-action="Index">Job Status</a>
+                                    </div>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="LogOut">Log Out</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Index">Log In</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-            @await Html.PartialAsync("_AjaxModalDialog")
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            Health Tracker @ViewData["Version"] &copy; 2024, 2025 - David Walker
+            </nav>
+        </header>
+        <div class="container-fluid">
+            <main role="main" class="pb-3">
+                @RenderBody()
+                @await Html.PartialAsync("_AjaxModalDialog")
+            </main>
         </div>
-    </footer>
+
+        <footer class="border-top footer text-muted">
+            <div class="container-fluid">
+                Health Tracker @ViewData["Version"] &copy; 2024, 2025 - David Walker
+            </div>
+        </footer>
+    </div>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/lib/datatables/datatables.min.js"></script>
