@@ -36,7 +36,8 @@ namespace HealthTracker.Mvc.Helpers
             {
                 PersonId = personId,
                 ShowAddButton = flags.HasFlag(ViewFlags.Add),
-                ShowExportButton = flags.HasFlag(ViewFlags.Export)
+                ShowExportButton = flags.HasFlag(ViewFlags.Export),
+                ShowPurgeButton = flags.HasFlag(ViewFlags.Purge)
             };
             await PopulatePersonList(model);
 

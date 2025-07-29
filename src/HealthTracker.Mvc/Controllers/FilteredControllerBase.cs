@@ -97,7 +97,7 @@ namespace HealthTracker.Mvc.Controllers
         /// <param name="message"></param>
         /// <param name="flags"></param>
         /// <returns></returns>
-        protected async Task<L> CreateListViewModel(int personId, int measurementId, DateTime from, DateTime to, string message, ViewFlags flags)
+        protected async Task<L> CreateListViewModel(int personId, int measurementId, DateTime? from, DateTime? to, string message, ViewFlags flags)
             => await _builder.CreateFilteredListViewModel<C, L, M>(_measurementClient, personId, measurementId, null, from, to, message, flags);
 
         /// <summary>
