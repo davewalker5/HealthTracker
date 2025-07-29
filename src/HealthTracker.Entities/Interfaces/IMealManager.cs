@@ -11,5 +11,6 @@ namespace HealthTracker.Entities.Interfaces
         Task DeleteAsync(int id);
         void CheckMealExists(int mealId);
         Task UpdateNutritionalValues(int id);
+        Task UpdateAllNutritionalValues();
     }
 }

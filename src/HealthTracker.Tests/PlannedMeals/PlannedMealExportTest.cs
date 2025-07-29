@@ -41,7 +41,9 @@ namespace HealthTracker.Tests.PlannedMeals
         {
             var exportable = _plannedMeal.ToExportable([_person]);
             Assert.AreEqual(_plannedMeal.MealType.ToString(), exportable.MealType);
-            Assert.AreEqual(_plannedMeal.Date, exportable.Date);
+            Assert.AreEqual(_plannedMeal.Date.Year, exportable.Date.Year);
+            Assert.AreEqual(_plannedMeal.Date.Month, exportable.Date.Month);
+            Assert.AreEqual(_plannedMeal.Date.Day, exportable.Date.Day);
             Assert.AreEqual(_plannedMeal.Meal.Name, exportable.Meal);
         }
 
@@ -51,7 +53,9 @@ namespace HealthTracker.Tests.PlannedMeals
             List<PlannedMeal> plannedMeals = [_plannedMeal];
             var exportable = plannedMeals.ToExportable([_person]);
             Assert.AreEqual(_plannedMeal.PersonId, exportable.First().PersonId);
-            Assert.AreEqual(_plannedMeal.Date, exportable.First().Date);
+            Assert.AreEqual(_plannedMeal.Date.Year, exportable.First().Date.Year);
+            Assert.AreEqual(_plannedMeal.Date.Month, exportable.First().Date.Month);
+            Assert.AreEqual(_plannedMeal.Date.Day, exportable.First().Date.Day);
             Assert.AreEqual(_plannedMeal.MealType.ToString(), exportable.First().MealType);
             Assert.AreEqual(_plannedMeal.Meal.Name, exportable.First().Meal);
         }
@@ -62,7 +66,9 @@ namespace HealthTracker.Tests.PlannedMeals
             var record = $@"""{_person.Id}"",""{_person.Name}"",""{_plannedMeal.Date:dd-MMM-yyyy HH:mm:ss}"",""{_plannedMeal.MealType}"",""{_plannedMeal.Meal.Name}"",""{_plannedMeal.Meal.FoodSource.Name}"",""{_plannedMeal.Meal.Reference}""";
             var exportable = ExportablePlannedMeal.FromCsv(record);
             Assert.AreEqual(_plannedMeal.PersonId, exportable.PersonId);
-            Assert.AreEqual(_plannedMeal.Date, exportable.Date);
+            Assert.AreEqual(_plannedMeal.Date.Year, exportable.Date.Year);
+            Assert.AreEqual(_plannedMeal.Date.Month, exportable.Date.Month);
+            Assert.AreEqual(_plannedMeal.Date.Day, exportable.Date.Day);
             Assert.AreEqual(_plannedMeal.MealType.ToString(), exportable.MealType);
             Assert.AreEqual(_plannedMeal.Meal.Name, exportable.Meal);
         }
@@ -102,7 +108,9 @@ namespace HealthTracker.Tests.PlannedMeals
 
             var exportable = ExportablePlannedMeal.FromCsv(records[1]);
             Assert.AreEqual(_plannedMeal.PersonId, exportable.PersonId);
-            Assert.AreEqual(_plannedMeal.Date, exportable.Date);
+            Assert.AreEqual(_plannedMeal.Date.Year, exportable.Date.Year);
+            Assert.AreEqual(_plannedMeal.Date.Month, exportable.Date.Month);
+            Assert.AreEqual(_plannedMeal.Date.Day, exportable.Date.Day);
             Assert.AreEqual(_plannedMeal.MealType.ToString(), exportable.MealType);
             Assert.AreEqual(_plannedMeal.Meal.Name, exportable.Meal);
         }

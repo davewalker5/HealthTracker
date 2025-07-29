@@ -51,6 +51,12 @@ namespace HealthTracker.Tests.MealConsumption
             }
         }
 
+        private void AssertCorrectNutritionalValue(decimal? baseValue, decimal portion, decimal quantity, decimal? actual)
+        {
+            var expected = Math.Round(baseValue.Value * quantity / portion, 4);
+            Assert.AreEqual(expected, Math.Round(actual.Value, 4));
+        }
+
         [TestMethod]
         public void ConvertSingleObjectFromExportable()
         {
@@ -100,20 +106,19 @@ namespace HealthTracker.Tests.MealConsumption
             Assert.AreEqual(info.FullName, _filePath);
             Assert.IsTrue(info.Length > 0);
 
-            Console.WriteLine(_measurement);
             var measurements = await _factory.MealConsumptionMeasurements.ListAsync(x => true, 1, int.MaxValue);
             Assert.AreEqual(1, measurements.Count);
             Assert.AreEqual(_person.Id, measurements.First().PersonId);
             Assert.AreEqual(_exportable.MealId, measurements.First().MealId);
             Assert.AreEqual(_exportable.Date, measurements.First().Date);
             Assert.AreEqual(_exportable.Quantity, measurements.First().Quantity);
-            Assert.AreEqual(_exportable.Quantity * _measurement.Meal.NutritionalValue.Calories, measurements.First().NutritionalValue.Calories);
-            Assert.AreEqual(_exportable.Quantity * _measurement.Meal.NutritionalValue.Fat, measurements.First().NutritionalValue.Fat);
-            Assert.AreEqual(_exportable.Quantity * _measurement.Meal.NutritionalValue.SaturatedFat, measurements.First().NutritionalValue.SaturatedFat);
-            Assert.AreEqual(_exportable.Quantity * _measurement.Meal.NutritionalValue.Protein, measurements.First().NutritionalValue.Protein);
-            Assert.AreEqual(_exportable.Quantity * _measurement.Meal.NutritionalValue.Carbohydrates, measurements.First().NutritionalValue.Carbohydrates);
-            Assert.AreEqual(_exportable.Quantity * _measurement.Meal.NutritionalValue.Sugar, measurements.First().NutritionalValue.Sugar);
-            Assert.AreEqual(_exportable.Quantity * _measurement.Meal.NutritionalValue.Fibre, measurements.First().NutritionalValue.Fibre);
+            AssertCorrectNutritionalValue(_measurement.Meal.NutritionalValue.Calories, _measurement.Meal.Portions, _exportable.Quantity, measurements.First().NutritionalValue.Calories);
+            AssertCorrectNutritionalValue(_measurement.Meal.NutritionalValue.Fat, _measurement.Meal.Portions, _exportable.Quantity, measurements.First().NutritionalValue.Fat);
+            AssertCorrectNutritionalValue(_measurement.Meal.NutritionalValue.SaturatedFat, _measurement.Meal.Portions, _exportable.Quantity, measurements.First().NutritionalValue.SaturatedFat);
+            AssertCorrectNutritionalValue(_measurement.Meal.NutritionalValue.Protein, _measurement.Meal.Portions, _exportable.Quantity, measurements.First().NutritionalValue.Protein);
+            AssertCorrectNutritionalValue(_measurement.Meal.NutritionalValue.Carbohydrates, _measurement.Meal.Portions, _exportable.Quantity, measurements.First().NutritionalValue.Carbohydrates);
+            AssertCorrectNutritionalValue(_measurement.Meal.NutritionalValue.Sugar, _measurement.Meal.Portions, _exportable.Quantity, measurements.First().NutritionalValue.Sugar);
+            AssertCorrectNutritionalValue(_measurement.Meal.NutritionalValue.Fibre, _measurement.Meal.Portions, _exportable.Quantity, measurements.First().NutritionalValue.Fibre);
         }
 
         [TestMethod]

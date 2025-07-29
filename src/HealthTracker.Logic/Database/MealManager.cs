@@ -143,32 +143,54 @@ namespace HealthTracker.Logic.Database
             var plural = relationships.Count == 1 ? "" : "s";
             Factory.Logger.LogMessage(Severity.Debug, $"Found {relationships.Count} food item relationship{plural} associated with meal ID {id}");
 
-            var calculated = Factory.NutritionalValues.CalculateTotalNutritionalValue(relationships);
-            Factory.Logger.LogMessage(Severity.Debug, $"Calculated nutritional values : {calculated}");
-
-            var nutritionalValues = await Factory.NutritionalValues.CreateOrUpdateNutritionalValueAsync(meal.NutritionalValueId, calculated);
-            Factory.Logger.LogMessage(Severity.Debug, $"Created/updated nutritional values : {nutritionalValues}");
-
-            // Update the meal to associate the nutritional values with it, if the calculated values have some
-            // values, or remove any existing association if they don't
-            if (nutritionalValues != null)
+            // The calculation can only be completed if there is at least one related food item
+            if (relationships.Count > 0)
             {
-                Factory.Logger.LogMessage(Severity.Debug, $"Setting nutritional value ID for meal {id} to {nutritionalValues.Id}");
-                meal.NutritionalValueId = nutritionalValues.Id;
-                await Context.SaveChangesAsync();
+                var calculated = Factory.NutritionalValues.CalculateTotalNutritionalValue(relationships);
+                Factory.Logger.LogMessage(Severity.Debug, $"Calculated nutritional values : {calculated}");
+
+                var nutritionalValues = await Factory.NutritionalValues.CreateOrUpdateNutritionalValueAsync(meal.NutritionalValueId, calculated);
+                Factory.Logger.LogMessage(Severity.Debug, $"Created/updated nutritional values : {nutritionalValues}");
+
+                // Update the meal to associate the nutritional values with it, if the calculated values have some
+                // values, or remove any existing association if they don't
+                if (nutritionalValues != null)
+                {
+                    Factory.Logger.LogMessage(Severity.Debug, $"Setting nutritional value ID for meal {id} to {nutritionalValues.Id}");
+                    meal.NutritionalValueId = nutritionalValues.Id;
+                    await Context.SaveChangesAsync();
+                }
+                else if (meal.NutritionalValueId != null)
+                {
+                    Factory.Logger.LogMessage(Severity.Debug, $"Removing nutritional value ID from meal {id}");
+                    meal.NutritionalValueId = null;
+                    await Context.SaveChangesAsync();
+                }
             }
-            else if (meal.NutritionalValueId != null)
+            else
             {
-                Factory.Logger.LogMessage(Severity.Debug, $"Removing nutritional value ID from meal {id}");
-                meal.NutritionalValueId = null;
-                await Context.SaveChangesAsync();
+                Factory.Logger.LogMessage(Severity.Debug, $"Meal with ID {id} has no related food items - nutritional values not updated");
+            }
+        }
+
+        /// <summary>
+        /// Update the total nutritional value for all meals in the database
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task UpdateAllNutritionalValues()
+        {
+            Factory.Logger.LogMessage(Severity.Info, $"Updating nutritional values for all meals");
+            var mealIds = await Context.Meals.Select(x => x.Id).ToListAsync();
+            foreach (var id in mealIds)
+            {
+                await UpdateNutritionalValues(id);
             }
         }
 
         /// <summary>
         /// Delete the meal with the specified Id
         /// </summary>
-        /// <param name="id"></param>
         /// <returns></returns>
         public async Task DeleteAsync(int id)
         {

@@ -907,7 +907,7 @@ namespace HealthTracker.Tests.Mocks
             var plannedMeal = new PlannedMeal()
             {
                 MealType = (MealType)RandomInt(1, 3),
-                Date = RandomDateInYear(2025),
+                Date = DateTime.Now.AddDays(RandomInt(10, 100)),
                 Meal = RandomMeal()
             };
 
