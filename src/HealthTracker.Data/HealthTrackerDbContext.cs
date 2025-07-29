@@ -82,6 +82,12 @@ namespace HealthTracker.Data
                 entity.Property(e => e.PersonId).HasColumnName("person_id");
                 entity.Property(e => e.Date).IsRequired().HasColumnName("date").HasColumnType("DATETIME");
                 entity.Property(e => e.Weight).IsRequired().HasColumnName("weight");
+
+                modelBuilder.Entity<WeightMeasurement>()
+                    .HasOne<Person>()
+                    .WithMany()
+                    .HasForeignKey(m => m.PersonId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<BloodPressureMeasurement>(entity =>
@@ -92,6 +98,12 @@ namespace HealthTracker.Data
                 entity.Property(e => e.Date).IsRequired().HasColumnName("date").HasColumnType("DATETIME");
                 entity.Property(e => e.Systolic).IsRequired().HasColumnName("systolic");
                 entity.Property(e => e.Diastolic).IsRequired().HasColumnName("diastolic");
+
+                modelBuilder.Entity<BloodPressureMeasurement>()
+                    .HasOne<Person>()
+                    .WithMany()
+                    .HasForeignKey(m => m.PersonId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<CholesterolMeasurement>(entity =>
@@ -104,6 +116,12 @@ namespace HealthTracker.Data
                 entity.Property(e => e.HDL).IsRequired().HasColumnName("hdl");
                 entity.Property(e => e.LDL).IsRequired().HasColumnName("ldl");
                 entity.Property(e => e.Triglycerides).IsRequired().HasColumnName("triglycerides");
+
+                modelBuilder.Entity<CholesterolMeasurement>()
+                    .HasOne<Person>()
+                    .WithMany()
+                    .HasForeignKey(m => m.PersonId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<ExerciseMeasurement>(entity =>
@@ -118,6 +136,12 @@ namespace HealthTracker.Data
                 entity.Property(e => e.Calories).IsRequired().HasColumnName("calories");
                 entity.Property(e => e.MinimumHeartRate).IsRequired().HasColumnName("minimum_heart_rate");
                 entity.Property(e => e.MaximumHeartRate).IsRequired().HasColumnName("maximum_heart_rate");
+
+                modelBuilder.Entity<ExerciseMeasurement>()
+                    .HasOne<Person>()
+                    .WithMany()
+                    .HasForeignKey(m => m.PersonId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<BloodPressureBand>(entity =>
@@ -160,6 +184,18 @@ namespace HealthTracker.Data
                 entity.Property(e => e.Stock).IsRequired().HasColumnName("stock");
                 entity.Property(e => e.LastTaken).HasColumnName("date").HasColumnType("DATETIME");
                 entity.Property(e => e.Active).HasColumnName("active").HasDefaultValue(true);
+
+                modelBuilder.Entity<PersonMedication>()
+                    .HasOne<Person>()
+                    .WithMany()
+                    .HasForeignKey(m => m.PersonId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                modelBuilder.Entity<PersonMedication>()
+                    .HasOne<Medication>()
+                    .WithMany()
+                    .HasForeignKey(m => m.MedicationId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<BloodOxygenSaturationMeasurement>(entity =>
@@ -169,6 +205,12 @@ namespace HealthTracker.Data
                 entity.Property(e => e.PersonId).IsRequired().HasColumnName("person_id");
                 entity.Property(e => e.Date).IsRequired().HasColumnName("date").HasColumnType("DATETIME");
                 entity.Property(e => e.Percentage).IsRequired().HasColumnName("percentage");
+
+                modelBuilder.Entity<BloodOxygenSaturationMeasurement>()
+                    .HasOne<Person>()
+                    .WithMany()
+                    .HasForeignKey(m => m.PersonId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<BloodOxygenSaturationBand>(entity =>
@@ -189,6 +231,12 @@ namespace HealthTracker.Data
                 entity.Property(e => e.PersonId).HasColumnName("person_id");
                 entity.Property(e => e.Date).IsRequired().HasColumnName("date").HasColumnType("DATETIME");
                 entity.Property(e => e.Level).HasColumnName("level");
+
+                modelBuilder.Entity<BloodGlucoseMeasurement>()
+                    .HasOne<Person>()
+                    .WithMany()
+                    .HasForeignKey(m => m.PersonId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<JobStatus>(entity =>
@@ -222,6 +270,18 @@ namespace HealthTracker.Data
                 entity.Property(e => e.Quantity).IsRequired().HasColumnName("quantity");
                 entity.Property(e => e.Volume).IsRequired().HasColumnName("volume");
                 entity.Property(e => e.ABV).IsRequired().HasColumnName("abv");
+
+                modelBuilder.Entity<BeverageConsumptionMeasurement>()
+                    .HasOne<Person>()
+                    .WithMany()
+                    .HasForeignKey(m => m.PersonId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                modelBuilder.Entity<BeverageConsumptionMeasurement>()
+                    .HasOne<Beverage>()
+                    .WithMany()
+                    .HasForeignKey(m => m.PersonId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<BeverageMeasure>(entity =>
@@ -312,6 +372,12 @@ namespace HealthTracker.Data
                 entity.Property(e => e.Quantity).IsRequired().HasColumnName("quantity");
                 entity.Property(e => e.NutritionalValueId).HasColumnName("nutritional_value_id");
 
+                modelBuilder.Entity<MealConsumptionMeasurement>()
+                    .HasOne<Person>()
+                    .WithMany()
+                    .HasForeignKey(m => m.PersonId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
                 entity.HasOne(e => e.Meal)
                     .WithMany()
                     .HasForeignKey(e => e.MealId)
@@ -358,6 +424,12 @@ namespace HealthTracker.Data
                 entity.Property(e => e.PersonId).IsRequired().HasColumnName("person_id");
                 entity.Property(e => e.MealId).IsRequired().HasColumnName("meal_id");
                 entity.Property(e => e.Date).IsRequired().HasColumnName("date").HasColumnType("DATETIME");
+
+                modelBuilder.Entity<PlannedMeal>()
+                    .HasOne<Person>()
+                    .WithMany()
+                    .HasForeignKey(m => m.PersonId)
+                    .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(e => e.Meal)
                     .WithMany()
