@@ -88,6 +88,19 @@ namespace HealthTracker.Client.ApiClient
         }
 
         /// <summary>
+        /// Request an update of nutritional values for all meals
+        /// </summary>
+        /// <returns></returns>
+        public async Task UpdateAllNutritionalValues()
+        {
+            dynamic data = new { };
+            var json = Serialize(data);
+            var baseRoute = Settings.ApiRoutes.First(r => r.Name == RouteKey).Route;
+            var route = $"{baseRoute}/recalculate";
+            _ = await SendDirectAsync(route, json, HttpMethod.Post);
+        }
+
+        /// <summary>
         /// Request an import of meals from the content of a file
         /// </summary>
         /// <param name="fileName"></param>

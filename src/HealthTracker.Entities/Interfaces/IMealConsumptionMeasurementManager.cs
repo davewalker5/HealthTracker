@@ -20,6 +20,8 @@ namespace HealthTracker.Entities.Interfaces
             DateTime date,
             decimal quantity);
 
+        Task UpdateNutritionalValues(int id);
+        Task UpdateAllNutritionalValues();
         Task DeleteAsync(int id);
     }
 }

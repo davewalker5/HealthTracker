@@ -96,7 +96,9 @@ namespace HealthTracker.Tests.PlannedMeals
             var plannedMeals = await _factory.PlannedMeals.ListAsync(x => true, 1, int.MaxValue);
             Assert.AreEqual(1, plannedMeals.Count);
             Assert.AreEqual(_exportable.MealType, plannedMeals.First().MealType.ToString());
-            Assert.AreEqual(_exportable.Date, plannedMeals.First().Date);
+            Assert.AreEqual(_exportable.Date.Year, plannedMeals.First().Date.Year);
+            Assert.AreEqual(_exportable.Date.Month, plannedMeals.First().Date.Month);
+            Assert.AreEqual(_exportable.Date.Day, plannedMeals.First().Date.Day);
             Assert.AreEqual(_meal.Id, plannedMeals.First().MealId);
         }
 

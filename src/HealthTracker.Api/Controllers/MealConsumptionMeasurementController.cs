@@ -1,5 +1,7 @@
 using HealthTracker.Entities.Interfaces;
 using HealthTracker.Entities.Food;
+using HealthTracker.Api.Entities;
+using HealthTracker.Api.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
@@ -14,9 +16,15 @@ namespace HealthTracker.Api.Controllers
     {
         private const string DateTimeFormat = "yyyy-MM-dd H:mm:ss";
         private readonly IHealthTrackerFactory _factory;
+        private readonly IBackgroundQueue<RecalculateMealConsumptionWorkItem> _queue;
 
-        public MealConsumptionMeasurementController(IHealthTrackerFactory factory)
-            => _factory = factory;
+        public MealConsumptionMeasurementController(
+            IHealthTrackerFactory factory,
+            IBackgroundQueue<RecalculateMealConsumptionWorkItem> queue)
+        {
+            _factory = factory;
+            _queue = queue;
+        }
 
         /// <summary>
         /// Return a single measurement given its ID
@@ -96,6 +104,23 @@ namespace HealthTracker.Api.Controllers
             );
 
             return measurement;
+        }
+
+        /// <summary>
+        /// Queue a request to recalculate the nutritional values for all meal consumption records
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("recalculate")]
+        public IActionResult RecalculateNutritionalValues([FromBody] RecalculateMealConsumptionWorkItem item)
+        {
+            // Set the job name used in the job status record
+            item.JobName = "Meal Consumption Nutritional Value Recalculation";
+
+            // Queue the work item
+            _queue.Enqueue(item);
+            return Accepted();
         }
 
         /// <summary>

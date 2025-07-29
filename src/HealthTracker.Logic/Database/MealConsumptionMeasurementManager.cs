@@ -63,17 +63,8 @@ namespace HealthTracker.Logic.Database
             await Context.MealConsumptionMeasurements.AddAsync(measurement);
             await Context.SaveChangesAsync();
 
-            // Create the nutritional value for this consumption record
-            var meal = (await Factory.Meals.ListAsync(x => x.Id == mealId, 1, 1)).First();
-            var calculated = Factory.NutritionalValues.CalculateNutritionalValues(meal.NutritionalValue, quantity);
-            var nutritionalValues = await Factory.NutritionalValues.CreateOrUpdateNutritionalValueAsync(null, calculated);
-
-            // Update the measurement to associate the nutritional values with it
-            if (nutritionalValues != null)
-            {
-                measurement.NutritionalValueId = nutritionalValues.Id;
-                await Context.SaveChangesAsync();
-            }
+            // Create or update the nutritional value for this record
+            await UpdateNutritionalValues(measurement.Id);
 
             // Reload to load related entities
             measurement = (await ListAsync(x => x.Id == measurement.Id, 1, 1)).First();
@@ -115,9 +106,34 @@ namespace HealthTracker.Logic.Database
             measurement.Quantity = quantity;
             await Context.SaveChangesAsync();
 
+            // Create or update the nutritional value for this record
+            await UpdateNutritionalValues(measurement.Id);
+
+            // Reload to load related entities
+            measurement = (await ListAsync(x => x.Id == measurement.Id, 1, 1)).First();
+            return measurement;
+        }
+
+        /// <summary>
+        /// Update the nutritional value for a consumption record
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="MealNotFoundException"></exception>
+        public async Task UpdateNutritionalValues(int id)
+        {
+            // Load the measurement
+            var measurement = Context.MealConsumptionMeasurements.FirstOrDefault(x => x.Id == id);
+            if (measurement == null)
+            {
+                var message = $"Meal consumption record with ID = {id} not found";
+                throw new MealConsumptionMeasurementNotFoundException(message);
+            }
+
             // Create the nutritional value for this consumption record
-            var meal = (await Factory.Meals.ListAsync(x => x.Id == mealId, 1, 1)).First();
-            var calculated = Factory.NutritionalValues.CalculateNutritionalValues(meal.NutritionalValue, quantity);
+            var meal = (await Factory.Meals.ListAsync(x => x.Id == measurement.MealId, 1, 1)).First();
+            var multiplier = measurement.Quantity / (decimal)meal.Portions;
+            var calculated = Factory.NutritionalValues.CalculateNutritionalValues(meal.NutritionalValue, multiplier);
             var nutritionalValues = await Factory.NutritionalValues.CreateOrUpdateNutritionalValueAsync(measurement.NutritionalValueId, calculated);
 
             // Update the measurement to associate the nutritional values with it
@@ -126,10 +142,20 @@ namespace HealthTracker.Logic.Database
                 measurement.NutritionalValueId = nutritionalValues.Id;
                 await Context.SaveChangesAsync();
             }
+        }
 
-            // Reload to load related entities
-            measurement = (await ListAsync(x => x.Id == measurement.Id, 1, 1)).First();
-            return measurement;
+        /// <summary>
+        /// Update the nutritional value for all meal consumption records in the database
+        /// </summary>
+        /// <returns></returns>
+        public async Task UpdateAllNutritionalValues()
+        {
+            Factory.Logger.LogMessage(Severity.Info, $"Updating nutritional values for all meal consumption records");
+            var measurementIds = await Context.MealConsumptionMeasurements.Select(x => x.Id).ToListAsync();
+            foreach (var id in measurementIds)
+            {
+                await UpdateNutritionalValues(id);
+            }
         }
 
         /// <summary>

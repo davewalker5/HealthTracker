@@ -1,5 +1,7 @@
 using HealthTracker.Entities.Interfaces;
 using HealthTracker.Entities.Food;
+using HealthTracker.Api.Entities;
+using HealthTracker.Api.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
@@ -13,9 +15,15 @@ namespace HealthTracker.Api.Controllers
     public class MealController : Controller
     {
         private readonly IHealthTrackerFactory _factory;
+        private readonly IBackgroundQueue<RecalculateMealNutritionWorkItem> _queue;
 
-        public MealController(IHealthTrackerFactory factory)
-            => _factory = factory;
+        public MealController(
+            IHealthTrackerFactory factory,
+            IBackgroundQueue<RecalculateMealNutritionWorkItem> queue)
+        {
+            _factory = factory;
+            _queue = queue;
+        }
 
         /// <summary>
         /// Return meal details given an ID
@@ -82,6 +90,23 @@ namespace HealthTracker.Api.Controllers
             var meal = await _factory.Meals.UpdateAsync(
                 template.Id, template.Name, template.Portions, template.FoodSourceId, template.Reference, template.NutritionalValueId);
             return meal;
+        }
+
+        /// <summary>
+        /// Queue a request to recalculate the nutritional values for all meals
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("recalculate")]
+        public IActionResult RecalculateNutritionalValues([FromBody] RecalculateMealNutritionWorkItem item)
+        {
+            // Set the job name used in the job status record
+            item.JobName = "Meal Nutritional Value Recalculation";
+
+            // Queue the work item
+            _queue.Enqueue(item);
+            return Accepted();
         }
 
         /// <summary>

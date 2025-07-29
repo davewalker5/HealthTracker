@@ -18,5 +18,7 @@ namespace HealthTracker.Client.Interfaces
             int mealId,
             DateTime? date,
             decimal quantity);
+
+        Task UpdateAllNutritionalValues();
     }
 }
