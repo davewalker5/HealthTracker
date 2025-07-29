@@ -9,5 +9,6 @@ namespace HealthTracker.Client.Interfaces
         Task<PlannedMeal> UpdateAsync(int id, int personId, MealType mealType, DateTime date, int mealId);
         Task DeleteAsync(int id);
         Task PurgeAsync(int personId, DateTime? cutoff);
+        Task<List<ShoppingListItem>> GetShoppingListAsync(int personId, DateTime? from, DateTime? to);
     }
 }

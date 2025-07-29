@@ -173,5 +173,27 @@ namespace HealthTracker.Client.ApiClient
             List<PlannedMeal> items = Deserialize<List<PlannedMeal>>(json);
             return items;
         }
+
+        /// <summary>
+        /// Return a shopping list
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public async Task<List<ShoppingListItem>> GetShoppingListAsync(int personId, DateTime? from, DateTime? to)
+        {
+            // Determine the encoded date range
+            (var encodedFromDate, var encodedToDate) = CalculateEncodedDateRange(from, to);
+
+            // Request a shopping list
+            string baseRoute = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
+            string route = $"{baseRoute}/{personId}/{encodedFromDate}/{encodedToDate}";
+            string json = await SendDirectAsync(route, null, HttpMethod.Get);
+
+            // The returned JSON will be empty if there are no items in the database
+            List<ShoppingListItem> items = Deserialize<List<ShoppingListItem>>(json);
+            return items;
+        }
     }
 }

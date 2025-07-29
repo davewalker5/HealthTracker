@@ -93,6 +93,13 @@ namespace HealthTracker.Mvc.Controllers
                             end = model.Filters.To,
                             exportType = DataExchangeType.PlannedMeals
                         });
+                    case ControllerActions.ActionShoppingList:
+                        return RedirectToAction("Index", "ShoppingList", new
+                        {
+                            personId = model.Filters.PersonId,
+                            from = model.Filters.From,
+                            to = model.Filters.To
+                        });
                     default:
                         break;
                 }

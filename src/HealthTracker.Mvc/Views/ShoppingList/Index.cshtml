@@ -1,0 +1,49 @@
+@using HealthTracker.Mvc.Entities
+@using Microsoft.AspNetCore.Mvc.ModelBinding
+@model HealthTracker.Mvc.Models.ShoppingListViewModel
+
+@{
+    ViewData["Title"] = "Shopping List";
+}
+
+<p class="text-center font-weight-bold">
+    <span style="font-size: 1.2rem">
+        Shopping List
+    </span>
+    <br />
+    <small class="text-muted">
+        <em>
+            Shopping list for @Model.PersonName for @Model.From.ToShortDateString() to @Model.To.ToShortDateString()
+        </em>
+    </small>
+</p>
+
+
+<div class="container-fluid">
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="row">
+            <div class="col-md-12 message">
+                <span>@Html.Raw(Model.Message)</span>
+            </div>
+        </div>
+        <hr />
+    }
+
+    @using (Html.BeginForm("Index", "ShoppingList", FormMethod.Post, new { name = "main-form", id = "main-form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.PersonId)
+        @Html.HiddenFor(m => m.From)
+        @Html.HiddenFor(m => m.To)
+
+        @if ((Model.Items != null) && (Model.Items.Count() > 0))
+        {
+            @await Html.PartialAsync("_ShoppingListItemList", Model)
+        }
+        else
+        {
+            @Html.Raw("No shopping list items")
+        }
+    }
+</div>

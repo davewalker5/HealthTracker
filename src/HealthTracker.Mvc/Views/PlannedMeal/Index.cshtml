@@ -47,7 +47,6 @@
     @using (Html.BeginForm("Index", "PlannedMeal", FormMethod.Post, new { name = "main-form", id = "main-form" }))
     {
         @Html.AntiForgeryToken()
-        @Html.HiddenFor(m => m.Action)
         @Html.EditorFor(m => m.Filters)
         @Html.HiddenFor(m => m.PageNumber)
 
@@ -56,6 +55,9 @@
             @await Html.PartialAsync("_PlannedMealList", Model)
             <hr />
             <p>
+                <div style="float: left">
+                    <button type="submit" name="Action" value="@ControllerActions.ActionShoppingList" class="btn btn-primary">Shopping List</button>
+                </div>
                 <div style="float: right">
                     <button type="submit" name="Action" value="@ControllerActions.ActionPreviousPage" class="btn btn-secondary" @previousDisabled>Previous</button>
                     <button type="submit" name="Action" value="@ControllerActions.ActionNextPage" class="btn btn-primary" @nextDisabled>Next</button>

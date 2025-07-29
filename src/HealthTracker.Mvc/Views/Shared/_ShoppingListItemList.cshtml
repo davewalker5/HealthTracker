@@ -1,0 +1,18 @@
+@using HealthTracker.Mvc.Entities
+@model HealthTracker.Mvc.Models.ShoppingListViewModel
+
+<table class="table">
+    <tr>
+        <th>Item</th>
+        <th>Portion</th>
+        <th>Quantity</th>
+    </tr>
+    @foreach (var item in Model.Items)
+    {
+        <tr>
+            <td valign="center">@item.Item</td>
+            <td valign="center">@item.Portion</td>
+            <td valign="center">@item.Quantity</td>
+        </tr>
+    }
+</table>

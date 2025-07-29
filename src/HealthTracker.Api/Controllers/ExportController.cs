@@ -26,6 +26,7 @@ namespace HealthTracker.Api.Controllers
         private readonly IBackgroundQueue<MealConsumptionMeasurementExportWorkItem> _mealConsumptionQueue;
         private readonly IBackgroundQueue<MealFoodItemExportWorkItem> _mealFoodItemQueue;
         private readonly IBackgroundQueue<PlannedMealExportWorkItem> _plannedMealQueue;
+        private readonly IBackgroundQueue<ShoppingListExportWorkItem> _shoppingListQueue;
 
         public ExportController(
             IBackgroundQueue<PersonExportWorkItem> personQueue,
@@ -42,7 +43,8 @@ namespace HealthTracker.Api.Controllers
             IBackgroundQueue<MealExportWorkItem> mealQueue,
             IBackgroundQueue<MealConsumptionMeasurementExportWorkItem> mealConsumptionQueue,
             IBackgroundQueue<MealFoodItemExportWorkItem> mealFoodItemQueue,
-            IBackgroundQueue<PlannedMealExportWorkItem> plannedMealQueue)
+            IBackgroundQueue<PlannedMealExportWorkItem> plannedMealQueue,
+            IBackgroundQueue<ShoppingListExportWorkItem> shoppingListQueue)
         {
             _personQueue = personQueue;
             _weightMeasurementQueue = weightMeasurementQueue;
@@ -59,6 +61,7 @@ namespace HealthTracker.Api.Controllers
             _mealConsumptionQueue = mealConsumptionQueue;
             _mealFoodItemQueue = mealFoodItemQueue;
             _plannedMealQueue = plannedMealQueue;
+            _shoppingListQueue = shoppingListQueue;
         }
 
         [HttpPost]
@@ -238,6 +241,18 @@ namespace HealthTracker.Api.Controllers
 
             // Queue the work item
             _plannedMealQueue.Enqueue(item);
+            return Accepted();
+        }
+
+        [HttpPost]
+        [Route("shoppinglist")]
+        public IActionResult ExporShoppingList([FromBody] ShoppingListExportWorkItem item)
+        {
+            // Set the job name used in the job status record
+            item.JobName = "Shopping List Export";
+
+            // Queue the work item
+            _shoppingListQueue.Enqueue(item);
             return Accepted();
         }
     }

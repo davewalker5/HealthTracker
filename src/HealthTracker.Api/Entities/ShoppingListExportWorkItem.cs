@@ -1,6 +1,6 @@
 namespace HealthTracker.Api.Entities
 {
-    public class PlannedMealExportWorkItem : ExportWorkItem
+    public class ShoppingListExportWorkItem : ExportWorkItem
     {
         public int PersonId { get; set; }
         public DateTime From { get; set; }

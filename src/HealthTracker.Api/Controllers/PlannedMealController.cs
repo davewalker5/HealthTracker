@@ -133,5 +133,28 @@ namespace HealthTracker.Api.Controllers
             _queue.Enqueue(item);
             return Accepted();
         }
+
+        /// <summary>
+        /// Return a shopping list
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{personId}/{from}/{to}")]
+        public async Task<ActionResult<IEnumerable<ShoppingListItem>>> GetShoppingList(int personId, string from, string to)
+        {
+            // Decode the start and end date and convert them to dates
+            DateTime fromDate = DateTime.ParseExact(HttpUtility.UrlDecode(from), DateTimeFormat, null);
+            DateTime toDate = DateTime.ParseExact(HttpUtility.UrlDecode(to), DateTimeFormat, null);
+
+            // Retrieve planned meals in the specified date range
+            var items = await _factory.PlannedMeals.GetShoppingList(personId, fromDate, toDate);
+
+            if (items == null)
+            {
+                return NoContent();
+            }
+
+            return items;
+        }
     }
 }
