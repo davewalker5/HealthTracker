@@ -778,11 +778,12 @@ namespace HealthTracker.Tests.Mocks
         /// <summary>
         /// Generate a random nutritional value
         /// </summary>
+        /// <param name="id"></param>
         /// <returns></returns>
-        public static NutritionalValue RandomNutritionalValue()
+        public static NutritionalValue RandomNutritionalValue(int id)
             => new()
             {
-                Id = RandomId(),
+                Id = id,
                 Calories = RandomDecimal(10, 100),
                 Fat = RandomDecimal(0, 100),
                 SaturatedFat = RandomDecimal(0, 100),
@@ -791,6 +792,13 @@ namespace HealthTracker.Tests.Mocks
                 Sugar = RandomDecimal(0, 100),
                 Fibre = RandomDecimal(0, 100)
             };
+
+        /// <summary>
+        /// Generate a random nutritional value
+        /// </summary>
+        /// <returns></returns>
+        public static NutritionalValue RandomNutritionalValue()
+            => RandomNutritionalValue(RandomId());
 
         /// <summary>
         /// Generate a random food item
@@ -914,5 +922,38 @@ namespace HealthTracker.Tests.Mocks
             plannedMeal.MealId = plannedMeal.Meal.Id;
             return plannedMeal;
         }
+
+        /// <summary>
+        /// Generate a random shopping list item
+        /// </summary>
+        /// <returns></returns>
+        public static ShoppingListItem RandomShoppingListItem()
+        => new()
+        {
+            FoodItemId = RandomId(),
+            Portion = RandomDecimal(10, 100),
+            Quantity = RandomInt(1, 10),
+            Item = RandomTitleCasePhrase(3, 5, 10)
+        };
+
+        /// <summary>
+        /// Generate a random meal consumption summary
+        /// </summary>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public static MealConsumptionDailySummary RandomMealConsumptionDailySummary(int year)
+            => new()
+            {
+                PersonId = RandomId(),
+                PersonName = RandomTitleCasePhrase(2, 5, 15),
+                Date = RandomDateInYear(year),
+                Calories = RandomDecimal(10, 100),
+                Fat = RandomDecimal(0, 100),
+                SaturatedFat = RandomDecimal(0, 100),
+                Protein = RandomDecimal(0, 100),
+                Carbohydrates = RandomDecimal(0, 100),
+                Sugar = RandomDecimal(0, 100),
+                Fibre = RandomDecimal(0, 100)
+            };
     }
 }

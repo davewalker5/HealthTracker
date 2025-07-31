@@ -181,5 +181,27 @@ namespace HealthTracker.Client.ApiClient
             var measurements = Deserialize<List<MealConsumptionMeasurement>>(json);
             return measurements;
         }
+
+        /// <summary>
+        /// Return a list of daily consumption totals
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
+        public async Task<List<MealConsumptionDailySummary>> CalculateDailyTotalConsumption(int personId, DateTime? from, DateTime? to)
+        {
+            // Determine the encoded date range
+            (var encodedFromDate, var encodedToDate) = CalculateEncodedDateRange(from, to);
+
+            // Request a list of measurements
+            string baseRoute = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
+            string route = $"{baseRoute}/dailytotal/{personId}/{encodedFromDate}/{encodedToDate}";
+            string json = await SendDirectAsync(route, null, HttpMethod.Get);
+
+            // The returned JSON will be empty if there are no measurements in the database
+            var measurements = Deserialize<List<MealConsumptionDailySummary>>(json);
+            return measurements;
+        }
     }
 }

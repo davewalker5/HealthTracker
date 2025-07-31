@@ -5,6 +5,7 @@ using HealthTracker.Entities.Exceptions;
 using HealthTracker.Logic.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Diagnostics.CodeAnalysis;
 
 namespace HealthTracker.Logic.Database
 {
@@ -178,6 +179,7 @@ namespace HealthTracker.Logic.Database
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [ExcludeFromCodeCoverage]
         public async Task UpdateAllNutritionalValues()
         {
             Factory.Logger.LogMessage(Severity.Info, $"Updating nutritional values for all meals");

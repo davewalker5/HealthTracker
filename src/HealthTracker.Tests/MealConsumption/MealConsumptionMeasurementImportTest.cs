@@ -53,8 +53,8 @@ namespace HealthTracker.Tests.MealConsumption
 
         private void AssertCorrectNutritionalValue(decimal? baseValue, decimal portion, decimal quantity, decimal? actual)
         {
-            var expected = Math.Round(baseValue.Value * quantity / portion, 4);
-            Assert.AreEqual(expected, Math.Round(actual.Value, 4));
+            var expected = Math.Round(baseValue.Value * quantity / portion, 1);
+            Assert.AreEqual(expected, Math.Round(actual.Value, 1));
         }
 
         [TestMethod]

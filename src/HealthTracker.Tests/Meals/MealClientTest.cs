@@ -198,5 +198,20 @@ namespace HealthTracker.Tests.Meals
             Assert.AreEqual(HttpMethod.Post, _httpClient.Requests[0].Method);
             Assert.AreEqual(_settings.ApiRoutes.First(x => x.Name == "ExportMeal").Route, _httpClient.Requests[0].Uri);
         }
+
+        [TestMethod]
+        public async Task RecalculateNutritionalValuesTest()
+        {
+            _httpClient.AddResponse("");
+            _filePath = DataGenerator.TemporaryCsvFilePath();
+
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/recalculate";
+            await _client.UpdateAllNutritionalValues();
+
+            Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
+            Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
+            Assert.AreEqual(HttpMethod.Post, _httpClient.Requests[0].Method);
+            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+        }
     }
 }

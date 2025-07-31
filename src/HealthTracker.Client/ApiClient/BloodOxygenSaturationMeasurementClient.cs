@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Web;
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Interfaces;
@@ -184,6 +185,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="personId"></param>
         /// <param name="days"></param>
         /// <returns></returns>
+        [ExcludeFromCodeCoverage]
         public async Task<BloodOxygenSaturationMeasurement> CalculateAverageAsync(int personId, int days)
         {
             // Calculate an inclusive date range that ensures the whole of the start and end days are covered

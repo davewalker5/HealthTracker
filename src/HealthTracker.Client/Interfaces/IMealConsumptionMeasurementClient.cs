@@ -20,5 +20,6 @@ namespace HealthTracker.Client.Interfaces
             decimal quantity);
 
         Task UpdateAllNutritionalValues();
+        Task<List<MealConsumptionDailySummary>> CalculateDailyTotalConsumption(int personId, DateTime? from, DateTime? to);
     }
 }

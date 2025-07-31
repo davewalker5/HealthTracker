@@ -3,6 +3,7 @@ using System.Web;
 using HealthTracker.Client.ApiClient;
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Entities;
+using HealthTracker.Entities.Food;
 using HealthTracker.Tests.Mocks;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -289,6 +290,56 @@ namespace HealthTracker.Tests.MealConsumption
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
             Assert.AreEqual(HttpMethod.Post, _httpClient.Requests[0].Method);
             Assert.AreEqual(_settings.ApiRoutes.First(x => x.Name == "ExportMealConsumptionMeasurement").Route, _httpClient.Requests[0].Uri);
+        }
+
+        [TestMethod]
+        public async Task RecalculateNutritionalValuesTest()
+        {
+            _httpClient.AddResponse("");
+            _filePath = DataGenerator.TemporaryCsvFilePath();
+
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/recalculate";
+            await _client.UpdateAllNutritionalValues();
+
+            Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
+            Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
+            Assert.AreEqual(HttpMethod.Post, _httpClient.Requests[0].Method);
+            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+        }
+
+        [TestMethod]
+        public async Task CalculateDailyTotalConsumptionTest()
+        {
+            var summary = DataGenerator.RandomMealConsumptionDailySummary(2024);
+            var json = JsonSerializer.Serialize<List<MealConsumptionDailySummary>>([summary]);
+            _httpClient.AddResponse(json);
+
+            var from = summary.Date.AddDays(-1);
+            var to = summary.Date.AddDays(1);
+
+            var totals = await _client.CalculateDailyTotalConsumption(summary.PersonId, from, to);
+            var encodedFrom = HttpUtility.UrlEncode(from.ToString("yyyy-MM-dd H:mm:ss"));
+            var encodedTo = HttpUtility.UrlEncode(to.ToString("yyyy-MM-dd H:mm:ss"));
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/dailytotal/{summary.PersonId}/{encodedFrom}/{encodedTo}";
+
+            Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
+            Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
+            Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
+            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+
+            Assert.IsNull(_httpClient.Requests[0].Content);
+            Assert.IsNotNull(totals);
+            Assert.AreEqual(1, totals.Count);
+            Assert.AreEqual(summary.PersonId, totals[0].PersonId);
+            Assert.AreEqual(summary.PersonName, totals[0].PersonName);
+            Assert.AreEqual(summary.Date, totals[0].Date);
+            Assert.AreEqual(summary.Calories, totals[0].Calories);
+            Assert.AreEqual(summary.Fat, totals[0].Fat);
+            Assert.AreEqual(summary.SaturatedFat, totals[0].SaturatedFat);
+            Assert.AreEqual(summary.Protein, totals[0].Protein);
+            Assert.AreEqual(summary.Carbohydrates, totals[0].Carbohydrates);
+            Assert.AreEqual(summary.Sugar, totals[0].Sugar);
+            Assert.AreEqual(summary.Fibre, totals[0].Fibre);
         }
     }
 }

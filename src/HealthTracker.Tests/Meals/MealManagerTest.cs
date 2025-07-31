@@ -93,5 +93,15 @@ namespace HealthTracker.Tests.Meals
         [ExpectedException(typeof(NutritionalValueNotFoundException))]
         public async Task CannotUpdateMealForMissingNutritionalValueTest()
             => await _factory.Meals.UpdateAsync(_mealId, UpdatedName, UpdatedPortions, _updatedSourceId, UpdatedReference, 10 * _nutritionalValueId);
+
+        [TestMethod]
+        [ExpectedException(typeof(MealNotFoundException))]
+        public async Task CannotUpdateMissingMealTest()
+            => await _factory.Meals.UpdateAsync(10 * _mealId, UpdatedName, UpdatedPortions, _updatedSourceId, UpdatedReference, _nutritionalValueId);
+
+        [TestMethod]
+        [ExpectedException(typeof(MealNotFoundException))]
+        public async Task CannotUpdateNutritionalValueForMissingMealTest()
+            => await _factory.Meals.UpdateNutritionalValues(10 * _mealId);
     }
 }

@@ -112,5 +112,20 @@ namespace HealthTracker.Tests.MealConsumption
         [ExpectedException(typeof(MealNotFoundException))]
         public async Task CannotUpdateMeasurementForMissingMealTest()
             => await _factory.MealConsumptionMeasurements.UpdateAsync(_measurementId, _personId, 10 * _mealId, UpdatedConsumptionDate, UpdatedQuantity);
+
+        [TestMethod]
+        [ExpectedException(typeof(MealConsumptionMeasurementNotFoundException))]
+        public async Task CannotUpdateMissingMeasurementTest()
+            => await _factory.MealConsumptionMeasurements.UpdateAsync(10 * _measurementId, _personId, _mealId, UpdatedConsumptionDate, UpdatedQuantity);
+
+        [TestMethod]
+        [ExpectedException(typeof(MealConsumptionMeasurementNotFoundException))]
+        public async Task CannotDeleteMissingMeasurementTest()
+            => await _factory.MealConsumptionMeasurements.DeleteAsync(10 * _measurementId);
+
+        [TestMethod]
+        [ExpectedException(typeof(MealConsumptionMeasurementNotFoundException))]
+        public async Task CannotUpdateNutritionalValuesForMissingMeasurementTest()
+            => await _factory.MealConsumptionMeasurements.UpdateNutritionalValues(10 * _measurementId);
     }
 }

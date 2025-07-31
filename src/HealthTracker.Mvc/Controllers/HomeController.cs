@@ -16,6 +16,7 @@ namespace HealthTracker.Mvc.Controllers
         private readonly IWeightMeasurementClient _weightClient;
         private readonly IExerciseMeasurementClient _exerciseClient;
         private readonly IBeverageConsumptionMeasurementClient _beverageConsumptionMeasurementClient;
+        private readonly IMealConsumptionMeasurementClient _mealConsumptionMeasurementClient;
         private readonly IHealthTrackerApplicationSettings _settings;
         private readonly IFilterGenerator _filterGenerator;
         private readonly IViewModelBuilder _builder;
@@ -24,6 +25,7 @@ namespace HealthTracker.Mvc.Controllers
             IWeightMeasurementClient weightClient,
             IExerciseMeasurementClient exerciseClient,
             IBeverageConsumptionMeasurementClient beverageConsumptionMeasurementClient,
+            IMealConsumptionMeasurementClient mealConsumptionMeasurementClient,
             IHealthTrackerApplicationSettings settings,
             IFilterGenerator filterGenerator,
             IViewModelBuilder builder,
@@ -33,6 +35,7 @@ namespace HealthTracker.Mvc.Controllers
             _weightClient = weightClient;
             _exerciseClient = exerciseClient;
             _beverageConsumptionMeasurementClient = beverageConsumptionMeasurementClient;
+            _mealConsumptionMeasurementClient = mealConsumptionMeasurementClient;
             _settings = settings;
             _filterGenerator = filterGenerator;
             _builder = builder;
@@ -79,6 +82,9 @@ namespace HealthTracker.Mvc.Controllers
                 Summaries = await _exerciseClient.SummariseAsync(model.Filters.PersonId, 0, from, to)
             };
 
+            // Calculate the rolling total meal consumption for the default period
+            model.MealConsumption = await _mealConsumptionMeasurementClient.CalculateDailyTotalConsumption(model.Filters.PersonId, from, to);
+
             // Calculate the rolling total alcohol consumption for the default period
             var summary = await _beverageConsumptionMeasurementClient.CalculateTotalAlcoholicAsync(model.Filters.PersonId, from, to);
             model.TotalAlcoholConsumption = new BeverageConsumptionSummaryListViewModel()
@@ -87,10 +93,10 @@ namespace HealthTracker.Mvc.Controllers
             };
 
             // Calculate the rolling total hydrating drink consumption for the default period
-            var measurements = await _beverageConsumptionMeasurementClient.CalculateDailyTotalHydratingAsync(model.Filters.PersonId, from, to);
-            if (measurements != null)
+            var beverageConsumptionMeasurements = await _beverageConsumptionMeasurementClient.CalculateDailyTotalHydratingAsync(model.Filters.PersonId, from, to);
+            if (beverageConsumptionMeasurements != null)
             {
-                model.HydratingBeverageConsumption = await _builder.CreateBeverageConsumptionListViewModel(model.Filters.PersonId, 0, measurements, from, to, "", ViewFlags.None);
+                model.HydratingBeverageConsumption = await _builder.CreateBeverageConsumptionListViewModel(model.Filters.PersonId, 0, beverageConsumptionMeasurements, from, to, "", ViewFlags.None);
             }
 
             // Retrieve current medication details

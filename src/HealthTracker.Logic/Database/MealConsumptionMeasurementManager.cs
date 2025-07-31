@@ -4,6 +4,7 @@ using HealthTracker.Entities.Logging;
 using HealthTracker.Entities.Food;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Diagnostics.CodeAnalysis;
 
 namespace HealthTracker.Logic.Database
 {
@@ -148,6 +149,7 @@ namespace HealthTracker.Logic.Database
         /// Update the nutritional value for all meal consumption records in the database
         /// </summary>
         /// <returns></returns>
+        [ExcludeFromCodeCoverage]
         public async Task UpdateAllNutritionalValues()
         {
             Factory.Logger.LogMessage(Severity.Info, $"Updating nutritional values for all meal consumption records");
