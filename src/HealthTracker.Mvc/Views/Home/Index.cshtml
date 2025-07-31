@@ -50,6 +50,19 @@
         <br/>
     }
 
+    @if (Model.HasMealConsumption)
+    {
+        <div class="container-fluid">
+            <p class="text-center font-weight-bold">
+                <span style="font-size: 1.2rem">
+                    Food Consumption
+                </span>
+            </p>
+            @await Html.PartialAsync("_MealConsumptionSummaryList", Model.MealConsumption)
+        </div>
+        <br/>
+    }
+
     @if (Model.HasTotalAlcoholConsumption)
     {
         <div class="container-fluid">

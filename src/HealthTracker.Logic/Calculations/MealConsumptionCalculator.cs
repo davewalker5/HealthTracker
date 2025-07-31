@@ -17,9 +17,9 @@ namespace HealthTracker.Logic.Calculations
         /// <param name="from"></param>
         /// <param name="to"></param>
         /// <returns></returns>
-        public async Task<List<MealConsumptionMeasurement>> DailyTotalConsumptionAsync(int personId, DateTime from, DateTime to)
+        public async Task<List<MealConsumptionDailySummary>> DailyTotalConsumptionAsync(int personId, DateTime from, DateTime to)
         {
-            List<MealConsumptionMeasurement> totals = [];
+            List<MealConsumptionDailySummary> totals = [];
 
             // Retrieve matching measurements
             var measurements = await _factory.MealConsumptionMeasurements.ListAsync(x => 
@@ -41,20 +41,18 @@ namespace HealthTracker.Logic.Calculations
                     var dailyReadings = measurements.Where(x => (x.Date >= date) && (x.Date <= endDate));
 
                     // Calculate the daily total
-                    var dailyTotal = new MealConsumptionMeasurement
+                    var dailyTotal = new MealConsumptionDailySummary
                     {
                         PersonId = personId,
+                        PersonName = people.First(x => x.Id == personId).Name,
                         Date = date,
-                        NutritionalValue = new()
-                        {
-                            Calories = measurements.Where(x => x.NutritionalValue.Calories != null).Sum(x => x.NutritionalValue.Calories),
-                            Fat = measurements.Where(x => x.NutritionalValue.Fat != null).Sum(x => x.NutritionalValue.Fat),
-                            SaturatedFat = measurements.Where(x => x.NutritionalValue.SaturatedFat != null).Sum(x => x.NutritionalValue.SaturatedFat),
-                            Protein = measurements.Where(x => x.NutritionalValue.Protein != null).Sum(x => x.NutritionalValue.Protein),
-                            Carbohydrates = measurements.Where(x => x.NutritionalValue.Carbohydrates != null).Sum(x => x.NutritionalValue.Carbohydrates),
-                            Sugar = measurements.Where(x => x.NutritionalValue.Sugar != null).Sum(x => x.NutritionalValue.Sugar),
-                            Fibre = measurements.Where(x => x.NutritionalValue.Fibre != null).Sum(x => x.NutritionalValue.Fibre)
-                        }
+                        Calories = dailyReadings.Where(x => x.NutritionalValue.Calories != null).Sum(x => x.NutritionalValue.Calories),
+                        Fat = dailyReadings.Where(x => x.NutritionalValue.Fat != null).Sum(x => x.NutritionalValue.Fat),
+                        SaturatedFat = dailyReadings.Where(x => x.NutritionalValue.SaturatedFat != null).Sum(x => x.NutritionalValue.SaturatedFat),
+                        Protein = dailyReadings.Where(x => x.NutritionalValue.Protein != null).Sum(x => x.NutritionalValue.Protein),
+                        Carbohydrates = dailyReadings.Where(x => x.NutritionalValue.Carbohydrates != null).Sum(x => x.NutritionalValue.Carbohydrates),
+                        Sugar = dailyReadings.Where(x => x.NutritionalValue.Sugar != null).Sum(x => x.NutritionalValue.Sugar),
+                        Fibre = dailyReadings.Where(x => x.NutritionalValue.Fibre != null).Sum(x => x.NutritionalValue.Fibre)
                     };
 
                     // Add the daily total to the collection

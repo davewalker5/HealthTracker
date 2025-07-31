@@ -1,0 +1,43 @@
+@using HealthTracker.Entities.Food
+@model IEnumerable<MealConsumptionDailySummary>
+
+@functions
+{
+    public string GetNutritonalValue(decimal? value)
+        => value != null ? value.Value.ToString("0.0") : "";
+}
+
+<table class="table">
+    <tr>
+        <th>Person</th>
+        <th>Date</th>
+        <th>Calories</th>
+        <th>Fat</th>
+        <th>Saturated Fat</th>
+        <th>Protein</th>
+        <th>Carbohydrates</th>
+        <th>Sugar</th>
+        <th>Fibre</th>
+    </tr>
+    @foreach (var summary in Model)
+    {
+        var calories = GetNutritonalValue(summary.Calories);
+        var fat = GetNutritonalValue(summary.Fat);
+        var saturated = GetNutritonalValue(summary.SaturatedFat);
+        var protein = GetNutritonalValue(summary.Protein);
+        var carbohydrates = GetNutritonalValue(summary.Carbohydrates);
+        var sugar = GetNutritonalValue(summary.Sugar);
+        var fibre = GetNutritonalValue(summary.Fibre);
+        <tr>
+            <td valign="center">@summary.PersonName</td>
+            <td valign="center">@summary.Date.ToString("dd-MMM-yyyy")</td>
+            <td valign="center">@calories</td>
+            <td valign="center">@fat</td>
+            <td valign="center">@saturated</td>
+            <td valign="center">@protein</td>
+            <td valign="center">@carbohydrates</td>
+            <td valign="center">@sugar</td>
+            <td valign="center">@fibre</td>
+        </tr>
+    }
+</table>

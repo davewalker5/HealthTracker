@@ -153,7 +153,7 @@ namespace HealthTracker.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("dailytotal/{personId}/{from}/{to}")]
-        public async Task<ActionResult<List<MealConsumptionMeasurement>>> DailyTotalConsumptionAsync(int personId, string from, string to)
+        public async Task<ActionResult<List<MealConsumptionDailySummary>>> DailyTotalConsumptionAsync(int personId, string from, string to)
         {
             // Decode the start and end date and convert them to dates
             DateTime fromDate = DateTime.ParseExact(HttpUtility.UrlDecode(from), DateTimeFormat, null);

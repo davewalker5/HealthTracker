@@ -4,6 +4,6 @@ namespace HealthTracker.Entities.Interfaces
 {
     public interface IMealConsumptionCalculator
     {
-        Task<List<MealConsumptionMeasurement>> DailyTotalConsumptionAsync(int personId, DateTime from, DateTime to);
+        Task<List<MealConsumptionDailySummary>> DailyTotalConsumptionAsync(int personId, DateTime from, DateTime to);
     }
 }

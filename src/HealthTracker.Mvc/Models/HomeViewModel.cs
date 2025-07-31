@@ -1,3 +1,5 @@
+using HealthTracker.Entities.Food;
+
 namespace HealthTracker.Mvc.Models
 {
     public class HomeViewModel
@@ -6,6 +8,9 @@ namespace HealthTracker.Mvc.Models
 
         public WeightListViewModel WeightMeasurements { get; set; }
         public bool HasWeightMeasurements { get { return WeightMeasurements?.Measurements?.Any() ?? false; } }
+
+        public IEnumerable<MealConsumptionDailySummary> MealConsumption { get; set; }
+        public bool HasMealConsumption { get { return MealConsumption?.Any() ?? false; } }
 
         public BeverageConsumptionListViewModel HydratingBeverageConsumption { get; set; }
         public bool HasHydratingBeverageConsumption { get { return HydratingBeverageConsumption?.Measurements?.Any() ?? false; } }
