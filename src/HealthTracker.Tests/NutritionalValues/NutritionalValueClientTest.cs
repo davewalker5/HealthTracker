@@ -2,7 +2,6 @@ using System.Text.Json;
 using HealthTracker.Client.ApiClient;
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Entities;
-using HealthTracker.Entities.Food;
 using HealthTracker.Tests.Mocks;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -116,6 +115,32 @@ namespace HealthTracker.Tests.NutritionalValues
             Assert.AreEqual(nutritionalValue.Carbohydrates, updated.Carbohydrates);
             Assert.AreEqual(nutritionalValue.Sugar, updated.Sugar);
             Assert.AreEqual(nutritionalValue.Fibre, updated.Fibre);
+        }
+
+        [TestMethod]
+        public async Task GetTest()
+        {
+            var nutritionalValue = DataGenerator.RandomNutritionalValue();
+            var json = JsonSerializer.Serialize(nutritionalValue);
+            _httpClient.AddResponse(json);
+
+            var retrieved = await _client.GetAsync(nutritionalValue.Id);
+
+            Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
+            Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
+            Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
+            Assert.AreEqual($"{_settings.ApiRoutes[0].Route}/{nutritionalValue.Id}", _httpClient.Requests[0].Uri);
+
+            Assert.IsNull(_httpClient.Requests[0].Content);
+            Assert.IsNotNull(retrieved);
+            Assert.AreEqual(nutritionalValue.Id, retrieved.Id);
+            Assert.AreEqual(nutritionalValue.Calories, retrieved.Calories);
+            Assert.AreEqual(nutritionalValue.Fat, retrieved.Fat);
+            Assert.AreEqual(nutritionalValue.SaturatedFat, retrieved.SaturatedFat);
+            Assert.AreEqual(nutritionalValue.Protein, retrieved.Protein);
+            Assert.AreEqual(nutritionalValue.Carbohydrates, retrieved.Carbohydrates);
+            Assert.AreEqual(nutritionalValue.Sugar, retrieved.Sugar);
+            Assert.AreEqual(nutritionalValue.Fibre, retrieved.Fibre);
         }
 
         [TestMethod]

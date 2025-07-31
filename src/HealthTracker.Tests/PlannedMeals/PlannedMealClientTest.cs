@@ -222,5 +222,36 @@ namespace HealthTracker.Tests.PlannedMeals
             Assert.AreEqual(HttpMethod.Post, _httpClient.Requests[0].Method);
             Assert.AreEqual(_settings.ApiRoutes.First(x => x.Name == "ExportPlannedMeal").Route, _httpClient.Requests[0].Uri);
         }
+
+        [TestMethod]
+        public async Task GetShoppingListTest()
+        {
+            var personId = DataGenerator.RandomId();
+            var to = DataGenerator.RandomDateInYear(2025);
+            var from = to.AddDays(-30);
+            var item = DataGenerator.RandomShoppingListItem();
+
+            var json = JsonSerializer.Serialize(new List<dynamic> { item });
+            _httpClient.AddResponse(json);
+
+            var encodedFrom = HttpUtility.UrlEncode(from.ToString("yyyy-MM-dd H:mm:ss"));
+            var encodedTo = HttpUtility.UrlEncode(to.ToString("yyyy-MM-dd H:mm:ss"));
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/{personId}/{encodedFrom}/{encodedTo}";
+
+            var retrieved = await _client.GetShoppingListAsync(personId, from, to);
+
+            Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
+            Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
+            Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
+            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+
+            Assert.IsNull(_httpClient.Requests[0].Content);
+            Assert.IsNotNull(retrieved);
+            Assert.AreEqual(1, retrieved.Count);
+            Assert.AreEqual(item.FoodItemId, retrieved.First().FoodItemId);
+            Assert.AreEqual(item.Portion, retrieved.First().Portion);
+            Assert.AreEqual(item.Quantity, retrieved.First().Quantity);
+            Assert.AreEqual(item.Item, retrieved.First().Item);
+        }
     }
 }
