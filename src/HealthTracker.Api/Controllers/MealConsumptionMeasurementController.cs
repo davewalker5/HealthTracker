@@ -143,5 +143,30 @@ namespace HealthTracker.Api.Controllers
             await _factory.MealConsumptionMeasurements.DeleteAsync(id);
             return Ok();
         }
+
+        /// <summary>
+        /// Return the daily total consumption for each date in a date range for a person
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("dailytotal/{personId}/{from}/{to}")]
+        public async Task<ActionResult<List<MealConsumptionMeasurement>>> DailyTotalConsumptionAsync(int personId, string from, string to)
+        {
+            // Decode the start and end date and convert them to dates
+            DateTime fromDate = DateTime.ParseExact(HttpUtility.UrlDecode(from), DateTimeFormat, null);
+            DateTime toDate = DateTime.ParseExact(HttpUtility.UrlDecode(to), DateTimeFormat, null);
+
+            // Calculate the daily totals. If there are none in the specified date range, the result is null
+            var totals = await _factory.MealConsumptionCalculator.DailyTotalConsumptionAsync(personId, fromDate, toDate);
+            if (totals == null)
+            {
+                return NotFound();
+            }
+
+            return totals;
+        }
     }
 }
