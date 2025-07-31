@@ -8,12 +8,20 @@ using HealthTracker.Logic.Factory;
 using HealthTracker.Tests.Mocks;
 using Moq;
 using HealthTracker.Entities.Identity;
+using HealthTracker.Enumerations.Enumerations;
 
 namespace HealthTracker.Tests.PlannedMeals
 {
     [TestClass]
     public class PlannedMealExportTest
     {
+        private readonly string MealName = DataGenerator.RandomTitleCasePhrase(5, 5, 20);
+        private readonly string FoodItemName = DataGenerator.RandomTitleCasePhrase(5, 5, 20);
+        private readonly int Portions = DataGenerator.RandomInt(1, 10);
+        private readonly string Reference = DataGenerator.RandomTitleCasePhrase(2, 5, 10);
+        private readonly DateTime Date = DataGenerator.RandomDateInYear(2025);
+        private readonly DateTime UpdatedDate = DataGenerator.RandomDateInYear(2025);
+
         private PlannedMeal _plannedMeal;
         private Person _person;
 
@@ -113,6 +121,43 @@ namespace HealthTracker.Tests.PlannedMeals
             Assert.AreEqual(_plannedMeal.Date.Day, exportable.Date.Day);
             Assert.AreEqual(_plannedMeal.MealType.ToString(), exportable.MealType);
             Assert.AreEqual(_plannedMeal.Meal.Name, exportable.Meal);
+        }
+
+        [TestMethod]
+        public async Task ShoppingListExportTest()
+        {
+            var context = HealthTrackerDbContextFactory.CreateInMemoryDbContext();
+            var logger = new Mock<IHealthTrackerLogger>();
+            var factory = new HealthTrackerFactory(context, null, logger.Object);
+            var exporter = new ShoppingListItemExporter(factory);
+
+            // Set up a food item
+            var foodCategory = await factory.FoodCategories.AddAsync(DataGenerator.RandomTitleCasePhrase(3, 5, 10));
+            var nutritionalValue = await factory.NutritionalValues.AddAsync(DataGenerator.RandomNutritionalValue(0));
+            var foodItem = await factory.FoodItems.AddAsync(FoodItemName, DataGenerator.RandomDecimal(100, 500), foodCategory.Id, nutritionalValue.Id);
+
+            // Set up a meal, with the food item as an ingredient
+            var source = await factory.FoodSources.AddAsync(DataGenerator.RandomTitleCasePhrase(3, 5, 10));
+            var meal = await factory.Meals.AddAsync(MealName, Portions, source.Id, Reference, null);
+            _ = await factory.MealFoodItems.AddAsync(meal.Id, foodItem.Id, DataGenerator.RandomDecimal(100, 500));
+
+            // Create a person to own planned meals
+            var person = DataGenerator.RandomPerson(10, 90);
+            var personId = (await factory.People.AddAsync(person.FirstNames, person.Surname, person.DateOfBirth, person.Height, person.Gender)).Id;
+            await context.SaveChangesAsync();
+
+            // Set up a planned meal
+            _plannedMeal = await factory.PlannedMeals.AddAsync(personId, MealType.Dinner, Date, meal.Id);
+
+            _filePath = Path.ChangeExtension(Path.GetTempFileName(), "csv");
+            await exporter.ExportAsync(personId, _plannedMeal.Date.AddDays(-1), _plannedMeal.Date.AddDays(1), _filePath);
+
+            var info = new FileInfo(_filePath);
+            Assert.AreEqual(info.FullName, _filePath);
+            Assert.IsTrue(info.Length > 0);
+
+            var records = File.ReadAllLines(_filePath);
+            Assert.AreEqual(2, records.Length);
         }
     }
 }

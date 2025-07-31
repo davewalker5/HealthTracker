@@ -12,7 +12,8 @@ namespace HealthTracker.Tests.PlannedMeals
     [TestClass]
     public class PlannedMealManagerTest
     {
-        private readonly string Name = DataGenerator.RandomTitleCasePhrase(5, 5, 20);
+        private readonly string MealName = DataGenerator.RandomTitleCasePhrase(5, 5, 20);
+        private readonly string FoodItemName = DataGenerator.RandomTitleCasePhrase(5, 5, 20);
         private readonly int Portions = DataGenerator.RandomInt(1, 10);
         private readonly string Reference = DataGenerator.RandomTitleCasePhrase(2, 5, 10);
         private readonly DateTime Date = DataGenerator.RandomDateInYear(2025);
@@ -33,11 +34,11 @@ namespace HealthTracker.Tests.PlannedMeals
             // Set up a food item
             var foodCategory = await _factory.FoodCategories.AddAsync(DataGenerator.RandomTitleCasePhrase(3, 5, 10));
             var nutritionalValue = await _factory.NutritionalValues.AddAsync(DataGenerator.RandomNutritionalValue(0));
-            var foodItem = await _factory.FoodItems.AddAsync(Name, DataGenerator.RandomDecimal(100, 500), foodCategory.Id, nutritionalValue.Id);
+            var foodItem = await _factory.FoodItems.AddAsync(FoodItemName, DataGenerator.RandomDecimal(100, 500), foodCategory.Id, nutritionalValue.Id);
 
             // Set up a meal, with the food item as an ingredient
             var source = await _factory.FoodSources.AddAsync(DataGenerator.RandomTitleCasePhrase(3, 5, 10));
-            _meal = await _factory.Meals.AddAsync(Name, Portions, source.Id, Reference, null);
+            _meal = await _factory.Meals.AddAsync(MealName, Portions, source.Id, Reference, null);
             _ = await _factory.MealFoodItems.AddAsync(_meal.Id, foodItem.Id, DataGenerator.RandomDecimal(100, 500));
 
             // Create a person to own planned meals
