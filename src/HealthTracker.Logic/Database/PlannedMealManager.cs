@@ -5,6 +5,7 @@ using HealthTracker.Entities.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using HealthTracker.Enumerations.Enumerations;
+using HealthTracker.Logic.Extensions;
 
 namespace HealthTracker.Logic.Database
 {
@@ -66,7 +67,7 @@ namespace HealthTracker.Logic.Database
 
             // Clean up the date and make sure we're not creating a duplicate and that the
             // related meal exists
-            var cleanDate = RemoveTimestamp(date);
+            var cleanDate = HealthTrackerDateExtensions.DateWithoutTime(date);
             Factory.Meals.CheckMealExists(mealId);
             await CheckPlannedMealIsNotADuplicate(personId, mealType, cleanDate, 0);
 
@@ -111,7 +112,7 @@ namespace HealthTracker.Logic.Database
 
             // Clean up the date and make sure we're not creating a duplicate and that the
             // related meal exists
-            var cleanDate = RemoveTimestamp(date);
+            var cleanDate = HealthTrackerDateExtensions.DateWithoutTime(date);
             Factory.Meals.CheckMealExists(mealId);
             await CheckPlannedMealIsNotADuplicate(personId, mealType, cleanDate, id);
 
@@ -157,7 +158,7 @@ namespace HealthTracker.Logic.Database
         /// <returns></returns>
         public async Task PurgeAsync(int personId, DateTime? cutoff)
         {
-            var cleanCutoff = RemoveTimestamp(cutoff);
+            var cleanCutoff = HealthTrackerDateExtensions.DateWithoutTime(cutoff ?? DateTime.Now);
             Factory.Logger.LogMessage(Severity.Info, $"Purging planned meals for person with ID {personId} and date < {cleanCutoff}");
 
             // SQLite doesn't support ExecuteDeleteAsync() so we need to load the planned meals and then delete them manually
@@ -239,26 +240,6 @@ namespace HealthTracker.Logic.Database
                 var message = $"Planned meal type {mealType} on {date} already exists for person with ID {personId}";
                 throw new PlannedMealExistsException(message);
             }
-        }
-
-        /// <summary>
-        /// Return a "cleaned" version of a date with the timestamp removed
-        /// </summary>
-        /// <param name="mealType"></param>
-        /// <returns></returns>
-        private DateTime RemoveTimestamp(DateTime? date)
-        {
-            DateTime cleaned;
-            if (date != null)
-            {
-                cleaned = new DateTime(date.Value.Year, date.Value.Month, date.Value.Day, 0, 0, 0);
-            }
-            else
-            {
-                var today = DateTime.Now;
-                cleaned = new DateTime(today.Year, today.Month, today.Day, 0, 0, 0);
-            }
-            return cleaned;
         }
     }
 }
