@@ -7,7 +7,7 @@ using HealthTracker.Tests.Mocks;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace HealthTracker.Tests.ActivityTypes
+namespace HealthTracker.Tests
 {
     [TestClass]
     public class ReferenceDataClientTest

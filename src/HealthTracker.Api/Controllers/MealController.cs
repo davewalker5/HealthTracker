@@ -65,6 +65,25 @@ namespace HealthTracker.Api.Controllers
         }
 
         /// <summary>
+        /// Search for meals matching the criteria specified in the request body
+        /// </summary>
+        /// <param name="template"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("search/{pageNumber}/{pageSize}")]
+        public async Task<ActionResult<IEnumerable<Meal>>> SearchForMealsAsync([FromBody] MealSearchCriteria criteria, int pageNumber, int pageSize)
+        {
+            var meals = await _factory.Meals.SearchAsync(criteria, pageNumber, pageSize);
+
+            if (meals == null)
+            {
+                return NoContent();
+            }
+
+            return meals;
+        }
+
+        /// <summary>
         /// Add a meal from a template contained in the request body
         /// </summary>
         /// <param name="template"></param>

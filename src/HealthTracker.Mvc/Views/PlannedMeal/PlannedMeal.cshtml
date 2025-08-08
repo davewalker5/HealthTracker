@@ -13,7 +13,7 @@
             <div class="input-group">
                 @Html.DropDownListFor(m => m.PlannedMeal.PersonId, Model.People, new { @class = "form-control" })
             </div>
-            <span>@Html.ValidationMessageFor(m => m.PlannedMeal.MealType, "", new { @class = "text-danger" })</span>
+            <span>@Html.ValidationMessageFor(m => m.PlannedMeal.PersonId, "", new { @class = "text-danger" })</span>
         </div>
     </div>
     <br/>

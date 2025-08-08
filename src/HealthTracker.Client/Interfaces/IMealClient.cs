@@ -22,5 +22,12 @@ namespace HealthTracker.Client.Interfaces
         Task UpdateAllNutritionalValues();
         Task DeleteAsync(int id);
         Task<List<Meal>> ListAsync(int foodSourceId, int pageNumber, int pageSize);
+        Task<List<Meal>> SearchAsync(
+            int? foodSourceId,
+            int? foodCategoryId,
+            string mealNameSubstring,
+            string foodItemNameSubstring,
+            int pageNumber,
+            int pageSize);
     }
 }

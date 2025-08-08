@@ -18,7 +18,7 @@
             <td valign="center">@relationship.FoodItem.FoodCategory.Name</td>
             <td valign="center">@relationship.Quantity.ToString("0.0") / @relationship.FoodItem.Portion.ToString("0.0")</td>
             <td valign="center">
-                <a class="btn btn-lg" href="javascript:LoadModalContent(@relationship.Id, 'MealFoodItem/ShowNutritionalValues')">
+                <a class="btn btn-lg" href="javascript:LoadModalContent(@relationship.Id, '/MealFoodItem/ShowNutritionalValues')">
                     <i class="fas fa-info-circle"></i>
                 </a>
             </td>

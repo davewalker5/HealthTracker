@@ -146,7 +146,7 @@ namespace HealthTracker.Mvc.Controllers
                 var listModel = new MealListViewModel
                 {
                     PageNumber = 1,
-                    Filters = await _filterGenerator.Create(0, ViewFlags.ListView),
+                    Filters = await _filterGenerator.Create(meal.FoodSourceId, ViewFlags.ListView),
                     Message = "Meal added successfully",
                 };
 
@@ -259,7 +259,12 @@ namespace HealthTracker.Mvc.Controllers
         [HttpGet]
         public async Task<IActionResult> ShowNutritionalValues(int id)
         {
+            _logger.LogDebug($"Loading nutritional values for meal with ID {id}");
+
             var meal = await _helper.GetAsync(id);
+
+            _logger.LogDebug($"Nutritional values for meal with ID {id}: {meal.NutritionalValue}");
+
             var model = new NutritionalValueTableViewModel()
             {
                 Portion = meal.Portions,

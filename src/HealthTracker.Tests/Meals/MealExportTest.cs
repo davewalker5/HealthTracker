@@ -13,7 +13,7 @@ namespace HealthTracker.Tests.Meals
     [TestClass]
     public class MealExportTest
     {
-        private readonly Meal _meal = DataGenerator.RandomMeal();
+        private readonly Meal _meal = DataGenerator.RandomMeal(0);
 
         private string _filePath;
 

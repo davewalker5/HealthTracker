@@ -179,5 +179,44 @@ namespace HealthTracker.Client.ApiClient
             List<Meal> items = Deserialize<List<Meal>>(json);
             return items;
         }
+
+        /// <summary>
+        /// Return a list of meals
+        /// </summary>
+        /// <param name="foodSourceId"></param>
+        /// <param name="foodCategoryId"></param>
+        /// <param name="mealNameSubstring"></param>
+        /// <param name="foodItemNameSubstring"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public async Task<List<Meal>> SearchAsync(
+            int? foodSourceId,
+            int? foodCategoryId,
+            string mealNameSubstring,
+            string foodItemNameSubstring,
+            int pageNumber,
+            int pageSize)
+        {
+            // Prepare the search criteria
+            dynamic criteria = new
+            {
+                FoodSourceId = foodSourceId,
+                FoodCategoryId = foodCategoryId,
+                MealName = mealNameSubstring,
+                FoodItemName = foodItemNameSubstring
+            };
+
+            var data = Serialize(criteria);
+
+            // Request a list of matching meals
+            string baseRoute = @$"{Settings.ApiRoutes.First(r => r.Name == RouteKey).Route}";
+            string route = $"{baseRoute}/search/{pageNumber}/{pageSize}";
+            string json = await SendDirectAsync(route, data, HttpMethod.Post);
+
+            // The returned JSON will be empty if there are no items in the database
+            List<Meal> items = Deserialize<List<Meal>>(json);
+            return items;
+        }
     }
 }
