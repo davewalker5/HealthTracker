@@ -15,13 +15,13 @@ namespace HealthTracker.Logic.Extensions
             Expression<Func<Meal, bool>> predicate = x => true;
 
             // Add a clause for the  meal food source
-            if (criteria.FoodSourceId != null)
+            if (criteria.FoodSourceId > 0)
             {
                 predicate = predicate.And(m => m.FoodSourceId == criteria.FoodSourceId);
             }
 
             // Add a clause for the associated food item category
-            if (criteria.FoodCategoryId != null)
+            if (criteria.FoodCategoryId > 0)
             {
                 predicate = predicate.And(m => m.MealFoodItems
                                     .Select(x => x.FoodItem.FoodCategoryId)
