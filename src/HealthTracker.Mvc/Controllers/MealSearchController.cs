@@ -87,7 +87,7 @@ namespace HealthTracker.Mvc.Controllers
                     model.Criteria.FoodCategoryId,
                     model.Criteria.MealName,
                     model.Criteria.FoodItemName,
-                    model.PageNumber,
+                    page,
                     _settings.ResultsPageSize);
                 model.SetEntities(meals, page, _settings.ResultsPageSize);
 
