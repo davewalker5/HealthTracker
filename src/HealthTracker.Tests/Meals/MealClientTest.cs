@@ -2,6 +2,7 @@ using System.Text.Json;
 using HealthTracker.Client.ApiClient;
 using HealthTracker.Client.Interfaces;
 using HealthTracker.Configuration.Entities;
+using HealthTracker.Entities.Food;
 using HealthTracker.Tests.Mocks;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -48,7 +49,7 @@ namespace HealthTracker.Tests.Meals
         [TestMethod]
         public async Task AddTest()
         {
-            var meal = DataGenerator.RandomMeal();
+            var meal = DataGenerator.RandomMeal(0);
             var json = JsonSerializer.Serialize(meal);
             _httpClient.AddResponse(json);
 
@@ -76,7 +77,7 @@ namespace HealthTracker.Tests.Meals
         [TestMethod]
         public async Task UpdateTest()
         {
-            var meal = DataGenerator.RandomMeal();
+            var meal = DataGenerator.RandomMeal(0);
             var json = JsonSerializer.Serialize(meal);
             _httpClient.AddResponse(json);
 
@@ -119,7 +120,7 @@ namespace HealthTracker.Tests.Meals
         [TestMethod]
         public async Task GetTest()
         {
-            var meal = DataGenerator.RandomMeal();
+            var meal = DataGenerator.RandomMeal(0);
             var json = JsonSerializer.Serialize(meal);
             _httpClient.AddResponse(json);
 
@@ -143,7 +144,7 @@ namespace HealthTracker.Tests.Meals
         [TestMethod]
         public async Task ListTest()
         {
-            var meal = DataGenerator.RandomMeal();
+            var meal = DataGenerator.RandomMeal(0);
             var json = JsonSerializer.Serialize(new List<dynamic> { meal });
             _httpClient.AddResponse(json);
 
@@ -167,11 +168,115 @@ namespace HealthTracker.Tests.Meals
         }
 
         [TestMethod]
+        public async Task SearchByFoodSourceTest()
+        {
+            var meal = DataGenerator.RandomMeal(0);
+            var json = JsonSerializer.Serialize(new List<dynamic> { meal });
+            _httpClient.AddResponse(json);
+
+            var expectedContent = GetExpectedSearchContent(meal.FoodSourceId, null, null, null);
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/search/1/{int.MaxValue}";
+            var meals = await _client.SearchAsync(meal.FoodSourceId, null, null, null, 1, int.MaxValue);
+
+            Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
+            Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
+            Assert.AreEqual(HttpMethod.Post, _httpClient.Requests[0].Method);
+            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+
+            Assert.AreEqual(expectedContent, await _httpClient.Requests[0].Content.ReadAsStringAsync());
+            Assert.IsNotNull(meals);
+            Assert.AreEqual(1, meals.Count);
+            Assert.AreEqual(meal.Id, meals[0].Id);
+            Assert.AreEqual(meal.Name, meals[0].Name);
+            Assert.AreEqual(meal.Portions, meals[0].Portions);
+            Assert.AreEqual(meal.FoodSourceId, meals[0].FoodSourceId);
+            Assert.AreEqual(meal.NutritionalValueId, meals[0].NutritionalValueId);
+        }
+
+        [TestMethod]
+        public async Task SearchByMealNameTest()
+        {
+            var meal = DataGenerator.RandomMeal(0);
+            var json = JsonSerializer.Serialize(new List<dynamic> { meal });
+            _httpClient.AddResponse(json);
+
+            var expectedContent = GetExpectedSearchContent(null, null, meal.Name, null);
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/search/1/{int.MaxValue}";
+            var meals = await _client.SearchAsync(null, null, meal.Name, null, 1, int.MaxValue);
+
+            Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
+            Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
+            Assert.AreEqual(HttpMethod.Post, _httpClient.Requests[0].Method);
+            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+
+            Assert.AreEqual(expectedContent, await _httpClient.Requests[0].Content.ReadAsStringAsync());
+            Assert.IsNotNull(meals);
+            Assert.AreEqual(1, meals.Count);
+            Assert.AreEqual(meal.Id, meals[0].Id);
+            Assert.AreEqual(meal.Name, meals[0].Name);
+            Assert.AreEqual(meal.Portions, meals[0].Portions);
+            Assert.AreEqual(meal.FoodSourceId, meals[0].FoodSourceId);
+            Assert.AreEqual(meal.NutritionalValueId, meals[0].NutritionalValueId);
+        }
+
+        [TestMethod]
+        public async Task SearchByFoodCategoryTest()
+        {
+            var meal = DataGenerator.RandomMeal(1);
+            var json = JsonSerializer.Serialize(new List<dynamic> { meal });
+            _httpClient.AddResponse(json);
+
+            var expectedContent = GetExpectedSearchContent(null, meal.MealFoodItems.First().FoodItem.FoodCategoryId, null, null);
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/search/1/{int.MaxValue}";
+            var meals = await _client.SearchAsync(null, meal.MealFoodItems.First().FoodItem.FoodCategoryId, null, null, 1, int.MaxValue);
+
+            Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
+            Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
+            Assert.AreEqual(HttpMethod.Post, _httpClient.Requests[0].Method);
+            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+
+            Assert.AreEqual(expectedContent, await _httpClient.Requests[0].Content.ReadAsStringAsync());
+            Assert.IsNotNull(meals);
+            Assert.AreEqual(1, meals.Count);
+            Assert.AreEqual(meal.Id, meals[0].Id);
+            Assert.AreEqual(meal.Name, meals[0].Name);
+            Assert.AreEqual(meal.Portions, meals[0].Portions);
+            Assert.AreEqual(meal.FoodSourceId, meals[0].FoodSourceId);
+            Assert.AreEqual(meal.NutritionalValueId, meals[0].NutritionalValueId);
+        }
+
+        [TestMethod]
+        public async Task SearchByFoodItemNameTest()
+        {
+            var meal = DataGenerator.RandomMeal(1);
+            var json = JsonSerializer.Serialize(new List<dynamic> { meal });
+            _httpClient.AddResponse(json);
+
+            var expectedContent = GetExpectedSearchContent(null, null, null, meal.MealFoodItems.First().FoodItem.Name);
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/search/1/{int.MaxValue}";
+            var meals = await _client.SearchAsync(null, null, null, meal.MealFoodItems.First().FoodItem.Name, 1, int.MaxValue);
+
+            Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
+            Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
+            Assert.AreEqual(HttpMethod.Post, _httpClient.Requests[0].Method);
+            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+
+            Assert.AreEqual(expectedContent, await _httpClient.Requests[0].Content.ReadAsStringAsync());
+            Assert.IsNotNull(meals);
+            Assert.AreEqual(1, meals.Count);
+            Assert.AreEqual(meal.Id, meals[0].Id);
+            Assert.AreEqual(meal.Name, meals[0].Name);
+            Assert.AreEqual(meal.Portions, meals[0].Portions);
+            Assert.AreEqual(meal.FoodSourceId, meals[0].FoodSourceId);
+            Assert.AreEqual(meal.NutritionalValueId, meals[0].NutritionalValueId);
+        }
+
+        [TestMethod]
         public async Task ImportTest()
         {
             _httpClient.AddResponse("");
 
-            var meal = DataGenerator.RandomMeal();
+            var meal = DataGenerator.RandomMeal(0);
             var record = $@"""{meal.Name}"",""{meal.Portions}"",""{meal.NutritionalValue.Calories}"",""{meal.NutritionalValue.Fat}"",""{meal.NutritionalValue.SaturatedFat}"",""{meal.NutritionalValue.Protein}"",""{meal.NutritionalValue.Carbohydrates}"",""{meal.NutritionalValue.Sugar}"",""{meal.NutritionalValue.Fibre}""";
 
             _filePath = DataGenerator.TemporaryCsvFilePath();
@@ -212,6 +317,19 @@ namespace HealthTracker.Tests.Meals
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
             Assert.AreEqual(HttpMethod.Post, _httpClient.Requests[0].Method);
             Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+        }
+
+        private static string GetExpectedSearchContent(int? foodItemId, int? foodCategoryId, string mealName, string foodItemName)
+        {
+            dynamic criteria = new
+            {
+                FoodSourceId = foodItemId,
+                FoodCategoryId = foodCategoryId,
+                MealName = mealName,
+                FoodItemName = foodItemName
+            };
+
+            return JsonSerializer.Serialize(criteria);
         }
     }
 }

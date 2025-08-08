@@ -38,6 +38,16 @@ namespace HealthTracker.Logic.Database
                             .ToListAsync();
 
         /// <summary>
+        /// Search for meals matching a set of meal search criteria
+        /// </summary>
+        /// <param name="criteria"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public async Task<List<Meal>> SearchAsync(MealSearchCriteria criteria, int pageNumber, int pageSize)
+            => await ListAsync(criteria.BuildPredicate(), pageNumber, pageSize);
+
+        /// <summary>
         /// Add a new meal
         /// </summary>
         /// <param name="name"></param>

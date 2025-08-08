@@ -25,7 +25,7 @@ namespace HealthTracker.Tests.Meals
         [TestInitialize]
         public async Task Initialise()
         {
-            var meal = DataGenerator.RandomMeal();
+            var meal = DataGenerator.RandomMeal(0);
 
             var context = HealthTrackerDbContextFactory.CreateInMemoryDbContext();
             await context.FoodSources.AddAsync(meal.FoodSource);

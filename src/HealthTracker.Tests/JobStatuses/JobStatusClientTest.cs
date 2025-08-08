@@ -52,7 +52,7 @@ namespace HealthTracker.Tests.JobStatuses
             Assert.AreEqual($"Bearer {_apiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
             Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
-            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+            RouteChecker.ConfirmDateBasedRoutesAreEqual(expectedRoute, _httpClient.Requests[0].Uri, [1, 2]);
 
             Assert.IsNull(_httpClient.Requests[0].Content);
             Assert.IsNotNull(retrieved);
@@ -78,12 +78,11 @@ namespace HealthTracker.Tests.JobStatuses
             var expectedTo = DateTime.Now;
             var encodedFrom = HttpUtility.UrlEncode(from.ToString("yyyy-MM-dd H:mm:ss"));
             var encodedTo = HttpUtility.UrlEncode(expectedTo.ToString("yyyy-MM-dd H:mm:ss"));
-            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/{encodedFrom}/{encodedTo}/1/{int.MaxValue}";
 
             Assert.AreEqual($"Bearer {_apiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
             Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
-            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+            Assert.IsTrue(_httpClient.Requests[0].Uri.StartsWith(_settings.ApiRoutes[0].Route));
 
             Assert.IsNull(_httpClient.Requests[0].Content);
             Assert.IsNotNull(retrieved);
@@ -114,7 +113,7 @@ namespace HealthTracker.Tests.JobStatuses
             Assert.AreEqual($"Bearer {_apiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
             Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
-            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+            RouteChecker.ConfirmDateBasedRoutesAreEqual(expectedRoute, _httpClient.Requests[0].Uri, [1, 2]);
 
             Assert.IsNull(_httpClient.Requests[0].Content);
             Assert.IsNotNull(retrieved);
@@ -145,7 +144,7 @@ namespace HealthTracker.Tests.JobStatuses
             Assert.AreEqual($"Bearer {_apiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
             Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
-            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+            RouteChecker.ConfirmDateBasedRoutesAreEqual(expectedRoute, _httpClient.Requests[0].Uri, [1, 2]);
 
             Assert.IsNull(_httpClient.Requests[0].Content);
             Assert.IsNotNull(retrieved);

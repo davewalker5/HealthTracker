@@ -156,7 +156,7 @@ namespace HealthTracker.Tests.MealConsumption
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
             Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
-            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+            RouteChecker.ConfirmDateBasedRoutesAreEqual(expectedRoute, _httpClient.Requests[0].Uri, [2, 3]);
 
             Assert.IsNull(_httpClient.Requests[0].Content);
             Assert.IsNotNull(measurements);
@@ -186,7 +186,7 @@ namespace HealthTracker.Tests.MealConsumption
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
             Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
-            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+            RouteChecker.ConfirmDateBasedRoutesAreEqual(expectedRoute, _httpClient.Requests[0].Uri, [2, 3]);
 
             Assert.IsNull(_httpClient.Requests[0].Content);
             Assert.IsNotNull(measurements);
@@ -216,7 +216,7 @@ namespace HealthTracker.Tests.MealConsumption
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
             Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
-            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+            RouteChecker.ConfirmDateBasedRoutesAreEqual(expectedRoute, _httpClient.Requests[0].Uri, [2, 3]);
 
             Assert.IsNull(_httpClient.Requests[0].Content);
             Assert.IsNotNull(measurements);
@@ -246,7 +246,7 @@ namespace HealthTracker.Tests.MealConsumption
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
             Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
-            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+            RouteChecker.ConfirmDateBasedRoutesAreEqual(expectedRoute, _httpClient.Requests[0].Uri, [2, 3]);
 
             Assert.IsNull(_httpClient.Requests[0].Content);
             Assert.IsNotNull(measurements);
@@ -325,7 +325,7 @@ namespace HealthTracker.Tests.MealConsumption
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
             Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
-            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+            RouteChecker.ConfirmDateBasedRoutesAreEqual(expectedRoute, _httpClient.Requests[0].Uri, [3, 4]);
 
             Assert.IsNull(_httpClient.Requests[0].Content);
             Assert.IsNotNull(totals);

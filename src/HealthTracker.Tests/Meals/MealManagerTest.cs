@@ -1,5 +1,6 @@
 ﻿using HealthTracker.Data;
 using HealthTracker.Entities.Exceptions;
+using HealthTracker.Entities.Food;
 using HealthTracker.Entities.Interfaces;
 using HealthTracker.Logic.Factory;
 using HealthTracker.Tests.Mocks;
@@ -48,6 +49,86 @@ namespace HealthTracker.Tests.Meals
         public async Task AddAndListTest()
         {
             var meals = await _factory.Meals.ListAsync(x => x.Id == _mealId, 1, int.MaxValue);
+            Assert.AreEqual(1, meals.Count);
+            Assert.AreEqual(_mealId, meals.First().Id);
+            Assert.AreEqual(_sourceId, meals.First().FoodSourceId);
+            Assert.AreEqual(Reference, meals.First().Reference);
+            Assert.AreEqual(_nutritionalValueId, meals.First().NutritionalValueId);
+            Assert.AreEqual(Name, meals.First().Name);
+            Assert.AreEqual(Portions, meals.First().Portions);
+        }
+
+        [TestMethod]
+        public async Task SearchByFoodSourceTest()
+        {
+            var criteria = new MealSearchCriteria { FoodSourceId = _sourceId };
+            var meals = await _factory.Meals.SearchAsync(criteria, 1, int.MaxValue);
+
+            Assert.AreEqual(1, meals.Count);
+            Assert.AreEqual(_mealId, meals.First().Id);
+            Assert.AreEqual(_sourceId, meals.First().FoodSourceId);
+            Assert.AreEqual(Reference, meals.First().Reference);
+            Assert.AreEqual(_nutritionalValueId, meals.First().NutritionalValueId);
+            Assert.AreEqual(Name, meals.First().Name);
+            Assert.AreEqual(Portions, meals.First().Portions);
+        }
+
+        [TestMethod]
+        public async Task SearchByMealNameTest()
+        {
+            // Pick a random word from the meal name to search by
+            var words = Name.Split(" ");
+            var index = DataGenerator.RandomInt(0, words.Length - 1);
+
+            var criteria = new MealSearchCriteria { MealName = words[index] };
+            var meals = await _factory.Meals.SearchAsync(criteria, 1, int.MaxValue);
+
+            Assert.AreEqual(1, meals.Count);
+            Assert.AreEqual(_mealId, meals.First().Id);
+            Assert.AreEqual(_sourceId, meals.First().FoodSourceId);
+            Assert.AreEqual(Reference, meals.First().Reference);
+            Assert.AreEqual(_nutritionalValueId, meals.First().NutritionalValueId);
+            Assert.AreEqual(Name, meals.First().Name);
+            Assert.AreEqual(Portions, meals.First().Portions);
+        }
+
+        [TestMethod]
+        public async Task SearchByFoodCategoryTest()
+        {
+            // Add a food category and item and associate the item with the meal
+            var foodCategory = await _factory.FoodCategories.AddAsync(DataGenerator.RandomTitleCasePhrase(3, 5, 15));
+            var nutritionalValue = await _factory.NutritionalValues.AddAsync(DataGenerator.RandomNutritionalValue());
+            var foodItem = await _factory.FoodItems.AddAsync(DataGenerator.RandomTitleCasePhrase(3, 5, 15), DataGenerator.RandomDecimal(1, 100), foodCategory.Id, nutritionalValue.Id);
+            await _factory.MealFoodItems.AddAsync(_mealId, foodItem.Id, 1);
+
+            var criteria = new MealSearchCriteria { FoodCategoryId = foodCategory.Id };
+            var meals = await _factory.Meals.SearchAsync(criteria, 1, int.MaxValue);
+
+            Assert.AreEqual(1, meals.Count);
+            Assert.AreEqual(_mealId, meals.First().Id);
+            Assert.AreEqual(_sourceId, meals.First().FoodSourceId);
+            Assert.AreEqual(Reference, meals.First().Reference);
+            Assert.AreEqual(_nutritionalValueId, meals.First().NutritionalValueId);
+            Assert.AreEqual(Name, meals.First().Name);
+            Assert.AreEqual(Portions, meals.First().Portions);
+        }
+
+        [TestMethod]
+        public async Task SearchByFoodItemNameTest()
+        {
+            // Add a food category, nutritional value and item and associate the item with the meal
+            var foodCategory = await _factory.FoodCategories.AddAsync(DataGenerator.RandomTitleCasePhrase(3, 5, 15));
+            var nutritionalValue = await _factory.NutritionalValues.AddAsync(DataGenerator.RandomNutritionalValue());
+            var foodItem = await _factory.FoodItems.AddAsync(DataGenerator.RandomTitleCasePhrase(3, 5, 15), DataGenerator.RandomDecimal(1, 100), foodCategory.Id, nutritionalValue.Id);
+            await _factory.MealFoodItems.AddAsync(_mealId, foodItem.Id, 1);
+
+            // Pick a random word from the food item name to search by
+            var words = foodItem.Name.Split(" ");
+            var index = DataGenerator.RandomInt(0, words.Length - 1);
+
+            var criteria = new MealSearchCriteria { FoodItemName = words[index] };
+            var meals = await _factory.Meals.SearchAsync(criteria, 1, int.MaxValue);
+
             Assert.AreEqual(1, meals.Count);
             Assert.AreEqual(_mealId, meals.First().Id);
             Assert.AreEqual(_sourceId, meals.First().FoodSourceId);

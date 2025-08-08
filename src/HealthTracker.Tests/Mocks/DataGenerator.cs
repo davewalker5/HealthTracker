@@ -823,8 +823,9 @@ namespace HealthTracker.Tests.Mocks
         /// <summary>
         /// Generate a random meal
         /// </summary>
+        /// <param name="numberOfFoodItems"></param>
         /// <returns></returns>
-        public static Meal RandomMeal()
+        public static Meal RandomMeal(int numberOfFoodItems)
         {
             Meal meal = new()
             {
@@ -838,6 +839,29 @@ namespace HealthTracker.Tests.Mocks
 
             meal.FoodSourceId = meal.FoodSource.Id;
             meal.NutritionalValueId = meal.NutritionalValue.Id;
+
+            if (numberOfFoodItems > 0)
+            {
+                meal.MealFoodItems = [];
+                for (int i = 0; i < numberOfFoodItems; i++)
+                {
+                    var item = RandomFoodItem();
+                    var nutritionalValue = RandomNutritionalValue();
+
+                    var mealFoodItem = new MealFoodItem()
+                    {
+                        Quantity = RandomDecimal(1, 5),
+                        MealId = meal.Id,
+                        FoodItemId = item.Id,
+                        NutritionalValueId = nutritionalValue.Id,
+                        FoodItem = item,
+                        NutritionalValue = nutritionalValue
+                    };
+
+                    meal.MealFoodItems.Add(mealFoodItem);
+                }
+            }
+
             return meal;
         }
 
@@ -850,7 +874,7 @@ namespace HealthTracker.Tests.Mocks
         public static MealConsumptionMeasurement RandomMealConsumptionMeasurement(int personId, int year)
         {
             var quantity = RandomDecimal(1, 100);
-            var meal = RandomMeal();
+            var meal = RandomMeal(0);
 
             MealConsumptionMeasurement measurement = new()
             {
@@ -916,7 +940,7 @@ namespace HealthTracker.Tests.Mocks
             {
                 MealType = (MealType)RandomInt(1, 3),
                 Date = DateTime.Now.AddDays(RandomInt(10, 100)),
-                Meal = RandomMeal()
+                Meal = RandomMeal(0)
             };
 
             plannedMeal.MealId = plannedMeal.Meal.Id;

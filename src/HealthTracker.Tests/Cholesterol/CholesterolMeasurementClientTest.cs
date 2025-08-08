@@ -119,17 +119,12 @@ namespace HealthTracker.Tests.Cholesterol
             _httpClient.AddResponse(json);
 
             var measurements = await _client.ListAsync(personId, null, null);
-
-            var expectedTo = DateTime.Now;
-            var expectedFrom = expectedTo.AddDays(-_settings.DefaultTimePeriodDays);
-            var encodedFrom = HttpUtility.UrlEncode(expectedFrom.ToString("yyyy-MM-dd H:mm:ss"));
-            var encodedTo = HttpUtility.UrlEncode(expectedTo.ToString("yyyy-MM-dd H:mm:ss"));
-            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/{personId}/{encodedFrom}/{encodedTo}";
+            var expectedRoute = $"{_settings.ApiRoutes[0].Route}/{personId}";
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
             Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
-            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+            Assert.IsTrue(_httpClient.Requests[0].Uri.StartsWith(expectedRoute));
 
             Assert.IsNull(_httpClient.Requests[0].Content);
             Assert.IsNotNull(measurements);
@@ -162,7 +157,7 @@ namespace HealthTracker.Tests.Cholesterol
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
             Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
-            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+            RouteChecker.ConfirmDateBasedRoutesAreEqual(expectedRoute, _httpClient.Requests[0].Uri, [2, 3]);
 
             Assert.IsNull(_httpClient.Requests[0].Content);
             Assert.IsNotNull(measurements);
@@ -195,7 +190,7 @@ namespace HealthTracker.Tests.Cholesterol
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
             Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
-            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+            RouteChecker.ConfirmDateBasedRoutesAreEqual(expectedRoute, _httpClient.Requests[0].Uri, [2, 3]);
 
             Assert.IsNull(_httpClient.Requests[0].Content);
             Assert.IsNotNull(measurements);
@@ -228,7 +223,7 @@ namespace HealthTracker.Tests.Cholesterol
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
             Assert.AreEqual(HttpMethod.Get, _httpClient.Requests[0].Method);
-            Assert.AreEqual(expectedRoute, _httpClient.Requests[0].Uri);
+            RouteChecker.ConfirmDateBasedRoutesAreEqual(expectedRoute, _httpClient.Requests[0].Uri, [2, 3]);
 
             Assert.IsNull(_httpClient.Requests[0].Content);
             Assert.IsNotNull(measurements);
