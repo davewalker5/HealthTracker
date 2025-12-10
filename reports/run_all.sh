@@ -25,6 +25,7 @@ declare -a exclusions=(
     "api.ipynb"
     "config.ipynb"
     "export.ipynb"
+    "glucose_baseline.ipynb"
     "glucose_segment_plot.ipynb"
 )
 
