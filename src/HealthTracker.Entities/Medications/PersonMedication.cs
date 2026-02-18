@@ -18,7 +18,6 @@ namespace HealthTracker.Entities.Medications
         public int PersonId { get; set; }
 
         [DisplayName("Medication")]
-        [UIHint("DatePicker")]
         [Required(ErrorMessage = "You must select a medication")]
         [ForeignKey(nameof(Medication))]
         public int MedicationId { get; set; }
@@ -32,6 +31,7 @@ namespace HealthTracker.Entities.Medications
         public int Stock { get; set; }
 
         [DisplayName("Last Taken")]
+        [DataType(DataType.Date)]
         public DateTime? LastTaken { get; set; }
 
         [DisplayName("Active")]
