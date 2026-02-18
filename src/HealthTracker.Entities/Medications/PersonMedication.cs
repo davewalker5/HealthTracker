@@ -18,6 +18,7 @@ namespace HealthTracker.Entities.Medications
         public int PersonId { get; set; }
 
         [DisplayName("Medication")]
+        [UIHint("DatePicker")]
         [Required(ErrorMessage = "You must select a medication")]
         [ForeignKey(nameof(Medication))]
         public int MedicationId { get; set; }

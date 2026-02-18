@@ -66,14 +66,6 @@
         <div class="col">
             <div class="input-group">
                 @Html.TextBoxFor(m => m.Association.LastTaken, null, new { @class = "form-control" })
-                <script type="text/javascript">
-                    new GijgoDatePicker(document.getElementById("Association_LastTaken"), {
-                        calendarWeeks: false,
-                        uiLibrary: "bootstrap4",
-                        format: "@DateFormats.DateJavascript",
-                        value: "@lastTaken.ToString(DateFormats.Date)"
-                    });
-                </script>
             </div>
             <span>@Html.ValidationMessageFor(m => m.Association.LastTaken, "", new { @class = "text-danger" })</span>
         </div>

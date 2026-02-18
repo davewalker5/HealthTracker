@@ -8,14 +8,6 @@
     <div class="col">
         <div class="input-group">
             @Html.EditorFor(m => m.MeasurementDate, new { @class = "form-control" })
-            <script type="text/javascript">
-                new GijgoDatePicker(document.getElementById("MeasurementDate"), {
-                    calendarWeeks: false,
-                    uiLibrary: "bootstrap4",
-                    format: "@DateFormats.DateJavascript",
-                    value: "@Model.MeasurementDate"
-                });
-            </script>
             <span>@Html.ValidationMessageFor(m => m.MeasurementDate, "", new { @class = "text-danger" })</span>
         </div>
     </div>
@@ -27,8 +19,7 @@
     </div>
     <div class="col">
         <div class="input-group">
-            @Html.EditorFor(m => m.MeasurementTime, new { @class = "form-control" })
-            <script type="text/javascript">$("#MeasurementTime").timepicker();</script>
+            <input asp-for="MeasurementTime" type="time" step="60" class="form-control" />
         </div>
         <span>@Html.ValidationMessageFor(m => m.MeasurementTime, "", new { @class = "text-danger" })</span>
     </div>

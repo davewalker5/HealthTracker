@@ -1,19 +1,19 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-using HealthTracker.Mvc.Entities;
 
 namespace HealthTracker.Mvc.Models
 {
     public class TimestampViewModel : SelectedFiltersViewModel
     {
         [DisplayName("Date")]
+        [DataType(DataType.Date)]
         [Required(ErrorMessage = "You must provide a measurement date")]
-        public string MeasurementDate { get; set; }
+        public DateTime MeasurementDate { get; set; }
 
         [DisplayName("Time")]
+        [DataType(DataType.Time)]
         [Required(ErrorMessage = "You must provide a measurement time")]
-        public string MeasurementTime { get; set; }
+        public DateTime MeasurementTime { get; set; }
 
         public string Action { get; set; }
 
@@ -22,7 +22,7 @@ namespace HealthTracker.Mvc.Models
         /// </summary>
         /// <returns></returns>
         public DateTime Timestamp()
-            => DateTime.ParseExact($"{MeasurementDate} {MeasurementTime}", DateFormats.DateTime, CultureInfo.InvariantCulture);
+            => MeasurementDate.Date + MeasurementTime.TimeOfDay;
 
         /// <summary>
         /// Set the date and time strings
@@ -30,8 +30,16 @@ namespace HealthTracker.Mvc.Models
         /// <param name="date"></param>
         public void SetTimestamp(DateTime date)
         {
-            MeasurementDate = date.ToString(DateFormats.Date);
-            MeasurementTime = date.ToString(DateFormats.Time);
+            MeasurementDate = date;
+            MeasurementTime = new DateTime(
+                date.Year,
+                date.Month,
+                date.Day,
+                date.Hour,
+                date.Minute,
+                0,
+                0
+            );
         }
     }
 }

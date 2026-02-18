@@ -71,8 +71,8 @@ namespace HealthTracker.Mvc.Controllers
                 ModelState.Clear();
 
                 // Get the date and time
-                DateTime start = !string.IsNullOrEmpty(model.From) ? DateTime.Parse(model.From) : DateTime.MinValue;
-                DateTime end = !string.IsNullOrEmpty(model.To) ? DateTime.Parse(model.To) : DateTime.MaxValue;
+                DateTime start = model.From ?? DateTime.MinValue;
+                DateTime end = model.To ?? DateTime.MaxValue;
 
                 // Retrieve the matching report records
                 var records = await _client.ListAsync(start, end, pageNumber, _settings.ResultsPageSize);
