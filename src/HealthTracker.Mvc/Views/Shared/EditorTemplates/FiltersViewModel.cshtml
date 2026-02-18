@@ -53,7 +53,8 @@
             confirm: function(button) {
                 // For the purge button to work, the page must have a "purge-form" that POSTs to an action method to
                 // purge data
-                $("#purge-form #personId").val($("#PersonId").val());
+                var personId = $("#Filters_PersonId").val();
+                $("#purge-form #personId").val(personId);
                 $("#purge-form").submit()
             },
             cancel: function(button) {
