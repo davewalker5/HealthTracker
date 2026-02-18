@@ -10,8 +10,6 @@ namespace HealthTracker.Api.Services
 {
     public class PlannedMealImportService : BackgroundQueueProcessor<PlannedMealImportWorkItem>
     {
-        private readonly HealthTrackerApplicationSettings _settings;
-
         public PlannedMealImportService(
             ILogger<BackgroundQueueProcessor<PlannedMealImportWorkItem>> logger,
             IBackgroundQueue<PlannedMealImportWorkItem> queue,
@@ -19,7 +17,6 @@ namespace HealthTracker.Api.Services
             IOptions<HealthTrackerApplicationSettings> settings)
             : base(logger, queue, serviceScopeFactory)
         {
-            _settings = settings.Value;
         }
 
         /// <summary>
