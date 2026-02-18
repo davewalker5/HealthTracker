@@ -21,6 +21,7 @@ namespace HealthTracker.Entities.Identity
         public string Surname { get ; set; }
 
         [DisplayName("Date of Birth")]
+        [UIHint("DatePicker")]
         [Required(ErrorMessage = "You must provide a date of birth")]
         public DateTime DateOfBirth { get ; set; }
 

@@ -1,11 +1,8 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using HealthTracker.Entities.Food;
 using HealthTracker.Enumerations.Enumerations;
-using HealthTracker.Mvc.Entities;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore.Query;
 
 namespace HealthTracker.Mvc.Models
 {
@@ -16,8 +13,9 @@ namespace HealthTracker.Mvc.Models
         public IList<SelectListItem> MealTypes { get; private set; }
 
         [DisplayName("Date")]
+        [DataType(DataType.Date)]
         [Required(ErrorMessage = "You must provide a date")]
-        public string Date { get; set; }
+        public DateTime Date { get; set; }
 
         public PlannedMeal PlannedMeal { get; set; }
         public string Action { get; set; }
@@ -62,14 +60,15 @@ namespace HealthTracker.Mvc.Models
         public void SetPlannedMeal(PlannedMeal plannedMeal)
         {
             PlannedMeal = plannedMeal;
-            Date = plannedMeal.Date.ToString(DateFormats.Date);
+            Date = plannedMeal.Date;
         }
 
         /// <summary>
         /// Return a date from the date field
         /// </summary>
         /// <returns></returns>
+        // TODO:
         public DateTime ScheduledDate()
-            => DateTime.ParseExact(Date, DateFormats.Date, CultureInfo.InvariantCulture);
+            => Date;
     }
 }

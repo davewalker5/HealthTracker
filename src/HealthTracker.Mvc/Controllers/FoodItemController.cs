@@ -244,6 +244,7 @@ namespace HealthTracker.Mvc.Controllers
             // Return the list view with an empty list of items
             var model = new FoodItemListViewModel
             {
+                Action = "",
                 PageNumber = 1,
                 Filters = await _filterGenerator.Create(0, ViewFlags.ListView),
                 Message = "Food item successfully deleted"

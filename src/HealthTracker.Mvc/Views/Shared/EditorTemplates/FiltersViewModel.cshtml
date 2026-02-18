@@ -2,45 +2,29 @@
 @model HealthTracker.Mvc.Models.FiltersViewModel
 
 <div class="container-fluid">
-    <div class="row">
-        <div class="col">
+    <div class="row align-items-end justify-content-center">
+        <div class="col-auto">
             <strong>@Html.LabelFor(m => m.PersonId)</strong>
             <div class="input-group">
                 @Html.DropDownListFor(m => m.PersonId, Model.People, new { @class = "form-control" })
             </div>
             <span>@Html.ValidationMessageFor(m => m.PersonId, "", new { @class = "text-danger" })</span>
         </div>
-        <div class="col">
+        <div class="col-auto">
             <strong>@Html.LabelFor(m => m.From)</strong>
             <div class="input-group">
-                @Html.TextBoxFor(m => m.From, null, new { @class = "form-control" })
-                <script type="text/javascript">
-                    new GijgoDatePicker(document.getElementById("Filters_From"), {
-                        calendarWeeks: false,
-                        uiLibrary: "bootstrap4",
-                        format: "@DateFormats.DateJavascript",
-                        value: "@Model.From.ToString(DateFormats.Date)"
-                    });
-                </script>
+                @Html.EditorFor(m => m.From, null, new { @class = "form-control" })
             </div>
             <span>@Html.ValidationMessageFor(m => m.From, "", new { @class = "text-danger" })</span>
         </div>
-        <div class="col">
+        <div class="col-auto">
             <strong>@Html.LabelFor(m => m.To)</strong>
             <div class="input-group">
-                @Html.TextBoxFor(m => m.To, null, new { @class = "form-control" })
-                <script type="text/javascript">
-                    new GijgoDatePicker(document.getElementById("Filters_To"), {
-                        calendarWeeks: false,
-                        uiLibrary: "bootstrap4",
-                        format: "@DateFormats.DateJavascript",
-                        value: "@Model.To.ToString(DateFormats.Date)"
-                    });
-                </script>
+                @Html.EditorFor(m => m.To, null, new { @class = "form-control" })
             </div>
             <span>@Html.ValidationMessageFor(m => m.To, "", new { @class = "text-danger" })</span>
         </div>
-        <div class="col">
+        <div class="col-auto">
             <strong><label>&nbsp;</label></strong>
             <div class="input-group">
                 <button type="submit" name="Action" id="Search" value="@ControllerActions.ActionSearch" class="btn btn-primary" style="margin-right: 10px">Search</button>

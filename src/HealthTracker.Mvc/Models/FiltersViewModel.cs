@@ -6,10 +6,12 @@ namespace HealthTracker.Mvc.Models
     public class FiltersViewModel : PersonFilterViewModel
     {
         [DisplayName("From")]
+        [DataType(DataType.Date)]
         [Required(ErrorMessage = "You must provide a 'from' date'")]
         public DateTime From { get; set; }
 
         [DisplayName("To")]
+        [DataType(DataType.Date)]
         [Required(ErrorMessage = "You must provide a 'to' date'")]
         public DateTime To { get; set; }
     }

@@ -1,14 +1,16 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace HealthTracker.Mvc.Models
 {
     public abstract class DateBasedReportViewModelBase<T> : PaginatedViewModelBase<T> where T : class
     {
         [DisplayName("From")]
-        public string From { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime? From { get; set; }
 
         [DisplayName("To")]
-        public string To { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime? To { get; set; }
     }
 }
