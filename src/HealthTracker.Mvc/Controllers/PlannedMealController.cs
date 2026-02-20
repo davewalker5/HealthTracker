@@ -206,28 +206,25 @@ namespace HealthTracker.Mvc.Controllers
 
             if (ModelState.IsValid)
             {
-                // Convert the string representation of the date to a DateTime object
-                var date = DateTime.ParseExact($"{model.Date} 00:00", DateFormats.DateTime, CultureInfo.InvariantCulture);
-
                 // Update the scheduled meal
                 _logger.LogDebug(
                     $"Adding scheduled meal: Person ID = {model.PlannedMeal.PersonId}, " +
                     $"Meal ID = {model.PlannedMeal.MealId}, " +
                     $"Meal Type = {model.PlannedMeal.MealType}, " +
-                    $"Date = {date}");
+                    $"Date = {model.Date}");
 
                 await _measurementClient.AddAsync(
                     model.PlannedMeal.PersonId,
                     model.PlannedMeal.MealType,
-                    date,
+                    model.Date,
                     model.PlannedMeal.MealId);
 
                 // Return the measurement list view containing only the updated scheduled meal and a confirmation message
                 var listModel = await CreateListViewModel(
                     model.PlannedMeal.PersonId,
                     model.PlannedMeal.Id,
-                    date,
-                    date,
+                    model.Date,
+                    model.Date,
                     "Scheduled meal updated",
                     IndexViewFlags | ViewFlags.Export);
 
@@ -295,30 +292,27 @@ namespace HealthTracker.Mvc.Controllers
 
             if (ModelState.IsValid)
             {
-                // Convert the string representation of the date to a DateTime object
-                var date = DateTime.ParseExact($"{model.Date} 00:00", DateFormats.DateTime, CultureInfo.InvariantCulture);
-
                 // Update the scheduled meal
                 _logger.LogDebug(
                     $"Updating scheduled meal: ID = {model.PlannedMeal.Id}, " +
                     $"Person ID = {model.PlannedMeal.PersonId}, " +
                     $"Meal ID = {model.PlannedMeal.MealId}, " +
                     $"Meal Type = {model.PlannedMeal.MealType}, " +
-                    $"Date = {date}");
+                    $"Date = {model.Date}");
 
                 await _measurementClient.UpdateAsync(
                     model.PlannedMeal.Id,
                     model.PlannedMeal.PersonId,
                     model.PlannedMeal.MealType,
-                    date,
+                    model.Date,
                     model.PlannedMeal.MealId);
 
                 // Return the measurement list view containing only the updated scheduled meal and a confirmation message
                 var listModel = await CreateListViewModel(
                     model.PlannedMeal.PersonId,
                     model.PlannedMeal.Id,
-                    date,
-                    date,
+                    model.Date,
+                    model.Date,
                     "Scheduled meal successfully updated",
                     IndexViewFlags | ViewFlags.Export);
 
