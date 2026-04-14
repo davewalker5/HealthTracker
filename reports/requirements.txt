@@ -64,7 +64,7 @@ pytz==2025.2
 PyYAML==6.0.2
 pyzmq==27.0.1
 referencing==0.36.2
-requests==2.32.4
+requests==2.33.0
 rpds-py==0.26.0
 scipy==1.16.1
 seaborn==0.13.2
