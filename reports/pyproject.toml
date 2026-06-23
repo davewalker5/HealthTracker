@@ -1,0 +1,14 @@
+[dependency-groups]
+reports = [
+    "calplot>=0.1.7.5",
+    "ipykernel>=6.30.1",
+    "matplotlib>=3.10.5",
+    "numpy>=2.3.2",
+    "openpyxl>=3.1.5",
+    "pandas>=2.3.1",
+    "papermill>=2.6.0",
+    "pathvalidate>=3.3.0",
+    "requests>=2.33.0",
+    "seaborn>=0.13.2",
+    "statsmodels>=0.14.5",
+]

@@ -1,5 +1,13 @@
 #!/bin/bash -f
 
+# Record start time (epoch seconds)
+STARTED=$(date +%s)
+echo "Run started at: $(date '+%Y-%m-%d %H:%M:%S')"
+
+if [[ $# -eq 1 ]]; then
+    echo "Running reports for category: $1"
+fi
+
 # Get the root of the reporting folder
 export REPORTS_ROOT=$( cd "$( dirname "$0" )" && pwd )
 
@@ -54,9 +62,21 @@ while IFS= read -r file; do
     # If this notebook isn't in the exclusions list, run it
     if [[ found -eq 0 ]]; then
         cd "$folder"
+        echo "Running notebook $filename ..."
         papermill "$filename" /dev/null
     fi
 done <<< "$files"
 
 # Restore the current working directory
 cd "$CURDIR"
+
+# Record end time (epoch seconds)
+ENDED=$(date +%s)
+echo "Run completed at: $(date '+%Y-%m-%d %H:%M:%S')"
+
+# Calculate elapsed time in seconds
+ELAPSED=$(( $ENDED - $STARTED ))
+
+# Convert seconds into HH:MM:SS
+DURATION=$(printf "%02d:%02d:%02d" $(($ELAPSED/3600)) $((($ELAPSED%3600)/60)) $(($ELAPSED%60)))
+echo "Run time: $DURATION"
