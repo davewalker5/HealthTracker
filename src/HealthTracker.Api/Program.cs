@@ -24,15 +24,25 @@ namespace HealthTracker.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Load application configuration in an explicit, predictable order.
+            // Later providers override earlier providers.
+            builder.Configuration.Sources.Clear();
+            builder.Configuration
+                .SetBasePath(builder.Environment.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile(
+                    $"appsettings.{builder.Environment.EnvironmentName}.json",
+                    optional: true,
+                    reloadOnChange: true)
+                .AddEnvironmentVariables()
+                .AddCommandLine(args);
+
             // Add services to the container.
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // Read the configuration file
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .Build();
+            IConfiguration configuration = builder.Configuration;
 
             // Configure strongly typed application settings
             IConfigurationSection section = configuration.GetSection("ApplicationSettings");
@@ -57,6 +67,7 @@ namespace HealthTracker.Api
             logger.Initialise(settings.LogFile, settings.MinimumLogLevel);
             logger.LogMessage(Severity.Info, new string('=', 80));
             logger.LogMessage(Severity.Info, title);
+            logger.LogMessage(Severity.Info, $"Environment = {builder.Environment.EnvironmentName}");
 
             // Log the connection string
             var message = $"Database connection string = {connectionString}";

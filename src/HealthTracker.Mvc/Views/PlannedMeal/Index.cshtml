@@ -54,15 +54,15 @@
         {
             @await Html.PartialAsync("_PlannedMealList", Model)
             <hr />
-            <p>
-                <div style="float: left">
+            <div class="result-actions">
+                <div class="result-action-group">
                     <button type="submit" name="Action" value="@ControllerActions.ActionShoppingList" class="btn btn-primary">Shopping List</button>
                 </div>
-                <div style="float: right">
+                <div class="result-action-group result-action-group--paging">
                     <button type="submit" name="Action" value="@ControllerActions.ActionPreviousPage" class="btn btn-secondary" @previousDisabled>Previous</button>
                     <button type="submit" name="Action" value="@ControllerActions.ActionNextPage" class="btn btn-primary" @nextDisabled>Next</button>
                 </div>
-            </p>
+            </div>
         }
         else if (Model.HasNoMatchingResults)
         {

@@ -1,7 +1,6 @@
 using HealthTracker.Mvc.Controllers;
 using HealthTracker.Mvc.Api;
 using HealthTracker.Client.ApiClient;
-using HealthTracker.Configuration.Logic;
 using HealthTracker.Configuration.Interfaces;
 using HealthTracker.Client.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -14,6 +13,7 @@ using System.Globalization;
 using HealthTracker.Client.Helpers;
 using HealthTracker.Mvc.Services;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using HealthTracker.Configuration.Entities;
 
 namespace HealthTracker.Mvc
 {
@@ -32,7 +32,10 @@ namespace HealthTracker.Mvc
             services.AddControllersWithViews();
 
             // Configure strongly typed application settings
-            var settings = new HealthTrackerConfigReader().Read("appsettings.json");
+            var settings = Configuration
+                .GetSection("ApplicationSettings")
+                .Get<HealthTrackerApplicationSettings>()
+                ?? throw new InvalidOperationException("The ApplicationSettings section is missing or invalid.");
             services.AddSingleton<IHealthTrackerApplicationSettings>(provider => settings);
 
             // The authentication token provider needs to access session via the context
