@@ -70,20 +70,20 @@
         {
             @await Html.PartialAsync("_PersonMedicationList", Model)
             <hr />
-            <p>
-                <div style="float: left">
-                    <button type="submit" name="Action" value="@ControllerActions.ActionTake" class="btn btn-primary" style="margin-right: 10px">Take</button>
-                    <button type="submit" name="Action" value="@ControllerActions.ActionUnTake" class="btn btn-primary" style="margin-right: 10px">Un-take</button>
-                    <button type="submit" name="Action" value="@ControllerActions.ActionSkip" class="btn btn-primary" style="margin-right: 10px">Skip</button>
-                    <button type="submit" name="Action" value="@ControllerActions.ActionTakeAll" class="btn btn-primary" style="margin-right: 10px">Take All</button>
-                    <button type="submit" name="Action" value="@ControllerActions.ActionUnTakeAll" class="btn btn-primary" style="margin-right: 10px">Un-take All</button>
-                    <button type="submit" name="Action" value="@ControllerActions.ActionSkipAll" class="btn btn-primary" style="margin-right: 10px">Skip All</button>
+            <div class="result-actions">
+                <div class="result-action-group">
+                    <button type="submit" name="Action" value="@ControllerActions.ActionTake" class="btn btn-primary">Take</button>
+                    <button type="submit" name="Action" value="@ControllerActions.ActionUnTake" class="btn btn-primary">Un-take</button>
+                    <button type="submit" name="Action" value="@ControllerActions.ActionSkip" class="btn btn-primary">Skip</button>
+                    <button type="submit" name="Action" value="@ControllerActions.ActionTakeAll" class="btn btn-primary">Take All</button>
+                    <button type="submit" name="Action" value="@ControllerActions.ActionUnTakeAll" class="btn btn-primary">Un-take All</button>
+                    <button type="submit" name="Action" value="@ControllerActions.ActionSkipAll" class="btn btn-primary">Skip All</button>
                 </div>
-                <div style="float: right">
+                <div class="result-action-group result-action-group--paging">
                     <button type="submit" name="Action" value="@ControllerActions.ActionPreviousPage" class="btn btn-secondary" @previousDisabled>Previous</button>
                     <button type="submit" name="Action" value="@ControllerActions.ActionNextPage" class="btn btn-primary" @nextDisabled>Next</button>
                 </div>
-            </p>
+            </div>
         }
         else if (Model.HasNoMatchingResults)
         {

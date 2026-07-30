@@ -414,3 +414,10 @@ TestResults/
 reports/exported/
 reports/venv/
 payload.json
+*.nbconvert.ipynb
+Temp/
+SQLite/*.sql
+data.csv
+
+# Local development configuration
+**/appsettings.Development.json

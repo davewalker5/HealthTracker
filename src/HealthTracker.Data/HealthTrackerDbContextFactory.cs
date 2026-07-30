@@ -15,11 +15,16 @@ namespace HealthTracker.Data
         [ExcludeFromCodeCoverage]
         public HealthTrackerDbContext CreateDbContext(string[] args)
         {
+            var environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT")
+                              ?? Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
+                              ?? "Production";
+
             // Construct a configuration object that contains the key/value pairs from the settings file
-            // at the root of the main applicatoin
+            // at the root of the main application, with an optional environment-specific override.
             IConfigurationRoot configuration = new ConfigurationBuilder()
                                                     .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                                                     .AddJsonFile("appsettings.json")
+                                                    .AddJsonFile($"appsettings.{environment}.json", optional: true)
                                                     .Build();
 
             // Use the configuration object to read the connection string

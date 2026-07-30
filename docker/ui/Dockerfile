@@ -1,4 +1,5 @@
 FROM mcr.microsoft.com/dotnet/aspnet:latest AS runtime
-COPY healthtracker.mvc-1.49.1.0 /opt/healthtracker.mvc
+ARG VERSION
+COPY healthtracker.mvc-${VERSION}.0 /opt/healthtracker.mvc
 WORKDIR /opt/healthtracker.mvc/bin
 ENTRYPOINT [ "./HealthTracker.Mvc" ]

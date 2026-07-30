@@ -3,27 +3,28 @@
 
 @functions
 {
-    public string GetRowBackgroundColour(bool isActive, int daysRemaining)
+    public string GetRowClass(bool isActive, int daysRemaining)
     {
         if (!isActive)
         {
-            return "white";
+            return "medication-row medication-row--inactive";
         }
         else if (daysRemaining <= Model.Settings.MedicationDaysRemainingCriticalDays)
         {
-            return "#FFC0CB";
+            return "medication-row medication-row--critical";
         }
         else if (daysRemaining <= Model.Settings.MedicationDaysRemainingWarningDays)
         {
-            return "#FFFFE0";
+            return "medication-row medication-row--warning";
         }
         else
         {
-            return "white";
+            return "medication-row";
         }
     }
 }
 
+<div class="table-shell">
 <table class="table">
     <tr>
         <th/>
@@ -52,28 +53,25 @@
         var orderMoreString = orderMore.HasValue ? orderMore.Value.ToString(DateFormats.Date) : "-";
         var active = association.Active ? "Yes" : "No";
         var actions = association.Active ? string.Join(", ", association.Actions ?? []) : "";
-        var rowColor = GetRowBackgroundColour(association.Active, association.DaysRemaining());
-        var textColor = association.Active ? "black" : "lightgrey";
+        var rowClass = GetRowClass(association.Active, association.DaysRemaining());
 
-        <tr style="background-color: @rowColor">
+        <tr class="@rowClass">
             <td valign="center">
-                <span style="color: @textColor">
-                    @if (Model.Editable && association.Active)
-                    {
-                        @Html.CheckBox($"Selected_{association.Id}")
-                    }
-                </span>
+                @if (Model.Editable && association.Active)
+                {
+                    @Html.CheckBox($"Selected_{association.Id}")
+                }
             </td>
-            <td valign="center"><span style="color: @textColor">@Model.Filters.SelectedPerson.Name</span></td>
-            <td valign="center"><span style="color: @textColor">@association.Medication.Name</span></td>
-            <td valign="center"><span style="color: @textColor">@active</span></td>
-            <td valign="center"><span style="color: @textColor">@association.Stock</span></td>
-            <td valign="center"><span style="color: @textColor">@association.DailyDose</span></td>
-            <td valign="center"><span style="color: @textColor">@lastTaken</span></td>
-            <td valign="center"><span style="color: @textColor">@association.DaysRemaining()</span></td>
-            <td valign="center"><span style="color: @textColor">@lastDayString</span></td>
-            <td valign="center"><span style="color: @textColor">@orderMoreString</span></td>
-            <td valign="center"><span style="color: @textColor">@actions</span></td>
+            <td valign="center">@Model.Filters.SelectedPerson.Name</td>
+            <td valign="center">@association.Medication.Name</td>
+            <td valign="center">@active</td>
+            <td valign="center">@association.Stock</td>
+            <td valign="center">@association.DailyDose</td>
+            <td valign="center">@lastTaken</td>
+            <td valign="center">@association.DaysRemaining()</td>
+            <td valign="center">@lastDayString</td>
+            <td valign="center">@orderMoreString</td>
+            <td valign="center">@actions</td>
             @if (Model.Editable)
             {
                 <td valign="center">
@@ -90,3 +88,4 @@
         </tr>
     }
 </table>
+</div>
