@@ -16,5 +16,8 @@ namespace HealthTracker.Entities.Measurements
 
         [DisplayName("Distance Based")]
         public bool DistanceBased { get; set; }
+
+        [DisplayName("Route Aware")]
+        public bool RouteAware { get; set; }
     }
 }

@@ -24,13 +24,15 @@ namespace HealthTracker.Client.ApiClient
         /// <param
         /// <param name="description"></param>
         /// <param name="distanceBased"></param>
+        /// <param name="routeAware"></param>
         /// <returns></returns>
-        public async Task<ActivityType> AddAsync(string description, bool distanceBased)
+        public async Task<ActivityType> AddAsync(string description, bool distanceBased, bool routeAware)
         {
             dynamic template = new
             {
                 Description = description,
-                DistanceBased = distanceBased
+                DistanceBased = distanceBased,
+                RouteAware = routeAware
             };
 
             var data = Serialize(template);
@@ -46,14 +48,16 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="id"></param>
         /// <param name="description"></param>
         /// <param name="distanceBased"></param>
+        /// <param name="routeAware"></param>
         /// <returns></returns>
-        public async Task<ActivityType> UpdateAsync(int id, string description, bool distanceBased)
+        public async Task<ActivityType> UpdateAsync(int id, string description, bool distanceBased, bool routeAware)
         {
             dynamic template = new
             {
                 Id = id,
                 Description = description,
-                DistanceBased = distanceBased
+                DistanceBased = distanceBased,
+                RouteAware = routeAware
             };
 
             var data = Serialize(template);

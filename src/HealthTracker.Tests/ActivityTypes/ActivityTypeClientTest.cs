@@ -37,10 +37,10 @@ namespace HealthTracker.Tests.ActivityTypes
         public async Task AddTest()
         {
             var activityType = DataGenerator.RandomActivityType();
-            var json = JsonSerializer.Serialize(new { activityType.Description, activityType.DistanceBased });
+            var json = JsonSerializer.Serialize(new { activityType.Description, activityType.DistanceBased, activityType.RouteAware });
             _httpClient.AddResponse(json);
 
-            var added = await _client.AddAsync(activityType.Description, activityType.DistanceBased);
+            var added = await _client.AddAsync(activityType.Description, activityType.DistanceBased, activityType.RouteAware);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -51,6 +51,7 @@ namespace HealthTracker.Tests.ActivityTypes
             Assert.IsNotNull(added);
             Assert.AreEqual(activityType.Description, added.Description);
             Assert.AreEqual(activityType.DistanceBased, added.DistanceBased);
+            Assert.AreEqual(activityType.RouteAware, added.RouteAware);
         }
 
         [TestMethod]
@@ -60,7 +61,7 @@ namespace HealthTracker.Tests.ActivityTypes
             var json = JsonSerializer.Serialize(activityType);
             _httpClient.AddResponse(json);
 
-            var updated = await _client.UpdateAsync(activityType.Id, activityType.Description, activityType.DistanceBased);
+            var updated = await _client.UpdateAsync(activityType.Id, activityType.Description, activityType.DistanceBased, activityType.RouteAware);
 
             Assert.AreEqual($"Bearer {ApiToken}", _httpClient.DefaultRequestHeaders.Authorization.ToString());
             Assert.AreEqual($"{_settings.ApiUrl}", _httpClient.BaseAddress.ToString());
@@ -72,6 +73,7 @@ namespace HealthTracker.Tests.ActivityTypes
             Assert.AreEqual(activityType.Id, updated.Id);
             Assert.AreEqual(activityType.Description, updated.Description);
             Assert.AreEqual(activityType.DistanceBased, updated.DistanceBased);
+            Assert.AreEqual(activityType.RouteAware, updated.RouteAware);
         }
 
         [TestMethod]
@@ -109,6 +111,7 @@ namespace HealthTracker.Tests.ActivityTypes
             Assert.AreEqual(activityType.Id, activities[0].Id);
             Assert.AreEqual(activityType.Description, activities[0].Description);
             Assert.AreEqual(activityType.DistanceBased, activities[0].DistanceBased);
+            Assert.AreEqual(activityType.RouteAware, activities[0].RouteAware);
         }
     }
 }

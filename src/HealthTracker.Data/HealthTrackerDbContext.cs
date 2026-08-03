@@ -73,6 +73,7 @@ namespace HealthTracker.Data
                 entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
                 entity.Property(e => e.Description).IsRequired().HasColumnName("description").HasColumnType("VARCHAR(100)");
                 entity.Property(e => e.DistanceBased).HasColumnName("distance_based");
+                entity.Property(e => e.RouteAware).HasColumnName("route_aware");
             });
 
             modelBuilder.Entity<WeightMeasurement>(entity =>
