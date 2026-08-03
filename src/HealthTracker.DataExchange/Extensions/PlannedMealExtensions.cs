@@ -53,7 +53,7 @@ namespace HealthTracker.DataExchange.Extensions
         /// <returns></returns>
         public static PlannedMeal FromExportable(this ExportablePlannedMeal exportable, IEnumerable<Meal> meals)
         {
-            var meal = meals.First(x => x.Name == exportable.Meal);
+            var meal = meals.First(x => x.Name == exportable.Meal && x.FoodSource.Name == exportable.Source);
             return new()
             {
                 PersonId = exportable.PersonId,

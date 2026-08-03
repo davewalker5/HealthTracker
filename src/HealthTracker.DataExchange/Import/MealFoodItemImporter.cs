@@ -42,7 +42,7 @@ namespace HealthTracker.DataExchange.Import
         protected override void Validate(ExportableMealFoodItem exportable, int recordCount)
         {
             // Make sure the meal maps OK
-            var meal = _meals.FirstOrDefault(x => x.Name.Equals(exportable.Meal, StringComparison.OrdinalIgnoreCase));
+            var meal = FindMeal(exportable);
             ValidateField<Meal>(x => x != null, meal, "Meal", recordCount);
 
             // Make sure the food item maps OK
@@ -61,11 +61,16 @@ namespace HealthTracker.DataExchange.Import
         protected override async Task AddAsync(ExportableMealFoodItem exportable)
         {
             // Get the IDs for the meal and food item
-            var mealId = _meals.First(x => x.Name.Equals(exportable.Meal, StringComparison.OrdinalIgnoreCase)).Id;
+            var mealId = FindMeal(exportable).Id;
             var foodItemId = _foodItems.First(x => x.Name.Equals(exportable.FoodItem, StringComparison.OrdinalIgnoreCase)).Id;
 
             // Save the relationship, which will also create a nutritional value record automatically
             await _factory.MealFoodItems.AddAsync(mealId, foodItemId, exportable.Quantity);
         }
+
+        private Meal FindMeal(ExportableMealFoodItem exportable)
+            => _meals.FirstOrDefault(x =>
+                x.Name.Equals(exportable.Meal, StringComparison.OrdinalIgnoreCase) &&
+                x.FoodSource.Name.Equals(exportable.Source, StringComparison.OrdinalIgnoreCase));
     }
 }

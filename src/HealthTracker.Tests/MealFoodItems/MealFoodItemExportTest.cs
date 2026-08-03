@@ -56,6 +56,7 @@ namespace HealthTracker.Tests.MealFoodItems
         {
             var exportable = _relationship.ToExportable([_meal], [_foodItem]);
             Assert.AreEqual(_meal.Name, exportable.Meal);
+            Assert.AreEqual(_meal.FoodSource.Name, exportable.Source);
             Assert.AreEqual(_foodItem.Name, exportable.FoodItem);
             Assert.AreEqual(Quantity, exportable.Quantity);
             Assert.AreEqual(_relationship.NutritionalValue.Calories, exportable.Calories);
@@ -73,6 +74,7 @@ namespace HealthTracker.Tests.MealFoodItems
             List<MealFoodItem> relationships = [_relationship];
             var exportable = relationships.ToExportable([_meal], [_foodItem]);
             Assert.AreEqual(_meal.Name, exportable.First().Meal);
+            Assert.AreEqual(_meal.FoodSource.Name, exportable.First().Source);
             Assert.AreEqual(_foodItem.Name, exportable.First().FoodItem);
             Assert.AreEqual(Quantity, exportable.First().Quantity);
             Assert.AreEqual(_relationship.NutritionalValue.Calories, exportable.First().Calories);
@@ -87,9 +89,10 @@ namespace HealthTracker.Tests.MealFoodItems
         [TestMethod]
         public void FromCsvRecordTest()
         {
-            var record = $@"""{_meal.Name}"",""{_foodItem.Name}"",""{Quantity}"",""{_relationship.NutritionalValue.Calories}"",""{_relationship.NutritionalValue.Fat}"",""{_relationship.NutritionalValue.SaturatedFat}"",""{_relationship.NutritionalValue.Protein}"",""{_relationship.NutritionalValue.Carbohydrates}"",""{_relationship.NutritionalValue.Sugar}"",""{_relationship.NutritionalValue.Fibre}""";
+            var record = $@"""{_meal.Name}"",""{_meal.FoodSource.Name}"",""{_foodItem.Name}"",""{Quantity}"",""{_relationship.NutritionalValue.Calories}"",""{_relationship.NutritionalValue.Fat}"",""{_relationship.NutritionalValue.SaturatedFat}"",""{_relationship.NutritionalValue.Protein}"",""{_relationship.NutritionalValue.Carbohydrates}"",""{_relationship.NutritionalValue.Sugar}"",""{_relationship.NutritionalValue.Fibre}""";
             var exportable = ExportableMealFoodItem.FromCsv(record);
             Assert.AreEqual(_meal.Name, exportable.Meal);
+            Assert.AreEqual(_meal.FoodSource.Name, exportable.Source);
             Assert.AreEqual(_foodItem.Name, exportable.FoodItem);
             Assert.AreEqual(Quantity, exportable.Quantity);
             Assert.AreEqual(_relationship.NutritionalValue.Calories, exportable.Calories);
@@ -119,6 +122,7 @@ namespace HealthTracker.Tests.MealFoodItems
 
             var exportable = ExportableMealFoodItem.FromCsv(records[1]);
             Assert.AreEqual(_meal.Name, exportable.Meal);
+            Assert.AreEqual(_meal.FoodSource.Name, exportable.Source);
             Assert.AreEqual(_foodItem.Name, exportable.FoodItem);
             Assert.AreEqual(Quantity, exportable.Quantity);
             Assert.AreEqual(_relationship.NutritionalValue.Calories, exportable.Calories);

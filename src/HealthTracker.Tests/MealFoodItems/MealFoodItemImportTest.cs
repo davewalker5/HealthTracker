@@ -91,7 +91,7 @@ namespace HealthTracker.Tests.MealFoodItems
         {
             var importer = new MealFoodItemImporter(_factory, ExportableMealFoodItem.CsvRecordPattern);
 
-            var record = $@"""{_meal.Name}"",""{_foodItem.Name}"",""{Quantity}"",""{_exportable.Calories}"",""{_exportable.Fat}"",""{_exportable.SaturatedFat}"",""{_exportable.Protein}"",""{_exportable.Carbohydrates}"",""{_exportable.Sugar}"",""{_exportable.Fibre}""";
+            var record = $@"""{_meal.Name}"",""{_meal.FoodSource.Name}"",""{_foodItem.Name}"",""{Quantity}"",""{_exportable.Calories}"",""{_exportable.Fat}"",""{_exportable.SaturatedFat}"",""{_exportable.Protein}"",""{_exportable.Carbohydrates}"",""{_exportable.Sugar}"",""{_exportable.Fibre}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 
@@ -129,7 +129,7 @@ namespace HealthTracker.Tests.MealFoodItems
         [ExpectedException(typeof(InvalidFieldValueException))]
         public async Task InvalidMealTest()
         {
-            var record = $@"""Not a valid meal"",""{_foodItem.Name}"",""{Quantity}"",""{_exportable.Calories}"",""{_exportable.Fat}"",""{_exportable.SaturatedFat}"",""{_exportable.Protein}"",""{_exportable.Carbohydrates}"",""{_exportable.Sugar}"",""{_exportable.Fibre}""";
+            var record = $@"""Not a valid meal"",""{_meal.FoodSource.Name}"",""{_foodItem.Name}"",""{Quantity}"",""{_exportable.Calories}"",""{_exportable.Fat}"",""{_exportable.SaturatedFat}"",""{_exportable.Protein}"",""{_exportable.Carbohydrates}"",""{_exportable.Sugar}"",""{_exportable.Fibre}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
             var importer = new MealFoodItemImporter(_factory, ExportableMealFoodItem.CsvRecordPattern);
@@ -140,7 +140,7 @@ namespace HealthTracker.Tests.MealFoodItems
         [ExpectedException(typeof(InvalidFieldValueException))]
         public async Task InvalidFoodItemTest()
         {
-            var record = $@"""{_meal.Name}"",""Not a valid food item"",""{Quantity}"",""{_exportable.Calories}"",""{_exportable.Fat}"",""{_exportable.SaturatedFat}"",""{_exportable.Protein}"",""{_exportable.Carbohydrates}"",""{_exportable.Sugar}"",""{_exportable.Fibre}""";
+            var record = $@"""{_meal.Name}"",""{_meal.FoodSource.Name}"",""Not a valid food item"",""{Quantity}"",""{_exportable.Calories}"",""{_exportable.Fat}"",""{_exportable.SaturatedFat}"",""{_exportable.Protein}"",""{_exportable.Carbohydrates}"",""{_exportable.Sugar}"",""{_exportable.Fibre}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
             var importer = new MealFoodItemImporter(_factory, ExportableMealFoodItem.CsvRecordPattern);
@@ -151,7 +151,7 @@ namespace HealthTracker.Tests.MealFoodItems
         [ExpectedException(typeof(InvalidFieldValueException))]
         public async Task InvalidQuantityTest()
         {
-            var record = $@"""{_meal.Name}"",""{_foodItem.Name}"",""0"",""{_exportable.Calories}"",""{_exportable.Fat}"",""{_exportable.SaturatedFat}"",""{_exportable.Protein}"",""{_exportable.Carbohydrates}"",""{_exportable.Sugar}"",""{_exportable.Fibre}""";
+            var record = $@"""{_meal.Name}"",""{_meal.FoodSource.Name}"",""{_foodItem.Name}"",""0"",""{_exportable.Calories}"",""{_exportable.Fat}"",""{_exportable.SaturatedFat}"",""{_exportable.Protein}"",""{_exportable.Carbohydrates}"",""{_exportable.Sugar}"",""{_exportable.Fibre}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
             var importer = new MealFoodItemImporter(_factory, ExportableMealFoodItem.CsvRecordPattern);
