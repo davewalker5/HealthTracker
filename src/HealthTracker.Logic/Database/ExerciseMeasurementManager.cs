@@ -37,6 +37,7 @@ namespace HealthTracker.Logic.Database
         /// <param name="date"></param>
         /// <param name="duration"></param>
         /// <param name="distance"></param>
+        /// <param name="route"></param>
         /// <param name="calories"></param>
         /// <param name="minimumHeartRate"></param>
         /// <param name="maximumHeartRate"></param>
@@ -47,15 +48,17 @@ namespace HealthTracker.Logic.Database
             DateTime date,
             int duration,
             decimal? distance,
+            string route,
             int calories,
             int minimumHeartRate,
             int maximumHeartRate)
         {
             var logDistance = distance == null ? "null" : distance.ToString();
-            Factory.Logger.LogMessage(Severity.Info, $"Adding exercise measurement: Person ID {personId}, {date.ToShortDateString()}, Duration {duration.ToFormattedDuration()}, Distance {logDistance}, Calories {calories}, Heart Rate {minimumHeartRate} to {maximumHeartRate}");
+            Factory.Logger.LogMessage(Severity.Info, $"Adding exercise measurement: Person ID {personId}, {date.ToShortDateString()}, Duration {duration.ToFormattedDuration()}, Distance {logDistance}, Route {route ?? "null"}, Calories {calories}, Heart Rate {minimumHeartRate} to {maximumHeartRate}");
 
             CheckPersonExists(personId);
             Factory.ActivityTypes.CheckActivityTypeExists(activityTypeId);
+            var cleanRoute = NormaliseRoute(activityTypeId, route);
 
             var measurement = new ExerciseMeasurement
             {
@@ -64,6 +67,7 @@ namespace HealthTracker.Logic.Database
                 Date = date,
                 Duration = duration,
                 Distance = distance,
+                Route = cleanRoute,
                 Calories = calories,
                 MinimumHeartRate = minimumHeartRate,
                 MaximumHeartRate = maximumHeartRate
@@ -84,6 +88,7 @@ namespace HealthTracker.Logic.Database
         /// <param name="date"></param>
         /// <param name="duration"></param>
         /// <param name="distance"></param>
+        /// <param name="route"></param>
         /// <param name="calories"></param>
         /// <param name="minimumHeartRate"></param>
         /// <param name="maximumHeartRate"></param>
@@ -95,18 +100,20 @@ namespace HealthTracker.Logic.Database
             DateTime date,
             int duration,
             decimal? distance,
+            string route,
             int calories,
             int minimumHeartRate,
             int maximumHeartRate)
         {
             var logDistance = distance == null ? "null" : distance.ToString();
-            Factory.Logger.LogMessage(Severity.Info, $"Updating exercise measurement with ID {id}: Person ID {personId}, {date.ToShortDateString()}, Duration {duration.ToFormattedDuration()}, Distance {logDistance}, Calories {calories}, Heart Rate {minimumHeartRate} to {maximumHeartRate}");
+            Factory.Logger.LogMessage(Severity.Info, $"Updating exercise measurement with ID {id}: Person ID {personId}, {date.ToShortDateString()}, Duration {duration.ToFormattedDuration()}, Distance {logDistance}, Route {route ?? "null"}, Calories {calories}, Heart Rate {minimumHeartRate} to {maximumHeartRate}");
 
             var measurement = Context.ExerciseMeasurements.FirstOrDefault(x => x.Id == id);
             if (measurement != null)
             {
                 CheckPersonExists(personId);
                 Factory.ActivityTypes.CheckActivityTypeExists(activityTypeId);
+                var cleanRoute = NormaliseRoute(activityTypeId, route);
 
                 // Save the changes
                 measurement.PersonId = personId;
@@ -114,6 +121,7 @@ namespace HealthTracker.Logic.Database
                 measurement.Date = date;
                 measurement.Duration = duration;
                 measurement.Distance = distance;
+                measurement.Route = cleanRoute;
                 measurement.Calories = calories;
                 measurement.MinimumHeartRate = minimumHeartRate;
                 measurement.MaximumHeartRate = maximumHeartRate;
@@ -121,6 +129,12 @@ namespace HealthTracker.Logic.Database
             }
 
             return measurement;
+        }
+
+        private string NormaliseRoute(int activityTypeId, string route)
+        {
+            var routeAware = Context.ActivityTypes.First(x => x.Id == activityTypeId).RouteAware;
+            return routeAware && !string.IsNullOrWhiteSpace(route) ? StringCleaner.Clean(route) : null;
         }
 
         /// <summary>

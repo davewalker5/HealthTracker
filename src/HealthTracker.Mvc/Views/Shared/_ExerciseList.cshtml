@@ -12,6 +12,7 @@
         <th>Calories</th>
         <th>Minimum HR</th>
         <th>Maximum HR</th>
+        <th>Notes</th>
         @if (Model.Editable)
         {
             <th />
@@ -21,6 +22,8 @@
     @foreach (var measurement in Model.Measurements)
     {
         var distance = (measurement.Distance ?? 0M) > 0 ? measurement.Distance.Value.ToString("0.00") : "-";
+        var hasRoute = !string.IsNullOrWhiteSpace(measurement.Route);
+        var notesStyle = hasRoute ? "exercise-note--present" : "exercise-note--empty";
         <tr>
             <td valign="center">@Model.Filters.SelectedPerson.Name</td>
             <td valign="center">@measurement.Date.ToString("dd-MMM-yyyy")</td>
@@ -31,6 +34,20 @@
             <td valign="center">@measurement.Calories</td>
             <td valign="center">@measurement.MinimumHeartRate</td>
             <td valign="center">@measurement.MaximumHeartRate</td>
+            <td valign="center">
+                @if (hasRoute)
+                {
+                    <button type="button" class="exercise-note-button js-exercise-route" data-route="@measurement.Route" aria-label="View route notes">
+                        <i class="far fa-sticky-note exercise-note @notesStyle" aria-hidden="true"></i>
+                    </button>
+                }
+                else
+                {
+                    <span class="exercise-note-button" role="img" aria-label="No route specified">
+                        <i class="far fa-sticky-note exercise-note @notesStyle" aria-hidden="true"></i>
+                    </span>
+                }
+            </td>
             @if (Model.Editable)
             {
                 <td valign="center">

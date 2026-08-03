@@ -19,7 +19,7 @@ namespace HealthTracker.Mvc.Helpers
         /// Generate a list of select list items for activity types
         /// </summary>
         /// <returns></returns>
-        public async Task<(IList<SelectListItem> Items, IList<int> DistanceBasedIds)> Create()
+        public async Task<(IList<SelectListItem> Items, IList<int> DistanceBasedIds, IList<int> RouteAwareIds)> Create()
         {
             var list = new List<SelectListItem>();
 
@@ -42,7 +42,10 @@ namespace HealthTracker.Mvc.Helpers
                 list.Add(new SelectListItem() { Text = activityType.Description, Value = activityType.Id.ToString() });
             }
 
-            return (list, activityTypes.Where(x => x.DistanceBased).Select(x => x.Id).ToList());
+            return (
+                list,
+                activityTypes.Where(x => x.DistanceBased).Select(x => x.Id).ToList(),
+                activityTypes.Where(x => x.RouteAware).Select(x => x.Id).ToList());
         }
     }
 }

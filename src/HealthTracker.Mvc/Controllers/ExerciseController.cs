@@ -179,6 +179,7 @@ namespace HealthTracker.Mvc.Controllers
                     $"Timestamp = {timestamp}, " +
                     $"Duration = {model.Measurement.FormattedDuration}, " +
                     $"Distance = {model.Measurement.Distance ?? 0}, " +
+                    $"Route = {model.Measurement.Route ?? "null"}, " +
                     $"Calories = {model.Measurement.Calories}, " +
                     $"Minimum HR = {model.Measurement.MinimumHeartRate}, " +
                     $"Maximum HR = {model.Measurement.MaximumHeartRate}");
@@ -189,6 +190,7 @@ namespace HealthTracker.Mvc.Controllers
                     timestamp,
                     duration,
                     model.Measurement.Distance,
+                    model.Measurement.Route,
                     model.Measurement.Calories,
                     model.Measurement.MinimumHeartRate,
                     model.Measurement.MaximumHeartRate);
@@ -272,6 +274,7 @@ namespace HealthTracker.Mvc.Controllers
                     $"Timestamp = {timestamp}, " +
                     $"Duration = {model.Measurement.FormattedDuration}, " +
                     $"Distance = {model.Measurement.Distance ?? 0}, " +
+                    $"Route = {model.Measurement.Route ?? "null"}, " +
                     $"Calories = {model.Measurement.Calories}, " +
                     $"Minimum HR = {model.Measurement.MinimumHeartRate}, " +
                     $"Maximum HR = {model.Measurement.MaximumHeartRate}");
@@ -283,6 +286,7 @@ namespace HealthTracker.Mvc.Controllers
                     timestamp,
                     duration,
                     model.Measurement.Distance,
+                    model.Measurement.Route,
                     model.Measurement.Calories,
                     model.Measurement.MinimumHeartRate,
                     model.Measurement.MaximumHeartRate);
@@ -313,6 +317,7 @@ namespace HealthTracker.Mvc.Controllers
             var activityTypes = await _activityTypeListGenerator.Create();
             model.ActivityTypes = activityTypes.Items;
             model.DistanceBasedActivityTypeIds = activityTypes.DistanceBasedIds;
+            model.RouteAwareActivityTypeIds = activityTypes.RouteAwareIds;
         }
 
         private void ApplyDistanceRules(ExerciseViewModel model)
@@ -328,6 +333,12 @@ namespace HealthTracker.Mvc.Controllers
             {
                 model.Measurement.Distance = null;
                 ModelState.Remove("Measurement.Distance");
+            }
+
+            if (!model.RouteAwareActivityTypeIds.Contains(model.Measurement.ActivityTypeId))
+            {
+                model.Measurement.Route = null;
+                ModelState.Remove("Measurement.Route");
             }
         }
 

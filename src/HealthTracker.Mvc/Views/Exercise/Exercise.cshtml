@@ -59,6 +59,20 @@
         </div>
         <br/>
     </div>
+    <div id="route-entry">
+        <div class="row">
+            <div class="col">
+                <strong>@Html.LabelFor(m => m.Measurement.Route)</strong>
+            </div>
+            <div class="col">
+                <div class="input-group">
+                    @Html.TextBoxFor(m => m.Measurement.Route, new { @class = "form-control" })
+                </div>
+                <span>@Html.ValidationMessageFor(m => m.Measurement.Route, "", new { @class = "text-danger" })</span>
+            </div>
+        </div>
+        <br/>
+    </div>
     <div class="row">
         <div class="col">
             <strong>@Html.LabelFor(m => m.Measurement.Calories)</strong>
@@ -99,9 +113,12 @@
 <script type="text/javascript">
     $(document).ready(function() {
         const distanceBasedActivityTypeIds = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.DistanceBasedActivityTypeIds));
+        const routeAwareActivityTypeIds = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.RouteAwareActivityTypeIds));
         const activityType = $("#Measurement_ActivityTypeId");
         const distanceEntry = $("#distance-entry");
         const distance = $("#Measurement_Distance");
+        const routeEntry = $("#route-entry");
+        const route = $("#Measurement_Route");
 
         function updateDistanceEntry() {
             const distanceBased = distanceBasedActivityTypeIds.includes(parseInt(activityType.val()));
@@ -109,6 +126,12 @@
             distance.prop("required", distanceBased);
             if (!distanceBased) {
                 distance.val("");
+            }
+
+            const routeAware = routeAwareActivityTypeIds.includes(parseInt(activityType.val()));
+            routeEntry.toggle(routeAware);
+            if (!routeAware) {
+                route.val("");
             }
         }
 

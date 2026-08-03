@@ -7,6 +7,7 @@ namespace HealthTracker.Mvc.Models
     {
         public IList<SelectListItem> ActivityTypes { get; set; } = [];
         public IList<int> DistanceBasedActivityTypeIds { get; set; } = [];
+        public IList<int> RouteAwareActivityTypeIds { get; set; } = [];
         public ExerciseMeasurement Measurement { get; set; }
 
         /// <summary>

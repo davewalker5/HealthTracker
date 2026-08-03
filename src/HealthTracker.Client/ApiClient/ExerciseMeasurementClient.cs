@@ -28,6 +28,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="date"></param>
         /// <param name="duration"></param>
         /// <param name="distance"></param>
+        /// <param name="route"></param>
         /// <param name="calories"></param>
         /// <param name="minimumHeartRate"></param>
         /// <param name="maximumHeartRate"></param>
@@ -38,12 +39,12 @@ namespace HealthTracker.Client.ApiClient
             DateTime? date,
             int duration,
             decimal? distance,
+            string route,
             int calories,
             int minimumHeartRate,
             int maximumHeartRate)
         {
-            var measurementDistance = distance ?? 0;
-            if (measurementDistance < 0) measurementDistance = 0;
+            var measurementDistance = distance < 0 ? 0 : distance;
 
             dynamic template = new
             {
@@ -52,6 +53,7 @@ namespace HealthTracker.Client.ApiClient
                 Date = date ?? DateTime.Now,
                 Duration = duration,
                 Distance = measurementDistance,
+                Route = route,
                 Calories = calories,
                 MinimumHeartRate = minimumHeartRate,
                 MaximumHeartRate = maximumHeartRate
@@ -73,6 +75,7 @@ namespace HealthTracker.Client.ApiClient
         /// <param name="date"></param>
         /// <param name="duration"></param>
         /// <param name="distance"></param>
+        /// <param name="route"></param>
         /// <param name="calories"></param>
         /// <param name="minimumHeartRate"></param>
         /// <param name="maximumHeartRate"></param>
@@ -84,12 +87,12 @@ namespace HealthTracker.Client.ApiClient
             DateTime? date,
             int duration,
             decimal? distance,
+            string route,
             int calories,
             int minimumHeartRate,
             int maximumHeartRate)
         {
-            var measurementDistance = distance ?? 0;
-            if (measurementDistance < 0) measurementDistance = 0;
+            var measurementDistance = distance < 0 ? 0 : distance;
 
             dynamic template = new
             {
@@ -99,6 +102,7 @@ namespace HealthTracker.Client.ApiClient
                 Date = date ?? DateTime.Now,
                 Duration = duration,
                 Distance = measurementDistance,
+                Route = route,
                 Calories = calories,
                 MinimumHeartRate = minimumHeartRate,
                 MaximumHeartRate = maximumHeartRate

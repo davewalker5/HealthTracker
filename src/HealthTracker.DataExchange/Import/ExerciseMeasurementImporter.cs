@@ -71,6 +71,7 @@ namespace HealthTracker.DataExchange.Import
                 measurement.Date,
                 measurement.Duration.ToDuration(),
                 measurement.Distance,
+                null,
                 measurement.Calories,
                 measurement.MinimumHeartRate,
                 measurement.MaximumHeartRate);
