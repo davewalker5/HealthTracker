@@ -13,9 +13,12 @@ namespace HealthTracker.DataExchange.Extensions
         /// <param name="foodItems"></param>
         /// <returns></returns>
         public static ExportableMealFoodItem ToExportable(this MealFoodItem relationship, IEnumerable<Meal> meals, IEnumerable<FoodItem> foodItems)
-            => new()
+        {
+            var meal = meals.First(x => x.Id == relationship.MealId);
+            return new()
             {
-                Meal = meals.First(x => x.Id == relationship.MealId).Name,
+                Meal = meal.Name,
+                Source = meal.FoodSource.Name,
                 FoodItem = foodItems.First(x => x.Id == relationship.FoodItemId).Name,
                 Quantity = relationship.Quantity,
                 Calories = relationship.NutritionalValue?.Calories,
@@ -26,6 +29,7 @@ namespace HealthTracker.DataExchange.Extensions
                 Sugar = relationship.NutritionalValue?.Sugar,
                 Fibre = relationship.NutritionalValue?.Fibre
             };
+        }
 
         /// <summary>
         /// Return a collection of exportable meal/food item relationships from a collection of relationships
@@ -59,7 +63,7 @@ namespace HealthTracker.DataExchange.Extensions
         public static MealFoodItem FromExportable(this ExportableMealFoodItem exportable, IEnumerable<Meal> meals, IEnumerable<FoodItem> foodItems)
             => new()
             {
-                MealId = meals.First(x => x.Name == exportable.Meal).Id,
+                MealId = meals.First(x => x.Name == exportable.Meal && x.FoodSource.Name == exportable.Source).Id,
                 FoodItemId = foodItems.First(x => x.Name == exportable.FoodItem).Id,
                 Quantity = exportable.Quantity,
                 NutritionalValue = new NutritionalValue

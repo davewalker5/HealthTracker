@@ -161,9 +161,26 @@ namespace HealthTracker.Tests.Meals
         }
 
         [TestMethod]
+        public async Task CanCreateMealWithSameNameForDifferentSourceTest()
+        {
+            var meal = await _factory.Meals.AddAsync(Name, UpdatedPortions, _updatedSourceId, UpdatedReference, null);
+
+            Assert.AreEqual(Name, meal.Name);
+            Assert.AreEqual(_updatedSourceId, meal.FoodSourceId);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(MealExistsException))]
-        public async Task CannotCreateDuplicateTest()
-            => await _factory.Meals.AddAsync(Name, UpdatedPortions, _updatedSourceId, UpdatedReference, null);
+        public async Task CannotCreateDuplicateForSameSourceTest()
+            => await _factory.Meals.AddAsync(Name, UpdatedPortions, _sourceId, UpdatedReference, null);
+
+        [TestMethod]
+        [ExpectedException(typeof(MealExistsException))]
+        public async Task CannotUpdateToDuplicateForSameSourceTest()
+        {
+            var meal = await _factory.Meals.AddAsync(UpdatedName, UpdatedPortions, _updatedSourceId, UpdatedReference, null);
+            await _factory.Meals.UpdateAsync(meal.Id, Name, UpdatedPortions, _sourceId, UpdatedReference, null);
+        }
 
         [TestMethod]
         [ExpectedException(typeof(FoodSourceNotFoundException))]

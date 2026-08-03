@@ -65,7 +65,7 @@ namespace HealthTracker.Logic.Database
             var clean = StringCleaner.Clean(name);
             Factory.FoodSources.CheckFoodSourceExists(foodSourceId);
             Factory.NutritionalValues.CheckNutritionalValueExists(nutritionalValueId);
-            await CheckMealIsNotADuplicate(clean, 0);
+            await CheckMealIsNotADuplicate(clean, foodSourceId, 0);
 
             // Create the meal
             var meal = new Meal
@@ -113,7 +113,7 @@ namespace HealthTracker.Logic.Database
             var clean = StringCleaner.Clean(name);
             Factory.FoodSources.CheckFoodSourceExists(foodSourceId);
             Factory.NutritionalValues.CheckNutritionalValueExists(nutritionalValueId);
-            await CheckMealIsNotADuplicate(clean, id);
+            await CheckMealIsNotADuplicate(clean, foodSourceId, id);
 
             // Update the meal
             meal.Name = clean;
@@ -252,17 +252,18 @@ namespace HealthTracker.Logic.Database
 
         /// <summary>
         /// Raise an exception if an attempt is made to add/update a meal with a duplicate
-        /// name
+        /// name and food source ID
         /// </summary>
         /// <param name="name"></param>
+        /// <param name="foodSourceId"></param>
         /// <param name="id"></param>
         /// <exception cref="MealExistsException"></exception>
-        private async Task CheckMealIsNotADuplicate(string name, int id)
+        private async Task CheckMealIsNotADuplicate(string name, int foodSourceId, int id)
         {
-            var meal = await Context.Meals.FirstOrDefaultAsync(x => x.Name == name);
+            var meal = await Context.Meals.FirstOrDefaultAsync(x => x.Name == name && x.FoodSourceId == foodSourceId);
             if ((meal != null) && (meal.Id != id))
             {
-                var message = $"Meal {name} already exists";
+                var message = $"Meal {name} already exists for food source ID {foodSourceId}";
                 throw new MealExistsException(message);
             }
         }
