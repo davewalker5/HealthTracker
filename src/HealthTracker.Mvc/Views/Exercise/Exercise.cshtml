@@ -45,18 +45,20 @@
         </div>
     </div>
     <br/>
-    <div class="row">
-        <div class="col">
-            <strong>@Html.LabelFor(m => m.Measurement.Distance)</strong>
-        </div>
-        <div class="col">
-            <div class="input-group">
-                @Html.TextBoxFor(m => m.Measurement.Distance, new { @class = "form-control" })
+    <div id="distance-entry">
+        <div class="row">
+            <div class="col">
+                <strong>@Html.LabelFor(m => m.Measurement.Distance)</strong>
             </div>
-            <span>@Html.ValidationMessageFor(m => m.Measurement.Distance, "", new { @class = "text-danger" })</span>
+            <div class="col">
+                <div class="input-group">
+                    @Html.TextBoxFor(m => m.Measurement.Distance, new { @class = "form-control" })
+                </div>
+                <span>@Html.ValidationMessageFor(m => m.Measurement.Distance, "", new { @class = "text-danger" })</span>
+            </div>
         </div>
+        <br/>
     </div>
-    <br/>
     <div class="row">
         <div class="col">
             <strong>@Html.LabelFor(m => m.Measurement.Calories)</strong>
@@ -94,8 +96,25 @@
     </div>
 </div>
 
-<script type-"text/javascript">
+<script type="text/javascript">
     $(document).ready(function() {
+        const distanceBasedActivityTypeIds = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.DistanceBasedActivityTypeIds));
+        const activityType = $("#Measurement_ActivityTypeId");
+        const distanceEntry = $("#distance-entry");
+        const distance = $("#Measurement_Distance");
+
+        function updateDistanceEntry() {
+            const distanceBased = distanceBasedActivityTypeIds.includes(parseInt(activityType.val()));
+            distanceEntry.toggle(distanceBased);
+            distance.prop("required", distanceBased);
+            if (!distanceBased) {
+                distance.val("");
+            }
+        }
+
+        activityType.on("change", updateDistanceEntry);
+        updateDistanceEntry();
+
         // Extract the components of the duration
         var seconds = parseInt($("#Measurement_Duration").val());
         var hours = Math.floor(seconds / 3600);

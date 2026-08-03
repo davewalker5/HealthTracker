@@ -6,6 +6,7 @@ namespace HealthTracker.Mvc.Models
     public class ExerciseViewModel : TimestampViewModel
     {
         public IList<SelectListItem> ActivityTypes { get; set; } = [];
+        public IList<int> DistanceBasedActivityTypeIds { get; set; } = [];
         public ExerciseMeasurement Measurement { get; set; }
 
         /// <summary>

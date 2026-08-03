@@ -136,7 +136,8 @@ namespace HealthTracker.Mvc.Controllers
         {
             _logger.LogDebug($"Rendering add view: Person ID = {personId}, From = {start}, To = {end}");
 
-            var model = new AddExerciseViewModel() { ActivityTypes = await _activityTypeListGenerator.Create() };
+            var model = new AddExerciseViewModel();
+            await PopulateActivityTypes(model);
             model.CreateMeasurement(personId);
             await SetFilterDetails(model, personId, start, end);
             return View(model);
@@ -162,6 +163,9 @@ namespace HealthTracker.Mvc.Controllers
             {
                 ModelState.AddModelError("Measurement.Duration", "You must specify a duration");
             }
+
+            await PopulateActivityTypes(model);
+            ApplyDistanceRules(model);
 
             if (ModelState.IsValid)
             {
@@ -207,7 +211,6 @@ namespace HealthTracker.Mvc.Controllers
             }
 
             // Populate the activity types and render the view
-            model.ActivityTypes = await _activityTypeListGenerator.Create();
             return View(model);
         }
 
@@ -227,7 +230,8 @@ namespace HealthTracker.Mvc.Controllers
             var measurement = await _measurementClient.GetAsync(id);
 
             // Construct the view model
-            var model = new EditExerciseViewModel() { ActivityTypes = await _activityTypeListGenerator.Create() };
+            var model = new EditExerciseViewModel();
+            await PopulateActivityTypes(model);
             model.SetMeasurement(measurement);
             await SetFilterDetails(model, measurement.PersonId, start, end);
             return View(model);
@@ -248,6 +252,9 @@ namespace HealthTracker.Mvc.Controllers
             {
                 return RedirectToAction("Index", new { personId = model.Measurement.PersonId, start = model.From, end = model.To });
             }
+
+            await PopulateActivityTypes(model);
+            ApplyDistanceRules(model);
 
             if (ModelState.IsValid)
             {
@@ -298,8 +305,30 @@ namespace HealthTracker.Mvc.Controllers
             }
 
             // Populate the activity types and render the view
-            model.ActivityTypes = await _activityTypeListGenerator.Create();
             return result;
+        }
+
+        private async Task PopulateActivityTypes(ExerciseViewModel model)
+        {
+            var activityTypes = await _activityTypeListGenerator.Create();
+            model.ActivityTypes = activityTypes.Items;
+            model.DistanceBasedActivityTypeIds = activityTypes.DistanceBasedIds;
+        }
+
+        private void ApplyDistanceRules(ExerciseViewModel model)
+        {
+            if (model.DistanceBasedActivityTypeIds.Contains(model.Measurement.ActivityTypeId))
+            {
+                if (model.Measurement.Distance == null)
+                {
+                    ModelState.AddModelError("Measurement.Distance", "You must specify a distance");
+                }
+            }
+            else
+            {
+                model.Measurement.Distance = null;
+                ModelState.Remove("Measurement.Distance");
+            }
         }
 
         /// <summary>
