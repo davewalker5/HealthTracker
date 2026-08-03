@@ -184,7 +184,8 @@ namespace HealthTracker.Tests.Mocks
             {
                 Id = RandomId(),
                 Description = RandomActivityTypeName(),
-                DistanceBased = RandomInt(0, 100) > 50
+                DistanceBased = RandomInt(0, 100) > 50,
+                RouteAware = RandomInt(0, 100) > 50
             };
 
         /// <summary>
@@ -504,6 +505,7 @@ namespace HealthTracker.Tests.Mocks
                 Date = date,
                 Duration = RandomInt(1800, 10800),
                 Distance = RandomDecimal(1, 50),
+                Route = RandomTitleCasePhrase(3, 5, 15),
                 Calories = RandomInt(250, 3200),
                 MinimumHeartRate = RandomInt(50, 80),
                 MaximumHeartRate = RandomInt(130, 160)

@@ -104,8 +104,8 @@ namespace HealthTracker.Mvc.Controllers
 
             if (ModelState.IsValid)
             {
-                _logger.LogDebug($"Adding activity type: Description = {model.ActivityType.Description}, Distance Based = {model.ActivityType.DistanceBased}");
-                var activityType = await _client.AddAsync(model.ActivityType.Description, model.ActivityType.DistanceBased);
+                _logger.LogDebug($"Adding activity type: Description = {model.ActivityType.Description}, Distance Based = {model.ActivityType.DistanceBased}, Route Aware = {model.ActivityType.RouteAware}");
+                var activityType = await _client.AddAsync(model.ActivityType.Description, model.ActivityType.DistanceBased, model.ActivityType.RouteAware);
 
                 result = CreateListResult(activityType, $"{activityType.Description} successfully added");
             }
@@ -156,8 +156,8 @@ namespace HealthTracker.Mvc.Controllers
 
             if (ModelState.IsValid)
             {
-                _logger.LogDebug($"Updating activity type: Id = {model.ActivityType.Id}, Description = {model.ActivityType.Description}, Distance Based = {model.ActivityType.DistanceBased}");
-                var activityType = await _client.UpdateAsync(model.ActivityType.Id, model.ActivityType.Description, model.ActivityType.DistanceBased);
+                _logger.LogDebug($"Updating activity type: Id = {model.ActivityType.Id}, Description = {model.ActivityType.Description}, Distance Based = {model.ActivityType.DistanceBased}, Route Aware = {model.ActivityType.RouteAware}");
+                var activityType = await _client.UpdateAsync(model.ActivityType.Id, model.ActivityType.Description, model.ActivityType.DistanceBased, model.ActivityType.RouteAware);
 
                 result = CreateListResult(activityType, $"{activityType.Description} successfully updated");
             }

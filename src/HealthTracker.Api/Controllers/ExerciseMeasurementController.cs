@@ -110,6 +110,7 @@ namespace HealthTracker.Api.Controllers
                 template.Date,
                 template.Duration,
                 template.Distance,
+                template.Route,
                 template.Calories,
                 template.MinimumHeartRate,
                 template.MaximumHeartRate
@@ -133,6 +134,7 @@ namespace HealthTracker.Api.Controllers
                 template.Date,
                 template.Duration,
                 template.Distance,
+                template.Route,
                 template.Calories,
                 template.MinimumHeartRate,
                 template.MaximumHeartRate

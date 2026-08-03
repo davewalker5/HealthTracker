@@ -23,3 +23,12 @@
         }
     });
 }
+
+$(document).on("click", ".js-exercise-route", function () {
+    var route = $(this).attr("data-route");
+    var content = $("<p>").addClass("exercise-route-modal-text").text(route);
+
+    $("#AjaxModalTitle").text("Exercise route");
+    $("#AjaxModalBody").empty().append(content);
+    $("#AjaxModal").modal("show");
+});

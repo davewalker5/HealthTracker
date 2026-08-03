@@ -173,6 +173,37 @@ hr { border-top-color: var(--line); }
 }
 .table td, table td { padding: 12px 13px; border-top: 0; border-bottom: 1px solid rgba(33, 55, 80, .65); vertical-align: middle; }
 .table tbody tr:hover, table tbody tr:hover { color: var(--text); background: rgba(53, 212, 208, .07); }
+.exercise-note {
+  font-size: 15px;
+  transition: color .15s ease, filter .15s ease, opacity .15s ease;
+}
+.exercise-note-button {
+  display: inline-grid;
+  place-items: center;
+  min-width: 28px;
+  min-height: 28px;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: 7px;
+}
+button.exercise-note-button { cursor: pointer; }
+button.exercise-note-button:hover,
+button.exercise-note-button:focus {
+  background: rgba(53, 212, 208, .09);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(53, 212, 208, .16);
+}
+.exercise-note--present {
+  color: var(--cyan);
+  filter: drop-shadow(0 0 3px rgba(53, 212, 208, .9)) drop-shadow(0 0 7px rgba(53, 212, 208, .45));
+}
+.exercise-note--empty {
+  color: var(--muted);
+  filter: none;
+  opacity: .38;
+}
 .table-striped tbody tr:nth-of-type(odd) { background: rgba(143, 166, 190, .035); }
 .table-shell {
   overflow-x: auto;
@@ -256,6 +287,17 @@ div.message, .alert-success { color: var(--green); background: rgba(79, 218, 161
 .modal-footer { border-top-color: var(--line); }
 .modal-header .close { color: var(--text); text-shadow: none; opacity: .8; }
 .modal-backdrop.show { opacity: .72; }
+.exercise-route-modal-text {
+  margin: 0;
+  padding: 16px 18px;
+  color: var(--text);
+  background: var(--surface-3);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  font-size: 15px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
 .confirmation-modal .cancel {
   color: var(--text);
   background: var(--surface-2);

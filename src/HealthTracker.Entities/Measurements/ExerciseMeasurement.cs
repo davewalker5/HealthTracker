@@ -18,6 +18,9 @@ namespace HealthTracker.Entities.Measurements
 
         public decimal? Distance { get; set; }
 
+        [StringLength(100)]
+        public string Route { get; set; }
+
         [DisplayName("Calories")]
         [Range(1, int.MaxValue, ErrorMessage = "{0} must be >= {1}")]
         public int Calories { get; set; }

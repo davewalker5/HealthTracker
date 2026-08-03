@@ -73,6 +73,7 @@ namespace HealthTracker.Data
                 entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
                 entity.Property(e => e.Description).IsRequired().HasColumnName("description").HasColumnType("VARCHAR(100)");
                 entity.Property(e => e.DistanceBased).HasColumnName("distance_based");
+                entity.Property(e => e.RouteAware).HasColumnName("route_aware");
             });
 
             modelBuilder.Entity<WeightMeasurement>(entity =>
@@ -133,6 +134,7 @@ namespace HealthTracker.Data
                 entity.Property(e => e.ActivityTypeId).HasColumnName("activity_id");
                 entity.Property(e => e.Duration).IsRequired().HasColumnName("duration");
                 entity.Property(e => e.Distance).HasColumnName("distance");
+                entity.Property(e => e.Route).HasColumnName("route").HasColumnType("VARCHAR(100)");
                 entity.Property(e => e.Calories).IsRequired().HasColumnName("calories");
                 entity.Property(e => e.MinimumHeartRate).IsRequired().HasColumnName("minimum_heart_rate");
                 entity.Property(e => e.MaximumHeartRate).IsRequired().HasColumnName("maximum_heart_rate");

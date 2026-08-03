@@ -136,7 +136,8 @@ namespace HealthTracker.Mvc.Controllers
         {
             _logger.LogDebug($"Rendering add view: Person ID = {personId}, From = {start}, To = {end}");
 
-            var model = new AddExerciseViewModel() { ActivityTypes = await _activityTypeListGenerator.Create() };
+            var model = new AddExerciseViewModel();
+            await PopulateActivityTypes(model);
             model.CreateMeasurement(personId);
             await SetFilterDetails(model, personId, start, end);
             return View(model);
@@ -163,6 +164,9 @@ namespace HealthTracker.Mvc.Controllers
                 ModelState.AddModelError("Measurement.Duration", "You must specify a duration");
             }
 
+            await PopulateActivityTypes(model);
+            ApplyDistanceRules(model);
+
             if (ModelState.IsValid)
             {
                 // Combine the date and time strings to produce a timestamp
@@ -175,6 +179,7 @@ namespace HealthTracker.Mvc.Controllers
                     $"Timestamp = {timestamp}, " +
                     $"Duration = {model.Measurement.FormattedDuration}, " +
                     $"Distance = {model.Measurement.Distance ?? 0}, " +
+                    $"Route = {model.Measurement.Route ?? "null"}, " +
                     $"Calories = {model.Measurement.Calories}, " +
                     $"Minimum HR = {model.Measurement.MinimumHeartRate}, " +
                     $"Maximum HR = {model.Measurement.MaximumHeartRate}");
@@ -185,6 +190,7 @@ namespace HealthTracker.Mvc.Controllers
                     timestamp,
                     duration,
                     model.Measurement.Distance,
+                    model.Measurement.Route,
                     model.Measurement.Calories,
                     model.Measurement.MinimumHeartRate,
                     model.Measurement.MaximumHeartRate);
@@ -207,7 +213,6 @@ namespace HealthTracker.Mvc.Controllers
             }
 
             // Populate the activity types and render the view
-            model.ActivityTypes = await _activityTypeListGenerator.Create();
             return View(model);
         }
 
@@ -227,7 +232,8 @@ namespace HealthTracker.Mvc.Controllers
             var measurement = await _measurementClient.GetAsync(id);
 
             // Construct the view model
-            var model = new EditExerciseViewModel() { ActivityTypes = await _activityTypeListGenerator.Create() };
+            var model = new EditExerciseViewModel();
+            await PopulateActivityTypes(model);
             model.SetMeasurement(measurement);
             await SetFilterDetails(model, measurement.PersonId, start, end);
             return View(model);
@@ -249,6 +255,9 @@ namespace HealthTracker.Mvc.Controllers
                 return RedirectToAction("Index", new { personId = model.Measurement.PersonId, start = model.From, end = model.To });
             }
 
+            await PopulateActivityTypes(model);
+            ApplyDistanceRules(model);
+
             if (ModelState.IsValid)
             {
                 // Combine the date and time strings to produce a timestamp
@@ -265,6 +274,7 @@ namespace HealthTracker.Mvc.Controllers
                     $"Timestamp = {timestamp}, " +
                     $"Duration = {model.Measurement.FormattedDuration}, " +
                     $"Distance = {model.Measurement.Distance ?? 0}, " +
+                    $"Route = {model.Measurement.Route ?? "null"}, " +
                     $"Calories = {model.Measurement.Calories}, " +
                     $"Minimum HR = {model.Measurement.MinimumHeartRate}, " +
                     $"Maximum HR = {model.Measurement.MaximumHeartRate}");
@@ -276,6 +286,7 @@ namespace HealthTracker.Mvc.Controllers
                     timestamp,
                     duration,
                     model.Measurement.Distance,
+                    model.Measurement.Route,
                     model.Measurement.Calories,
                     model.Measurement.MinimumHeartRate,
                     model.Measurement.MaximumHeartRate);
@@ -298,8 +309,37 @@ namespace HealthTracker.Mvc.Controllers
             }
 
             // Populate the activity types and render the view
-            model.ActivityTypes = await _activityTypeListGenerator.Create();
             return result;
+        }
+
+        private async Task PopulateActivityTypes(ExerciseViewModel model)
+        {
+            var activityTypes = await _activityTypeListGenerator.Create();
+            model.ActivityTypes = activityTypes.Items;
+            model.DistanceBasedActivityTypeIds = activityTypes.DistanceBasedIds;
+            model.RouteAwareActivityTypeIds = activityTypes.RouteAwareIds;
+        }
+
+        private void ApplyDistanceRules(ExerciseViewModel model)
+        {
+            if (model.DistanceBasedActivityTypeIds.Contains(model.Measurement.ActivityTypeId))
+            {
+                if (model.Measurement.Distance == null)
+                {
+                    ModelState.AddModelError("Measurement.Distance", "You must specify a distance");
+                }
+            }
+            else
+            {
+                model.Measurement.Distance = null;
+                ModelState.Remove("Measurement.Distance");
+            }
+
+            if (!model.RouteAwareActivityTypeIds.Contains(model.Measurement.ActivityTypeId))
+            {
+                model.Measurement.Route = null;
+                ModelState.Remove("Measurement.Route");
+            }
         }
 
         /// <summary>

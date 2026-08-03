@@ -43,8 +43,9 @@ namespace HealthTracker.Logic.Database
         /// </summary>
         /// <param name="description"></param>
         /// <param name="distanceBased"></param>
+        /// <param name="routeAware"></param>
         /// <returns></returns>
-        public async Task<ActivityType> AddAsync(string description, bool distanceBased)
+        public async Task<ActivityType> AddAsync(string description, bool distanceBased, bool routeAware)
         {
             Factory.Logger.LogMessage(Severity.Info, $"Creating new activity type '{description}'");
 
@@ -54,7 +55,8 @@ namespace HealthTracker.Logic.Database
             var activityType = new ActivityType
             {
                 Description = clean,
-                DistanceBased = distanceBased
+                DistanceBased = distanceBased,
+                RouteAware = routeAware
             };
 
             await Context.ActivityTypes.AddAsync(activityType);
@@ -70,8 +72,9 @@ namespace HealthTracker.Logic.Database
         /// <param name="id"></param>
         /// <param name="description"></param>
         /// <param name="distanceBased"></param>
+        /// <param name="routeAware"></param>
         /// <returns></returns>
-        public async Task<ActivityType> UpdateAsync(int id, string description, bool distanceBased)
+        public async Task<ActivityType> UpdateAsync(int id, string description, bool distanceBased, bool routeAware)
         {
             Factory.Logger.LogMessage(Severity.Info, $"Updating activity type with ID {id} to '{description}'");
 
@@ -85,6 +88,7 @@ namespace HealthTracker.Logic.Database
                 // Save the changes
                 activityType.Description = clean;
                 activityType.DistanceBased = distanceBased;
+                activityType.RouteAware = routeAware;
                 await Context.SaveChangesAsync();
             }
 

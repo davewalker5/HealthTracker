@@ -60,6 +60,7 @@ namespace HealthTracker.Tests.Exercise
                 measurement.Date,
                 measurement.Duration,
                 measurement.Distance,
+                measurement.Route,
                 measurement.Calories,
                 measurement.MinimumHeartRate,
                 measurement.MaximumHeartRate);
@@ -76,6 +77,7 @@ namespace HealthTracker.Tests.Exercise
             Assert.AreEqual(measurement.ActivityTypeId, added.ActivityTypeId);
             Assert.AreEqual(measurement.Duration, added.Duration);
             Assert.AreEqual(measurement.Distance, added.Distance);
+            Assert.AreEqual(measurement.Route, added.Route);
             Assert.AreEqual(measurement.Calories, added.Calories);
             Assert.AreEqual(measurement.MinimumHeartRate, added.MinimumHeartRate);
             Assert.AreEqual(measurement.MaximumHeartRate, added.MaximumHeartRate);
@@ -95,6 +97,7 @@ namespace HealthTracker.Tests.Exercise
                 measurement.Date,
                 measurement.Duration,
                 measurement.Distance,
+                measurement.Route,
                 measurement.Calories,
                 measurement.MinimumHeartRate,
                 measurement.MaximumHeartRate);
@@ -111,6 +114,7 @@ namespace HealthTracker.Tests.Exercise
             Assert.AreEqual(measurement.ActivityTypeId, updated.ActivityTypeId);
             Assert.AreEqual(measurement.Duration, updated.Duration);
             Assert.AreEqual(measurement.Distance, updated.Distance);
+            Assert.AreEqual(measurement.Route, updated.Route);
             Assert.AreEqual(measurement.Calories, updated.Calories);
             Assert.AreEqual(measurement.MinimumHeartRate, updated.MinimumHeartRate);
             Assert.AreEqual(measurement.MaximumHeartRate, updated.MaximumHeartRate);

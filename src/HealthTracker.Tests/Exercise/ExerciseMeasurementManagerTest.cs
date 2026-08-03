@@ -15,6 +15,7 @@ namespace HealthTracker.Tests.Exercise
         private readonly DateTime ExerciseDate = DataGenerator.RandomDateInYear(2023);
         private readonly int Duration = DataGenerator.RandomDuration().ToDuration();
         private readonly decimal? Distance = DataGenerator.RandomDecimal(10, 50);
+        private readonly string Route = DataGenerator.RandomTitleCasePhrase(3, 5, 15);
         private readonly int Calories = DataGenerator.RandomInt(500, 3000);
         private readonly int MinimumHeartRate = DataGenerator.RandomInt(50, 80);
         private readonly int MaximumHeartRate = DataGenerator.RandomInt(120, 160);
@@ -23,6 +24,7 @@ namespace HealthTracker.Tests.Exercise
         private readonly DateTime UpdatedExerciseDate = DataGenerator.RandomDateInYear(2023);
         private readonly int UpdatedDuration = DataGenerator.RandomDuration().ToDuration();
         private readonly decimal? UpdatedDistance = null;
+        private readonly string UpdatedRoute = DataGenerator.RandomTitleCasePhrase(3, 5, 15);
         private readonly int UpdatedCalories = DataGenerator.RandomInt(500, 3000);
         private readonly int UpdatedMinimumHeartRate = DataGenerator.RandomInt(50, 80);
         private readonly int UpdatedMaximumHeartRate = DataGenerator.RandomInt(120, 160);
@@ -39,8 +41,8 @@ namespace HealthTracker.Tests.Exercise
             var logger = new Mock<IHealthTrackerLogger>();
             _factory = new HealthTrackerFactory(context, null, logger.Object);
             _personId = Task.Run(() => _factory.People.AddAsync("", "", DateTime.Now, 0, Gender.Unspecified)).Result.Id;
-            _activityTypeId = Task.Run(() => _factory.ActivityTypes.AddAsync("Cycling", true)).Result.Id;
-            _measurementId = Task.Run(() => _factory.ExerciseMeasurements.AddAsync(_personId, _activityTypeId, ExerciseDate, Duration, Distance, Calories, MinimumHeartRate, MaximumHeartRate)).Result.Id;
+            _activityTypeId = Task.Run(() => _factory.ActivityTypes.AddAsync("Cycling", true, true)).Result.Id;
+            _measurementId = Task.Run(() => _factory.ExerciseMeasurements.AddAsync(_personId, _activityTypeId, ExerciseDate, Duration, Distance, Route, Calories, MinimumHeartRate, MaximumHeartRate)).Result.Id;
         }
 
         [TestMethod]
@@ -54,6 +56,7 @@ namespace HealthTracker.Tests.Exercise
             Assert.AreEqual(ExerciseDate, measurements.First().Date);
             Assert.AreEqual(Duration, measurements.First().Duration);
             Assert.AreEqual(Distance, measurements.First().Distance);
+            Assert.AreEqual(Route, measurements.First().Route);
             Assert.AreEqual(Calories, measurements.First().Calories);
             Assert.AreEqual(MinimumHeartRate, measurements.First().MinimumHeartRate);
             Assert.AreEqual(MaximumHeartRate, measurements.First().MaximumHeartRate);
@@ -62,7 +65,7 @@ namespace HealthTracker.Tests.Exercise
         [TestMethod]
         public async Task UpdateTest()
         {
-            await _factory.ExerciseMeasurements.UpdateAsync(_measurementId, _personId, _activityTypeId, UpdatedExerciseDate, UpdatedDuration, UpdatedDistance, UpdatedCalories, UpdatedMinimumHeartRate, UpdatedMaximumHeartRate);
+            await _factory.ExerciseMeasurements.UpdateAsync(_measurementId, _personId, _activityTypeId, UpdatedExerciseDate, UpdatedDuration, UpdatedDistance, UpdatedRoute, UpdatedCalories, UpdatedMinimumHeartRate, UpdatedMaximumHeartRate);
             var measurements = await _factory.ExerciseMeasurements.ListAsync(x => x.PersonId == _personId, 1, int.MaxValue);
             Assert.AreEqual(1, measurements.Count);
             Assert.AreEqual(_measurementId, measurements.First().Id);
@@ -71,6 +74,7 @@ namespace HealthTracker.Tests.Exercise
             Assert.AreEqual(UpdatedExerciseDate, measurements.First().Date);
             Assert.AreEqual(UpdatedDuration, measurements.First().Duration);
             Assert.IsNull(measurements.First().Distance);
+            Assert.AreEqual(UpdatedRoute, measurements.First().Route);
             Assert.AreEqual(UpdatedCalories, measurements.First().Calories);
             Assert.AreEqual(UpdatedMinimumHeartRate, measurements.First().MinimumHeartRate);
             Assert.AreEqual(UpdatedMaximumHeartRate, measurements.First().MaximumHeartRate);
@@ -87,21 +91,31 @@ namespace HealthTracker.Tests.Exercise
         [TestMethod]
         [ExpectedException(typeof(PersonNotFoundException))]
         public async Task CannotAddMeasurementForMissingPersonTest()
-            => await _factory.ExerciseMeasurements.AddAsync(10 * _personId, _activityTypeId, ExerciseDate, Duration, Distance, Calories, MinimumHeartRate, MaximumHeartRate);
+            => await _factory.ExerciseMeasurements.AddAsync(10 * _personId, _activityTypeId, ExerciseDate, Duration, Distance, Route, Calories, MinimumHeartRate, MaximumHeartRate);
 
         [TestMethod]
         [ExpectedException(typeof(PersonNotFoundException))]
         public async Task CannotUpdateMeasurementForMissingPersonTest()
-            => await _factory.ExerciseMeasurements.UpdateAsync(_measurementId, 10 * _personId, _activityTypeId, UpdatedExerciseDate, UpdatedDuration, UpdatedDistance, UpdatedCalories, UpdatedMinimumHeartRate, UpdatedMaximumHeartRate);
+            => await _factory.ExerciseMeasurements.UpdateAsync(_measurementId, 10 * _personId, _activityTypeId, UpdatedExerciseDate, UpdatedDuration, UpdatedDistance, UpdatedRoute, UpdatedCalories, UpdatedMinimumHeartRate, UpdatedMaximumHeartRate);
 
         [TestMethod]
         [ExpectedException(typeof(ActivityTypeNotFoundException))]
         public async Task CannotAddMeasurementForMissingActivityTypeTest()
-            => await _factory.ExerciseMeasurements.AddAsync(_personId, 10 * _activityTypeId, ExerciseDate, Duration, Distance, Calories, MinimumHeartRate, MaximumHeartRate);
+            => await _factory.ExerciseMeasurements.AddAsync(_personId, 10 * _activityTypeId, ExerciseDate, Duration, Distance, Route, Calories, MinimumHeartRate, MaximumHeartRate);
 
         [TestMethod]
         [ExpectedException(typeof(ActivityTypeNotFoundException))]
         public async Task CannotUpdateMeasurementForMissingActivityTypeTest()
-            => await _factory.ExerciseMeasurements.UpdateAsync(_measurementId, _personId, 10 * _activityTypeId, UpdatedExerciseDate, UpdatedDuration, UpdatedDistance, UpdatedCalories, UpdatedMinimumHeartRate, UpdatedMaximumHeartRate);
+            => await _factory.ExerciseMeasurements.UpdateAsync(_measurementId, _personId, 10 * _activityTypeId, UpdatedExerciseDate, UpdatedDuration, UpdatedDistance, UpdatedRoute, UpdatedCalories, UpdatedMinimumHeartRate, UpdatedMaximumHeartRate);
+
+        [TestMethod]
+        public async Task RouteIsNullForActivityThatIsNotRouteAwareTest()
+        {
+            var activityType = await _factory.ActivityTypes.AddAsync("Weights", false, false);
+            var measurement = await _factory.ExerciseMeasurements.AddAsync(
+                _personId, activityType.Id, ExerciseDate, Duration, null, Route, Calories, MinimumHeartRate, MaximumHeartRate);
+
+            Assert.IsNull(measurement.Route);
+        }
     }
 }

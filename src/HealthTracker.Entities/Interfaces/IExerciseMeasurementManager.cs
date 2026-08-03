@@ -11,6 +11,7 @@ namespace HealthTracker.Entities.Interfaces
             DateTime date,
             int duration,
             decimal? distance,
+            string route,
             int calories,
             int minimumHeartRate,
             int maximumHeartRate);
@@ -26,6 +27,7 @@ namespace HealthTracker.Entities.Interfaces
             DateTime date,
             int duration,
             decimal? distance,
+            string route,
             int calories,
             int minimumHeartRate,
             int maximumHeartRate);

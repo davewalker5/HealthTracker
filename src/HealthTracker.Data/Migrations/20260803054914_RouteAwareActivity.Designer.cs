@@ -3,6 +3,7 @@ using System;
 using HealthTracker.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HealthTracker.Data.Migrations
 {
     [DbContext(typeof(HealthTrackerDbContext))]
-    partial class HealthTrackerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260803054914_RouteAwareActivity")]
+    partial class RouteAwareActivity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
@@ -730,11 +733,6 @@ namespace HealthTracker.Data.Migrations
                     b.Property<int>("PersonId")
                         .HasColumnType("INTEGER")
                         .HasColumnName("person_id");
-
-                    b.Property<string>("Route")
-                        .HasMaxLength(100)
-                        .HasColumnType("VARCHAR(100)")
-                        .HasColumnName("route");
 
                     b.HasKey("Id");
 
