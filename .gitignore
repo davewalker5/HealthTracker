@@ -421,3 +421,5 @@ data.csv
 
 # Local development configuration
 **/appsettings.Development.json
+
+data/import

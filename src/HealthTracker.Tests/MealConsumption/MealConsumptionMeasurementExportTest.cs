@@ -41,6 +41,7 @@ namespace HealthTracker.Tests.MealConsumption
             Assert.AreEqual(_person.Id, exportable.PersonId);
             Assert.AreEqual(_person.Name, exportable.Name);
             Assert.AreEqual(_measurement.Meal.Id, exportable.MealId);
+            Assert.AreEqual(_measurement.Meal.FoodSource.Name, exportable.Source);
             Assert.AreEqual(_measurement.Date, exportable.Date);
             Assert.AreEqual(_measurement.Quantity, exportable.Quantity);
             Assert.AreEqual(_measurement.NutritionalValue.Calories, exportable.Calories);
@@ -60,6 +61,7 @@ namespace HealthTracker.Tests.MealConsumption
             Assert.AreEqual(_person.Id, exportable.First().PersonId);
             Assert.AreEqual(_person.Name, exportable.First().Name);
             Assert.AreEqual(_measurement.Meal.Id, exportable.First().MealId);
+            Assert.AreEqual(_measurement.Meal.FoodSource.Name, exportable.First().Source);
             Assert.AreEqual(_measurement.Date, exportable.First().Date);
             Assert.AreEqual(_measurement.Quantity, exportable.First().Quantity);
             Assert.AreEqual(_measurement.NutritionalValue.Calories, exportable.First().Calories);
@@ -74,12 +76,13 @@ namespace HealthTracker.Tests.MealConsumption
         [TestMethod]
         public void FromCsvRecordTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_measurement.MealId}"",""{_measurement.Meal.Name}"",""{_measurement.Quantity}"",""{_measurement.NutritionalValue.Calories}"",""{_measurement.NutritionalValue.Fat}"",""{_measurement.NutritionalValue.SaturatedFat}"",""{_measurement.NutritionalValue.Protein}"",""{_measurement.NutritionalValue.Carbohydrates}"",""{_measurement.NutritionalValue.Sugar}"",""{_measurement.NutritionalValue.Fibre}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_measurement.MealId}"",""{_measurement.Meal.Name}"",""{_measurement.Meal.FoodSource.Name}"",""{_measurement.Quantity}"",""{_measurement.NutritionalValue.Calories}"",""{_measurement.NutritionalValue.Fat}"",""{_measurement.NutritionalValue.SaturatedFat}"",""{_measurement.NutritionalValue.Protein}"",""{_measurement.NutritionalValue.Carbohydrates}"",""{_measurement.NutritionalValue.Sugar}"",""{_measurement.NutritionalValue.Fibre}""";
             var exportable = ExportableMealConsumptionMeasurement.FromCsv(record);
             Assert.AreEqual(_person.Id, exportable.PersonId);
             Assert.AreEqual($"{_person.Name}", exportable.Name);
             Assert.AreEqual(_measurement.Date, exportable.Date);
             Assert.AreEqual(_measurement.Meal.Id, exportable.MealId);
+            Assert.AreEqual(_measurement.Meal.FoodSource.Name, exportable.Source);
             Assert.AreEqual(_measurement.Date, exportable.Date);
             Assert.AreEqual(_measurement.Quantity, exportable.Quantity);
             Assert.AreEqual(_measurement.NutritionalValue.Calories, exportable.Calories);
@@ -121,6 +124,7 @@ namespace HealthTracker.Tests.MealConsumption
             Assert.AreEqual($"{_person.Name}", exportable.Name);
             Assert.AreEqual(_measurement.Date, exportable.Date);
             Assert.AreEqual(_measurement.Meal.Id, exportable.MealId);
+            Assert.AreEqual(_measurement.Meal.FoodSource.Name, exportable.Source);
             Assert.AreEqual(_measurement.Date, exportable.Date);
             Assert.AreEqual(_measurement.Quantity, exportable.Quantity);
             Assert.AreEqual(_measurement.NutritionalValue.Calories, exportable.Calories);
@@ -161,6 +165,7 @@ namespace HealthTracker.Tests.MealConsumption
             Assert.AreEqual($"{_person.Name}", exportable.Name);
             Assert.AreEqual(_measurement.Date, exportable.Date);
             Assert.AreEqual(_measurement.Meal.Id, exportable.MealId);
+            Assert.AreEqual(_measurement.Meal.FoodSource.Name, exportable.Source);
             Assert.AreEqual(_measurement.Date, exportable.Date);
             Assert.AreEqual(_measurement.Quantity, exportable.Quantity);
             Assert.AreEqual(_measurement.NutritionalValue.Calories, exportable.Calories);

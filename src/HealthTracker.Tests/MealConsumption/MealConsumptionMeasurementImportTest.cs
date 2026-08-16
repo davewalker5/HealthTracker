@@ -18,6 +18,7 @@ namespace HealthTracker.Tests.MealConsumption
     {
         private readonly Person _person = DataGenerator.RandomPerson(16, 90);
         private MealConsumptionMeasurement _measurement;
+        private Meal _sameNamedMeal;
         private ExportableMealConsumptionMeasurement _exportable;
         private string _filePath;
 
@@ -28,9 +29,13 @@ namespace HealthTracker.Tests.MealConsumption
         public async Task Initialise()
         {
             _measurement = DataGenerator.RandomMealConsumptionMeasurement(_person.Id, 2024);
+            _sameNamedMeal = DataGenerator.RandomMeal(0);
+            _sameNamedMeal.Name = _measurement.Meal.Name;
 
             var context = HealthTrackerDbContextFactory.CreateInMemoryDbContext();
             await context.People.AddAsync(_person);
+            await context.Meals.AddAsync(_sameNamedMeal);
+            await context.NutritionalValues.AddAsync(_sameNamedMeal.NutritionalValue);
             await context.Meals.AddAsync(_measurement.Meal);
             await context.NutritionalValues.AddAsync(_measurement.Meal.NutritionalValue);
             await context.SaveChangesAsync();
@@ -61,7 +66,7 @@ namespace HealthTracker.Tests.MealConsumption
         public void ConvertSingleObjectFromExportable()
         {
             Console.WriteLine(_exportable);
-            var measurement = _exportable.FromExportable([_measurement.Meal]);
+            var measurement = _exportable.FromExportable([_sameNamedMeal, _measurement.Meal]);
             Assert.AreEqual(_person.Id, measurement.PersonId);
             Assert.AreEqual(_exportable.MealId, measurement.MealId);
             Assert.AreEqual(_exportable.Date, measurement.Date);
@@ -96,7 +101,7 @@ namespace HealthTracker.Tests.MealConsumption
         [TestMethod]
         public async Task ImportMeasurementsTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_measurement.MealId}"",""{_measurement.Meal.Name}"",""{_measurement.Quantity}"",""{_measurement.NutritionalValue.Calories}"",""{_measurement.NutritionalValue.Fat}"",""{_measurement.NutritionalValue.SaturatedFat}"",""{_measurement.NutritionalValue.Protein}"",""{_measurement.NutritionalValue.Carbohydrates}"",""{_measurement.NutritionalValue.Sugar}"",""{_measurement.NutritionalValue.Fibre}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_measurement.MealId}"",""{_measurement.Meal.Name}"",""{_measurement.Meal.FoodSource.Name}"",""{_measurement.Quantity}"",""{_measurement.NutritionalValue.Calories}"",""{_measurement.NutritionalValue.Fat}"",""{_measurement.NutritionalValue.SaturatedFat}"",""{_measurement.NutritionalValue.Protein}"",""{_measurement.NutritionalValue.Carbohydrates}"",""{_measurement.NutritionalValue.Sugar}"",""{_measurement.NutritionalValue.Fibre}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 
@@ -138,7 +143,7 @@ namespace HealthTracker.Tests.MealConsumption
         [ExpectedException(typeof(InvalidFieldValueException))]
         public async Task InvalidMealTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""0"",""Not Valid"",""{_measurement.Quantity}"",""{_measurement.NutritionalValue.Calories}"",""{_measurement.NutritionalValue.Fat}"",""{_measurement.NutritionalValue.SaturatedFat}"",""{_measurement.NutritionalValue.Protein}"",""{_measurement.NutritionalValue.Carbohydrates}"",""{_measurement.NutritionalValue.Sugar}"",""{_measurement.NutritionalValue.Fibre}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""0"",""Not Valid"",""{_measurement.Meal.FoodSource.Name}"",""{_measurement.Quantity}"",""{_measurement.NutritionalValue.Calories}"",""{_measurement.NutritionalValue.Fat}"",""{_measurement.NutritionalValue.SaturatedFat}"",""{_measurement.NutritionalValue.Protein}"",""{_measurement.NutritionalValue.Carbohydrates}"",""{_measurement.NutritionalValue.Sugar}"",""{_measurement.NutritionalValue.Fibre}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 
@@ -149,7 +154,7 @@ namespace HealthTracker.Tests.MealConsumption
         [ExpectedException(typeof(InvalidFieldValueException))]
         public async Task InvalidQuantityTest()
         {
-            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_measurement.MealId}"",""{_measurement.Meal.Name}"",""0"",""{_measurement.NutritionalValue.Calories}"",""{_measurement.NutritionalValue.Fat}"",""{_measurement.NutritionalValue.SaturatedFat}"",""{_measurement.NutritionalValue.Protein}"",""{_measurement.NutritionalValue.Carbohydrates}"",""{_measurement.NutritionalValue.Sugar}"",""{_measurement.NutritionalValue.Fibre}""";
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{_measurement.Date:dd-MMM-yyyy HH:mm:ss}"",""{_measurement.MealId}"",""{_measurement.Meal.Name}"",""{_measurement.Meal.FoodSource.Name}"",""0"",""{_measurement.NutritionalValue.Calories}"",""{_measurement.NutritionalValue.Fat}"",""{_measurement.NutritionalValue.SaturatedFat}"",""{_measurement.NutritionalValue.Protein}"",""{_measurement.NutritionalValue.Carbohydrates}"",""{_measurement.NutritionalValue.Sugar}"",""{_measurement.NutritionalValue.Fibre}""";
             _filePath = DataGenerator.TemporaryCsvFilePath();
             File.WriteAllLines(_filePath, ["", record]);
 

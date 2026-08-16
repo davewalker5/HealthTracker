@@ -9,7 +9,7 @@ namespace HealthTracker.DataExchange.Import
     {
         private List<Meal> _meals = [];
 
-        public MealConsumptionMeasurementImporter(IHealthTrackerFactory factory, string format) : base (factory, format, false, true) {}
+        public MealConsumptionMeasurementImporter(IHealthTrackerFactory factory, string format) : base (factory, format, true) {}
 
         /// <summary>
         /// Prepare for import
@@ -40,7 +40,7 @@ namespace HealthTracker.DataExchange.Import
             ValidateCommonFields(measurement, recordCount);
 
             // Make sure the meal maps OK
-            var meal = _meals.FirstOrDefault(x => x.Name.Equals(measurement.Meal, StringComparison.OrdinalIgnoreCase));
+            var meal = FindMeal(measurement);
             ValidateField<Meal>(x => x != null, meal, "Meal", recordCount);
 
             // On export, the nutritional values associated with the consumption record are also exported. On import, though,
@@ -57,7 +57,7 @@ namespace HealthTracker.DataExchange.Import
         protected override async Task AddAsync(ExportableMealConsumptionMeasurement measurement)
         {
             // Get the related meal
-            var meal = _meals.First(x => x.Name.Equals(measurement.Meal, StringComparison.OrdinalIgnoreCase));
+            var meal = FindMeal(measurement);
 
             // On export, the nutritional values associated with the consumption record are also exported. On import, though,
             // the nutritional values are recalculated and added automatically based on the current state of the specified
@@ -68,5 +68,10 @@ namespace HealthTracker.DataExchange.Import
                 measurement.Date,
                 measurement.Quantity);
         }
+
+        private Meal FindMeal(ExportableMealConsumptionMeasurement measurement)
+            => _meals.FirstOrDefault(x =>
+                x.Name.Equals(measurement.Meal, StringComparison.OrdinalIgnoreCase) &&
+                x.FoodSource.Name.Equals(measurement.Source, StringComparison.OrdinalIgnoreCase));
     }
 }
