@@ -24,6 +24,7 @@ namespace HealthTracker.DataExchange.Extensions
                 Date = measurement.Date,
                 MealId = measurement.MealId,
                 Meal = meal.Name,
+                Source = meal.FoodSource.Name,
                 Quantity = measurement.Quantity,
                 Calories = measurement.NutritionalValue?.Calories,
                 Fat = measurement.NutritionalValue?.Fat,
@@ -65,7 +66,9 @@ namespace HealthTracker.DataExchange.Extensions
         /// <returns></returns>
         public static MealConsumptionMeasurement FromExportable(this ExportableMealConsumptionMeasurement exportable, IEnumerable<Meal> meals)
         {
-            var meal = meals.First(x => x.Name.Equals(exportable.Meal, StringComparison.OrdinalIgnoreCase));
+            var meal = meals.First(x =>
+                x.Name.Equals(exportable.Meal, StringComparison.OrdinalIgnoreCase) &&
+                x.FoodSource.Name.Equals(exportable.Source, StringComparison.OrdinalIgnoreCase));
             return new MealConsumptionMeasurement
             {
                 PersonId = exportable.PersonId,
