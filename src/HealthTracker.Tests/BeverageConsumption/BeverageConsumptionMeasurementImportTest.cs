@@ -95,6 +95,21 @@ namespace HealthTracker.Tests.BeverageConsumption
         }
 
         [TestMethod]
+        public async Task ImportMeasurementLaterTodayTest()
+        {
+            var date = DateTime.Today.AddDays(1).AddSeconds(-1);
+            var record = $@"""{_person.Id}"",""{_person.Name}"",""{date:dd-MMM-yyyy HH:mm:ss}"",""{_beverage.Id}"",""{_beverage.Name}"",""{_measurement.Quantity}"",""{_measurement.Volume}"",""{_measurement.ABV}"",""{_measurement.Units}""";
+            _filePath = DataGenerator.TemporaryCsvFilePath();
+            File.WriteAllLines(_filePath, ["", record]);
+
+            await _importer.ImportAsync(_filePath);
+
+            var measurements = await _factory.BeverageConsumptionMeasurements.ListAsync(x => true, 1, int.MaxValue);
+            Assert.AreEqual(1, measurements.Count);
+            Assert.AreEqual(date, measurements.First().Date);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(InvalidRecordFormatException))]
         public async Task InvalidRecordFormatTest()
         {
